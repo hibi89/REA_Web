@@ -20,6 +20,7 @@ def main(argv=None) -> int:
     if out.exists() or out.is_symlink():
         print("D14_WINDOWS_REFUSED_EXISTING_DESTINATION", file=sys.stderr)
         return 2
+    out.mkdir(parents=True, exist_ok=False)
     try:
         import tkinter as tk
         trial = tk.Tk()
@@ -33,7 +34,6 @@ def main(argv=None) -> int:
             "human_acceptance": "NOT_RUN",
             "commercial_release": "BLOCKED",
         }
-        out.mkdir(parents=True, exist_ok=False)
         (out / "windows_gui_status.json").write_text(
             json.dumps(status, indent=2) + "\n", encoding="utf-8")
         print(json.dumps(status))
@@ -57,7 +57,6 @@ def main(argv=None) -> int:
             "human_acceptance": "NOT_RUN",
             "commercial_release": "BLOCKED",
         }
-    out.mkdir(parents=True, exist_ok=False)
     (out / "windows_gui_status.json").write_text(
         json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result))
