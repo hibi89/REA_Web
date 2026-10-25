@@ -55,13 +55,18 @@ def test_ci_only_pip_never_part_of_shipped_windows_launcher():
     assert "--check" in launcher and "goto launch" in launcher
 
 
-def test_nonwindows_probe_fails_closed_without_report(tmp_path):
+def test_platform_specific_rehearsal_refusal_without_mutation(tmp_path):
+    report = tmp_path / "owner-report.json"
     if os.name == "nt":
-        pytest.skip("Native Windows actual CI uses dedicated smoke script")
-    report = tmp_path / "no-report.json"
-    with pytest.raises(RuntimeError, match="Windows"):
-        fresh.execute(report)
-    assert not report.exists()
+        # Native Windows still must never overwrite an owner's existing output.
+        report.write_text("KEEP", encoding="utf-8")
+        with pytest.raises(FileExistsError):
+            fresh.execute(report)
+        assert report.read_text(encoding="utf-8") == "KEEP"
+    else:
+        with pytest.raises(RuntimeError, match="Windows"):
+            fresh.execute(report)
+        assert not report.exists()
 
 
 def test_human_and_commercial_gates_not_cleared():
