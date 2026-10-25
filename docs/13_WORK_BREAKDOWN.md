@@ -13,7 +13,8 @@
 | REA-P3-01 | DONE_FEATURE | feature/csv-local-mvp | List/search/filter/detail actual browser PASS |
 | REA-P4-01 | DONE_FEATURE_MVP | feature/orchestrator | CSV-only + optional Fable review + independent app CLI, 55 pytest+browser PASS |
 | REA-P5-01 | DONE_FEATURE_VERIFIED | qa/cross-platform | Three domains, Chromium PASS, Windows native CMD/API PASS, ZIP SHA256 artifact, design gap; CI 40202313506 68 pytest on Linux/Windows |
-| REA-P5-02 | READY | feature/mvp-summary-preview | CSV schema preview / category count summary: no guessed formulas or Fable-to-DB bindings |
+| REA-P5-02 | DONE_FEATURE_VERIFIED | feature/mvp-summary-preview | CSV lexical schema preview UNAPPROVED, category count UI; CI 40203444938 77 tests each OS and Chromium PASS |
+| REA-P5-03 | READY | new D5 feature branch | Bounded JSON intake and 2-file offer promise reconciliation |
 | REA-P6-01 | BACKLOG_BEFORE_SALE | release/v0.1 | Commercial scope, licenses, full security/recovery and clean Windows customer pilot |
 
 **Verified combined feature SHA:** `46060b4665560922d0c9cf82b9e5c08971eb9427` ([CI 40200704855](https://github.com/hibi89/REA_Web/actions/runs/40200704855); PR #5 Draft, unmerged).

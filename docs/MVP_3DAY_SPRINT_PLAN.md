@@ -36,3 +36,6 @@ Owner approved a fast 3-day *working MVP first* experiment. First generate a use
 ## D3-01 verified cross-platform synthetic acceptance (2026-10-25 KST)
 - qa/cross-platform code e88c89f3ec12e61e63d2ca1255736fbf674c6e9e, Draft PR #6. Actions [40202313506](https://github.com/hibi89/REA_Web/actions/runs/40202313506) SUCCESS: **68 pytest PASS each on Ubuntu and Windows-latest**; real Chromium on 3 apps, Windows native CMD launcher + HTTP PASS, reproducible ZIP with SHA-256 verification, screenshot/QA/ZIP artifacts.
 - No clean nondeveloper Windows installation, Windows Chromium, live customer/rights, vendor licenses, broad security or production. Original-design gap matrix enumerates next functional priorities; deep pre-sale QA not waived.
+
+## D4 verified 2026-10-25 KST
+Feature SHA d8e26ed7d60ad86f64e35aefb3825655d6e19d25; [CI 40203444938](https://github.com/hibi89/REA_Web/actions/runs/40203444938) Linux+Windows each **77/77 pytest**, Chromium 3 synthetic data scenarios and Windows CMD/HTTP PASS. Added CSV schema hints (UNAPPROVED) and category count summary (CSV only). D5 reconciles JSON/two-file advertised intake; deep security and license work still pre-sale.

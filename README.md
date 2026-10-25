@@ -1,6 +1,6 @@
 # REA_Web — 웹서비스 분석·재구축 자동화 엔진
 
-> 2026-10-25 · **3일 MVP 우선 개발 중** · Day1·Day2 통합 앱 + D3 Linux·Windows 합성 QA PASS · 상용 검증 미완성
+> 2026-10-25 · **3일 MVP 우선 개발 중** · Day1·Day2 통합 앱 + D3 Linux·Windows 합성 QA PASS · D4 스키마·요약 검증 PASS · 상용 검증 미완성
 
 **새 채팅 즉시 재개:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` — 질문 없이 최신 GitHub 문서·코드 확인 후 다음 READY 개발 작업을 수행한다. **최우선 안내:** [WORKER_START_HERE.md](WORKER_START_HERE.md) · [세션 복원 프로토콜](docs/SESSION_RESTART_PROTOCOL.md).
 
@@ -35,9 +35,14 @@
 - [최초 설계 대비 차이표](https://github.com/hibi89/REA_Web/blob/qa/cross-platform/docs/21_MVP_GAP_MATRIX.md); [D3 사용·검수 가이드](https://github.com/hibi89/REA_Web/blob/qa/cross-platform/docs/22_D3_TEST_GUIDE.md).
 
 ## 다음 작업 (지금 시작 가능)
-REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운트, 기존 앱 회귀 검증. 그다음 고객용 범위·라이선스·보안·Windows 실사용 점검 후 판매 여부 판단. 전체 소스는 Draft PR 상태, 상용화/배포 전.
+REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운트, 기존 앱 회귀 검증. D4 완료. 다음 D5는 제한 JSON 입력 및 최초 판매 범위의 2파일 약속 정합성 확인. 그다음 라이선스·보안·Windows 실사용 점검 후 판매 여부 판단. 전체 소스는 Draft PR 상태, 상용화/배포 전.
 
 ## 사업/범위
 초기 크몽 가격 가설 300,000원. 소규모 고객 제공 CSV 중심, 2개 화면·3개 단순 기능 이내 정액 납품을 목표로 한다. 데이터 수집 대행·운영 DB 접근·복잡한 인증·결제·무제한 수정 제외. 아직 판매 개시/납품 준비가 완료된 상태가 아니다.
 
 **설계도:** [아키텍처](docs/02_ARCHITECTURE.md) · [3일 계획](docs/MVP_3DAY_SPRINT_PLAN.md) · [최종 산출물](docs/14_FINAL_DELIVERABLES.md) · [인수검사](docs/05_ACCEPTANCE.md) · [30만원 범위](docs/07_KMONG_OFFER.md) · [최신 작업지시](docs/17_NEXT_TASK.md).
+
+## D4-01: 컬럼·자료형 미리보기 + 카테고리별 집계 검증 완료
+- feature/mvp-summary-preview: d8e26ed7d60ad86f64e35aefb3825655d6e19d25 (코드 테스트), e4e9c7954ba1369636bcc2107478a5d2dae2db7e (최신 문서), [Draft PR #7](https://github.com/hibi89/REA_Web/pull/7) 미병합.
+- [CI 40203444938](https://github.com/hibi89/REA_Web/actions/runs/40203444938) Linux/Windows 각각 77 테스트 PASS, 3업종 실제 Chromium 검증 PASS, Windows 런처/로컬 API PASS. D4 테스트와 설명서: docs/23_SCHEMA_SUMMARY.md (해당 기능 브랜치).
+- 카테고리별 데이터 건수는 CSV 기반 단순 집계이고 컬럼 자료형은 승인되지 않은 추정. 고객 데이터/실사이트를 검증한 것은 아님.

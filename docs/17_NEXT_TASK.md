@@ -1,23 +1,20 @@
 # REA_Web dispatcher — SINGLE ACTIVE READY TASK (2026-10-25 KST)
 
-Trigger: [REA_Web 깃헙 레포지토리 보고 작업이어가셈] or ㄱ means inspect actual GitHub and EXECUTE the next safe task immediately. No extra question, no background promise. Always read latest main HEAD, HANDOFF, STATUS, AGENTS, WORKER_START_HERE and this file before code edits.
+Exact user trigger [REA_Web 깃헙 레포지토리 보고 작업이어가셈] or ㄱ authorizes immediate implementation of next bounded offline synthetic unit. Read current main and assigned branch HEAD, HANDOFF, STATUS, WORKER_START_HERE, AGENTS, source/tests. Do not ask for already known context or background execution.
 
-## LAST DONE: REA-MVP-D3-01
-- qa/cross-platform tested SHA e88c89f3ec12e61e63d2ca1255736fbf674c6e9e, later docs-only head 857a73e1f3e641f851fd4df1212872846528bdb9, [Draft PR #6](https://github.com/hibi89/REA_Web/pull/6) unmerged.
-- [CI 40202313506](https://github.com/hibi89/REA_Web/actions/runs/40202313506) SUCCESS: Ubuntu 68/68 pytest + real Chromium for 3 independent local apps (cafe, inventory, trends), zero external calls, JS errors or script dialogs; Windows-latest 68/68 pytest + extracted ZIP launcher/CMD/HTTP PASS; 1 nonblocking TestClient warning each.
-- Synthetic Actions artifact rea-d3-synthetic-linux-qa ID 12602316907 includes three screenshots + QA JSON + example ZIP. ZIP contains app.py, SQLite, local static assets, Windows guide/launcher and SHA-256 manifest; no vendor engines or original Fable source.
-- **Windows false start:** run 40202205835 failed CMD launcher (py -3 interpreter choice). Fixed to PATH python; actual Windows success 40202313506. Do not repeat old launcher.
-- Design comparison: docs/21_MVP_GAP_MATRIX.md; guide docs/22_D3_TEST_GUIDE.md on QA branch. Source imports and original D1/D2 feature branches unchanged; all PR #1–#6 Draft/unmerged.
-- NOT_RUN customer/reference site, clean nondeveloper Windows PC, Windows Chromium, advanced security, license redistribution and production.
+## Last DONE — REA-MVP-D4-01
+- Implemented in feature/mvp-summary-preview, tested source d8e26ed7d60ad86f64e35aefb3825655d6e19d25 and later documentation-only head e4e9c7954ba1369636bcc2107478a5d2dae2db7e; [Draft PR #7](https://github.com/hibi89/REA_Web/pull/7), unmerged.
+- [CI 40203444938](https://github.com/hibi89/REA_Web/actions/runs/40203444938) SUCCESS Ubuntu 77 pytest, Windows-latest 77 pytest, true Chromium for 3 synthetic domains with schema/category summary & existing list/search/filter/detail/reload PASS. Windows extracted .cmd and localhost HTTP PASS. One warning per OS; no functional failed/skipped. No customer or live URL.
+- Readonly schema field preview has review_status UNAPPROVED, no cell samples, no approved bindings. /api/summary counts only customer CSV rows. Original Fable review gate intact. Gap matrix docs/21_MVP_GAP_MATRIX.md updated on D4 feature.
+- Original source/vendor import branches untouched, PRs #1–#7 remain draft.
 
-## ACTIVE READY: REA-MVP-D4-01 — close immediate customer-visible UX gaps
-Preferred branch: create feature/mvp-summary-preview from actual latest tested qa/cross-platform **if no existing conflicting branch**, otherwise use and preserve its latest unique commits. No force. Do not modify pinned upstream engines/imports.
+## ACTIVE READY — REA-MVP-D5-01: JSON intake + documented 2-file product scope reconciliation
+Target: new conflict-free feature branch derived from verified D4 (refetch actual head), do not force or edit upstream vendor/import refs.
+1. Compare docs/07_KMONG_OFFER.md, docs/14_FINAL_DELIVERABLES.md, original architecture intake requirements and current rea/mvp.py / rea/orchestrator.py / rea/delivery.py. Confirm exact current one-CSV-only constraints.
+2. Implement a **limited JSON array-of-objects intake** where explicit id/title/category keys are required; strict max bytes, rows, columns, string-only values or explicit safe conversion with clear rejection for ambiguous mixed/scalar/nested/sensitive formats. Keep existing CSV input exactly usable. No external fetches or automatic Fable field mapping.
+3. Do NOT blindly merge two independent customer files. Document precisely which multi-file pattern is supported (if any) versus DRAFT advertised 2-file scope, label capability gap honestly. Reconcile contract by either safe, explicit supported two-file schema workflow in a separately tested unit or an owner-reviewed scope revision before sale. Never silently remove promised features.
+4. Add tests for JSON valid/invalid, duplicate IDs, caps/encoding, original file no mutation, ZIP contents, approvals, real Chromium regression. Run GitHub Actions actual tests both OS, Draft PR to integration/develop, record SHA/PASS/FAIL/NOT_RUN.
+5. Update main STATUS.md, HANDOFF.md, this dispatcher and README with exact evidence and next task (licence/provenance audit and final pre-sale security/recovery before customer order).
 
-1. Verify latest GitHub branch heads and read docs/21_MVP_GAP_MATRIX.md + docs/02_ARCHITECTURE.md + docs/14_FINAL_DELIVERABLES.md + current rea/mvp.py, rea/templates/app.py, JS/HTML and tests. Use minimal changes.
-2. Add **read-only dataset schema preview** from owner CSV headers/types as unapproved metadata, NOT semantic DB/API mapping, with explicit unknown/mixed and bounded types. Add simple **category counts** (total and per-category) endpoint and optionally a lightweight summary panel. No arbitrary formula/percentage, no write APIs.
-3. Preserve all existing list/search/filter/detail, no overwrites, localhost only, optional Fable review gates and customer CSV-only generation. The owner-selected category counts are summaries of the supplied CSV, not reconstructed original site formulas. Avoid using synthetic engagement fields for business assumptions.
-4. Add deterministic unit, negative and real Chromium tests for the new UI/API. Test all 3 datasets where feasible; run GitHub Actions on target SHA. Open Draft PR to integration/develop and record exact PASS/FAIL and unverified components.
-5. After one bounded verified unit, update main STATUS/HANDOFF/NEXT_TASK and agent entrypoint, including SHA, CI run IDs and next business-critical pre-sale gates. If there is a blocker, record it and take next safe independent task, no questions already answered.
-
-## After D4
-Reconcile 300k offer (2 files/JSON advertised vs one CSV actual; no implicit scope shrink), full vendor and dependency redistribution license review, pre-sale security/recovery/clean Windows nondeveloper test, one authorized real reference/customer dataset only with explicit permission. Commercial sale/hosting remains BLOCKED until applicable gates PASS. Three-day sprint is ambitious target, not completion guarantee.
+## After D5
+Legal/license/dependency source rights audit, secure input/recovery tests, nondeveloper clean Windows real PC, authorized customer/reference-site consent and fixed 300k scope acceptance. No full original site clone, live database, public deploy or commercial launch until those gates actually pass.

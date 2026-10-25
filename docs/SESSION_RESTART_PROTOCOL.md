@@ -49,3 +49,6 @@ D3-01 **DONE** on qa/cross-platform: functional tested SHA `e88c89f3ec12e61e63d2
 
 ## Deliverables target
 Restricted independent local FastAPI+SQLite+HTML/JS source, CSV schema and mapping report, sample fixture, automated acceptance tests, Windows launch instructions, export manifest and ZIP, limitations. See `docs/14_FINAL_DELIVERABLES.md` and `docs/07_KMONG_OFFER.md`. No unsupported "arbitrary URL 1:1 copy" claims.
+
+## 2026-10-25 D4 update — current dispatch overrides historical D3 reference
+D4-01 verified on feature/mvp-summary-preview code SHA d8e26ed7d60ad86f64e35aefb3825655d6e19d25, docs head e4e9c7954ba1369636bcc2107478a5d2dae2db7e, Draft PR #7, [CI 40203444938](https://github.com/hibi89/REA_Web/actions/runs/40203444938) Linux+Windows each 77/77 tests plus three real Chromium synthetic cases and native Windows CMD/HTTP PASS. Next READY is **D5-01 limited JSON intake and 2-file offer scope reconciliation**; see docs/17_NEXT_TASK.md, this overrides previous D4-ready historical paragraphs. No customer/site rights or license and security approval implied.
