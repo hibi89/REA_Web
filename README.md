@@ -52,3 +52,10 @@ REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운�
 - **검증:** [GitHub CI 40204413087](https://github.com/hibi89/REA_Web/actions/runs/40204413087): Linux/Windows **각각 111 테스트 PASS**, 실제 Chromium CSV 3개+JSON 1개, Windows CMD/HTTP PASS. JSON 납품 ZIP/체크섬 PASS.
 - **중요:** 30만원 상품 초안의 **최대 2개 파일** 입력은 **아직 미구현**. 단일 CSV 또는 JSON만 지원하며 서로 다른 데이터 파일을 승인 없이 결합하지 않습니다. [D5 범위·제약](https://github.com/hibi89/REA_Web/blob/feature/json-intake/docs/24_JSON_INTAKE_SCOPE.md). 현재 판매/배포 불가, 상용 재배포 라이선스·보안·실고객·Windows 사용성 검증 필요.
 - 다음 READY: D6 라이선스/의존성/원본 추적성 점검(미승인 항목은 BLOCKED 명시). 인수인계 `HANDOFF.md`·`docs/17_NEXT_TASK.md` 참조.
+
+## D6-01 — 원본 추적·납품 패키지 감사 (2026-10-26)
+- 기능 브랜치 `feature/license-provenance` SHA b97443657e46a8f701e12b83bf87f5a0339b224c, [Draft PR #9](https://github.com/hibi89/REA_Web/pull/9), 미병합.
+- [실제 CI 40205614846](https://github.com/hibi89/REA_Web/actions/runs/40205614846) Linux/Windows 각각 **125개 pytest PASS**, Fable 원본 **88개**·Astra P4 부분 원본 **103개** Git Blob SHA 무결성 PASS, Chromium 4개 합성 웹앱/Windows 로컬 런처 PASS.
+- 납품 ZIP SHA256·허용파일 목록 감사, 원본 엔진/.env 재삽입 거부. [라이선스·의존성·상용 위험 보고서](https://github.com/hibi89/REA_Web/blob/feature/license-provenance/docs/25_SOURCE_LICENSE_AUDIT.md).
+- **라이선스/원본 재배포 권한은 아직 미승인**. 직접 의존성 두 개의 정확한 설치 버전·전이 의존성 미확인, 고객 데이터가 SQLite에 포함됨. **2파일 약속 미구현**, Windows 일반 사용자/실고객/보안 전체 검증 전까지 판매 불가.
+- 다음 작업 D7 합성환경 보안·복구 실패주입 검사. 최신 인수인계는 main STATUS.md/HANDOFF.md/docs/17_NEXT_TASK.md.

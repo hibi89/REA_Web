@@ -5,7 +5,7 @@
 | REA-P0-01 | DONE | main | Repo bootstrap & canonical docs |
 | REA-P0-02 | IMPORTED_REVIEW_PENDING | import/fable51-bbe72c0 | 88 paths pinned; redistribution review pending |
 | REA-P0-03 | PARTIAL_IMPORT_REVIEW_PENDING | import/astra-p4-b3166b6 | 103 selected paths, 41 contracts; NOT full vendor |
-| REA-P0-04 | DEFERRED_BEFORE_SALE | integration/develop | Vendor license/dependency/provenance and merge review |
+| REA-P0-04 | BLOCKED_RIGHTS_CLEARANCE | integration/develop | D6 pinned provenance hashes PASS but absent conventional LICENSE/NOTICE at upstream refs; distribution rights/dependency lock NOTICE review NOT DONE |
 | REA-P1-01 | DONE_FEATURE | feature/evidence-adapter | Fable->Astra schema review adapter; 28 tests PASS |
 | REA-P1-02 | DONE_FEATURE | feature/evidence-adapter | Strict inferred/observed and unapproved mapping guards |
 | REA-P2-01 | PARTIAL_DONE_FEATURE | feature/csv-local-mvp | UTF-8 CSV cap/validator works; full owner JSON/mapping UX pending |
@@ -16,7 +16,8 @@
 | REA-P5-02 | DONE_FEATURE_VERIFIED | feature/mvp-summary-preview | CSV lexical schema preview UNAPPROVED, category count UI; CI 40203444938 77 tests each OS and Chromium PASS |
 | REA-P5-03 | DONE_FEATURE_VERIFIED | feature/json-intake | One bounded JSON intake plus CSV, shared validator; CI 40204413087 111 pytest on each OS and 4 Chromium synthetic cases PASS; 2-file scope NOT SUPPORTED | 
 | REA-P5-04 | BLOCKED_OWNER_SCOPE | none | Two-file join/mapping rules or expressly approved commercial offer revision |
-| REA-P6-00 | READY | new D6 feature branch | Offline vendor/source/dependency licensing and provenance inventory |
+| REA-P6-00 | DONE_AUDIT_NOT_LICENSED | feature/license-provenance | D6 SHA b97443657e46a8f701e12b83bf87f5a0339b224c; 125 pytest each OS, pinned 88+103 Git blobs both OS, ZIP allowlist SHA256/negative tests, CI 40205614846 | 
+| REA-P6-02 | READY | new D7 feature branch | Synthetic local security/recovery and failure-injection regression |
 | REA-P6-01 | BACKLOG_BEFORE_SALE | release/v0.1 | Commercial scope, licenses, full security/recovery and clean Windows customer pilot |
 
 **Verified combined feature SHA:** `46060b4665560922d0c9cf82b9e5c08971eb9427` ([CI 40200704855](https://github.com/hibi89/REA_Web/actions/runs/40200704855); PR #5 Draft, unmerged).
