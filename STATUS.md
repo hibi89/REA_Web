@@ -1,6 +1,6 @@
 # REA_Web STATUS — 2026-10-26 KST
 
-**D11-01 VERIFIED in Draft PR #14; D12-01 NEXT READY.** main holds documentation/dispatcher; all PR #1–#14 remain Draft/unmerged. No production hosting or commercial release.
+**D12-01 VERIFIED in Draft PR #15; D13-01 NEXT READY (guided offline creator UI).** main holds documentation/dispatcher; all PR #1–#14 remain Draft/unmerged. No production hosting or commercial release.
 
 ## Exact evidence milestone
 | Unit | Synthetic working unit | Verified tests |
@@ -37,3 +37,10 @@ D11 isolated feature branch feature/three-case-rehearsal SHA a49f05e969fd49e44b2
 
 ## NEXT READY: D12-01
 An isolated, synthetic-only **reproducible CI dependency resolution + NOTICE/license evidence triage** unit: record exact direct/transitive versions, hashes and metadata/notice contents where legally permitted; produce a deterministic *developer-only* constraints/SBOM evidence without automatically modifying customer ZIP or asserting compliance. Test Linux+Windows full regression and actual Chromium. Keep ownership, signed customer license rights, clean Windows human and real buyer blocked. docs/17_NEXT_TASK.md is authoritative.
+
+## D12-01 VERIFIED — offline exact dependency and legal-file SHA evidence (2026-10-26 01:45 KST)
+- Feature `feature/dependency-notice-evidence` SHA `e18e07f714199a734699e1baca24d857c873fa60`, [Draft PR #15](https://github.com/hibi89/REA_Web/pull/15) **UNMERGED**. [GitHub Actions #40213031424](https://github.com/hibi89/REA_Web/actions/runs/40213031424) **SUCCESS** Ubuntu Python 3.11 **217 pytest PASS + 1 nonblocking warning**, Windows-latest Python 3.11 **217 pytest PASS + 1 nonblocking warning**. Existing 8 Chromium synthetic apps + 3 Chromium tests of extracted delivery ZIPs PASS (Linux), native Windows extracted ZIP CMD/localhost HTTP PASS, Fable 88/Astra PARTIAL 103 pinned source hashes PASS both OS.
+- Added 16 D12 tests over D11's 201. Earlier Windows failed 1/216 due to POSIX `/LICENSE` not recognized as absolute under Windows; fixed with independent PurePosixPath/PureWindowsPath validation, added backslash traversal tests. Final 217/217 both OS PASS, not a bypassed test.
+- `rea/dependency_evidence.py`: no-network read-only installed versions/PEP508 marker/conditional/missing/specifier evidence; hash of installed metadata and observed LICENSE/LICENCE/NOTICE/COPYING bytes where safe, never legal contents. Developer-only candidate constraints; **NO wheel archive hash lock, NO actual compliance approval/CVE scan**. 14 installed distributions observed both OS, extras expansion explicitly unresolved. Linux artifact **12606655901**, Windows artifact **12606481398**. CI reports outside actual delivery ZIP; no customer data, vendor source changes, payment or hosting.
+- G5 and G6 still BLOCKED: actual approved client/reference, 3 measured human jobs, nondeveloper clean Windows, redistribution/license grants and attribution, privacy/recovery/security, actual 300k two-file scope signoff, correction/refund/support. Commercial readiness BLOCKED, Production **not applicable**.
+- **NEXT D13-01:** restore high-value original-vs-MVP gap: optional local guided creator GUI for choosing owner CSV/JSON, reviewing consent/mapping and explicitly approving export; preserve CLI, avoid real files and remote upload. Compare stdlib Tkinter wrapper with localhost browser wizard, prefer optional Tkinter if tested; no autopermission. See docs/17_NEXT_TASK.md.
