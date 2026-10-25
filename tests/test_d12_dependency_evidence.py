@@ -94,7 +94,7 @@ def test_missing_and_incompatible_version_are_not_silent(tmp_path):
     }))
     assert {e["status"] for e in r["requirement_edges"]} == {
         "VERSION_CONFLICT", "MISSING"}
-    assert r["unresolved_resolution_issues"] == ["MISSING", "VERSION_CONFLICT"]
+    assert {"MISSING", "VERSION_CONFLICT"} <= set(r["unresolved_resolution_issues"])
     assert any(d["status"] == "MISSING" for d in r["installed_distributions"])
 
 
@@ -184,3 +184,12 @@ def test_cli_creates_developer_json_and_refuses_overwrite(tmp_path):
     second = subprocess.run(cmd, capture_output=True, text=True)
     assert second.returncode != 0
     assert out.read_bytes() == content
+
+
+def test_missing_license_evidence_is_explicitly_unknown(tmp_path):
+    r = audit_environment(("root",), fake_lookup({
+        "root": FakeDist(tmp_path),
+    }))
+    assert "NO_LEGAL_FILES_DISCOVERED" in r["unresolved_resolution_issues"]
+    assert "NO_LICENSE_DECLARATION" in r["unresolved_resolution_issues"]
+    assert r["legal_compliance_status"] == "UNKNOWN"
