@@ -225,3 +225,12 @@ def test_existing_output_and_original_json_preserved(tmp_path):
         build(JSON_SAMPLE, out)
     assert JSON_SAMPLE.read_bytes() == data_before
     assert (out / "sentinel.txt").read_text() == "owner"
+
+def test_generate_direct_rejects_symlink(tmp_path):
+    from rea.mvp import generate
+    link = tmp_path / "data.json"
+    link.symlink_to(JSON_SAMPLE)
+    out = tmp_path / "app"
+    with pytest.raises(DataError, match="symlink"):
+        generate(link, out)
+    assert not out.exists()

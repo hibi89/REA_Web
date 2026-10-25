@@ -12,7 +12,7 @@ Implementation and D4 synthetic verification are grounded by GitHub Actions run 
 | Fable read-only analyzer for authorized sites | Existing Fable source is separately pinned; no live URL access inside REA CLI | PARTIAL; optional integration later with scope/rights checks |
 | Fable -> source-grounded observations | Fable 1.0 record marker and API/chart technical counts -> Astra inferred/unknown review | PARTIAL; before/after UI fact evidence and rights not verified |
 | Astra FunctionalSpecDraft | Pinned actual Astra contracts on reviewed Fable output | PARTIAL; feature candidates never automatically approved |
-| Owner CSV or JSON input | Single UTF-8 BOM-capable CSV with id/title/category, 10MB/10k/20 col limit | PARTIAL; D4 lexical CSV schema preview now present, but JSON, two-file merge and locale encoding remain absent |
+| Owner CSV or JSON input | One UTF-8 BOM-capable CSV OR one strict flat string-valued JSON array with id/title/category; 10MB/10k/20 col limit | PARTIAL; D4 lexical preview and D5 single JSON now present; two-file mapping/merge and locale encoding remain absent |
 | Semantic schema binding review | Always not_approved; Fable output cannot become owner mapping | MISSING interactive approval UI and owner semantics; D4 preview explicitly UNAPPROVED |
 | Independent safe generator | Fresh SQLite + FastAPI local app from customer CSV only | IMPLEMENTED MVP, no external API or website clone |
 | Generated UI list/search/filter/detail | Read-only static HTML/CSS/JS + API | IMPLEMENTED; D4 category count summary is CSV-only (77 pytest on each OS, real Chromium 3 cases), advanced aggregate formulas and CRUD unsupported |
@@ -29,7 +29,7 @@ Implementation and D4 synthetic verification are grounded by GitHub Actions run 
 ## Acceptance gate assessment
 G0 vendor hash imports sourced; full license/distribution assessment not done.
 G1 inferred vs observed preserved; no directly witnessed UI effects approved.
-G2 CSV bounded + read-only UNAPPROVED lexical schema preview in D4; no complete owner mapping approval/JSON/two file flow.
+G2 CSV/flat JSON bounded + UNAPPROVED lexical schema preview in D4/D5; no complete owner mapping approval or two-file flow.
 G3 functional generated local readonly app on synthetic inputs.
 G4 D4 Actions 40203444938: Linux and Windows 77 pytest each, real Chromium 3 synthetic domains with summary/schema/filter/search/detail/reload PASS. Native Windows .cmd HTTP PASS.
 G5 three synthetic cases available; authorized real reference remains NOT_RUN.
@@ -45,3 +45,8 @@ distribution authorization is claimed.
 - [CI 40203444938](https://github.com/hibi89/REA_Web/actions/runs/40203444938): **77 pytest PASS** on Ubuntu AND Windows-latest; Linux Chromium three domains schema and category summary + original list/search/filter/detail/reload PASS; Windows-native CMD/HTTP PASS. Each OS had one nonblocking TestClient warning.
 - Category totals are SQL COUNT from copied owner CSV, not a reconstructed website metric. `schema_preview.json` contains only CSV header names, lexical types and missing/present counts; review_status is UNAPPROVED. The preview is not direct customer field mapping, a commercial validation gate or an authorization to use real customer data.
 - Remaining near-term high-value gaps: reconcile initial product's advertised two-file/JSON scope with the actual one-file CSV implementation; complete source/license redistribution review and pre-sale security/recovery/clean Windows tests before accepting customer orders.
+
+## D5-01 validated bounded JSON and scope exception (2026-10-25 KST)
+- [CI 40204213281](https://github.com/hibi89/REA_Web/actions/runs/40204213281): **110 pytest PASS on Ubuntu and Windows-latest**, four actual Chromium synthetic app cases (3 CSV + 1 JSON), Windows ZIP CMD/HTTP PASS, two deterministic synthetic sample ZIPs passed hashes. One nonblocking warning on each OS.
+- Flat JSON array of string objects (id/title/category mandatory) shares strict row validator with CSV. One input only; original JSON not bundled. See docs/24_JSON_INTAKE_SCOPE.md.
+- Original 300,000 KRW proposal **up to 2 CSV/JSON** is **not fully implemented**. Two-file semantic join/union has no approved rule. Do not advertise as supported or silently delete the commitment. Requires explicit owner-reviewed product scope decision and testing before sale.

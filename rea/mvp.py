@@ -1,4 +1,4 @@
-"""REA_Web fast MVP: an isolated CSV -> working local web app generator.
+"""REA_Web fast MVP: isolated CSV or flat JSON -> working local web app.
 
 No remote URLs or production DB access. Run: python -m rea.mvp --csv samples/products.csv --out /tmp/rea-products
 """
@@ -171,7 +171,7 @@ def preview_schema(columns: list[str], rows: list[dict[str, str]], *, source_kin
 
 
 def generate(csv_file: Path, output: Path, name: str = "REA sample web app") -> dict:
-    source = Path(csv_file).resolve()
+    source = Path(csv_file).absolute()
     output = Path(output).resolve()
     if output.exists():
         raise FileExistsError(f"Output already exists: {output}")
