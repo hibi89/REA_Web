@@ -143,7 +143,7 @@ def test_invalid_source_inspection_clears_prior_preview(tmp_path):
 def test_cancelled_and_unexpected_extensions_never_export(tmp_path):
     model = CreatorController()
     model.inspect(CSV)
-    with pytest.raises(DataError, match="ZIP"):
+    with pytest.raises(DataError, match="\\.zip"):
         model.export(CSV, tmp_path / "data.json", "Test", CSV_MAP, True, "APPROVE")
     assert not (tmp_path / "data.json").exists()
 
