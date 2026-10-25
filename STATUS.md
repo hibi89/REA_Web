@@ -25,3 +25,9 @@
 - qa/vendor-fable @ 742b9be11f61ee415c1b46368c7253931be42c2c (source pinned 88 + verifier/workflow)
 - qa/vendor-astra @ 047311ee155dc9d413a51a3fd9d9890559172c1e (source pinned 103 + verifier/workflow)
 - Intended command: python tools/verify_vendor_manifests.py --vendor fable51 OR --vendor astra_p4 on corresponding QA branch. Workflow configured but actual GitHub Actions run completion not yet confirmed.
+
+## MVP-first directive 2026-10-25
+- Owner prioritizes 3-day constrained MVP proof over full sequential architecture work.
+- feature/csv-local-mvp @ c04d47025a00f85f8faf51b40a2bdba135ec861f; Draft PR #3.
+- Hosted GitHub Actions 40197993285 job 121182908018: 9 passed, 1 warning; 5-row standalone SQLite/FastAPI app generated and compileall PASS.
+- Browser E2E/Windows/real owner CSV/not Fable+Astra integrated: NOT_RUN or NOT_IMPLEMENTED.

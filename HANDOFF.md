@@ -24,3 +24,6 @@ Upstream test claims cannot be copied as new REA passes. Imported Astra subset m
 
 ## QA branch handoff
 To validate without editing immutable import source branches, use qa/vendor-fable or qa/vendor-astra. Each has top-level tools/verify_vendor_manifests.py and a workflow matching qa/**. Never confuse a submitted workflow with a confirmed PASS; inspect actual run/commit SHA. PRs #1/#2 remain draft and unmerged.
+
+## Current sprint 2026-10-25
+MVP-first authorized, see docs/MVP_3DAY_SPRINT_PLAN.md. Day1 actual generated-app code in feature/csv-local-mvp @ c04d47025a00f85f8faf51b40a2bdba135ec861f; GitHub Actions 40197993285 succeeded 9 pytest cases, sample app generated. PR #3 Draft. Day1 browser check, Day2 Fable evidence adapter, Day3 gaps/tests/package. Do not claim original complete Astra/Fable integration or 3-day product ready.
