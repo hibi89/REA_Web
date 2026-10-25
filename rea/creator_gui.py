@@ -106,8 +106,8 @@ def launch() -> int:
     """GUI initialization is optional; no dependency/display breaks the CLI."""
     try:
         import tkinter as tk
-        from tkinter import filedialog, messagebox, ttk
         root = tk.Tk()
+        from tkinter import filedialog, messagebox, ttk
     except (ImportError, RuntimeError, OSError, Exception) as exc:
         # Catch TclError in headless runners without requiring tkinter to import.
         # Never report success if the GUI could not be opened.
