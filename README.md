@@ -1,6 +1,6 @@
 # REA_Web — 웹서비스 분석·재구축 자동화 엔진
 
-> 2026-10-26 · **MVP 기능 브랜치 D12까지 CI 검증** (Linux·Windows 각 217 tests, 11 Chromium 합성 사례) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
+> 2026-10-26 · **MVP 기능 브랜치 D13까지 CI 검증** (Linux·Windows 각 242 tests, 11 Chromium 합성 사례) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
 
 **새 채팅 즉시 재개:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` — 질문 없이 최신 GitHub 문서·코드 확인 후 다음 READY 개발 작업을 수행한다. **최우선 안내:** [WORKER_START_HERE.md](WORKER_START_HERE.md) · [세션 복원 프로토콜](docs/SESSION_RESTART_PROTOCOL.md).
 
@@ -95,3 +95,10 @@
 - [실제 CI #40213031424](https://github.com/hibi89/REA_Web/actions/runs/40213031424) Ubuntu/Windows 각 **217 pytest PASS**, 경고 1건(비차단)씩. 실제 Chromium 합성 앱 8+3 Linux, Windows native ZIP CMD/localhost, Fable 88/Astra PARTIAL 103 소스 SHA 모두 통과.
 - 14개 패키지의 관측 버전·조건부 의존성·기설치 라이선스/NOTICE 파일 SHA 증거(개발 CI 전용). Python wheel 아카이브 해시 완전 lock 아님, 법적 사용권·재배포 권한 판단 아님. 원본·고객 납품 ZIP 무수정. [D12 상세](https://github.com/hibi89/REA_Web/blob/feature/dependency-notice-evidence/docs/31_RUNTIME_DEPENDENCY_EVIDENCE.md).
 - 다음 D13: 고객용 실행/제작 UX 격차(선택형 로컬 GUI). 30만 원 상품 판매·퍼블릭 배포·고객 실제 납품·완전한 라이선스/보안 검증은 승인되지 않음.
+
+## D13-01 — 선택형 오프라인 GUI 검증 완료 (2026-10-26)
+- `feature/offline-creator-gui` SHA `6a3fedad101d33b4628ef507887adf8114f7eb3c`, [Draft PR #16](https://github.com/hibi89/REA_Web/pull/16) 미병합, 기존 생성 CLI 보존.
+- [실제 Actions #40214024958](https://github.com/hibi89/REA_Web/actions/runs/40214024958) Ubuntu/Windows 각각 **242 pytest PASS**, 비차단 경고 1건씩. Linux Chromium 8+3 실제 합성 앱, Windows native ZIP CMD/localhost, Fable 88 / Astra partial 103 SHA 모두 통과. Windows Tkinter 모듈 import PASS이며 **GUI 화면 인간 조작/클린 Windows 실사용 미검증**.
+- 새 모듈 `rea.creator_gui`: 단일 로컬 비민감 CSV/평면 JSON → 컬럼 이름/행 수 미리보기 → id/title/category 직접 선택 → 권한 체크박스+정확히 APPROVE → 새 ZIP 생성 및 SHA 감사. 원본 덮어쓰기/외부 업로드 없음. ZIP 내 SQLite는 데이터 행을 포함함.
+- Tkinter/display가 없으면 GUI 실패로 처리하고 CLI 대체 경로 안내. Python 3.11·개발자 라이브러리 설치가 필요하며 설치형 exe 아님. 상세 [D13 GUI 안내](https://github.com/hibi89/REA_Web/blob/feature/offline-creator-gui/docs/32_OFFLINE_CREATOR_GUI.md).
+- 아직 크몽 30만원 판매, 상용 재배포 권한, 승인된 고객 사례, 실제 GUI 화면 검수, 사용자 Windows 설치/지원 정책은 미승인. 다음 D14는 GUI 위젯 실제 클릭·스크린샷 합성 수락 테스트와 Windows 첫 실행 안내.
