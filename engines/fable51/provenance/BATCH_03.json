@@ -1,0 +1,18 @@
+{
+  "source_commit": "bbe72c0acd3a3e355062d6bd0d866af33e5274b0",
+  "batch": 3,
+  "upstream_github_git_blob_sha": {
+    "docs/STEP3_REAL_RECORD_FEEDBACK_2026-10-18.md": "22eaf6f7c2f6ebac955be3ad1f839406a90459b3",
+    "docs/STEP3_WINDOWS_REAL_SITE_VERIFICATION_2026-10-18.md": "0c395700b1e4ff6de910a696e489ed68ae82c2c6",
+    "docs/STEP4_MOCK_ACCEPTANCE_2026-10-19.md": "1fefe648042ad255d97105d14f3682e5552be0a0",
+    "docs/STEP4_OFFICIAL_SDK_OFFLINE_2026-10-19.md": "ffbdd30adb8fffecdcebb9e4a47f871f1b974554",
+    "docs/STEP5_FINAL_ACCEPTANCE_2026-10-19.md": "3dd0832a51696d8da6eb84085e8a96fdf9f2d27c",
+    "docs/WINDOWS_FINAL_CHECKLIST.md": "e2f0ef8556b7daf81a79c955baa875bf9432a08b",
+    "requirements.txt": "2242d53149cde4b57350b24e0d3fcc1745627a5e",
+    "rules/fingerprints.json": "2fef1ae09ea071daf3da0714bd760bdf0a39f8b8",
+    "scan.py": "8445cfca1cc49f6288c6ad0aee03a747572b7932",
+    "scanner/__init__.py": "e447ea50d73db0e9dce3e8acb62cfca58f775e25",
+    "scanner/batch.py": "8992e0b1694b3bfd1ed386d79d6d2bd6b294e724",
+    "scanner/bundle_scan.py": "ef8bc3e008732c8d9801659d3f8c4bb088d164c5"
+  }
+}
