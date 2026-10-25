@@ -65,3 +65,9 @@ REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운�
 - [GitHub Actions 40206549211](https://github.com/hibi89/REA_Web/actions/runs/40206549211) **141 pytest each on Linux and Windows**, 5 actual Chromium synthetic samples, native Windows .cmd HTTP and 88/103 source blob checks PASS.
 - Fixed race-owner directory clobber, partial ZIP exposure, readonly DB; [failure-injection scope and limits](https://github.com/hibi89/REA_Web/blob/feature/security-recovery/docs/26_SECURITY_RECOVERY.md). Unsupported OS and filesystem fail closed, not a full pentest or permission to sell.
 - Next D8: guided single CSV/JSON owner field review and explicit approval. Original 2-file offer NOT implemented; legal/source rights, full dependency audit, real customer data and clean Windows human acceptance BLOCKED.
+
+## D8-01 입력 안내·명시적 매핑 승인 (2026-10-26)
+- `feature/guided-intake` SHA `a6c35688a5d4cbda93274bc0cd21d1aa825fb255`, [Draft PR #11](https://github.com/hibi89/REA_Web/pull/11), 미병합.
+- [CI 40207742776](https://github.com/hibi89/REA_Web/actions/runs/40207742776) Linux/Windows 각각 **164개 테스트 PASS**, Chromium 실제 7개 합성 웹앱, Windows CMD/HTTP·Fable 88/Astra 103 원본 해시 PASS.
+- 고객 파일 셀 원본값을 화면에 노출하지 않는 로컬 입력 정보 확인, id/title/category 컬럼 직접 선택, `APPROVE` 입력, 변경 감지 SHA 확인, 생성물 내 매핑 승인 기록과 ZIP 감사. [실행 가이드](https://github.com/hibi89/REA_Web/blob/feature/guided-intake/docs/27_GUIDED_OWNER_INTAKE.md).
+- 아직 GUI, 서명된 고객 동의, 두 파일 결합, 상용 라이선스, 실제 고객/일반 Windows 설치 검수는 미완료. 다음 D9: 별도 승인된 동형 두 파일만 안전하게 합치는 실험, 임의 관계 추론/조인 금지.

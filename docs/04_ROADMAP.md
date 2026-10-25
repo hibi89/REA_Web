@@ -1,3 +1,6 @@
+## 2026-10-26 D8 verified; D9 two-file controlled prototype READY
+D8 tested SHA `a6c35688a5d4cbda93274bc0cd21d1aa825fb255`, [CI 40207742776](https://github.com/hibi89/REA_Web/actions/runs/40207742776): Ubuntu and Windows 164 pytest each, 7 actual Chromium synthetic apps, Windows native CMD localhost, pinned Fable 88/Astra partial 103 source proofs PASS. Local owner-chosen source fields and literal APPROVE, unserved audit receipt, legacy exact schema path intact. Draft 300k up-to-two-file offer still unsupported; next D9 safe explicit same-schema append test, not arbitrary join. Licensing, privacy, real customer/reference, clean Windows human and production security unverified; docs/17_NEXT_TASK.md authoritative.
+
 ## 2026-10-26 latest D7 verified, D8 READY
 D7 tested SHA `8e7baa8eb14340eae2e7b46f1cf7b9272799c715`, [CI 40206549211](https://github.com/hibi89/REA_Web/actions/runs/40206549211): Linux/Windows 141 pytest each, actual Chromium five synthetic apps, native Windows CMD HTTP, pinned vendor 88+103 source blobs PASS. Atomic no-overwrite outputs; original draft 2-file scope, source redistribution licensing, clean nondeveloper Windows and real authorized customer still BLOCKED. D8 owner-guided single source input/mapping next, docs/17_NEXT_TASK.md authoritative.
 
