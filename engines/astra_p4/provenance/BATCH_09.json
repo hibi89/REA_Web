@@ -1,0 +1,14 @@
+{
+  "source_commit": "b3166b67604381a9d2afd41667b65f9a9b103b37",
+  "batch": 9,
+  "upstream_github_git_blob_sha": {
+    "app/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "app/static/index.html": "64330254645866dfc4e9c52e320af87ecfaa8745",
+    "app/static/app.js": "d5332616a0d25d34ac72e8e76df379b330edefd3",
+    "app/static/style.css": "5b21c080bcd819963d1d29cefe688c06e3f324a0",
+    "migrations/001_initial.sql": "5f5bdcb950dcfa0587b0deec2b7afb5e17f155bd",
+    "tests/test_mvp.py": "34ea2597e6ba6bc5510f1eabb0d767a2bb512911",
+    "tests/live_http_smoke.py": "5148e29f323e8ef0e234fa9625437ddb905c109a",
+    "tests/live_integrity_check.py": "5d1a0578eba1f6e8de6b561fd2a5cd3155ad0006"
+  }
+}
