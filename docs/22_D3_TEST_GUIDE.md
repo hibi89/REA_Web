@@ -43,3 +43,8 @@ See docs/21_MVP_GAP_MATRIX.md. Commercial and scope gates remain
 NOT_DONE: customer rights, clean Windows manual install, commercial
 provenance/license, security/recovery, acceptance and time estimates.
 No public deployment, arbitrary URL clone or customer live DB.
+
+## Verified D3 CI checkpoint (2026-10-25 KST)
+Verified on GitHub Actions run 40202313506, feature SHA e88c89f3ec12e61e63d2ca1255736fbf674c6e9e: Ubuntu Python 3.11 68/68 pytest, actual Chromium in cafe/inventory/trends PASS, compileall, reproducible sample ZIP integrity PASS. Windows-latest Python 3.11 68/68 pytest and actual extracted launch_windows.cmd -> localhost HTTP 4 rows PASS. Both jobs SUCCESS. Three PNG screenshots, qa_report.json and synthetic sample ZIP in artifact rea-d3-synthetic-linux-qa (ID 12602316907). Windows Chromium and clean nondeveloper Windows manual install NOT_RUN.
+
+GitHub run: https://github.com/hibi89/REA_Web/actions/runs/40202313506
