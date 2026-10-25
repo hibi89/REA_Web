@@ -1,6 +1,6 @@
 # REA_Web — 웹서비스 분석·재구축 자동화 엔진
 
-> 2026-10-25 · **3일 MVP 우선 개발 중** · Day1·Day2 통합 앱 + D3 Linux·Windows 합성 QA PASS · D4 스키마·요약 검증 PASS · 상용 검증 미완성
+> 2026-10-25 · **3일 MVP 우선 개발 중** · Day1·Day2 통합 앱 + D3 Linux·Windows 합성 QA PASS · D4 스키마·요약 + D5 JSON 입력 검증 PASS · 상용 검증 미완성
 
 **새 채팅 즉시 재개:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` — 질문 없이 최신 GitHub 문서·코드 확인 후 다음 READY 개발 작업을 수행한다. **최우선 안내:** [WORKER_START_HERE.md](WORKER_START_HERE.md) · [세션 복원 프로토콜](docs/SESSION_RESTART_PROTOCOL.md).
 
@@ -46,3 +46,9 @@ REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운�
 - feature/mvp-summary-preview: d8e26ed7d60ad86f64e35aefb3825655d6e19d25 (코드 테스트), e4e9c7954ba1369636bcc2107478a5d2dae2db7e (최신 문서), [Draft PR #7](https://github.com/hibi89/REA_Web/pull/7) 미병합.
 - [CI 40203444938](https://github.com/hibi89/REA_Web/actions/runs/40203444938) Linux/Windows 각각 77 테스트 PASS, 3업종 실제 Chromium 검증 PASS, Windows 런처/로컬 API PASS. D4 테스트와 설명서: docs/23_SCHEMA_SUMMARY.md (해당 기능 브랜치).
 - 카테고리별 데이터 건수는 CSV 기반 단순 집계이고 컬럼 자료형은 승인되지 않은 추정. 고객 데이터/실사이트를 검증한 것은 아님.
+
+## D5 — 1개 JSON 입력 추가 및 상품 범위 차이 공개 (2026-10-25)
+- **구현:** `feature/json-intake` `b1ef76b5f3155ec23dc302af30876ecf9127ea5e`, [Draft PR #8](https://github.com/hibi89/REA_Web/pull/8) (미병합). 기존 `--csv` 유지, `--json` 1개 지원. 예시 `python -m rea.orchestrator --json samples/qa_products.json --out ./out/json-demo`.
+- **검증:** [GitHub CI 40204413087](https://github.com/hibi89/REA_Web/actions/runs/40204413087): Linux/Windows **각각 111 테스트 PASS**, 실제 Chromium CSV 3개+JSON 1개, Windows CMD/HTTP PASS. JSON 납품 ZIP/체크섬 PASS.
+- **중요:** 30만원 상품 초안의 **최대 2개 파일** 입력은 **아직 미구현**. 단일 CSV 또는 JSON만 지원하며 서로 다른 데이터 파일을 승인 없이 결합하지 않습니다. [D5 범위·제약](https://github.com/hibi89/REA_Web/blob/feature/json-intake/docs/24_JSON_INTAKE_SCOPE.md). 현재 판매/배포 불가, 상용 재배포 라이선스·보안·실고객·Windows 사용성 검증 필요.
+- 다음 READY: D6 라이선스/의존성/원본 추적성 점검(미승인 항목은 BLOCKED 명시). 인수인계 `HANDOFF.md`·`docs/17_NEXT_TASK.md` 참조.

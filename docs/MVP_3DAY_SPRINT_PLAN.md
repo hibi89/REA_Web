@@ -39,3 +39,7 @@ Owner approved a fast 3-day *working MVP first* experiment. First generate a use
 
 ## D4 verified 2026-10-25 KST
 Feature SHA d8e26ed7d60ad86f64e35aefb3825655d6e19d25; [CI 40203444938](https://github.com/hibi89/REA_Web/actions/runs/40203444938) Linux+Windows each **77/77 pytest**, Chromium 3 synthetic data scenarios and Windows CMD/HTTP PASS. Added CSV schema hints (UNAPPROVED) and category count summary (CSV only). D5 reconciles JSON/two-file advertised intake; deep security and license work still pre-sale.
+
+## D5-01 actual CI checkpoint (2026-10-25)
+- Feature `feature/json-intake` `b1ef76b5f3155ec23dc302af30876ecf9127ea5e`; [CI 40204413087](https://github.com/hibi89/REA_Web/actions/runs/40204413087) Ubuntu+Windows each **111 pytest PASS**, real Chromium 4 CSV/JSON synthetic cases, Windows CMD/HTTP and two deterministic package formats PASS. Original sources untouched.
+- One CSV or one strict flat JSON, not two files. Two-file draft 30만원 promise is **BLOCKED**, not silently retracted. Next D6 offline license/redistribution audit, then full pre-sale security/recovery and clean Windows pilot; user-approved scope/rights required before real sale.

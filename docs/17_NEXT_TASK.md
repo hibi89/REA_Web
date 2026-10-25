@@ -1,20 +1,22 @@
 # REA_Web dispatcher — SINGLE ACTIVE READY TASK (2026-10-25 KST)
 
-Exact user trigger [REA_Web 깃헙 레포지토리 보고 작업이어가셈] or ㄱ authorizes immediate implementation of next bounded offline synthetic unit. Read current main and assigned branch HEAD, HANDOFF, STATUS, WORKER_START_HERE, AGENTS, source/tests. Do not ask for already known context or background execution.
+Trigger **[REA_Web 깃헙 레포지토리 보고 작업이어가셈]** or **ㄱ** means read real remote heads/main HANDOFF/STATUS/AGENTS and **execute next safe READY work in current turn**, no context re-asking or background promises.
 
-## Last DONE — REA-MVP-D4-01
-- Implemented in feature/mvp-summary-preview, tested source d8e26ed7d60ad86f64e35aefb3825655d6e19d25 and later documentation-only head e4e9c7954ba1369636bcc2107478a5d2dae2db7e; [Draft PR #7](https://github.com/hibi89/REA_Web/pull/7), unmerged.
-- [CI 40203444938](https://github.com/hibi89/REA_Web/actions/runs/40203444938) SUCCESS Ubuntu 77 pytest, Windows-latest 77 pytest, true Chromium for 3 synthetic domains with schema/category summary & existing list/search/filter/detail/reload PASS. Windows extracted .cmd and localhost HTTP PASS. One warning per OS; no functional failed/skipped. No customer or live URL.
-- Readonly schema field preview has review_status UNAPPROVED, no cell samples, no approved bindings. /api/summary counts only customer CSV rows. Original Fable review gate intact. Gap matrix docs/21_MVP_GAP_MATRIX.md updated on D4 feature.
-- Original source/vendor import branches untouched, PRs #1–#7 remain draft.
+## D5-01 DONE, verified
+- **`feature/json-intake` SHA `b1ef76b5f3155ec23dc302af30876ecf9127ea5e`**, [Draft PR #8](https://github.com/hibi89/REA_Web/pull/8) to integration/develop; UNMERGED. Branch from tested D4; pinned imports unchanged.
+- [GitHub Actions 40204413087](https://github.com/hibi89/REA_Web/actions/runs/40204413087) SUCCESS: Ubuntu + Windows-latest **111 pytest each**, 1 warning each; **four synthetic actual Chromium apps** (3 CSV plus JSON); Windows extracted CMD/localhost API PASS; CSV/JSON example ZIP generated and checksum verified; synthetic artifact **12603355940**.
+- New one-file flat JSON array of string-valued objects accepted by `--json` (mvp/orchestrator/delivery) in addition to unchanged `--csv`. Strict same validation for unique id, required id/title/category, 10 MiB, 10k rows, 20 keys, 2000 chars/cell; reject nested/non-string/duplicate keys/symlink, with negative tests.
+- Raw JSON source never copied to generated ZIP; CSV/JSON source_kind recorded, lexical/schema hints UNAPPROVED, Fable review separate REVIEW_REQUIRED.
+- **IMPORTANT:** original 30만원 draft promises **up to TWO files**; actual combined intake **one file only**, with no safe approved automatic merge. D5 guide docs/24_JSON_INTAKE_SCOPE.md and feature docs/07_KMONG_OFFER.md explicitly mark scope discrepancy. Multi-file owner mapping or approved offer contract change is BLOCKED pending user business decision; do not silently change contract or claim full support.
 
-## ACTIVE READY — REA-MVP-D5-01: JSON intake + documented 2-file product scope reconciliation
-Target: new conflict-free feature branch derived from verified D4 (refetch actual head), do not force or edit upstream vendor/import refs.
-1. Compare docs/07_KMONG_OFFER.md, docs/14_FINAL_DELIVERABLES.md, original architecture intake requirements and current rea/mvp.py / rea/orchestrator.py / rea/delivery.py. Confirm exact current one-CSV-only constraints.
-2. Implement a **limited JSON array-of-objects intake** where explicit id/title/category keys are required; strict max bytes, rows, columns, string-only values or explicit safe conversion with clear rejection for ambiguous mixed/scalar/nested/sensitive formats. Keep existing CSV input exactly usable. No external fetches or automatic Fable field mapping.
-3. Do NOT blindly merge two independent customer files. Document precisely which multi-file pattern is supported (if any) versus DRAFT advertised 2-file scope, label capability gap honestly. Reconcile contract by either safe, explicit supported two-file schema workflow in a separately tested unit or an owner-reviewed scope revision before sale. Never silently remove promised features.
-4. Add tests for JSON valid/invalid, duplicate IDs, caps/encoding, original file no mutation, ZIP contents, approvals, real Chromium regression. Run GitHub Actions actual tests both OS, Draft PR to integration/develop, record SHA/PASS/FAIL/NOT_RUN.
-5. Update main STATUS.md, HANDOFF.md, this dispatcher and README with exact evidence and next task (licence/provenance audit and final pre-sale security/recovery before customer order).
+## ACTIVE READY: REA-MVP-D6-01 — source provenance and license/dependency risk audit
+Target a **new nonconflicting feature branch** based on D5 verified SHA after refetching current remote. NO force updates, vendor/import edits, releases or customer data.
 
-## After D5
-Legal/license/dependency source rights audit, secure input/recovery tests, nondeveloper clean Windows real PC, authorized customer/reference-site consent and fixed 300k scope acceptance. No full original site clone, live database, public deploy or commercial launch until those gates actually pass.
+1. Inspect GitHub `main` + `feature/json-intake` real heads and read `docs/05_ACCEPTANCE.md`, `docs/07_KMONG_OFFER.md`, `docs/14_FINAL_DELIVERABLES.md`, `docs/24_JSON_INTAKE_SCOPE.md`, `docs/21_MVP_GAP_MATRIX.md`.
+2. Read exact immutable Fable and **partial** Astra snapshot manifests and LICENSE/NOTICE (where present), old upstream references, generated app `requirements.txt`, GitHub Actions pip install pins/bounds, and actual files entering `rea.delivery` package. Collect evidence with path+SHA and dependency identity/version; distinguish package source vs vendor source.
+3. Generate concise evidence-grounded **dependency inventory / license+provenance review**: VERIFIED from sources, UNKNOWN, BLOCKED or NOT_ASSESSED for redistributability/attribution; don't invent a missing LICENSE or claim commercial compliance. Check packaged ZIP includes no original vendor engines or raw Fable input, no secrets. Offline synthetic safe script/check preferred.
+4. Categorize release gates: 2-file contract unresolved, clean consumer Windows/manual setup, one authorized source and owner data rights, input security/recovery, licensing notices, 30만원 service support/feature promises. Separate blocked owner approval tasks from independent safe automated work.
+5. Add test/CI for manifest/SBOM/offline license checklist if worthwhile, Draft PR to integration/develop, record exact SHA+CI evidence and NOT_RUN statuses, update main STATUS/HANDOFF/NEXT_TASK. DO NOT merge vendor snapshots, start live scrape, buy services, edit upstream repos, or approve commercial release.
+
+## After D6
+Finish high-risk security/recovery and clean Windows nondeveloper pilot, owner-approved multi-file feature/contract scope, source/data permissions, merchant terms. No general 1:1 source website clones or production/customer DB access. Three-day MVP-first timeline was a stretch target, not proof of commercial readiness.

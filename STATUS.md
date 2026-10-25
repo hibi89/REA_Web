@@ -1,28 +1,30 @@
-# REA_Web STATUS — 2026-10-25 KST
+# REA_Web — STATUS (2026-10-25 KST)
 
-**PHASE: D4-01 VERIFIED on feature branch; D5-01 READY. Product NOT commercially ready.**
+**PHASE: D5-01 VERIFIED on feature branch, D6-01 READY.** Product **NOT for sale, NOT production deployed**. Main remains documents/dispatch; feature code in unmerged Draft PR.
 
-## Working completed checkpoints
-| Unit | Latest verified scope | Evidence |
+## Verified development by synthetic tests
+| Unit | Exact source | Evidence |
 | --- | --- | --- |
-| D1 | Single CSV -> readonly local SQLite/FastAPI/HTML; list/search/filter/detail | feature/csv-local-mvp 5515a7286d63211e32d2c577f93f77d61f37ce08; CI 40198326369: 9 pytest, browser PASS |
-| D2-01 | Fable inferred-only -> Astra review adapter | feature/evidence-adapter fda96076de33ebf4f4b6118972a5033a3f703ba9; CI 40199741969: 28 tests PASS |
-| D2-02 | CSV-only/optional reviewed Fable report + independent app | feature/orchestrator 46060b4665560922d0c9cf82b9e5c08971eb9427; CI 40200704855: 55 tests + Chromium PASS |
-| D3-01 | 3 independent synthetic app scenarios, ZIP SHA manifest, Windows native launcher | qa/cross-platform e88c89f3ec12e61e63d2ca1255736fbf674c6e9e; CI 40202313506: 68 pytest on Linux AND Windows, Chromium 3 cases PASS |
-| **D4-01** | CSV column/lexical-type preview (UNAPPROVED), readonly /api/summary and category count UI | feature/mvp-summary-preview **d8e26ed7d60ad86f64e35aefb3825655d6e19d25**; [CI 40203444938](https://github.com/hibi89/REA_Web/actions/runs/40203444938) SUCCESS: **77 pytest PASS on each OS**, 3 real Chromium E2E PASS, Windows native CMD+API PASS. Docs-only feature head e4e9c7954ba1369636bcc2107478a5d2dae2db7e; Draft PR #7 unmerged |
+| D1 local CSV app | feature/csv-local-mvp 5515a7286d63211e32d2c577f93f77d61f37ce08 | 40198326369: 9 pytest & Chromium PASS |
+| D2-01 Fable→Astra review | feature/evidence-adapter fda96076de33ebf4f4b6118972a5033a3f703ba9 | 40199741969: 28 pytest PASS |
+| D2-02 optional Fable review + CSV app | feature/orchestrator 46060b4665560922d0c9cf82b9e5c08971eb9427 | 40200704855: 55 pytest & Chromium PASS |
+| D3-01 3 synthetic domains/ZIP/native Windows | qa/cross-platform e88c89f3ec12e61e63d2ca1255736fbf674c6e9e | 40202313506: 68 pytest each OS & Chromium PASS |
+| D4-01 CSV preview & category count | feature/mvp-summary-preview d8e26ed7d60ad86f64e35aefb3825655d6e19d25 | 40203444938: 77 pytest each OS & Chromium PASS |
+| **D5-01 strict JSON intake** | **feature/json-intake b1ef76b5f3155ec23dc302af30876ecf9127ea5e**, [Draft PR #8](https://github.com/hibi89/REA_Web/pull/8) | [GitHub Actions 40204413087](https://github.com/hibi89/REA_Web/actions/runs/40204413087) **SUCCESS**: **111 pytest PASS Ubuntu + Windows-latest each**, 1 nonblocking warning each; **4 actual Chromium synthetic apps** (3 CSV + 1 JSON) PASS; Windows native CMD localhost/API PASS; two example ZIPs with SHA checksums PASS. |
 
-## D4 confirmed behaviors
-- Customer-supplied CSV remains sole source of the generated app. All previous list/search/category filter/detail behaviors retained.
-- Generated unserved schema_preview.json and readonly /api/schema supply ordered column names, lexical types (integer, decimal, date, text, mixed, unknown), present/missing counts; **review_status=UNAPPROVED**, approved_semantic_bindings empty. No sample cell values in preview. This is not owner approval.
-- Readonly /api/summary derives total and grouped category counts from local SQLite; UI displays up to 100 categories without HTML injection. No inferred site formula. Optional Fable report stays separate and REVIEW_REQUIRED.
-- CI code SHA d8e26ed7d60ad86f64e35aefb3825655d6e19d25 has 77 pytest PASS with 1 nonblocking warning per OS; 3 actual Linux Chromium cases with schema/counts/search/filter/detail/reload, zero JS error/outbound call. Windows native extracted ZIP .cmd/localhost API PASS. Synthetic artifacts stored in same D4 Actions run.
+D5 GitHub Actions synthetic artifact **rea-d5-synthetic-linux-qa**, ID **12603355940**, holds four browser screenshots, JSON report and CSV/JSON example ZIPs. Upstream vendor Fable and Astra imported sources unchanged; earlier source branches not modified. All Draft PRs #1–#8 unmerged.
 
-## Branches and product limits
-- PR #1–#7 remain Draft/unmerged. Main is documentation and handoff, not runnable integrated product or released code. Original Fable pinned import 7e6f273... and Astra PARTIAL f044b66... are unchanged.
-- Windows native API CI verified; clean nondeveloper Windows machine + Windows real browser NOT_RUN. Real reference site/customer data/approval NOT_RUN.
-- Full vendor/license distribution review, security/recovery, production hosting, paid integrations and commercial acceptance NOT_DONE. No 1:1 URL clone, no customer live DB, auth/payment or marketing site deployment.
+## D5 actual scope and boundaries
+- One **CSV OR JSON** file at a time. JSON must be a flat array of string-valued objects, mandatory id/title/category, consistent columns; duplicate ID/JSON keys, nested/scalar/numeric/bool/null, NaN, oversize and symlinks rejected. Both formats share strict row validation (10 MiB, 10k rows, 20 columns, 2000 chars/cell).
+- Generated local FastAPI+SQLite readonly app includes listing/search/filter/detail, unapproved lexical schema preview and CSV/JSON-grounded category counts. Native Windows launcher/localhost API tested. Input source never overwritten nor copied into ZIP; optional prior Fable JSON technical findings remain unapproved and separate.
+- **DRAFT commercial scope conflict unresolved:** docs/07_KMONG_OFFER.md promises **up to TWO files**, but D5 implements ONE file at a time. **No automatic cross-file joins/unions, no silently withdrawn promise.** Owner-approved mapping or explicitly approved contract change required before listing.
+- Main is documentation/dispatcher, not a merged runnable release. No Vercel/production URL.
 
-## NEXT READY: REA-MVP-D5-01
-Reconcile the current one-CSV input with the proposed KRW 300,000 scope listing optional JSON/two files. Deliver an explicit capability/scope contract and add a bounded JSON-array data import (id/title/category) sharing the existing parser and generator where safe, with independent tests. Avoid auto-joining two unrelated files or silently reducing the advertised scope; two-file semantics require explicit rules or scope revision. Then prioritise licensing/provenance and security before commercial launch. Follow docs/17_NEXT_TASK.md.
+## NOT_RUN / release blockers
+- Full vendor/third-party dependency redistribution license and provenance **NOT DONE**; Astra import is PARTIAL, Fable import separately pinned.
+- Clean nondeveloper Windows PC install/Windows Chromium, authorized real customer+reference data rights/acceptance, detailed security/recovery, customer support and 30만원 scope/time study **NOT RUN**.
+- No live DB, private backend extraction, arbitrary URL clone, public deployment, paid API, authentication or payment implementation.
+- One nonblocking Starlette/TestClient warning and GitHub Actions Node deprecation warnings; no known D5 failing synthetic CI.
 
-Restart trigger: [REA_Web 깃헙 레포지토리 보고 작업이어가셈] or ㄱ means execute next safe READY task in same turn, consult latest remote HEAD first. No future/background claim.
+## NEXT READY: REA-MVP-D6-01
+Read-only offline **vendor/dependency licensing + package provenance inventory and sale-readiness risk register**. Do not assert rights/clearance without source evidence; avoid vendor modifications. Cross-file promise stays BLOCKED pending explicit contractual choice, not automatically joined. See docs/17_NEXT_TASK.md. Next user ㄱ means execute D6-01 immediately with actual GitHub state.

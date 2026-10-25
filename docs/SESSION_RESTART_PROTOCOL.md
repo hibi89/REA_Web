@@ -52,3 +52,8 @@ Restricted independent local FastAPI+SQLite+HTML/JS source, CSV schema and mappi
 
 ## 2026-10-25 D4 update — current dispatch overrides historical D3 reference
 D4-01 verified on feature/mvp-summary-preview code SHA d8e26ed7d60ad86f64e35aefb3825655d6e19d25, docs head e4e9c7954ba1369636bcc2107478a5d2dae2db7e, Draft PR #7, [CI 40203444938](https://github.com/hibi89/REA_Web/actions/runs/40203444938) Linux+Windows each 77/77 tests plus three real Chromium synthetic cases and native Windows CMD/HTTP PASS. Next READY is **D5-01 limited JSON intake and 2-file offer scope reconciliation**; see docs/17_NEXT_TASK.md, this overrides previous D4-ready historical paragraphs. No customer/site rights or license and security approval implied.
+
+## 2026-10-25 D5 verified update (overrides historic D4 NEXT reference)
+- D5 `feature/json-intake` tested SHA `b1ef76b5f3155ec23dc302af30876ecf9127ea5e`, [CI 40204413087](https://github.com/hibi89/REA_Web/actions/runs/40204413087) SUCCESS: Ubuntu/Windows **111 pytest each**, actual Chromium 3 CSV+1 JSON synthetic apps; Windows ZIP .cmd/API; synthetic artifact ID 12603355940. Flat JSON array-of-string-objects input supported with `--json`; one source only; never auto-joins two files.
+- Draft up-to-two-file commercial offer remains an unresolved **owner mapping/contract approval blocker**, not a supported capability. Fable review always unapproved, vendors preserved, full license/security/customer source acceptance NOT RUN.
+- **Next READY D6-01:** offline source/vendor/dependency license/provenance risk inventory on a safe new feature branch, no rights-clearance claims; full plan `docs/17_NEXT_TASK.md`.
