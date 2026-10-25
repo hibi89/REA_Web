@@ -1,38 +1,28 @@
-# STATUS — REA_Web (2026-10-25)
+# STATUS — REA_Web / 2026-10-25 KST
 
-## Verified completed
-- P0-01: Main bootstrap architecture + 18 detailed product/safety/implementation docs, README, AGENTS, STATUS, HANDOFF, .gitignore. Initial docs commit ce7be5e76e3993723659f73552200c96d767e3ac.
-- P0-02: Fable pinned snapshot imported on branch import/fable51-bbe72c0, **88 of 88 reviewer-ZIP source paths**; branch HEAD **7e6f273b359b207fad8f92016226e3058cbcb839**. File SHA manifests BATCH_01–BATCH_08. Sentinel readback scan.py and scanner/contracts.py Git blob SHA equal pinned upstream.
-- P0-03: Astra P4 pinned **bounded partial snapshot, 103 files including all 41 astra_contracts modules** on branch import/astra-p4-b3166b6, HEAD **f044b66e799289a5a353fdb9cbfdb324e683ffa3**. File SHA manifests BATCH_01–BATCH_09. Sentinel observation.py and synthetic_generator.py Git blob SHA equal upstream.
-- Seven working branches created: two import branches, integration/develop, feature/evidence-adapter, feature/csv-local-mvp, feature/orchestrator, qa/cross-platform.
-- Draft pull requests targeting integration/develop: **#1 Fable 88**, **#2 Astra 103**. Not merged.
-- Original upstream repositories unchanged.
+**CURRENT PHASE:** Day1 runnable MVP verified; Day2 Fable→Astra adapter READY. Do not claim the full integrated product is complete.
 
-## NOT completed
-- No REA adapter implementation, no merged vendor sources in main/develop, no complete Astra clone, no dependency installation/isolated tests or actual REA generated-app run.
-- Historical Fable/Astra source repository test results are NOT new REA_Web integrated test outcomes.
-- Astra later codex-p4 branch still contains unresolved Windows full regression 96 FAIL/108 ERROR; NOT imported as clean.
-- No actual customer DB/API, customer data, paid order, production deployment, release v1.
+## DONE with verified evidence
+1. Repo architecture / branch structure / safety / roadmap documented; GitHub hibi89/REA_Web.
+2. Fable source ZIP `source/` 88/88 paths imported unchanged from pinned upstream commit `bbe72c0acd3a3e355062d6bd0d866af33e5274b0` onto `import/fable51-bbe72c0` @ `7e6f273b359b207fad8f92016226e3058cbcb839`. Eight upstream Git blob path manifests; sentinel source hashes matched.
+3. Astra P4 **PARTIAL** import: 103 selected paths including all 41 `astra_contracts` modules, pinned `b3166b67604381a9d2afd41667b65f9a9b103b37`; `import/astra-p4-b3166b6` @ `f044b66e799289a5a353fdb9cbfdb324e683ffa3`, nine manifests; sentinel source hashes matched. Not full Astra checkout.
+4. `feature/csv-local-mvp` @ `5515a7286d63211e32d2c577f93f77d61f37ce08`, Draft PR #3 to integration/develop: CSV → isolated SQLite → independent FastAPI+HTML/CSS/JS app with list/search/category filter/detail.
+5. **Actual tested run:** https://github.com/hibi89/REA_Web/actions/runs/40198326369, job `121183903206`, Ubuntu Python 3.11: 9 pytest PASS / 1 warning, CLI generated synthetic Korean café demo (5 rows), compileall PASS, **real Chromium** filter/search/detail/reload PASS, no JavaScript exceptions or external calls.
+6. Draft PR #1 Fable, #2 Astra, #3 MVP exist; none has been merged to main/develop in this verified checkpoint.
+7. Source QA helper branches `qa/vendor-fable`, `qa/vendor-astra` configured with SHA checker/workflow; any actual all-file Actions PASS remains separately unverified.
 
-## Next authorized engineering work
-1. Run source-manifest verifier on each import branch and resolve any missing fixtures/dependencies; classify Astra import PARTIAL without hiding gaps.
-2. Review Draft PR #1/#2, source licenses and security; keep draft and unmerged until verified.
-3. P1 evidence adapter contract (on feature/evidence-adapter) and P2 safe CSV/JSON local data path (on feature/csv-local-mvp) with synthetic fixtures.
-4. First real end-to-end product proof: Fable redacted result → grounded Astra functional draft → approved synthetic CSV schema → local generated FastAPI/SQLite app → pytest/browser.
-5. Update HANDOFF and NEXT_TASK after a measurable work unit.
+## NEXT READY: REA-MVP-D2-01
+Branch: `feature/evidence-adapter`.
+Implement code (not another plan) to bridge actual Fable result.json to Astra ObservationBundle/FunctionalSpecDraft **review-only** proposal. Include redacted synthetic fixture, >=15 positive/negative tests if feasible, CLI, and actual test evidence. Preserve uncertainty and approval gate. Feature branch was baseline-only at prior checkpoint; inspect fresh HEAD.
 
-## QA validation branches configured
-- qa/vendor-fable @ 742b9be11f61ee415c1b46368c7253931be42c2c (source pinned 88 + verifier/workflow)
-- qa/vendor-astra @ 047311ee155dc9d413a51a3fd9d9890559172c1e (source pinned 103 + verifier/workflow)
-- Intended command: python tools/verify_vendor_manifests.py --vendor fable51 OR --vendor astra_p4 on corresponding QA branch. Workflow configured but actual GitHub Actions run completion not yet confirmed.
+Then D2-02 optional bridge + CSV builder and D3 gap matrix/3 synthetic domain examples/Windows smoke/packaging. See `docs/17_NEXT_TASK.md`.
 
-## MVP-first directive 2026-10-25
-- Owner prioritizes 3-day constrained MVP proof over full sequential architecture work.
-- feature/csv-local-mvp @ c04d47025a00f85f8faf51b40a2bdba135ec861f; Draft PR #3.
-- Hosted GitHub Actions 40197993285 job 121182908018: 9 passed, 1 warning; 5-row standalone SQLite/FastAPI app generated and compileall PASS.
-- Browser E2E/Windows/real owner CSV/not Fable+Astra integrated: NOT_RUN or NOT_IMPLEMENTED.
+## NOT DONE / blockers
+- No new REA end-to-end Fable→Astra→generated-app run; no arbitrary URL clone; no customer/live DB credentials, HTTPS hosting, complex auth/payment or deployment.
+- Day1 browser acceptance is Linux Chromium synthetic only; Windows and real customer data NOT_RUN.
+- Vendor snapshots are Draft/unmerged; Astra subset incomplete; later upstream codex P4 Windows suite had 96 FAIL/108 ERROR, untriaged and not treated as REA pass.
+- Original full final-design completeness and 30만원 commercial readiness NOT established; 3-day target is aspirational.
+- Advanced penetration tests, distribution-license audit, packaging and robust recovery remain.
 
-## D1 actual browser acceptance result (2026-10-25)
-- feature/csv-local-mvp @ 5515a7286d63211e32d2c577f93f77d61f37ce08 (not merged).
-- GitHub Actions: https://github.com/hibi89/REA_Web/actions/runs/40198326369 (job 121183903206): **SUCCESS**, 9 pytest PASS / 1 warning; real Chromium loopback browser: 5 rows, category filter 2, search 1, detail view, reload passed; 0 JS errors and 0 external network requests.
-- Demo uses synthetic Korean cafe data; not a real customer/owner site; not Fable→Astra integrated yet; no Windows verification.
+## New-session start
+Exact user sentence **[REA_Web 깃헙 레포지토리 보고 작업이어가셈]** gives an immediate go-ahead for this READY safe task. Read `WORKER_START_HERE.md` / `docs/SESSION_RESTART_PROTOCOL.md`, current remote HEAD first. No extra owner question; implement/verify/commit then update this file and HANDOFF/NEXT_TASK.

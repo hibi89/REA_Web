@@ -1,36 +1,25 @@
-# HANDOFF — REA_Web 2026-10-25
+# HANDOFF — REA_Web / 2026-10-25 KST
 
-## Exact resume workflow
-Read README.md → STATUS.md → docs/17_NEXT_TASK.md → docs/08_BRANCH_POLICY.md. The user may say 'ㄱ' to authorize the next READY safe task. Never claim that asynchronous work was done between turns.
+## Instructions for the next assistant
+When owner writes **[REA_Web 깃헙 레포지토리 보고 작업이어가셈]**, inspect real GitHub and **perform the next READY development work immediately** without asking for context or another 'ㄱ'. Read `WORKER_START_HERE.md`, `STATUS.md`, `docs/17_NEXT_TASK.md`, `docs/SESSION_RESTART_PROTOCOL.md`; these are the canonical handoff. Future new chat will not contain our current code discussion, so this repository is the source of truth.
 
-## Repositories and upstream
-- REA_Web main bootstrap commit ce7be5e76e3993723659f73552200c96d767e3ac (superseded by this status/config update).
-- Fable upstream hibi89/fable5.1_web_catcher @ bbe72c0acd3a3e355062d6bd0d866af33e5274b0. Source branch import/fable51-bbe72c0 @ 7e6f273b359b207fad8f92016226e3058cbcb839; 88 reviewer ZIP source paths with per-path Git blob provenance.
-- Astra hibi89/astra_web_catcher @ b3166b67604381a9d2afd41667b65f9a9b103b37. Source branch import/astra-p4-b3166b6 @ f044b66e799289a5a353fdb9cbfdb324e683ffa3. **103 selected files**, including 41 contract modules, not full Astra snapshot. Later codex-p4 @ 274402a3d8eaf33d9ff55bf740208a1dbded3bef is NOT the proven baseline.
-- Draft PRs: https://github.com/hibi89/REA_Web/pull/1 and https://github.com/hibi89/REA_Web/pull/2; review-only, unmerged.
-- Four readback sentinel blob SHAs matched respective upstream.
+## Product and commercial intent
+REA_Web is the **Fable 5.1 website technical/evidence analyzer + Astra Web Catcher functional-spec/independent web app engine**. Current customer-value-first MVP = take **customer-provided** clean CSV, generate usable standalone local app; reference URL optional. Avoid OHORA-like indefinite data collection / third-party API quota / unknown production DB complexity. First commercial price hypothesis 300,000 KRW fixed scope (2 screens, 3 simple features), not a 990k complex live DB job. Sale only after acceptance.
 
-## Goals and boundaries
-REA_Web = authorized URL/interaction analysis (Fable) → evidence/certainty-preserving adapter → Astra draft/semantic review → customer-owned CSV/JSON mapping → independent local FastAPI/SQLite webapp → actual automated test. No unconditional clone, data harvesting, live production DB, unauthorized network access or sensitive values.
+## Current technical status, with exact SHAs
+- main documentation baseline before this handoff update: `71ed9a4656ef7642a32c335da9c6d664916cabee` (always refetch remote current SHA).
+- Day1 generated local app: `feature/csv-local-mvp` @ `5515a7286d63211e32d2c577f93f77d61f37ce08`. Code `rea/mvp.py`, `rea/templates/app.py`, static HTML/CSS/JS, tests `tests/test_mvp.py`, actual Playwright browser `scripts/mvp_browser_smoke.py`. Draft PR #3, unmerged.
+- CI run `40198326369`, job `121183903206`: **9 pytest PASS** + synthetic CSV app generation + compileall + real Chromium browser PASS; search, category, detail, reload; zero unexpected external request or JS error. No Windows/browser proof on Windows.
+- Fable 88-source import: `import/fable51-bbe72c0` @ `7e6f273b359b207fad8f92016226e3058cbcb839`, pinned upstream `bbe72c0acd3a3e355062d6bd0d866af33e5274b0`, Draft PR #1.
+- Astra P4 103-file bounded **partial** import (41 core astra_contracts modules): `import/astra-p4-b3166b6` @ `f044b66e799289a5a353fdb9cbfdb324e683ffa3`, pinned upstream `b3166b67604381a9d2afd41667b65f9a9b103b37`, Draft PR #2.
+- Branches: integration/develop, feature/evidence-adapter (D2 next), feature/csv-local-mvp (D1), feature/orchestrator, qa/cross-platform, qa/vendor-fable, qa/vendor-astra; don't force-update feature work or mutate upstream imports.
 
-## What to do now
-Run tools/verify_vendor_manifests.py on each import branch (or have GitHub Actions run it) to check every imported Git blob SHA. Collect PASS evidence by SHA and add missing test fixtures required by selected Astra tests, without copying private customer data. Review PRs but do not merge until passing checks.
+## Single task to execute next
+`REA-MVP-D2-01` on `feature/evidence-adapter`: read pinned Fable source `scanner/models.py`, `scanner/report.py` plus Astra `astra_contracts/observation.py`, `functional_spec.py`; build adapter `rea/adapter/fable_to_astra.py` from real Fable result format to ASTRA **unapproved** observation/spec draft. If no direct evidence, mark inferred/unknown or REVIEW_REQUIRED, never claim true backend/db/formula inference. Add >=15 focused test cases and an example, run real tests/CI, commit, Draft PR, then report. Fable ZIP need not be re-requested: 88 copied files exist on source import branch; redacted fixtures can be generated from source test files.
 
-## Delivery phases
-P0 sources and confidence, P1 adapter, P2 data safety, P3 minimal generator, P4 orchestration, P5 three examples/Windows, P6 product packaging and 300k scoped pilot. docs/04_ROADMAP.md = rough 60–112 engineering hours for the restricted P0–P6; NOT elapsed time or full universal reverse engineering.
+After that, D2-02 optional report→CSV app flow, D3 3-case Windows/browser/packaging/design-gap checks.
 
-## Source preservation and truthfulness
-Upstream test claims cannot be copied as new REA passes. Imported Astra subset may have incomplete fixture coverage; no full repo passing status asserted. Test run must specify commit, command, machine, counts and limitations.
+## Way of working
+MVP-first target is 3 days (not a guarantee). Prioritize working result rather than huge theoretical scaffolding. Keep minimum non-deferable no overwrite/bounded CSV/SQL/DOM/localhost/authorization. Defer deeper security hardening until after functional proof, but not past customer delivery. Keep statuses PASS/NOT_RUN/BLOCKED accurate and always record commit SHA and work done in main STATUS/HANDOFF/NEXT_TASK.
 
-## QA branch handoff
-To validate without editing immutable import source branches, use qa/vendor-fable or qa/vendor-astra. Each has top-level tools/verify_vendor_manifests.py and a workflow matching qa/**. Never confuse a submitted workflow with a confirmed PASS; inspect actual run/commit SHA. PRs #1/#2 remain draft and unmerged.
-
-## Current sprint 2026-10-25
-MVP-first authorized, see docs/MVP_3DAY_SPRINT_PLAN.md. Day1 actual generated-app code in feature/csv-local-mvp @ c04d47025a00f85f8faf51b40a2bdba135ec861f; GitHub Actions 40197993285 succeeded 9 pytest cases, sample app generated. PR #3 Draft. Day1 browser check, Day2 Fable evidence adapter, Day3 gaps/tests/package. Do not claim original complete Astra/Fable integration or 3-day product ready.
-
-
-## D1 actual browser acceptance result (2026-10-25)
-- feature/csv-local-mvp @ 5515a7286d63211e32d2c577f93f77d61f37ce08 (not merged).
-- GitHub Actions: https://github.com/hibi89/REA_Web/actions/runs/40198326369 (job 121183903206): **SUCCESS**, 9 pytest PASS / 1 warning; real Chromium loopback browser: 5 rows, category filter 2, search 1, detail view, reload passed; 0 JS errors and 0 external network requests.
-- Demo uses synthetic Korean cafe data; not a real customer/owner site; not Fable→Astra integrated yet; no Windows verification.
-Next: implement REA-MVP-D2-01 on feature/evidence-adapter, preserve observed vs inferred; do not silently merge PR #3 until QA/owner review. Upstream source branches remain frozen.
+No user actions are required for current D2 synthetic implementation; don't ask the owner for new data, tools, original ZIP, architecture confirmation or a different prompt. Only request explicit approval for production DB, external deployment or risky irreversible actions.

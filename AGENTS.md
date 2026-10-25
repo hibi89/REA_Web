@@ -1,13 +1,15 @@
-# REA_Web — AI/개발자 공통 운영 규칙
+# REA_Web — engineering agent policy (canonical)
 
-1. 시작할 때 항상 기본 저장소 main의 README.md, STATUS.md, HANDOFF.md, docs/17_NEXT_TASK.md, docs/08_BRANCH_POLICY.md를 읽고 현재 원격 HEAD를 확인한다.
-2. 최신 작업 지시서에 적힌 단 하나의 READY 작업만 진행한다. 사용자가 'ㄱ'이라고 입력하면 다음 READY 작업의 실행을 의미한다. 불필요한 재확인은 줄이되 위험한 외부 실행/운영 데이터 접근·배포는 별도 승인을 받는다.
-3. 데이터·코드의 소유권과 출처 확인 없이 고객 실 DB/API에 연결하지 않는다. 개인 연락처, 세션, 쿠키, 비밀 키, 고객 실데이터를 public repo에 올리지 않는다.
-4. 원본 hibi89/fable5.1_web_catcher, hibi89/astra_web_catcher를 수정하지 않는다. 고정 snapshot만 copy한다. 라이선스/서드파티 저작물 점검 없이 외부 판매 번들에 재배포하지 않는다.
-5. 단계: 코드 → 오프라인 단위 → 합성 API/DB → 실제 로컬 브라우저 E2E → 합의된 실사이트 범위 검증 → 승인. 건너뛴 검사는 NOT_RUN이다.
-6. 원본 사이트 관찰 사실·휴리스틱 추정·고객이 승인한 비즈니스 규칙을 구별한다. unknown을 confirmed로 승격하지 않는다.
-7. import/fable51 및 import/astra-p4는 불변 스냅샷. 개발 코드는 integration/* 또는 feature/* 브랜치에서만; main은 검증된 통합 결과와 문서의 릴리스 기준점.
-8. 테스트 PASS 수치는 명령·대상 SHA·OS/런타임·실행 날짜와 결합해 기록한다. 다른 원본 저장소의 PASS를 통합 성공으로 복사하지 않는다.
-9. 반복 실패 2회면 로그·가설·대안을 남기고 방법을 바꾼다. 새 기능·검증 확대보다 고객이 실제 사용하는 수직형 흐름을 우선한다.
-10. 단위 완료 시 STATUS.md, HANDOFF.md, docs/17_NEXT_TASK.md 업데이트와 커밋 SHA·미해결 사항을 기록. 문서에 쓰지 않은 상태는 완료로 치지 않는다.
-11. 상품 가격 300,000 KRW는 판매자가 정한 출시 가설. 지원 기능/데이터 크기/수정회수/납기 제한 없이는 수주하지 않는다.
+Read `WORKER_START_HERE.md` and `docs/SESSION_RESTART_PROTOCOL.md` first, followed by remote `STATUS.md`, `HANDOFF.md` and `docs/17_NEXT_TASK.md`. Use latest actual GitHub state, not previously written chat assumptions.
+
+**Restart trigger:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` means **inspect repository and execute next safe READY task immediately**. It already has the meaning of `ㄱ`. Do not ask user to resend ZIP, choose branch, confirm the existing design or approve normal synthetic development. User specifically wants completed work, not status-only replies.
+
+Project: integrate Fable 5.1 analysis with Astra Web Catcher evidence/functional spec and an independently generated customer-data-based webapp. Current MVP already generates readonly FastAPI/SQLite from UTF-8 CSV; next unit is the adapter. Main is not a runnable integration checkout yet.
+
+Development order: real MVP -> compare target architecture -> fill gaps -> robust tests and sale readiness. Three-day completion is a stretch goal. Respect evidence/permission boundaries and strictly limited 300,000 KRW product; no mandatory collecting customer data or touching live DB.
+
+**Branch discipline:** Do not modify upstream Fable/Astra repositories or pinned import branch snapshots. Work on dispatch target branches, preserve existing unique commits, and maintain Draft PRs until verification. Don't merge incomplete source snapshots blindly. Status-only edits never count as implementation.
+
+**Truthful QA:** capture tested SHA, exact command, OS, PASS/FAIL/SKIP. No unrun claim, silent approval, production deployment, customer data, credentials or payment/complex-auth integration. Non-deferable protection: no overwrite, bounded inputs, safe escaping, parameterized SQL, localhost-only. Advanced security reviews can be late, but are needed before real customer deployment.
+
+**Handoff:** After each unit update main STATUS/HANDOFF/NEXT_TASK; if some writes blocked by conflicts, report precisely and proceed safely. Two repeated failures => switch approach. If a task is blocked for owner approval, mark it BLOCKED and work on next safe independent item. Next reply must be a substantive development result, not another request for permission.
