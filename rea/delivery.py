@@ -32,7 +32,7 @@ WINDOWS_README = """# REA_Web v0.9 local delivery: Windows guide
 
 This ZIP contains a locally generated read-only FastAPI/SQLite app.
 No live customer database, Fable scanner, external AI, payment or login.
-Use only authorized and non-sensitive CSV samples.
+Use only authorized and non-sensitive CSV/JSON sample data.
 
 1. Install Python 3.11 or later with python.exe on PATH.
 2. Extract the entire ZIP to a NEW local folder.
@@ -186,7 +186,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Create/verify offline REA delivery ZIP")
     sub = parser.add_subparsers(dest="command", required=True)
     pack = sub.add_parser("pack")
-    pack.add_argument("--csv", required=True, type=Path)
+    source = pack.add_mutually_exclusive_group(required=True)
+    source.add_argument("--csv", type=Path)
+    source.add_argument("--json", type=Path)
     pack.add_argument("--out", required=True, type=Path)
     pack.add_argument("--name", default="REA local app")
     pack.add_argument("--fable-result", type=Path)
@@ -195,7 +197,7 @@ def main(argv: list[str] | None = None) -> int:
     check.add_argument("--zip", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
-        result = (create_delivery(args.csv, args.out, args.name,
+        result = (create_delivery(args.csv or args.json, args.out, args.name,
                     fable_result=args.fable_result, astra_root=args.astra_root)
                   if args.command == "pack" else verify_delivery(args.zip))
     except (OSError, ValueError, RuntimeError, zipfile.BadZipFile) as exc:

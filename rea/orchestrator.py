@@ -13,7 +13,7 @@ import sys
 import tempfile
 
 from rea.adapter.fable_to_astra import MAX_BYTES, InvalidFable, project_fable, verify_astra
-from rea.mvp import DataError, generate, parse_csv
+from rea.mvp import DataError, generate, parse_input
 
 
 def _fable_review(source: Path, astra_root: Path | None) -> dict:
@@ -49,14 +49,14 @@ def build(csv_file: Path, output: Path, name: str = "REA local app",
     if not name.strip() or len(name) > 100:
         raise DataError("App name must be 1 to 100 characters")
     # Validate before creating a staging directory (also bounds CSV size/rows).
-    parse_csv(csv_file)
+    parse_input(csv_file)
     review = _fable_review(Path(fable_result), astra_root) if fable_result is not None else None
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".rea-orchestrator-", dir=output.parent) as temp:
         project = Path(temp) / "app"
         manifest = generate(csv_file, project, name)
         # Report is sibling to the executable app and not mounted as a web route.
-        manifest["generation_input"] = "customer_supplied_csv_only"
+        manifest["generation_input"] = "customer_supplied_json_only" if csv_file.suffix.lower() == ".json" else "customer_supplied_csv_only"
         manifest["semantic_mapping_status"] = "not_approved"
         manifest["fable_review"] = {
             "status": "REVIEW_REQUIRED", "used_for_generation": False,
@@ -87,7 +87,7 @@ def build(csv_file: Path, output: Path, name: str = "REA local app",
             )
         with (project / "README.md").open("a", encoding="utf-8") as readme:
             readme.write(
-                "\nREA Day2: generated solely from the supplied CSV. No reference "
+                "\nREA Day5: generated solely from one supplied CSV or JSON file. No reference "
                 "website information was used for app data or business logic.\n"
                 "Any Fable review is stored in ./review (not served by FastAPI), "
                 "remains REVIEW_REQUIRED and is not an approved mapping.\n"
@@ -100,15 +100,17 @@ def build(csv_file: Path, output: Path, name: str = "REA local app",
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(description="Build read-only localhost web app from owner CSV; optional review-only Fable artifact")
-    p.add_argument("--csv", type=Path, required=True)
+    p = argparse.ArgumentParser(description="Build read-only localhost app from one CSV or JSON owner input")
+    source = p.add_mutually_exclusive_group(required=True)
+    source.add_argument("--csv", type=Path)
+    source.add_argument("--json", type=Path)
     p.add_argument("--out", type=Path, required=True, help="New output directory; cannot exist")
     p.add_argument("--name", default="REA local app")
     p.add_argument("--fable-result", type=Path, help="Existing Fable 1.0 JSON (never a live URL)")
     p.add_argument("--astra-root", type=Path, help="Pinned Astra contracts checkout for optional Fable validation")
     args = p.parse_args(argv)
     try:
-        result = build(args.csv, args.out, args.name,
+        result = build(args.csv or args.json, args.out, args.name,
                        fable_result=args.fable_result, astra_root=args.astra_root)
     except (OSError, UnicodeError, ValueError, RuntimeError) as exc:
         p.exit(2, f"ERROR: {exc}\n")

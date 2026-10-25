@@ -23,6 +23,9 @@ CASES = [
      "category_total": 2, "search": "카페라떼", "title": "카페라떼", "detail": "4000", "fable": True, "fields": 5},
     {"name": "inventory", "csv": "qa_inventory.csv", "total": 5, "category": "저장장치",
      "category_total": 2, "search": "NAS", "title": "NAS HDD", "detail": "<script>alert(1)</script>", "fable": False, "fields": 6},
+    {"name": "json_products", "csv": "qa_products.json", "total": 4, "category": "음료",
+     "category_total": 2, "search": "블렌드", "title": "블렌드 커피", "detail": "4900",
+     "fable": False, "fields": 5},
     {"name": "trends", "csv": "qa_trends.csv", "total": 5, "category": "JP",
      "category_total": 2, "search": "실버", "title": "JP 실버", "detail": "90", "fable": False, "fields": 6},
 ]
@@ -131,7 +134,7 @@ def main() -> None:
                "case_count": len(cases), "cases": cases}
     (report / "qa_report.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("PASS D4 real Chromium: 3 domains, schema/summary/filter/search/detail/reload/XSS/no external calls")
+    print("PASS D5 real Chromium: 3 CSV domains + 1 JSON dataset, schema/summary/filter/search/detail/reload/XSS/no external calls")
     print(json.dumps(summary, ensure_ascii=False))
 
 
