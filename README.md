@@ -1,6 +1,6 @@
 # REA_Web — 웹서비스 분석·재구축 자동화 엔진
 
-> 2026-10-26 · **MVP 기능 브랜치 D14까지 CI 검증** (Linux·Windows 각 246 tests, 11 Chromium 합성 사례 + 실제 Tk 합성 GUI) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
+> 2026-10-26 · **MVP 기능 브랜치 D15까지 CI 검증** (Linux·Windows 각 266 tests, 11 Chromium 합성 사례 + 1/2파일 실제 Tk GUI) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
 
 **새 채팅 즉시 재개:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` — 질문 없이 최신 GitHub 문서·코드 확인 후 다음 READY 개발 작업을 수행한다. **최우선 안내:** [WORKER_START_HERE.md](WORKER_START_HERE.md) · [세션 복원 프로토콜](docs/SESSION_RESTART_PROTOCOL.md).
 
@@ -108,3 +108,8 @@
 - Linux Xvfb에서 실제 Tk 창·버튼·콤보박스·권한 체크·APPROVE Entry로 합성 ZIP 생성 및 원본 SHA/덮어쓰기 차단 검증 PASS. **GUI PNG 캡처 CAPTURED**, Actions artifact ID 12607236255. Windows CI **실제 합성 Tk 위젯 실행 PASS**, Windows 화면 캡처는 NOT_CAPTURED, artifact ID 12607058534. 사람이 일반 Windows PC에서 쓴 것은 아직 미검증.
 - Windows 첫 실행/오류/CLI 대체 안내 [D14 가이드](https://github.com/hibi89/REA_Web/blob/feature/tk-gui-visual-smoke/docs/33_WINDOWS_TK_FIRST_RUN.md). 제품은 선택형 로컬 Tk GUI 및 기존 Python CLI, 납품 ZIP 내부 data.sqlite에 데이터 행 포함. 실고객/상용 권리/지원 정책/G5/G6 전부 BLOCKED, Production 배포 미적용.
 - 다음 D15는 기존 CLI에 이미 있는 명시적 동일 구조 2파일 ROW APPEND를 옵션형 GUI에도 연결하는 소규모 프로토타입. 서로 다른 사업 테이블 JOIN이나 보편적 웹 복제가 아님.
+
+## D15-01 — 선택형 2파일 행 APPEND GUI 검증 (2026-10-26)
+- GitHub feature/two-file-tk-gui-append SHA 7a546319eef435499021ab1eba930d7c95996acb [Draft PR #18](https://github.com/hibi89/REA_Web/pull/18), 미병합. [실제 Actions 40216223293](https://github.com/hibi89/REA_Web/actions/runs/40216223293) SUCCESS Ubuntu/Windows **266 pytest 각각 통과** (경고 각 1건), Linux Chromium 합성 11건, Windows ZIP CMD→localhost, Fable 88/Astra 부분 103 Git blob 해시 PASS.
+- 원래 1파일 창 보존, 2파일 전용 Tk 창 신규 추가. 각각 SHA 검사 후 같은 컬럼 구조/3개 역할을 직접 선택하고 파일별 권한 체크 및 APPROVE 2회, 최종 APPEND 필요. 중복 ID/부적합 스키마/변경 SHA/기존 ZIP 덮어쓰기 모두 거절. JOIN 미지원. [D15 사용법](https://github.com/hibi89/REA_Web/blob/feature/two-file-tk-gui-append/docs/34_TWO_FILE_TK_GUI_APPEND.md).
+- 실제 Tk 합성 GUI 2파일 조작 PASS 양쪽 OS, Linux screenshot CAPTURED artifact 12608325252, Windows GUI PASS screenshot NOT_CAPTURED artifact 12607816547. 실제 소비자 Windows와 실고객·라이선스·상용 납품 승인 미검증. 다음 D16은 Windows 초보자를 위한 설치 없는 로컬 제작 GUI 실행 명령 도구.
