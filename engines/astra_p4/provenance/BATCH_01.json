@@ -1,0 +1,18 @@
+{
+  "source_commit": "b3166b67604381a9d2afd41667b65f9a9b103b37",
+  "batch": 1,
+  "upstream_github_git_blob_sha": {
+    "astra_contracts/__init__.py": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+    "astra_contracts/capture_claim_review.py": "2895580ad152c5b42c506c279fb978a2b62b2a70",
+    "astra_contracts/capture_intake.py": "5e9da4c676c3cb590870c69fd66bdaa6faf0823d",
+    "astra_contracts/capture_transition_ledger.py": "b209fded3c5cb68feb821f7bfe941866f9cb8e4d",
+    "astra_contracts/chart_table_synthetic_bridge.py": "1ab50e05147fd6b56488acbed004af80110e790a",
+    "astra_contracts/chart_table_transition_skill.py": "edaa0ae27536add99c0dc64fda96be537c3e3b7d",
+    "astra_contracts/data_mapping.py": "91d268e862d009c55fc9dec3365e934e27032b08",
+    "astra_contracts/evidence_claim_levels.py": "53969edd67b8748ef930d6ee9c845bd4bf1961c8",
+    "astra_contracts/evidence_integrity.py": "54d204776a10158225052b3e4ca98a2810336b10",
+    "astra_contracts/feature_acceptance_adapter.py": "10b705ead1f43b53d973a60de86880c2bad3befa",
+    "astra_contracts/functional_spec.py": "d0ccf93ba0aa37756fd315a0234b6a0232aa33e6",
+    "astra_contracts/generation_contract.py": "7def1a4db497bcc1cc18cbff1134ea02c12fa0f5"
+  }
+}
