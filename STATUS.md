@@ -1,26 +1,22 @@
-# STATUS — 2026-10-25
+# STATUS — REA_Web (2026-10-25)
 
-## Current phase
-P0 repository bootstrap and source snapshot integration preparation.
+## Verified completed
+- P0-01: Main bootstrap architecture + 18 detailed product/safety/implementation docs, README, AGENTS, STATUS, HANDOFF, .gitignore. Initial docs commit ce7be5e76e3993723659f73552200c96d767e3ac.
+- P0-02: Fable pinned snapshot imported on branch import/fable51-bbe72c0, **88 of 88 reviewer-ZIP source paths**; branch HEAD **7e6f273b359b207fad8f92016226e3058cbcb839**. File SHA manifests BATCH_01–BATCH_08. Sentinel readback scan.py and scanner/contracts.py Git blob SHA equal pinned upstream.
+- P0-03: Astra P4 pinned **bounded partial snapshot, 103 files including all 41 astra_contracts modules** on branch import/astra-p4-b3166b6, HEAD **f044b66e799289a5a353fdb9cbfdb324e683ffa3**. File SHA manifests BATCH_01–BATCH_09. Sentinel observation.py and synthetic_generator.py Git blob SHA equal upstream.
+- Seven working branches created: two import branches, integration/develop, feature/evidence-adapter, feature/csv-local-mvp, feature/orchestrator, qa/cross-platform.
+- Draft pull requests targeting integration/develop: **#1 Fable 88**, **#2 Astra 103**. Not merged.
+- Original upstream repositories unchanged.
 
-## Verified from sources
-- Fable ZIP reviewer package: source 88, examples 20, test_logs 2 + two manifests (nested ZIP entries 112). package SHA baseline bbe72c0acd3a3e355062d6bd0d866af33e5274b0; manifest 110/110 SHA verification from prior local review. It is a redacted review package, NOT the complete clone of the upstream repository.
-- Fable source commit main = bbe72c0acd3a3e355062d6bd0d866af33e5274b0; previously checked 16/16 sampled source Git blobs against GitHub main.
-- Astra main = dc23ee604d02513c890615a3a98440c1ea8a5270 (BookHarbor/CareerWay demos only).
-- Astra feature/observation-contract-20261018 = b3166b67604381a9d2afd41667b65f9a9b103b37; historical hosted run 39225637124: 940 passed, 2 skipped and Chromium integration success, limited to prior snapshot/synthetic data.
-- Astra codex-p4-20261019 = 274402a3d8eaf33d9ff55bf740208a1dbded3bef; Windows full regression recorded 752 passed, 96 failed, 108 errors, 3 skipped; not fully triaged. Windows synthetic CLI/acceptance evidence exists separately.
-- No REA_Web integrated build, browser E2E, authorized external target, Windows clean install, customer data acceptance or paying customers yet.
+## NOT completed
+- No REA adapter implementation, no merged vendor sources in main/develop, no complete Astra clone, no dependency installation/isolated tests or actual REA generated-app run.
+- Historical Fable/Astra source repository test results are NOT new REA_Web integrated test outcomes.
+- Astra later codex-p4 branch still contains unresolved Windows full regression 96 FAIL/108 ERROR; NOT imported as clean.
+- No actual customer DB/API, customer data, paid order, production deployment, release v1.
 
-## Phase-completion criteria
-See docs/05_ACCEPTANCE.md and docs/13_WORK_BREAKDOWN.md; no estimated percentage without measured gate results.
-
-## Blockers
-1. Source snapshots must be imported and byte/hash verified.
-2. Fable-derived output → Astra observation/spec adapter must be implemented and tested.
-3. Fable API field structure is evidence, not DB/metric semantics; explicit owner-approved mapping required for actual data.
-4. Astra generation contract presently BLOCKED_PENDING_REVIEW; never override the gate silently.
-5. Windows cross-platform regression failures must be reproduced/classified before source integration.
-6. Starter CSV/JSON mock workflow and three independent acceptance fixtures not yet accepted.
-
-## Immediate next
-Complete source import on isolated branches; activate docs/17_NEXT_TASK.md.
+## Next authorized engineering work
+1. Run source-manifest verifier on each import branch and resolve any missing fixtures/dependencies; classify Astra import PARTIAL without hiding gaps.
+2. Review Draft PR #1/#2, source licenses and security; keep draft and unmerged until verified.
+3. P1 evidence adapter contract (on feature/evidence-adapter) and P2 safe CSV/JSON local data path (on feature/csv-local-mvp) with synthetic fixtures.
+4. First real end-to-end product proof: Fable redacted result → grounded Astra functional draft → approved synthetic CSV schema → local generated FastAPI/SQLite app → pytest/browser.
+5. Update HANDOFF and NEXT_TASK after a measurable work unit.

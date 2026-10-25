@@ -1,11 +1,13 @@
-# 17 — Dispatcher (single READY task)
+# 17 — Dispatcher / next unit (2026-10-25)
 
-**ACTIVE TASK:** REA-P0-02 — Import Fable 5.1 pinned source (if already imported with SHA verification, switch to REA-P0-03 Astra snapshot).
+**ACTIVE: REA-P0-04 — Vendor checksum and dependency gate**
+Branch: integration/develop (or qa/cross-platform for test changes).
 
-STATUS: READY. Branch: import/fable51-bbe72c0. Target: source paths under engines/fable51; pinned source bbe72c0acd3a3e355062d6bd0d866af33e5274b0; review ZIP source has 88 files.
-Acceptance: content copied without modification; original file set/hash matches; zero root CI workflow overwrite; no sensitive customer data or secrets. Record imported count, test status NOT_RUN and remote SHA.
+Preconditions verified: Fable 88 source snapshot and Astra 103 subset snapshots on separate branches; PR #1/#2 Draft.
+1. Run tools/verify_vendor_manifests.py on each import branch. Expect Fable 88/88 and Astra 103/103 if all source bytes preserved. Hosted CI status must be observed, NOT assumed.
+2. Verify customer data/secret exclusions and third-party licenses. If Astra tests need omitted fixture files, import those as new versioned additions and update truthful PARTIAL manifest.
+3. Isolate Python runtime; run Fable dedicated upstream tests in its own cwd and Astra selected tests in its own cwd, record pass/fail/skip per exact source SHA.
+4. Review PR #1/#2 but do NOT merge until passing source gate and owner approval. Draft state is deliberate.
+5. Then issue REA-P1-01: Fable evidence → Astra functional draft adapter with 15+ deterministic tests on feature/evidence-adapter.
 
-NEXT AFTER VERIFIED:
-REA-P0-03 on import/astra-p4-b3166b6: Astra p4 stable module snapshot with provenance and clear partial/full declaration, then REA-P0-04 dependency isolation. Do not jump straight to app generation before this gate.
-
-If user sends 'ㄱ', proceed with the next authorized READY task; report blockers and continue to the next independent safe task when possible. Do not promise background execution.
+Stop on evidence, never on arbitrary percentage. Customer operation DB/network/deploy requests require separate explicit approval. 'ㄱ' means proceed on next READY safe bounded unit; all changes get STATUS/HANDOFF/dispatcher update and commit SHA.

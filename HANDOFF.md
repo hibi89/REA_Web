@@ -1,24 +1,23 @@
-# HANDOFF — REA_Web
+# HANDOFF — REA_Web 2026-10-25
 
-2026-10-25 bootstrap handoff. Read README.md and docs/17_NEXT_TASK.md first.
+## Exact resume workflow
+Read README.md → STATUS.md → docs/17_NEXT_TASK.md → docs/08_BRANCH_POLICY.md. The user may say 'ㄱ' to authorize the next READY safe task. Never claim that asynchronous work was done between turns.
 
-### Project
-Repository: hibi89/REA_Web. Goal: authorized Fable analysis → grounded Astra functional specification → user-provided CSV/JSON mapping → isolated independent local web app → actual tests.
+## Repositories and upstream
+- REA_Web main bootstrap commit ce7be5e76e3993723659f73552200c96d767e3ac (superseded by this status/config update).
+- Fable upstream hibi89/fable5.1_web_catcher @ bbe72c0acd3a3e355062d6bd0d866af33e5274b0. Source branch import/fable51-bbe72c0 @ 7e6f273b359b207fad8f92016226e3058cbcb839; 88 reviewer ZIP source paths with per-path Git blob provenance.
+- Astra hibi89/astra_web_catcher @ b3166b67604381a9d2afd41667b65f9a9b103b37. Source branch import/astra-p4-b3166b6 @ f044b66e799289a5a353fdb9cbfdb324e683ffa3. **103 selected files**, including 41 contract modules, not full Astra snapshot. Later codex-p4 @ 274402a3d8eaf33d9ff55bf740208a1dbded3bef is NOT the proven baseline.
+- Draft PRs: https://github.com/hibi89/REA_Web/pull/1 and https://github.com/hibi89/REA_Web/pull/2; review-only, unmerged.
+- Four readback sentinel blob SHAs matched respective upstream.
 
-### Sources
-- Fable review ZIP nested 112 entries and source 88; baseline bbe72c0acd3a3e355062d6bd0d866af33e5274b0.
-- Astra main dc23ee604d02513c890615a3a98440c1ea8a5270; active development codex-p4-20261019 274402a3d8eaf33d9ff55bf740208a1dbded3bef; feature stable snapshot b3166b67604381a9d2afd41667b65f9a9b103b37.
-- Do not merge 200+ Astra commits blindly; synthetic-only modules are NOT general website-to-app generation.
-- Existing upstream repositories must not be modified.
+## Goals and boundaries
+REA_Web = authorized URL/interaction analysis (Fable) → evidence/certainty-preserving adapter → Astra draft/semantic review → customer-owned CSV/JSON mapping → independent local FastAPI/SQLite webapp → actual automated test. No unconditional clone, data harvesting, live production DB, unauthorized network access or sensitive values.
 
-### Architecture
-Input: authorized URL/browser observation and optional sample CSV/JSON. Adapter: evidence, certainty, inferred behavior, sanitized API schema → proposed spec. Review gate: approve data roles/formulas and allowed operations. Generation: local isolated FastAPI/SQLite + simple UI first. Verify: pytest + browser click/keyboard + original-vs-output behavior matrix.
+## What to do now
+Run tools/verify_vendor_manifests.py on each import branch (or have GitHub Actions run it) to check every imported Git blob SHA. Collect PASS evidence by SHA and add missing test fixtures required by selected Astra tests, without copying private customer data. Review PRs but do not merge until passing checks.
 
-### Constraints
-No mandatory internet crawler/real DB/hidden APIs; no data collection service; no unrestricted customer scope. Keep artifact modes ANALYSIS_ONLY / SYNTHETIC_PREVIEW / OWNER_APPROVED_GENERATION separate.
+## Delivery phases
+P0 sources and confidence, P1 adapter, P2 data safety, P3 minimal generator, P4 orchestration, P5 three examples/Windows, P6 product packaging and 300k scoped pilot. docs/04_ROADMAP.md = rough 60–112 engineering hours for the restricted P0–P6; NOT elapsed time or full universal reverse engineering.
 
-### Resume
-1. Verify main & branches and imported file checksums.
-2. Read current docs/17_NEXT_TASK.md READY task.
-3. Work on designated feature branch; run tests before asserting completion.
-4. Update STATUS/HANDOFF/NEXT_TASK with command, PASS/FAIL/SKIP, commit SHA, blockers.
+## Source preservation and truthfulness
+Upstream test claims cannot be copied as new REA passes. Imported Astra subset may have incomplete fixture coverage; no full repo passing status asserted. Test run must specify commit, command, machine, counts and limitations.

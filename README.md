@@ -5,7 +5,7 @@
 **목적:** Fable 5.1의 정적/브라우저 관찰 및 API 계약 후보를 입력으로 받아, Astra Web Catcher의 근거 기반 기능 명세·데이터 매핑·독립 웹앱 개발 기능과 연결한다. 최종 목표는 **고객이 제공하는 CSV/JSON 중심의 데이터로 작동하는 별도 웹앱**을 생성하고 검증하는 것이다.
 
 ### 현재 상태
-- REA_Web 저장소 구조·설계·개발 체크포인트: 설정 중
+- REA_Web 저장소 구조·설계·개발 체크포인트: 23 bootstrap files on main, updated status/handoff and vendor checker
 - Fable 5.1 원본: hibi89/fable5.1_web_catcher, baseline bbe72c0acd3a3e355062d6bd0d866af33e5274b0
 - Astra 원본: hibi89/astra_web_catcher, baseline main dc23ee604d02513c890615a3a98440c1ea8a5270; p4 working codex-p4-20261019 274402a3d8eaf33d9ff55bf740208a1dbded3bef
 - **주의:** 원본 두 제품의 개별 테스트는 REA_Web 통합 E2E 성공을 뜻하지 않는다.

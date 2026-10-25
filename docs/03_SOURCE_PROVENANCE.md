@@ -20,3 +20,9 @@ Sources are owned by same repository owner but any third-party packages, brand a
 
 ## Verification checklist
 Source commit pinned → each imported path SHA verified via exact Git blob or content hash → redaction scan → upstream baseline tests rerun under isolated environment → integration tests new results. Repository import itself != upstream tests or product complete.
+
+## REA_Web actual import evidence (2026-10-25)
+- Fable import: 88/88 reviewer-ZIP source entries under engines/fable51 on import/fable51-bbe72c0 @ 7e6f273b359b207fad8f92016226e3058cbcb839, 8 batch Git blob manifests. Draft PR #1 → integration/develop.
+- Astra import: bounded 103-file subset (all 41 astra_contracts modules, scripts/synthetic fixtures/tests/demo app files) under engines/astra_p4 on import/astra-p4-b3166b6 @ f044b66e799289a5a353fdb9cbfdb324e683ffa3, 9 batch Git blob manifests. Draft PR #2 → integration/develop.
+- Remote readback confirmed four sentinel Git blob hashes match their pinned upstream. All-file automated checking configured in tools/verify_vendor_manifests.py; actual Actions PASS not yet observed.
+- No main/develop vendor source merge or REA integration test was performed. Full Astra clone still required if future tests need omitted fixture paths.
