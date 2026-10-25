@@ -16,6 +16,8 @@ import sqlite3
 import tempfile
 from pathlib import Path
 
+from rea.safe_publish import publish_directory
+
 MAX_BYTES = 10 * 1024 * 1024
 MAX_ROWS = 10_000
 MAX_COLUMNS = 20
@@ -172,8 +174,8 @@ def preview_schema(columns: list[str], rows: list[dict[str, str]], *, source_kin
 
 def generate(csv_file: Path, output: Path, name: str = "REA sample web app") -> dict:
     source = Path(csv_file).absolute()
-    output = Path(output).resolve()
-    if output.exists():
+    output = Path(output).absolute()
+    if output.exists() or output.is_symlink():
         raise FileExistsError(f"Output already exists: {output}")
     if not name.strip() or len(name) > 100:
         raise DataError("App name must be 1 to 100 characters")
@@ -230,9 +232,7 @@ def generate(csv_file: Path, output: Path, name: str = "REA sample web app") -> 
             encoding="utf-8",
         )
         # Stage is on the same filesystem; never overwrite an existing project.
-        if output.exists():
-            raise FileExistsError(f"Output already exists: {output}")
-        os.rename(stage, output)
+        publish_directory(stage, output)
         return manifest
     finally:
         if stage.exists():

@@ -9,11 +9,11 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-import shutil
 import tempfile
 import zipfile
 
 from rea.orchestrator import build
+from rea.safe_publish import publish_archive
 
 SCHEMA = "rea.delivery.v0.1"
 FIXED_DATE = (2026, 1, 1, 0, 0, 0)
@@ -171,14 +171,7 @@ def create_delivery(csv_file: Path, output_zip: Path, name: str = "REA local app
                 zf.writestr(_zipinfo(filename), data, compress_type=zipfile.ZIP_DEFLATED,
                             compresslevel=9)
         verify_delivery(stage)
-        with output_zip.open("xb") as target:
-            try:
-                with stage.open("rb") as source:
-                    shutil.copyfileobj(source, target)
-            except Exception:
-                target.close()
-                output_zip.unlink(missing_ok=True)
-                raise
+        publish_archive(stage, output_zip)
     return manifest
 
 

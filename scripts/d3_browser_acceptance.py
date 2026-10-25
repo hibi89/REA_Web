@@ -26,6 +26,9 @@ CASES = [
     {"name": "json_products", "csv": "qa_products.json", "total": 4, "category": "음료",
      "category_total": 2, "search": "블렌드", "title": "블렌드 커피", "detail": "4900",
      "fable": False, "fields": 5},
+    {"name": "formulas", "csv": "qa_formula.csv", "total": 4, "category": "공식",
+     "category_total": 2, "search": "=1+1", "title": "=1+1", "detail": "=CMD",
+     "fable": False, "fields": 4},
     {"name": "trends", "csv": "qa_trends.csv", "total": 5, "category": "JP",
      "category_total": 2, "search": "실버", "title": "JP 실버", "detail": "90", "fable": False, "fields": 6},
 ]
@@ -88,7 +91,7 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
             page.locator(".item").click()
             expect(page.locator("#detail h3")).to_have_text(case["title"])
             expect(page.locator("#detail")).to_contain_text(case["detail"])
-            if case["name"] == "inventory":
+            if case["name"] in {"inventory", "formulas"}:
                 assert page.locator("#detail script").count() == 0
             page.screenshot(path=str(report_dir / f"{case['name']}.png"), full_page=True)
             page.reload(wait_until="networkidle")
@@ -134,7 +137,7 @@ def main() -> None:
                "case_count": len(cases), "cases": cases}
     (report / "qa_report.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("PASS D5 real Chromium: 3 CSV domains + 1 JSON dataset, schema/summary/filter/search/detail/reload/XSS/no external calls")
+    print("PASS D7 real Chromium: 4 CSV domains (including inert formula text) + 1 JSON, no JS dialogs/outbound calls")
     print(json.dumps(summary, ensure_ascii=False))
 
 

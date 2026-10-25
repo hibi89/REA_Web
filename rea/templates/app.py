@@ -15,7 +15,8 @@ app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 
 
 def connection():
-    db = sqlite3.connect(f"file:{ROOT / 'data.sqlite'}?mode=ro", uri=True)
+    db = sqlite3.connect((ROOT / "data.sqlite").as_uri() + "?mode=ro", uri=True)
+    db.execute("PRAGMA query_only=ON")
     db.row_factory = sqlite3.Row
     return db
 
@@ -64,7 +65,7 @@ def summary():
             "GROUP BY category ORDER BY category LIMIT 100"
         ).fetchall()
     return {
-        "source_kind": "customer_supplied_csv_snapshot",
+        "source_kind": json.loads((ROOT / "schema_preview.json").read_text(encoding="utf-8"))["source_kind"] + "_snapshot",
         "total_items": total, "total_categories": categories,
         "categories_truncated": categories > 100,
         "category_counts": [{"category": row["category"], "count": row["count"]}

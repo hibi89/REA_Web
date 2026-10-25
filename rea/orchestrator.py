@@ -14,6 +14,7 @@ import tempfile
 
 from rea.adapter.fable_to_astra import MAX_BYTES, InvalidFable, project_fable, verify_astra
 from rea.mvp import DataError, generate, parse_input
+from rea.safe_publish import publish_directory
 
 
 def _fable_review(source: Path, astra_root: Path | None) -> dict:
@@ -95,7 +96,7 @@ def build(csv_file: Path, output: Path, name: str = "REA local app",
         # Never intentionally replace a file/directory supplied by the owner.
         if output.exists() or output.is_symlink():
             raise FileExistsError(f"Output already exists: {output}")
-        os.rename(project, output)
+        publish_directory(project, output)
         return manifest
 
 
