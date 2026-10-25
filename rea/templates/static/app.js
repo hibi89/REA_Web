@@ -1,7 +1,9 @@
 "use strict";
 const $ = (selector) => document.querySelector(selector);
 const ui = { results: $("#results"), detail: $("#detail"), search: $("#search"),
-             category: $("#category"), error: $("#error"), count: $("#count") };
+             category: $("#category"), error: $("#error"), count: $("#count"),
+             overviewTotal: $("#overview-total"), categoriesList: $("#category-stats"),
+             categoryWarning: $("#category-warning"), schemaFields: $("#schema-fields") };
 let requestId = 0;
 
 function element(tag, value, className) {
@@ -51,6 +53,27 @@ async function loadItems() {
   } catch (error) { if (current === requestId) showError(error.message); }
 }
 
+
+async function loadOverview() {
+  const [summary, schema] = await Promise.all([jsonGet("/api/summary"), jsonGet("/api/schema")]);
+  ui.overviewTotal.textContent = summary.total_items + "건";
+  ui.categoriesList.replaceChildren();
+  for (const row of summary.category_counts) {
+    const item = element("li");
+    item.append(element("span", row.category), element("strong", row.count + "건"));
+    ui.categoriesList.append(item);
+  }
+  ui.categoryWarning.hidden = !summary.categories_truncated;
+  ui.schemaFields.replaceChildren();
+  for (const field of schema.fields) {
+    const item = element("li");
+    item.append(element("strong", field.name),
+      element("span", field.inferred_type + " · 값 " + field.present_count +
+      " · 비어 있음 " + field.missing_count));
+    ui.schemaFields.append(item);
+  }
+}
+
 async function init() {
   try {
     const { categories } = await jsonGet("/api/categories");
@@ -59,7 +82,7 @@ async function init() {
       option.value = category;
       ui.category.add(option);
     }
-    await loadItems();
+    await Promise.all([loadItems(), loadOverview()]);
   } catch (error) { showError(error.message); }
 }
 let debounce;

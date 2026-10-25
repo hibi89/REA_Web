@@ -47,6 +47,31 @@ def categories():
     return {"categories": [row["category"] for row in rows]}
 
 
+@app.get("/api/schema")
+def schema_preview():
+    """Read-only unapproved field shape; sample cell data is excluded."""
+    return json.loads((ROOT / "schema_preview.json").read_text(encoding="utf-8"))
+
+
+@app.get("/api/summary")
+def summary():
+    """Counts derived only from local customer CSV, never business formulas."""
+    with connection() as db:
+        total = db.execute("SELECT COUNT(*) FROM items").fetchone()[0]
+        categories = db.execute("SELECT COUNT(DISTINCT category) FROM items").fetchone()[0]
+        rows = db.execute(
+            "SELECT category, COUNT(*) AS count FROM items "
+            "GROUP BY category ORDER BY category LIMIT 100"
+        ).fetchall()
+    return {
+        "source_kind": "customer_supplied_csv_snapshot",
+        "total_items": total, "total_categories": categories,
+        "categories_truncated": categories > 100,
+        "category_counts": [{"category": row["category"], "count": row["count"]}
+                            for row in rows],
+    }
+
+
 @app.get("/api/items")
 def items(q: str = Query("", max_length=200), category: str = Query("", max_length=200),
           limit: int = Query(100, ge=1, le=100), offset: int = Query(0, ge=0, le=100_000)):

@@ -20,11 +20,11 @@ from rea.orchestrator import build  # noqa: E402
 
 CASES = [
     {"name": "cafe", "csv": "qa_cafe.csv", "total": 4, "category": "음료",
-     "category_total": 2, "search": "카페라떼", "title": "카페라떼", "detail": "4000", "fable": True},
+     "category_total": 2, "search": "카페라떼", "title": "카페라떼", "detail": "4000", "fable": True, "fields": 5},
     {"name": "inventory", "csv": "qa_inventory.csv", "total": 5, "category": "저장장치",
-     "category_total": 2, "search": "NAS", "title": "NAS HDD", "detail": "<script>alert(1)</script>", "fable": False},
+     "category_total": 2, "search": "NAS", "title": "NAS HDD", "detail": "<script>alert(1)</script>", "fable": False, "fields": 6},
     {"name": "trends", "csv": "qa_trends.csv", "total": 5, "category": "JP",
-     "category_total": 2, "search": "실버", "title": "JP 실버", "detail": "90", "fable": False},
+     "category_total": 2, "search": "실버", "title": "JP 실버", "detail": "90", "fable": False, "fields": 6},
 ]
 
 
@@ -72,6 +72,11 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
             page.goto(base, wait_until="networkidle")
             expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
             expect(page.locator(".item")).to_have_count(case["total"])
+            expect(page.locator("#overview-total")).to_have_text(f'{case["total"]}건')
+            expect(page.locator("#category-stats li")).to_have_count(3)
+            page.locator("#schema-panel summary").click()
+            expect(page.locator("#schema-fields li")).to_have_count(case["fields"])
+            expect(page.locator("#schema-status")).to_have_text("검토 전")
             page.locator("#category").select_option(label=case["category"])
             expect(page.locator("#count")).to_have_text(f'{case["category_total"]}건')
             page.locator("#search").fill(case["search"])
@@ -87,6 +92,7 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
             expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
             assert page.request.get(base + "/review/fable_review.json").status == 404
             assert page.request.get(base + "/manifest.json").status == 404
+            assert page.request.get(base + "/schema_preview.json").status == 404
             assert not errors, f"JS errors: {errors}"
             assert not external, f"Unexpected requests: {external}"
             assert not dialogs, f"Unexpected dialogs: {dialogs}"
@@ -96,6 +102,7 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
         return {"case": case["name"], "rows": case["total"],
                 "category_results": case["category_total"], "search_results": 1,
                 "detail_verified": True, "reload_verified": True,
+                "schema_preview_verified": True, "category_summary_verified": True,
                 "unexpected_network_calls": len(external), "js_errors": len(errors),
                 "dialogs": len(dialogs), "fable_review": manifest["fable_review"]["status"],
                 "browser": "Chromium", "status": "PASS"}
@@ -124,7 +131,7 @@ def main() -> None:
                "case_count": len(cases), "cases": cases}
     (report / "qa_report.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("PASS D3 real Chromium: 3 domains, filter/search/detail/reload/XSS/no external calls")
+    print("PASS D4 real Chromium: 3 domains, schema/summary/filter/search/detail/reload/XSS/no external calls")
     print(json.dumps(summary, ensure_ascii=False))
 
 

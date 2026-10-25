@@ -6,6 +6,8 @@ from __future__ import annotations
 
 import argparse
 import csv
+from datetime import date
+import re
 import hashlib
 import json
 import os
@@ -66,6 +68,55 @@ def parse_csv(source: Path) -> tuple[list[str], list[dict[str, str]]]:
     return headers, entries
 
 
+
+INTEGER_RE = re.compile(r"-?(?:0|[1-9][0-9]{0,17})")
+DECIMAL_RE = re.compile(r"-?(?:0|[1-9][0-9]{0,17})\.[0-9]{1,12}")
+
+
+def _classify(value: str) -> str:
+    """Lexical-only hint, never automatic semantic field mapping."""
+    if INTEGER_RE.fullmatch(value):
+        return "integer"
+    if DECIMAL_RE.fullmatch(value):
+        return "decimal"
+    if re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value):
+        try:
+            date.fromisoformat(value)
+            return "date"
+        except ValueError:
+            pass
+    return "text"
+
+
+def preview_schema(columns: list[str], rows: list[dict[str, str]]) -> dict:
+    """Unapproved shape hints; no cell samples, secrets or source URLs."""
+    fields = []
+    for column in columns:
+        filled = [row[column] for row in rows if row[column] != ""]
+        kinds = {_classify(value) for value in filled}
+        if not kinds:
+            kind = "unknown"
+        elif kinds <= {"integer", "decimal"}:
+            kind = "decimal" if "decimal" in kinds else "integer"
+        elif len(kinds) == 1:
+            kind = next(iter(kinds))
+        else:
+            kind = "mixed"
+        fields.append({
+            "name": column, "inferred_type": kind,
+            "present_count": len(filled),
+            "missing_count": len(rows) - len(filled),
+        })
+    return {
+        "schema_version": "rea.csv_schema_preview.v0.1",
+        "review_status": "UNAPPROVED",
+        "source_kind": "customer_supplied_csv",
+        "row_count": len(rows),
+        "fields": fields,
+        "approved_semantic_bindings": [],
+    }
+
+
 def generate(csv_file: Path, output: Path, name: str = "REA sample web app") -> dict:
     source = Path(csv_file).resolve()
     output = Path(output).resolve()
@@ -93,6 +144,10 @@ def generate(csv_file: Path, output: Path, name: str = "REA sample web app") -> 
             db.commit()
         finally:
             db.close()
+        (stage / "schema_preview.json").write_text(
+            json.dumps(preview_schema(columns, rows), ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
         shutil.copy2(TEMPLATES / "app.py", stage / "app.py")
         shutil.copytree(TEMPLATES / "static", stage / "static")
         (stage / "requirements.txt").write_text("fastapi>=0.110,<1\nuvicorn>=0.27,<1\n", encoding="utf-8")
@@ -100,7 +155,7 @@ def generate(csv_file: Path, output: Path, name: str = "REA sample web app") -> 
             "generator": "REA_Web MVP 0.1", "source": source.name,
             "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
             "name": name.strip(), "fields": columns, "rows": len(rows),
-            "features": ["list", "search", "category_filter", "detail"],
+            "features": ["list", "search", "category_filter", "detail", "schema_preview", "category_summary"],
             "run": "python -m uvicorn app:app --host 127.0.0.1 --port 8000",
             "scope": "LOCAL_SYNTHETIC_OR_USER_SUPPLIED_DATA_ONLY",
         }
@@ -114,7 +169,7 @@ def generate(csv_file: Path, output: Path, name: str = "REA sample web app") -> 
             "1. python -m pip install -r requirements.txt\n"
             "2. python -m uvicorn app:app --host 127.0.0.1 --port 8000\n"
             "3. Open http://127.0.0.1:8000/\n\n"
-            "API: /health, /api/items, /api/items/{id}, /api/categories.\n"
+            "API: /health, /api/items, /api/items/{id}, /api/categories, /api/schema, /api/summary.\n"
             "The app is local/read-only, with no login, internet synchronization or hosting.\n"
             "Use only non-sensitive data. Do not expose this server to the internet.\n",
             encoding="utf-8",
