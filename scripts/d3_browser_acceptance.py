@@ -1,0 +1,132 @@
+"""D3 real loopback Chromium acceptance for three independent synthetic apps."""
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+import socket
+import subprocess
+import sys
+import tempfile
+import time
+from urllib.error import URLError
+from urllib.request import urlopen
+
+from playwright.sync_api import expect, sync_playwright
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from rea.orchestrator import build  # noqa: E402
+
+CASES = [
+    {"name": "cafe", "csv": "qa_cafe.csv", "total": 4, "category": "음료",
+     "category_total": 2, "search": "카페라떼", "title": "카페라떼", "detail": "4000", "fable": True},
+    {"name": "inventory", "csv": "qa_inventory.csv", "total": 5, "category": "저장장치",
+     "category_total": 2, "search": "NAS", "title": "NAS HDD", "detail": "<script>alert(1)</script>", "fable": False},
+    {"name": "trends", "csv": "qa_trends.csv", "total": 5, "category": "JP",
+     "category_total": 2, "search": "실버", "title": "JP 실버", "detail": "90", "fable": False},
+]
+
+
+def free_port() -> int:
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        return sock.getsockname()[1]
+
+
+def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
+    out = work / case["name"]
+    manifest = build(
+        ROOT / "samples" / case["csv"], out,
+        fable_result=(ROOT / "samples/fable_record_redacted.json") if case["fable"] else None,
+    )
+    assert manifest["rows"] == case["total"]
+    assert manifest["fable_review"]["status"] == ("REVIEW_REQUIRED" if case["fable"] else "NOT_REQUESTED")
+    port = free_port()
+    base = f"http://127.0.0.1:{port}"
+    server = subprocess.Popen([sys.executable, "-m", "uvicorn", "app:app",
+                               "--host", "127.0.0.1", "--port", str(port),
+                               "--log-level", "warning"],
+                              cwd=out, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+    try:
+        for _ in range(80):
+            if server.poll() is not None:
+                raise RuntimeError(server.stderr.read().decode(errors="replace"))
+            try:
+                with urlopen(base + "/health", timeout=1) as response:
+                    if response.status == 200:
+                        break
+            except (URLError, OSError):
+                time.sleep(0.15)
+        else:
+            raise TimeoutError("Generated app did not become healthy")
+        errors, external, dialogs = [], [], []
+        browser = pw.chromium.launch(headless=True, args=["--no-sandbox"])
+        context = browser.new_context()
+        try:
+            page = context.new_page()
+            page.on("pageerror", lambda error: errors.append(str(error)))
+            page.on("dialog", lambda dialog: (dialogs.append(dialog.message), dialog.dismiss()))
+            page.on("request", lambda request: external.append(request.url)
+                    if not request.url.startswith(base + "/") else None)
+            page.goto(base, wait_until="networkidle")
+            expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
+            expect(page.locator(".item")).to_have_count(case["total"])
+            page.locator("#category").select_option(label=case["category"])
+            expect(page.locator("#count")).to_have_text(f'{case["category_total"]}건')
+            page.locator("#search").fill(case["search"])
+            expect(page.locator("#count")).to_have_text("1건")
+            expect(page.locator(".item")).to_have_count(1)
+            page.locator(".item").click()
+            expect(page.locator("#detail h3")).to_have_text(case["title"])
+            expect(page.locator("#detail")).to_contain_text(case["detail"])
+            if case["name"] == "inventory":
+                assert page.locator("#detail script").count() == 0
+            page.screenshot(path=str(report_dir / f"{case['name']}.png"), full_page=True)
+            page.reload(wait_until="networkidle")
+            expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
+            assert page.request.get(base + "/review/fable_review.json").status == 404
+            assert page.request.get(base + "/manifest.json").status == 404
+            assert not errors, f"JS errors: {errors}"
+            assert not external, f"Unexpected requests: {external}"
+            assert not dialogs, f"Unexpected dialogs: {dialogs}"
+        finally:
+            context.close()
+            browser.close()
+        return {"case": case["name"], "rows": case["total"],
+                "category_results": case["category_total"], "search_results": 1,
+                "detail_verified": True, "reload_verified": True,
+                "unexpected_network_calls": len(external), "js_errors": len(errors),
+                "dialogs": len(dialogs), "fable_review": manifest["fable_review"]["status"],
+                "browser": "Chromium", "status": "PASS"}
+    finally:
+        server.terminate()
+        try:
+            server.communicate(timeout=6)
+        except subprocess.TimeoutExpired:
+            server.kill()
+            server.communicate(timeout=6)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--report-dir", required=True, type=Path)
+    args = parser.parse_args()
+    report = args.report_dir.absolute()
+    report.mkdir(parents=True, exist_ok=False)
+    with tempfile.TemporaryDirectory(prefix="rea-d3-browser-") as folder:
+        with sync_playwright() as pw:
+            cases = [run_one(case, Path(folder), pw, report) for case in CASES]
+    summary = {"schema_version": "rea.qa.v0.1",
+               "environment": "CI platform; see workflow",
+               "fixture_kind": "synthetic_only",
+               "windows_native": "NOT_TESTED_BY_THIS_SCRIPT",
+               "case_count": len(cases), "cases": cases}
+    (report / "qa_report.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print("PASS D3 real Chromium: 3 domains, filter/search/detail/reload/XSS/no external calls")
+    print(json.dumps(summary, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()
