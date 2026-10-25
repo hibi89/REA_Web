@@ -27,3 +27,10 @@ To validate without editing immutable import source branches, use qa/vendor-fabl
 
 ## Current sprint 2026-10-25
 MVP-first authorized, see docs/MVP_3DAY_SPRINT_PLAN.md. Day1 actual generated-app code in feature/csv-local-mvp @ c04d47025a00f85f8faf51b40a2bdba135ec861f; GitHub Actions 40197993285 succeeded 9 pytest cases, sample app generated. PR #3 Draft. Day1 browser check, Day2 Fable evidence adapter, Day3 gaps/tests/package. Do not claim original complete Astra/Fable integration or 3-day product ready.
+
+
+## D1 actual browser acceptance result (2026-10-25)
+- feature/csv-local-mvp @ 5515a7286d63211e32d2c577f93f77d61f37ce08 (not merged).
+- GitHub Actions: https://github.com/hibi89/REA_Web/actions/runs/40198326369 (job 121183903206): **SUCCESS**, 9 pytest PASS / 1 warning; real Chromium loopback browser: 5 rows, category filter 2, search 1, detail view, reload passed; 0 JS errors and 0 external network requests.
+- Demo uses synthetic Korean cafe data; not a real customer/owner site; not Fable→Astra integrated yet; no Windows verification.
+Next: implement REA-MVP-D2-01 on feature/evidence-adapter, preserve observed vs inferred; do not silently merge PR #3 until QA/owner review. Upstream source branches remain frozen.

@@ -18,3 +18,8 @@ Owner approved a fast 3-day *working MVP first* experiment. First generate a use
 - Advanced security, hosting, production DB and licensing issues stay explicitly open until verified.
 
 3 days is an ambitious target, not guaranteed nor an asynchronous promise. Full original v1 roadmap remains below. No customer orders accepted before stated scope's actual acceptance.
+
+## D1 actual browser acceptance result (2026-10-25)
+- feature/csv-local-mvp @ 5515a7286d63211e32d2c577f93f77d61f37ce08 (not merged).
+- GitHub Actions: https://github.com/hibi89/REA_Web/actions/runs/40198326369 (job 121183903206): **SUCCESS**, 9 pytest PASS / 1 warning; real Chromium loopback browser: 5 rows, category filter 2, search 1, detail view, reload passed; 0 JS errors and 0 external network requests.
+- Demo uses synthetic Korean cafe data; not a real customer/owner site; not Fable→Astra integrated yet; no Windows verification.
