@@ -1,0 +1,30 @@
+[
+  {
+    "id": "J01",
+    "title": "블렌드 커피",
+    "category": "음료",
+    "price": "4900",
+    "status": "판매중"
+  },
+  {
+    "id": "J02",
+    "title": "아이스티",
+    "category": "음료",
+    "price": "3500",
+    "status": "판매중"
+  },
+  {
+    "id": "J03",
+    "title": "단팥빵",
+    "category": "베이커리",
+    "price": "2600",
+    "status": "품절"
+  },
+  {
+    "id": "J04",
+    "title": "수플레",
+    "category": "디저트",
+    "price": "7500",
+    "status": "판매중"
+  }
+]
