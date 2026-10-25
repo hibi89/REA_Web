@@ -121,6 +121,7 @@ def launch() -> int:
 
 def build_window(root):
     """Construct actual Tk widgets with a testable synthetic-only handle."""
+    import tkinter as tk
     from tkinter import filedialog, messagebox, ttk
     from types import SimpleNamespace
 
