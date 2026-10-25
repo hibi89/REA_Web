@@ -200,3 +200,21 @@ D17: isolate on new branch from D16 exact tested SHA; create *developer-only* fr
 
 ## 10. Time, evidence reliability and limitations
 2026-10-26 approximately 02:40 KST. Verified run 40217420084 at 2026-10-25 17:40:16 UTC, exact source head SHA, complete Ubuntu/Windows job SUCCESS logs and screenshot artifacts. Main documentation base before handoff was 1af7e7a15420db410fcb9cdc44c6444c670fabc4; refetch main SHA and audit 6 docs after writing. Human Windows, real customer, legal/commercial approval, security penetration, labor economics, actual production all NOT_RUN/BLOCKED.
+
+---
+
+# D17 handoff / D18 READY (2026-10-26 ~02:52 KST)
+
+## Verified implementation and rollback
+Public `hibi89/REA_Web`. Tested `feature/fresh-windows-venv-rehearsal` SHA **92355fec1152be0379a398b496f4e382ca57c55d**, [Draft PR #20](https://github.com/hibi89/REA_Web/pull/20), OPEN UNMERGED. Parent D16 rollback SHA d1ed3bd6d09ecf4cf1acc2102a18916c89b6c587. Main is docs/dispatcher only; PR #1–#20 all Draft/unmerged.
+
+D17 new files `scripts/d17_windows_fresh_venv.py`, `tests/test_d17_windows_fresh_venv.py`, `.github/workflows/rea-d17.yml`, `docs/36_FRESH_WINDOWS_VENV_REHEARSAL.md`. Windows developer CI stages own Python files + launcher + only two committed synthetic fixtures, creates genuinely isolated new Python venv (system site packages FALSE), demonstrates real CMD `--check` **MISSING_MODULES exit 11**, developer CI-only pip install FastAPI/Uvicorn/Pydantic into scratch venv, then **READY exit 0**, actual Tk 2-source GUI APPEND and audited ZIP PASS. Shipped CMD/GUI unchanged, no auto-installer, customer access or deployed service.
+
+## Exact CI proof and prior issue
+[Actual Actions #40218363629](https://github.com/hibi89/REA_Web/actions/runs/40218363629) completed SUCCESS at 2026-10-25 17:52:19 UTC on exact SHA above: Ubuntu Python 3.11 **290 pytest PASS**, Windows-latest Python 3.11 **290 pytest PASS**, 1 nonblocking warning each, ZERO skipped. Linux Chromium 8 synthetic webapps + 3 extracted delivery ZIP apps PASS, native Windows generated ZIP CMD→127.0.0.1 HTTP PASS, Fable 88 and Astra P4 PARTIAL 103 pinned blob SHA both OS PASS. Actual one-file/two-file Tk widget synthetic UI both OS PASS; Linux 2-file screenshot CAPTURED artifact **12608600155**, Windows actual 2-file PASS screenshot NOT_CAPTURED artifact **12607444762**. New fresh-vENV redacted evidence artifact **12608610206**. Initial successful run #40218213412 had one intentional Windows platform skip; replaced by real existing-report no-overwrite negative test, final full 290/290 with no skips.
+
+## Product / release gates
+Product remains independent local-only FastAPI/SQLite read-only webapp builder for owner-confirmed CSV or strict flat JSON, optionally exactly TWO SAME-SCHEMA files by separate APPROVE + APPROVE + APPEND (no JOIN). Generated ZIP contains source row data in SQLite. Proposed KRW 300,000 scope is not approved. No Vercel/Production URL, customer records, vendor modifications, API secrets or paid calls. G5/G6 BLOCKED: actual customer/permission, 3 human-timed jobs, real nondeveloper Windows, source/license redistribution and NOTICE, privacy/security/backup and support/refunds. Pinned Fable imported 7e6f273b359b207fad8f92016226e3058cbcb839 (88), Astra P4 PARTIAL imported f044b66e799289a5a353fdb9cbfdb324e683ffa3 (103).
+
+## NEXT D18
+See authoritative `docs/17_NEXT_TASK.md`. Create fresh branch from exact D17 SHA; use SAME isolated CI Windows venv to extract a synthetic GUI-generated pair ZIP into scratch, run local generated app via venv Python uvicorn bound only to 127.0.0.1/ephemeral port, verify /health and 5-row list/search/detail, process killed on all exits. Preserve prior pytest Linux/Windows, 11 Chromium Linux, 1/2 GUI both OS, native Windows .cmd and pinned vendor proofs. No customer data, public deploy, merges or license claims. No real user Windows acceptance.
