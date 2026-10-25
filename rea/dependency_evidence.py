@@ -10,7 +10,7 @@ from collections import deque
 import hashlib
 from importlib import metadata
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 import sys
 
 from packaging.requirements import Requirement
@@ -42,7 +42,12 @@ def _legal_evidence(dist) -> dict:
     for relative in candidates[:MAX_LEGAL_ENTRIES]:
         item = Path(relative)
         entry = {"relative_path": relative}
-        if item.is_absolute() or ".." in item.parts:
+        # A POSIX-rooted path is not considered absolute by Windows Path, and
+        # Windows drive/UNC paths may be misread on POSIX. Check both grammars.
+        posix = PurePosixPath(relative)
+        windows = PureWindowsPath(relative)
+        if (posix.is_absolute() or bool(windows.anchor)
+                or ".." in posix.parts or ".." in windows.parts):
             entry["status"] = "UNSAFE_RELATIVE_PATH"
         else:
             try:
