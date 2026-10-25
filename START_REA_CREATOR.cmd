@@ -1,5 +1,8 @@
 @echo off
 setlocal EnableExtensions DisableDelayedExpansion
+rem Set UTF-8 for this CMD process only; setlocal restores caller variables.
+chcp 65001 >nul
+set "PYTHONIOENCODING=utf-8"
 rem REA_Web local offline creator entrypoint. No downloads, pip, admin, registry or PATH changes.
 cd /d "%~dp0"
 if errorlevel 1 (
