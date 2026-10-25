@@ -18,8 +18,8 @@ not claim PASS unless matching GitHub CI actually passed.
 | Independent safe generator | Fresh SQLite + FastAPI local app from customer CSV only | IMPLEMENTED MVP, no external API or website clone |
 | Generated UI list/search/filter/detail | Read-only static HTML/CSS/JS + API | IMPLEMENTED; simple aggregates/CRUD unsupported |
 | App feature verification | FastAPI TestClient, SQLite, actual Chromium loopback tests | IMPLEMENTED synthetic only; live reference/user validation missing |
-| 3 independent sample categories | Cafe, inventory and trends CSV + D3 tests, Chromium runner | Implementation present, actual CI acceptance required |
-| Clean Windows use | Windows launch_windows.cmd, Windows CI native API smoke | PARTIAL even if CI passes; nondeveloper clean install/Windows Chromium NOT_RUN |
+| 3 independent sample categories | Cafe, inventory and trends CSV + D3 tests, Chromium runner | VERIFIED in 40202313506 (synthetic only) |
+| Clean Windows use | Windows launch_windows.cmd, Windows CI native API smoke | Windows-latest native launcher/HTTP PASS; nondeveloper clean install/Windows Chromium NOT_RUN |
 | Local delivery ZIP/source | Deterministic ZIP of generated app + Windows guide + SHA-256 member manifest | IMPLEMENTED; source-license/commercial package review pending |
 | Mode wizard and guided GUI | Python CLI; Fable review is optional JSON input | MISSING |
 | Feature parity against real reference | Only synthetic app validation; no real website compared | NOT_RUN, explicit rights required |
@@ -32,7 +32,7 @@ G0 vendor hash imports sourced; full license/distribution assessment not done.
 G1 inferred vs observed preserved; no directly witnessed UI effects approved.
 G2 CSV bounded, no complete owner mapping approval/JSON/two file flow.
 G3 functional generated local readonly app on synthetic inputs.
-G4 real Chromium D1/D2 passed; D3 three-case results require workflow evidence.
+G4 real Chromium D1/D2 passed; D3 three synthetic cases PASS on 40202313506.
 G5 three synthetic cases available; authorized real reference remains NOT_RUN.
 G6 package and Windows launcher code available; third-party licenses,
 clean Windows/nondeveloper acceptance, recovery and commercial process pending.
