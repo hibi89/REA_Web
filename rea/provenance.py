@@ -38,13 +38,15 @@ ALLOWED_DELIVERY = frozenset({
     "app/schema_preview.json", "app/mapping_report.json", "app/append_report.json", "app/requirements.txt",
     "app/static/index.html", "app/static/app.js", "app/static/style.css",
     "app/review/fable_review.json", "app/review/README.md",
-    "README_WINDOWS.md", "launch_windows.cmd", "delivery_manifest.json",
+    "README_WINDOWS.md", "launch_windows.cmd", "check_windows.cmd",
+    "self_check.py", "delivery_manifest.json",
 })
 REQUIRED_DELIVERY = frozenset({
     "app/app.py", "app/data.sqlite", "app/manifest.json",
     "app/requirements.txt", "app/static/index.html",
     "app/static/app.js", "app/static/style.css",
-    "README_WINDOWS.md", "launch_windows.cmd", "delivery_manifest.json",
+    "README_WINDOWS.md", "launch_windows.cmd", "check_windows.cmd",
+    "self_check.py", "delivery_manifest.json",
 })
 # Source requirements are bounded ranges, NOT a locked/verified dependency set.
 EXPECTED_DIRECT = {

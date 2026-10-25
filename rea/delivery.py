@@ -28,31 +28,47 @@ LAUNCH = "\r\n".join([
     "endlocal",
     "",
 ])
-WINDOWS_README = """# REA_Web v0.9 local delivery: Windows guide
+CHECK_LAUNCH = "\\r\\n".join([
+    "@echo off",
+    "setlocal",
+    'python "%~dp0self_check.py" --root "%~dp0"',
+    "exit /b %errorlevel%",
+    "",
+])
+WINDOWS_README = """# REA_Web D10 synthetic local delivery (NOT commercially approved)
 
-This ZIP contains a locally generated read-only FastAPI/SQLite app.
-No live customer database, Fable scanner, external AI, payment or login.
-Use only authorized and non-sensitive CSV/JSON sample data.
+This package contains generated local readonly FastAPI + SQLite source and a
+synthetic dataset. It is not a standalone exe and never includes Python itself.
+Python 3.11+ and Python packages are required. No admin required for the check.
 
-1. Install Python 3.11 or later with python.exe on PATH.
-2. Extract the entire ZIP to a NEW local folder.
-3. Open Command Prompt in the extracted folder.
-4. Run: python -m pip install -r app\\requirements.txt
-   Internet may be required for installing packages; runtime is local only.
-5. Run: launch_windows.cmd
-6. Open: http://127.0.0.1:8000/
-7. Press Ctrl+C to stop. If 8000 is occupied:
+1. Extract the entire ZIP to a new folder on a writable local disk.
+2. In Windows File Explorer double-click check_windows.cmd (or from CMD run it).
+   If it reports missing FastAPI/Uvicorn, open CMD in this folder and choose
+   whether to run: python -m pip install --user -r app\\requirements.txt
+   Package installation might need Internet; only the running app is local.
+3. Run check_windows.cmd again; PASS checks files, SQLite and environment only.
+4. Run launch_windows.cmd and visit http://127.0.0.1:8000/
+5. Ctrl+C stops server. If port 8000 is taken:
    set REA_WEB_PORT=8765
    launch_windows.cmd
    Open http://127.0.0.1:8765/
 
-SQLite is a snapshot, not live synchronization. The archive file list and
-SHA256 hashes are in delivery_manifest.json. Optional review/fable_review.json
-is NOT an approved owner mapping and is not accessible from the web app.
-Never expose this server to the public Internet or load sensitive data.
+If 'python' is not recognized, install official Python 3.11+ for your user,
+enable PATH, reopen CMD and repeat. Never run as administrator just for REA.
+No files are uploaded by the self-check. Do not run from the Internet.
+The app only binds 127.0.0.1 by default; never expose it with --host 0.0.0.0.
 
-Known exclusions: live URL capture, cloning, production DB, user accounts,
-wizard, custom mapping approval, aggregates, CRUD, hosting, licensing clearance.
+Supported generator types: one CSV or flat JSON with required fields;
+owner-guided one-file field approval; strictly owner-confirmed same-schema
+two-input ROW APPEND only (not SQL joins or cross-table relational mapping).
+These modes generate the source before ZIP delivery. They are not a GUI.
+
+No automatic backup, user login, payment, browser cloning, hosting, migration
+or real-time data synchronization. app/data.sqlite contains input rows and may
+contain sensitive information. Never share real customer ZIPs publicly.
+The SHA256 check is not a digital signature or rights check. Source rights,
+third-party licensing, security, privacy and clean Windows human acceptance
+have NOT been cleared. Contact product owner for support and permissions.
 """
 
 
@@ -90,6 +106,8 @@ def _members(project: Path) -> dict[str, bytes]:
         members[rel] = path.read_bytes()
     members["README_WINDOWS.md"] = WINDOWS_README.encode("utf-8")
     members["launch_windows.cmd"] = LAUNCH.encode("ascii")
+    members["check_windows.cmd"] = CHECK_LAUNCH.encode("ascii")
+    members["self_check.py"] = (Path(__file__).resolve().parent / "customer_self_check.py").read_bytes()
     if sum(len(x) for x in members.values()) > MAX_ARCHIVE_BYTES:
         raise DeliveryError("Delivery exceeds 25 MiB")
     required = ("app/app.py", "app/data.sqlite", "app/requirements.txt",
