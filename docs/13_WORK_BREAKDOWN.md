@@ -17,7 +17,8 @@
 | REA-P5-03 | DONE_FEATURE_VERIFIED | feature/json-intake | One bounded JSON intake plus CSV, shared validator; CI 40204413087 111 pytest on each OS and 4 Chromium synthetic cases PASS; 2-file scope NOT SUPPORTED | 
 | REA-P5-04 | BLOCKED_OWNER_SCOPE | none | Two-file join/mapping rules or expressly approved commercial offer revision |
 | REA-P6-00 | DONE_AUDIT_NOT_LICENSED | feature/license-provenance | D6 SHA b97443657e46a8f701e12b83bf87f5a0339b224c; 125 pytest each OS, pinned 88+103 Git blobs both OS, ZIP allowlist SHA256/negative tests, CI 40205614846 | 
-| REA-P6-02 | READY | new D7 feature branch | Synthetic local security/recovery and failure-injection regression |
+| REA-P6-02 | DONE_SYNTHETIC_VERIFIED | feature/security-recovery | Atomic no-replace directory + complete ZIP publication, fail injection, readonly SQLite, [CI 40206549211](https://github.com/hibi89/REA_Web/actions/runs/40206549211) 141 tests each OS, 5 Chromium synthetic cases |
+| REA-P6-03 | READY | new D8 feature branch | Guided ONE-file intake and explicit source-field owner approval without guessing or 2-file join |
 | REA-P6-01 | BACKLOG_BEFORE_SALE | release/v0.1 | Commercial scope, licenses, full security/recovery and clean Windows customer pilot |
 
 **Verified combined feature SHA:** `46060b4665560922d0c9cf82b9e5c08971eb9427` ([CI 40200704855](https://github.com/hibi89/REA_Web/actions/runs/40200704855); PR #5 Draft, unmerged).

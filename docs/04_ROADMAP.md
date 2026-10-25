@@ -1,3 +1,6 @@
+## 2026-10-26 latest D7 verified, D8 READY
+D7 tested SHA `8e7baa8eb14340eae2e7b46f1cf7b9272799c715`, [CI 40206549211](https://github.com/hibi89/REA_Web/actions/runs/40206549211): Linux/Windows 141 pytest each, actual Chromium five synthetic apps, native Windows CMD HTTP, pinned vendor 88+103 source blobs PASS. Atomic no-overwrite outputs; original draft 2-file scope, source redistribution licensing, clean nondeveloper Windows and real authorized customer still BLOCKED. D8 owner-guided single source input/mapping next, docs/17_NEXT_TASK.md authoritative.
+
 ## 2026-10-26 latest checkpoint — D6 verified, D7 READY
 D6 functional branch feature/license-provenance SHA b97443657e46a8f701e12b83bf87f5a0339b224c, [CI 40205614846](https://github.com/hibi89/REA_Web/actions/runs/40205614846) SUCCESS Linux/Windows **125 pytest each**, actual Fable 88/Astra partial 103 pinned Git blobs both OS, Chromium 4 synthetic apps and Windows local CMD/HTTP PASS. This **does not establish source licenses or production security**; exact dependency lock, owner two-file contract, clean Windows user, real authorized reference and customer acceptance remain unresolved. Next D7 synthetic security/recovery failure injection. Historical roadmap follows; docs/17_NEXT_TASK.md is authoritative.
 

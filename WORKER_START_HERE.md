@@ -1,12 +1,9 @@
-# REA_Web — One-line restart protocol (2026-10-26 KST)
+# REA_Web — One-line resumption (2026-10-26 KST)
 
-**Trigger:** ㄱ or [REA_Web 깃헙 레포지토리 보고 작업이어가셈] means read actual hibi89/REA_Web main HEAD, HANDOFF.md, STATUS.md, AGENTS.md and docs/17_NEXT_TASK.md, then **execute NEXT READY work now**, no further approval for safe offline synthetic dev. No background tasks between turns.
+Trigger: ㄱ or [REA_Web 깃헙 레포지토리 보고 작업이어가셈]. Read ACTUAL latest GitHub main HEAD, HANDOFF.md, STATUS.md, AGENTS.md and docs/17_NEXT_TASK.md, then execute next safe READY unit immediately. No background work promise, no force merges/vendor edits.
 
-## Latest verified work
-D1 CSV app 9 pytest + Chromium; D2-01 Fable/Astra review 28; D2-02 combined 55; D3 local ZIP+3 Chromium/Windows 68 each OS; D4 schema/category counts 77 each OS; D5 single JSON and CSV 111 each OS.
-**D6-01 DONE:** feature/license-provenance SHA b97443657e46a8f701e12b83bf87f5a0339b224c, [Draft PR #9](https://github.com/hibi89/REA_Web/pull/9), [CI 40205614846](https://github.com/hibi89/REA_Web/actions/runs/40205614846) SUCCESS: Linux+Windows **125 tests PASS each**, Fable **88** and partial Astra **103** Git blobs matched on both, Chromium 4 synthetic apps PASS, Windows .cmd HTTP PASS. Synthetic audit reports + ZIPs in Actions artifact rea-d6-synthetic-provenance ID 12602923880.
-Fable/Astra licenses NOT cleared (no standard LICENSE/NOTICE found on pinned trees); ZIP excludes original vendor engines but data.sqlite contains user rows. Direct FastAPI/Uvicorn dependencies unpinned and full transitive license/rights not assessed. Main docs dispatch only, PRs #1–#9 Draft/unmerged; no Vercel/prod URL.
-Commercial draft up to TWO input files remains NOT IMPLEMENTED: only one CSV OR JSON accepted. Owner-approved multi-file rule/contract change required, not silent narrowing. No real customer sources, clean Windows human pilot, security clearance or release.
+D1 9 pytest+Chromium; D2-01 28; D2-02 55; D3 68 tests each Linux/Windows + 3 Chromium; D4 77 each + schema/category; D5 111 each + one JSON OR CSV; D6 125 each + 88 Fable/103 partial Astra hashes; **D7 DONE: 141 pytest on EACH Linux and Windows, 5 actual Chromium synthetic app cases, Windows CMD/HTTP and 88+103 hashes PASS**. D7 functional SHA `8e7baa8eb14340eae2e7b46f1cf7b9272799c715`, feature/security-recovery latest docs SHA `f85b40836ffb1a9343193a8a2fc224249749958d`, [CI 40206549211](https://github.com/hibi89/REA_Web/actions/runs/40206549211), [Draft PR #10](https://github.com/hibi89/REA_Web/pull/10) UNMERGED. Synthetic ZIP/screenshots artifact 12603349624.
 
-## NEXT READY D7-01
-New feature branch from tested D6; offline synthetic **security/recovery/error-path testing**, add fixes and rigorous Linux/Windows/Chromium CI, do not vendor or touch external data. Specific test plan docs/17_NEXT_TASK.md; update main handoff and evidence after each unit. Preserve 3-day MVP-first strategy without implying completed sale process.
+D7 changed Linux/Windows no-overwrite atomic directory publication and complete-ZIP hardlink publication, readonly DB and failure-injection testing; unsupported filesystem/OS fails closed. Production security/license not certified. Pinned vendor source branches unchanged, main dispatch only, NO Vercel/prod URL.
+
+**Next D8-01 READY:** guided ONE CSV/JSON owner source preview and explicit id/title/category field mapping approval, keeping legacy CLI and no Fable guess/autojoin. Draft 30만원 promise for TWO files remains unsupported BLOCKED, along with commercial licenses, clean human Windows, real customer rights, full security and backup. See docs/17_NEXT_TASK.md.

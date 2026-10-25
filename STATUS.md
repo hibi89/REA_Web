@@ -1,34 +1,22 @@
 # REA_Web STATUS — 2026-10-26 KST
 
-**PHASE: D6-01 verified on feature branch; D7-01 READY.** Main is documents/dispatcher only, NOT a merged app. All PRs #1–#9 Draft/unmerged. NOT commercial/production-ready.
+**D7-01 DONE (feature verified), D8-01 NEXT READY.** Main is documentation/dispatcher, runnable integrated code is on UNMERGED Draft PR #10; not yet commercial/production-ready.
 
-## Verified stage history
-| Unit | Verified branch | Exact evidence |
+| Unit | Tested capability | Evidence |
 | --- | --- | --- |
-| D1 owner CSV app | feature/csv-local-mvp 5515a728... | Actions 40198326369, 9 pytest + Chromium PASS |
-| D2-01 review-only Fable/Astra adapter | feature/evidence-adapter fda96076... | 40199741969, 28 pytest PASS |
-| D2-02 CSV + optional isolated review | feature/orchestrator 46060b46... | 40200704855, 55 pytest + Chromium PASS |
-| D3-01 3 domains/ZIP/Windows | qa/cross-platform e88c89f3... | 40202313506, 68 pytest each OS + Chromium PASS |
-| D4-01 unapproved schema/category summary | feature/mvp-summary-preview d8e26ed7... | 40203444938, 77 pytest each OS + Chromium PASS |
-| D5-01 strict single JSON input | feature/json-intake b1ef76b5... | 40204413087, 111 pytest each OS + Chromium 4 scenarios PASS |
-| **D6-01 source/dependency/package audit** | **feature/license-provenance b97443657e46a8f701e12b83bf87f5a0339b224c** | [Actions 40205614846](https://github.com/hibi89/REA_Web/actions/runs/40205614846) **SUCCESS**, **125 pytest PASS on Ubuntu and Windows-latest each** (1 warning each); vendor 88 Fable + 103 partial Astra Git source blobs each OS PASS; Linux real Chromium 4 synthetic apps PASS; Windows native .cmd HTTP PASS. [Draft PR #9](https://github.com/hibi89/REA_Web/pull/9), unmerged. |
+| D1 | CSV app list/search/filter/detail | CI 40198326369, 9 pytest + Chromium PASS |
+| D2-01 | Fable to Astra technical review only | CI 40199741969, 28 pytest |
+| D2-02 | Independent CSV app + optional review | CI 40200704855, 55 pytest + Chromium |
+| D3 | 3 cases, ZIP, Windows | CI 40202313506, 68 pytest each OS |
+| D4 | Schema lexical preview UNAPPROVED and category summary | CI 40203444938, 77 pytest each OS |
+| D5 | One CSV or one strict JSON | CI 40204413087, 111 pytest each OS |
+| D6 | Pinned 88 Fable / 103 partial Astra Git blob verification and ZIP allowlist | CI 40205614846, 125 pytest each OS |
+| **D7-01** | **Atomic no-replace directory/ZIP publication, rollback, SQL query-only, formula as inert text** | **[CI 40206549211](https://github.com/hibi89/REA_Web/actions/runs/40206549211): Ubuntu 141/141 pytest PASS + Windows 141/141 pytest PASS; 5 actual Chromium synthetic cases Linux, native Windows CMD + localhost HTTP, source 88/103 Git blob proofs both OS PASS.** |
 
-## D6 delivered and verified
-- New offline rea/provenance.py inspects actual deterministic delivery ZIP: SHA256 members, exact allowed paths, only fastapi/uvicorn declared runtime dependencies, localhost command, unapproved schema/Fable status. Rehashed unexpected engine files or .env are rejected.
-- Vendor imported source integrity verified **88/88 and 103/103** against pinned Git blobs (PARTIAL Astra snapshot), not a copyright/license clearance.
-- Github upstream pinned commit trees examined: no conventional LICENSE/NOTICE in Fable/Astra source trees; rights and redistribution **UNKNOWN/BLOCKED**, not assumed.
-- Generated ZIP ships neither vendor engines nor raw Fable captures; it does carry owner-provided SQLite rows, therefore **cannot certify no PII/secrets or rights**.
-- Direct runtime requirements fastapi>=0.110,<1 and uvicorn>=0.27,<1 are ranged NOT LOCKED; resolved exact versions, transitive notices, vulnerability/license obligations **NOT ASSESSED**.
-- [D6 detailed source/redistribution risk register](https://github.com/hibi89/REA_Web/blob/feature/license-provenance/docs/25_SOURCE_LICENSE_AUDIT.md); Actions artifact rea-d6-synthetic-provenance ID 12602923880 (4 synthetic screenshots, 2 sample ZIPs, hash and source JSON reports).
-- Initial Windows run 40205493975 failed pinned Git blob comparison due to CRLF checkout. Fix Git core.autocrlf false before pinned vendor checkouts; retested PASS both OS on 40205614846. Previous D1–D5 functional source refs unchanged.
+D7 tested functional SHA `8e7baa8eb14340eae2e7b46f1cf7b9272799c715`; latest documentation-only branch head `f85b40836ffb1a9343193a8a2fc224249749958d` on `feature/security-recovery`. [Draft PR #10](https://github.com/hibi89/REA_Web/pull/10), unmerged. Both push & PR workflows on latest head verified green. Synthetic Actions artifact `rea-d7-synthetic-recovery` ID 12603349624 has 5 browser screenshots, JSON report and sample ZIP/provenance proof.
 
-## Release blockers
-- **Two-input promise unresolved**: draft 300,000 KRW offer includes up to 2 files; implementation accepts one CSV OR one flat JSON input at a time; no owner-approved join/mapping. DO NOT sell as 2-file support.
-- Fable/Astra source license/ownership grants and generated-app customer distribution rights unresolved. Runtime package full SBOM, versions and license obligations unresolved.
-- Real owner+website authorization/parity, clean nondeveloper Windows install, full security/recovery, operator wizard/mapping, merchant terms/refunds and 6–8h internal cost exercise NOT RUN.
-- Vercel/public production URL NOT CONFIGURED. No real customer data or production database touched.
+D7 changes: Linux renameat2 RENAME_NOREPLACE prevents empty-directory race overwrite; Windows directory rename rejects existing owner target. ZIP is fully verified in private stage before an atomic same-filesystem hardlink into final name (no partial public ZIP). Unsupported OS/filesystem fails closed. Leaf output symlink and stage cleanup failure-tested. SQLite URI mode=ro + PRAGMA query_only=ON. JSON summary reports JSON origin. CSV formula-looking strings rendered only via safe DOM text. docs/26_SECURITY_RECOVERY.md on feature explains boundaries.
 
-## NEXT READY: REA-MVP-D7-01
-Local synthetic **security/recovery failure-injection testing** on a new feature branch derived from verified D6. Preserve minimum input/source protections; test interrupted generation, safe rollback and restore, ZIP tamper/directory traversal/partial write, CSV formula cells, resource limits, loopback service and review isolation; fix verified defects and run CI before D7 DONE. No live customer sources, external deployment or license-clearance claim. Two-file commercial scope remains BLOCKED for owner business rule or approved revision. See docs/17_NEXT_TASK.md.
+**Still BLOCKED / NOT_RUN:** Initial 300,000 KRW proposed TWO files, actual ONE CSV OR JSON; no approved two-file join/mapping or offer revision. Fable/Astra and generated code redistribution rights and full dependency locks/licenses not cleared. Actual authorized customer/website rights, clean Windows nondeveloper, power loss/fsync recovery/backup, privacy screening, penetration security, support/refunds and labor cost study not completed. No Vercel/public deployment or real customer data.
 
-Resumption trigger ㄱ or [REA_Web 깃헙 레포지토리 보고 작업이어가셈] => inspect latest GitHub and execute NEXT READY unit in the current turn.
+**NEXT D8-01:** guided single-file user preflight and explicit field mapping approval, retaining existing strict CSV/JSON and Fable REVIEW_REQUIRED. No automatic two-file merge or semantic guess. Detailed docs/17_NEXT_TASK.md. User ㄱ initiates the next safe task.

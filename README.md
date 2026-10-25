@@ -59,3 +59,9 @@ REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운�
 - 납품 ZIP SHA256·허용파일 목록 감사, 원본 엔진/.env 재삽입 거부. [라이선스·의존성·상용 위험 보고서](https://github.com/hibi89/REA_Web/blob/feature/license-provenance/docs/25_SOURCE_LICENSE_AUDIT.md).
 - **라이선스/원본 재배포 권한은 아직 미승인**. 직접 의존성 두 개의 정확한 설치 버전·전이 의존성 미확인, 고객 데이터가 SQLite에 포함됨. **2파일 약속 미구현**, Windows 일반 사용자/실고객/보안 전체 검증 전까지 판매 불가.
 - 다음 작업 D7 합성환경 보안·복구 실패주입 검사. 최신 인수인계는 main STATUS.md/HANDOFF.md/docs/17_NEXT_TASK.md.
+
+## D7 verified (2026-10-26)
+- `feature/security-recovery` tested SHA `8e7baa8eb14340eae2e7b46f1cf7b9272799c715`, docs SHA `f85b40836ffb1a9343193a8a2fc224249749958d`, [Draft PR #10](https://github.com/hibi89/REA_Web/pull/10) unmerged.
+- [GitHub Actions 40206549211](https://github.com/hibi89/REA_Web/actions/runs/40206549211) **141 pytest each on Linux and Windows**, 5 actual Chromium synthetic samples, native Windows .cmd HTTP and 88/103 source blob checks PASS.
+- Fixed race-owner directory clobber, partial ZIP exposure, readonly DB; [failure-injection scope and limits](https://github.com/hibi89/REA_Web/blob/feature/security-recovery/docs/26_SECURITY_RECOVERY.md). Unsupported OS and filesystem fail closed, not a full pentest or permission to sell.
+- Next D8: guided single CSV/JSON owner field review and explicit approval. Original 2-file offer NOT implemented; legal/source rights, full dependency audit, real customer data and clean Windows human acceptance BLOCKED.
