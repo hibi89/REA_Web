@@ -1,6 +1,6 @@
 # REA_Web — 웹서비스 분석·재구축 자동화 엔진
 
-> 2026-10-26 · **MVP 기능 브랜치 D15까지 CI 검증** (Linux·Windows 각 266 tests, 11 Chromium 합성 사례 + 1/2파일 실제 Tk GUI) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
+> 2026-10-26 · **MVP 기능 브랜치 D16까지 CI 검증** (Linux·Windows 각 283 tests, 11 Chromium 합성 사례 + 1/2파일 실제 Tk GUI) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
 
 **새 채팅 즉시 재개:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` — 질문 없이 최신 GitHub 문서·코드 확인 후 다음 READY 개발 작업을 수행한다. **최우선 안내:** [WORKER_START_HERE.md](WORKER_START_HERE.md) · [세션 복원 프로토콜](docs/SESSION_RESTART_PROTOCOL.md).
 
@@ -113,3 +113,9 @@
 - GitHub feature/two-file-tk-gui-append SHA 7a546319eef435499021ab1eba930d7c95996acb [Draft PR #18](https://github.com/hibi89/REA_Web/pull/18), 미병합. [실제 Actions 40216223293](https://github.com/hibi89/REA_Web/actions/runs/40216223293) SUCCESS Ubuntu/Windows **266 pytest 각각 통과** (경고 각 1건), Linux Chromium 합성 11건, Windows ZIP CMD→localhost, Fable 88/Astra 부분 103 Git blob 해시 PASS.
 - 원래 1파일 창 보존, 2파일 전용 Tk 창 신규 추가. 각각 SHA 검사 후 같은 컬럼 구조/3개 역할을 직접 선택하고 파일별 권한 체크 및 APPROVE 2회, 최종 APPEND 필요. 중복 ID/부적합 스키마/변경 SHA/기존 ZIP 덮어쓰기 모두 거절. JOIN 미지원. [D15 사용법](https://github.com/hibi89/REA_Web/blob/feature/two-file-tk-gui-append/docs/34_TWO_FILE_TK_GUI_APPEND.md).
 - 실제 Tk 합성 GUI 2파일 조작 PASS 양쪽 OS, Linux screenshot CAPTURED artifact 12608325252, Windows GUI PASS screenshot NOT_CAPTURED artifact 12607816547. 실제 소비자 Windows와 실고객·라이선스·상용 납품 승인 미검증. 다음 D16은 Windows 초보자를 위한 설치 없는 로컬 제작 GUI 실행 명령 도구.
+
+## D16-01 — 설치 없는 Windows 제작 GUI 실행 보조 (2026-10-26)
+- 기능 브랜치 feature/windows-creator-launcher SHA d1ed3bd6d09ecf4cf1acc2102a18916c89b6c587, [Draft PR #19](https://github.com/hibi89/REA_Web/pull/19) UNMERGED, [실제 Actions #40217420084](https://github.com/hibi89/REA_Web/actions/runs/40217420084) SUCCESS **Linux/Windows 각 283 pytest PASS** (경고 1건씩), Linux Chromium 11, Windows native ZIP CMD→localhost, Fable 88/Astra 부분 103 원본 SHA PASS.
+- Windows 저장소 루트의 START_REA_CREATOR.cmd 더블클릭, 또는 CMD에서 START_REA_CREATOR.cmd --check로 Python 3.11+, 필수 모듈, Tk 실제 화면 확인(이때 GUI 열지 않음). 기존 가상환경 우선. Python 부재·인자 오류 거부를 실제 Windows cmd.exe로 검증했습니다. auto-pip/install/download, 관리자 권한 요청, 시스템 PATH/레지스트리 변경 없음.
+- 기존 1파일 및 동일 스키마 2파일 GUI 기능 유지; Linux Xvfb 실동작/PNG 캡처, Windows 실제 Tk synthetic 위젯 E2E PASS. **실제 비개발자 Windows 사용자와 상용 배송 검사 아님**. [D16 시작 가이드](https://github.com/hibi89/REA_Web/blob/feature/windows-creator-launcher/docs/35_WINDOWS_CREATOR_LAUNCHER.md).
+- 다음 D17은 완전 새로운 Windows 독립 Python 가상환경에서 의존성 부재→수동 설치→진단·GUI 실행을 CI로 재현. 합법적 재배포/실고객/백업/보안/300,000원 계약/지원 G5/G6는 BLOCKED.
