@@ -1,6 +1,6 @@
 # REA_Web — 웹서비스 분석·재구축 자동화 엔진
 
-> 2026-10-26 · **MVP 기능 브랜치 D16까지 CI 검증** (Linux·Windows 각 283 tests, 11 Chromium 합성 사례 + 1/2파일 실제 Tk GUI) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
+> 2026-10-26 · **MVP 기능 브랜치 D17까지 CI 검증** (Linux·Windows 각 290 tests, 11 Chromium 합성 사례 + 1/2파일 실제 Tk GUI) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
 
 **새 채팅 즉시 재개:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` — 질문 없이 최신 GitHub 문서·코드 확인 후 다음 READY 개발 작업을 수행한다. **최우선 안내:** [WORKER_START_HERE.md](WORKER_START_HERE.md) · [세션 복원 프로토콜](docs/SESSION_RESTART_PROTOCOL.md).
 
@@ -119,3 +119,7 @@
 - Windows 저장소 루트의 START_REA_CREATOR.cmd 더블클릭, 또는 CMD에서 START_REA_CREATOR.cmd --check로 Python 3.11+, 필수 모듈, Tk 실제 화면 확인(이때 GUI 열지 않음). 기존 가상환경 우선. Python 부재·인자 오류 거부를 실제 Windows cmd.exe로 검증했습니다. auto-pip/install/download, 관리자 권한 요청, 시스템 PATH/레지스트리 변경 없음.
 - 기존 1파일 및 동일 스키마 2파일 GUI 기능 유지; Linux Xvfb 실동작/PNG 캡처, Windows 실제 Tk synthetic 위젯 E2E PASS. **실제 비개발자 Windows 사용자와 상용 배송 검사 아님**. [D16 시작 가이드](https://github.com/hibi89/REA_Web/blob/feature/windows-creator-launcher/docs/35_WINDOWS_CREATOR_LAUNCHER.md).
 - 다음 D17은 완전 새로운 Windows 독립 Python 가상환경에서 의존성 부재→수동 설치→진단·GUI 실행을 CI로 재현. 합법적 재배포/실고객/백업/보안/300,000원 계약/지원 G5/G6는 BLOCKED.
+
+## D17 checkpoint — 2026-10-26
+- [Draft PR #20](https://github.com/hibi89/REA_Web/pull/20), source SHA 92355fec1152be0379a398b496f4e382ca57c55d, [Actions #40218363629](https://github.com/hibi89/REA_Web/actions/runs/40218363629) SUCCESS: 290 pytest PASS on both Linux and Windows, no skips; Linux Chromium 11 apps, Windows native ZIP localhost, original Fable/Astra proofs PASS.
+- Fresh isolated Windows .venv: CMD --check correctly denies missing modules (11), developer CI manually installs runtime to test venv, CMD returns READY (0), actual Tk GUI two-file APPEND ZIP verified. No shipped auto-installer and no human clean Windows acceptance. Evidence artifact 12608610206. D18 next: new venv ZIP->localhost HTTP E2E; commercial G5/G6 BLOCKED.
