@@ -71,3 +71,9 @@ REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운�
 - [CI 40207742776](https://github.com/hibi89/REA_Web/actions/runs/40207742776) Linux/Windows 각각 **164개 테스트 PASS**, Chromium 실제 7개 합성 웹앱, Windows CMD/HTTP·Fable 88/Astra 103 원본 해시 PASS.
 - 고객 파일 셀 원본값을 화면에 노출하지 않는 로컬 입력 정보 확인, id/title/category 컬럼 직접 선택, `APPROVE` 입력, 변경 감지 SHA 확인, 생성물 내 매핑 승인 기록과 ZIP 감사. [실행 가이드](https://github.com/hibi89/REA_Web/blob/feature/guided-intake/docs/27_GUIDED_OWNER_INTAKE.md).
 - 아직 GUI, 서명된 고객 동의, 두 파일 결합, 상용 라이선스, 실제 고객/일반 Windows 설치 검수는 미완료. 다음 D9: 별도 승인된 동형 두 파일만 안전하게 합치는 실험, 임의 관계 추론/조인 금지.
+
+## D9-01 — 명시적 승인된 동형 2파일 행 추가 (2026-10-26)
+- 기능 브랜치 `feature/owner-approved-append` SHA `addb5067a3422cd7ecad6836bcf6620d2f03db1e`, [Draft PR #12](https://github.com/hibi89/REA_Web/pull/12) 미병합.
+- [CI 40209013017](https://github.com/hibi89/REA_Web/actions/runs/40209013017) Linux/Windows 각각 **181 테스트 PASS**, 실제 Chromium 8개 합성 앱, Windows CMD/HTTP, Fable 88/Astra 103 원본 SHA PASS.
+- 고객이 별도 승인한 동일한 컬럼 구조의 CSV/JSON 두 개만 APPEND(행 추가). 두 원본 SHA·개별 APPROVE·최종 APPEND 필수. 중복 ID, 구조 불일치, 합산 10MB/1만 행 초과 거부, 원본 보존, `append_report.json` 납품감사 포함. [D9 사용 설명](https://github.com/hibi89/REA_Web/blob/feature/owner-approved-append/docs/28_TWO_FILE_APPEND.md).
+- **다른 사업 테이블 간 조인/관계 추론 지원 안 함.** 기존 30만원 제안의 보편적인 두 파일 처리 약속은 별도 범위 명시 승인 전까지 판매 불가. 라이선스·실고객·Windows 인간 검수·보안/개인정보 미완료. 다음 D10 검증용 릴리스 후보와 Windows 설치 확인.

@@ -1,3 +1,6 @@
+## Latest 2026-10-26 — D9 verified, D10 ready
+Source `addb5067a3422cd7ecad6836bcf6620d2f03db1e`, [Actions 40209013017](https://github.com/hibi89/REA_Web/actions/runs/40209013017) Ubuntu + Windows 181 pytest each, 8 synthetic Chromium browser apps, Windows native CMD/HTTP, pinned Fable 88/Astra 103 hashes PASS. Exactly two owner-approved same-schema row-append files, not joins. D10 isolated synthetic packaging and Windows user setup self-check + dependency inventory READY. Original 300k contract, licensing, clean Windows human pilot, authorized customer/reference and full security not released; docs/17_NEXT_TASK.md authoritative.
+
 ## 2026-10-26 D8 verified; D9 two-file controlled prototype READY
 D8 tested SHA `a6c35688a5d4cbda93274bc0cd21d1aa825fb255`, [CI 40207742776](https://github.com/hibi89/REA_Web/actions/runs/40207742776): Ubuntu and Windows 164 pytest each, 7 actual Chromium synthetic apps, Windows native CMD localhost, pinned Fable 88/Astra partial 103 source proofs PASS. Local owner-chosen source fields and literal APPROVE, unserved audit receipt, legacy exact schema path intact. Draft 300k up-to-two-file offer still unsupported; next D9 safe explicit same-schema append test, not arbitrary join. Licensing, privacy, real customer/reference, clean Windows human and production security unverified; docs/17_NEXT_TASK.md authoritative.
 
