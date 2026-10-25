@@ -133,7 +133,7 @@ def test_customer_windows_cmd_uses_local_selfcheck_only(tmp_path):
     if sys.platform == "win32":
         result = subprocess.run(["cmd", "/c", str(out / "check_windows.cmd")],
                                 cwd=out, capture_output=True, text=True)
-        assert result.returncode == 0, result.stderr
+        assert result.returncode == 0, result.stdout + result.stderr
         assert "PASS_LOCAL_PREREQUISITES" in result.stdout
 
 
