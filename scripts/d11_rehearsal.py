@@ -112,7 +112,9 @@ def make(out: Path) -> dict:
             source = ROOT / "samples" / spec["source"]
             sha = hashlib.sha256(source.read_bytes()).hexdigest()
             archive = stage / (spec["case_id"] + ".zip")
-            built = create_delivery(source, archive, "Synthetic " + spec["case_id"])
+            create_delivery(source, archive, "Synthetic " + spec["case_id"])
+            with zipfile.ZipFile(archive) as zf:
+                built = json.loads(zf.read("app/manifest.json"))
             audit = inspect_delivery(archive)
             if (built["rows"] != spec["expected_rows"]
                     or audit["overall_commercial_clearance"] != "NOT_GRANTED"
