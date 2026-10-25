@@ -1,35 +1,34 @@
-# REA_Web STATUS — 2026-10-26 KST
+# REA_Web — STATUS (2026-10-26 KST)
 
-**D9-01 VERIFIED in isolated feature branch; D10-01 READY.** Not for commercial sale, not production deployed; main is documentation/dispatch and PRs #1–#12 remain Draft/unmerged.
+**D10-01 DONE in isolated Draft PR #13; D11-01 NEXT READY.** Main contains dispatch/documentation only. All feature PRs #1–#13 are Draft and unmerged; NO production web app, no sale authorization.
 
-## Evidence-backed milestones
-| Unit | Working scope | Verified CI |
+## Verified synthetic engineering
+| Phase | Scope | Recorded evidence |
 | --- | --- | --- |
-| D1 | CSV -> readonly local app | 40198326369, 9 pytest + Chromium |
-| D2-01 | Fable/Astra inferred-only review adapter | 40199741969, 28 pytest |
-| D2-02 | Independent CSV app + optional review | 40200704855, 55 pytest + Chromium |
-| D3 | ZIP, 3 synthetic domains, Windows | 40202313506, 68 pytest each OS |
-| D4 | UNAPPROVED field preview and category counts | 40203444938, 77 pytest each OS |
-| D5 | One strict JSON OR CSV | 40204413087, 111 pytest each OS |
-| D6 | Vendor 88/103 hashes, ZIP allowlist/audit | 40205614846, 125 pytest each OS |
-| D7 | Atomic no-overwrite ZIP/dir and recovery | 40206549211, 141 pytest each OS |
-| D8 | Explicit single-input owner field approval | 40207742776, 164 pytest each OS |
-| **D9** | **Two explicitly approved same-schema source files row APPEND only** | **[Actions 40209013017](https://github.com/hibi89/REA_Web/actions/runs/40209013017) SUCCESS: Ubuntu 181 pytest PASS and Windows 181 pytest PASS, real Chromium 8 synthetic apps, Windows .cmd/HTTP PASS, pinned Fable 88 + PARTIAL Astra 103 SHA PASS on both OS**. |
+| D1 | Single CSV local app | 40198326369, 9 tests + Chromium |
+| D2-01/02 | Fable technical observation -> Astra REVIEW_REQUIRED adapter and independent app | 40199741969, 28; 40200704855, 55 |
+| D3 | Three browser cases, ZIP, Windows cmd | 40202313506, 68 pytest each OS |
+| D4 | Unapproved schema and category summary | 40203444938, 77 each OS |
+| D5 | Strict JSON OR CSV input | 40204413087, 111 each OS |
+| D6 | Vendor 88 Fable + 103 PARTIAL Astra hashes, ZIP audit | 40205614846, 125 each OS |
+| D7 | No-overwrite atomic output, readonly data, error-path regression | 40206549211, 141 each OS |
+| D8 | Explicit owner-approved 1-source guided mapping | 40207742776, 164 each OS |
+| D9 | Explicit approved same-schema 2-source ROW APPEND only | 40209013017, 181 each OS |
+| **D10** | **Three synthetic RC ZIPs, extracted Windows offline self-check, observed dependency metadata** | **[Actions 40210279358](https://github.com/hibi89/REA_Web/actions/runs/40210279358) SUCCESS: Linux and Windows each 188 pytest PASS** (1 nonblocking warning each); eight actual Chromium synthetic apps, Windows CMD→localhost HTTP PASS, Fable 88 and Astra PARTIAL 103 Git blob SHA checks both OS PASS. |
 
-D9 feature branch `feature/owner-approved-append`, tested SHA `addb5067a3422cd7ecad6836bcf6620d2f03db1e`, [Draft PR #12](https://github.com/hibi89/REA_Web/pull/12) unmerged. One nonblocking TestClient warning per OS. Evidence artifact `rea-d9-synthetic-approved-append` ID **12604208149** includes screenshots, browser JSON and sample ZIP/provenance reports.
+D10 tested feature SHA `1c0b708a3e5d979ad152e89848ef07f800d367c4`, `feature/rc-selfcheck`, [Draft PR #13](https://github.com/hibi89/REA_Web/pull/13), UNMERGED. Artifact **rea-d10-synthetic-rc** ID **12605835407**, with three synthetic demo ZIPs, checksums, browsers/evidence and observed environment metadata. No real customer data.
 
-## D9 feature contract
-- `python -m rea.two_source inspect` privately prints two source schema headers, counts and SHA-256, with no cell samples.
-- `build` or `pack` requires exact source field mapping and separate literal APPROVE for each source plus final APPEND confirmation. CSV+JSON or other supported combinations only when explicitly mapped **same column set**, distinct IDs, combined source bytes at most 10 MiB and combined rows at most 10,000.
-- Data row **append** only; no unknown foreign key joins, dedup/overwrite, live DB, original source rewriting, guesses from Fable, implicit approvals or public uploads.
-- Generated app/ZIP includes unserved `append_report.json` with each source SHA, type, row counts and local approval status; D6 ZIP auditor checks consistency, allowing no unrecorded mixed-source package. Original data is held in generated data.sqlite; never claim deliverable is PII-free.
-- D1–D8 CLI and browser functions remain intact; 8 synthetic Chromium cases including new 2-file customer-approved append passed.
+## D10 added / qualified
+- `python -m scripts.d10_make_rc --out NEW_FOLDER` produces exactly three reproducible test-only ZIPs: standalone CSV, owner-approved guided JSON, owner-approved two-file same-schema append. Each includes `check_windows.cmd`, `self_check.py`, Korean Windows guide and original app files/SQLite. No original Fable/Astra vendor sources bundled.
+- Windows diagnostic is standard-library-only and makes **no network calls**. Checks extracted-file SHA256 against manifest, Python >=3.11, SQLite readonly and installed FastAPI/Uvicorn. It neither installs dependencies nor starts app or certifies absence of sensitive data; clean nondeveloper Windows human acceptance NOT_RUN.
+- `rea.observed_deps` lists exact **CI-observed** installed package versions, reported license metadata and potential notice file names; **14 distributions** observed in both operating systems. Direct FastAPI **0.162.0**, Uvicorn **0.54.0** in this CI, **not customer version locks or legal clearance**. Detailed [D10 review](https://github.com/hibi89/REA_Web/blob/feature/rc-selfcheck/docs/29_RC_WINDOWS_DEPENDENCY_REVIEW.md).
+- Original D9 and earlier behavior preserved. First D10 Windows test run failed customer CMD path argument parsing; changed check to script-relative root and reran complete CI to PASS.
 
-## Outstanding commercial gates
-- **Draft 300,000 KRW up-to-two-file claim is ONLY partially covered**: same-schema row append supported but cross-table joins and different business schemas unsupported. Marketing/spec change or clearly approved supported-scope contract is required before accepting an order.
-- Fable/Astra/generated app redistribution rights and exact FastAPI/Uvicorn plus transitive package lock/licenses/NOTICE/SBOM not cleared.
-- Customer-facing guided GUI, clean nondeveloper Windows setup + browser, authorized real customer/reference acceptance, privacy review, full security/backups/power-loss, correction/refund and 6–8h labor trial NOT RUN.
-- Production hosting, personal data, paid service or external site scan NOT USED/DEPLOYED.
+## Commercial gates still unresolved
+1. Draft 300,000 KRW up-to-two-file promise is **only partially met**: explicit SAME-SCHEMA APPEND, not joins between unlike business tables. No owner-approved scope revision/contract.
+2. Source rights/redistribution (Fable/Astra/templates) and exact locked runtime/wheel/NOTICE/transitive licenses not cleared. CI package metadata is not a license grant.
+3. Real nondeveloper clean Windows UI installation, three measured mock jobs/manual labor 6–8h, authorized real client/reference/site, privacy/power-loss/backup/full pentest, merchant support/refunds NOT RUN.
+4. Customer-facing lightweight GUI/multimode wizard only partially represented by CLI; no live DB, public deployment, paid API or real customer ZIPs used.
 
-## NEXT READY D10-01
-Create a **single isolated release-candidate staging branch** from verified D9 source (not merge to integration/develop), build reproducible test-only ZIP and end-user Windows onboarding self-check, inspect exact dependency metadata/license/NOTICE as available, validate no package provenance regression; mark unmet license and human acceptance gates BLOCKED. CI and Draft PR, then update main handoff. See docs/17_NEXT_TASK.md.
+## NEXT READY D11-01
+Build a **three-case synthetic quote-to-delivery trial and evidence/acceptance scorecard**, with supported features/unsupported scope checked against proposal and G0–G6. Automate reproducible tests and artifact checks but do NOT fabricate elapsed human preparation/correction effort or claim customer acceptance; create a blank manual time-log template instead. No sale until owner scope, copyright/NOTICE, actual Windows/customer approval. See docs/17_NEXT_TASK.md.

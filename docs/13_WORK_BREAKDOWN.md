@@ -20,7 +20,8 @@
 | REA-P6-02 | DONE_SYNTHETIC_VERIFIED | feature/security-recovery | Atomic no-replace directory + complete ZIP publication, fail injection, readonly SQLite, [CI 40206549211](https://github.com/hibi89/REA_Web/actions/runs/40206549211) 141 tests each OS, 5 Chromium synthetic cases |
 | REA-P6-03 | DONE_SYNTHETIC_VERIFIED | feature/guided-intake | Owner field inspect/wizard/build/pack, explicit approval, ZIP receipt; CI 40207742776 164 tests each OS, 7 Chromium |
 | REA-P6-04 | DONE_SYNTHETIC_VERIFIED | feature/owner-approved-append | Two separate source approval SHA + row APPEND only; CI 40209013017, 181 tests each OS and 8 real Chromium cases |
-| REA-P6-05 | READY | new D10 feature branch | Isolated synthetic release-candidate package, Windows beginner self-check, observed dependency/license inventory |
+| REA-P6-05 | DONE_SYNTHETIC_VERIFIED | feature/rc-selfcheck | 3 synthetic demo ZIPs, offline Windows CMD self-check, observed Python metadata, [CI 40210279358](https://github.com/hibi89/REA_Web/actions/runs/40210279358) 188 pytest each OS, 8 Chromium PASS |
+| REA-P6-06 | READY | new D11 feature branch | Three synthetic quote-to-delivery rehearsals, G0-G6 honest acceptance scorecard and blank manual time logs |
 | REA-P6-01 | BACKLOG_BEFORE_SALE | release/v0.1 | Commercial scope, licenses, full security/recovery and clean Windows customer pilot |
 
 **Verified combined feature SHA:** `46060b4665560922d0c9cf82b9e5c08971eb9427` ([CI 40200704855](https://github.com/hibi89/REA_Web/actions/runs/40200704855); PR #5 Draft, unmerged).

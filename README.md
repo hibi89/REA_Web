@@ -77,3 +77,9 @@ REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운�
 - [CI 40209013017](https://github.com/hibi89/REA_Web/actions/runs/40209013017) Linux/Windows 각각 **181 테스트 PASS**, 실제 Chromium 8개 합성 앱, Windows CMD/HTTP, Fable 88/Astra 103 원본 SHA PASS.
 - 고객이 별도 승인한 동일한 컬럼 구조의 CSV/JSON 두 개만 APPEND(행 추가). 두 원본 SHA·개별 APPROVE·최종 APPEND 필수. 중복 ID, 구조 불일치, 합산 10MB/1만 행 초과 거부, 원본 보존, `append_report.json` 납품감사 포함. [D9 사용 설명](https://github.com/hibi89/REA_Web/blob/feature/owner-approved-append/docs/28_TWO_FILE_APPEND.md).
 - **다른 사업 테이블 간 조인/관계 추론 지원 안 함.** 기존 30만원 제안의 보편적인 두 파일 처리 약속은 별도 범위 명시 승인 전까지 판매 불가. 라이선스·실고객·Windows 인간 검수·보안/개인정보 미완료. 다음 D10 검증용 릴리스 후보와 Windows 설치 확인.
+
+## D10-01 — 납품 후보·Windows 설치 진단 (2026-10-26)
+- `feature/rc-selfcheck` SHA `1c0b708a3e5d979ad152e89848ef07f800d367c4`, [Draft PR #13](https://github.com/hibi89/REA_Web/pull/13), 미병합.
+- [실제 CI 40210279358](https://github.com/hibi89/REA_Web/actions/runs/40210279358): Linux/Windows **각각 188개 테스트 PASS**, Chromium 8개 합성 앱, Windows CMD 로컬 실행, Fable 88/Astra 103 Git 해시 PASS.
+- `python -m scripts.d10_make_rc --out NEW_FOLDER` → 단일 CSV / 고객 승인 JSON / 동일 구조 2파일 APPEND 3가지 **합성 데이터 전용 ZIP**과 SHA256 목록. ZIP 내부 `check_windows.cmd`는 Python·라이브러리·SQLite·파일 무결성만 검사, 자동 설치/인터넷 연결 없음. [D10 가이드](https://github.com/hibi89/REA_Web/blob/feature/rc-selfcheck/docs/29_RC_WINDOWS_DEPENDENCY_REVIEW.md).
+- CI에서 의존성 14개 메타데이터를 확인했으나 상용 라이선스·정확한 배포 버전 고정은 미완료. **진짜 사용자 Windows 수동 설치, 고객/참조사이트 권한, 개인정보·보안·복구, 고객용 GUI, 30만 원 상품 범위는 미승인**. 다음 D11 합성 고객 3건 견적→납품 예행연습과 미검증 사항 기록.
