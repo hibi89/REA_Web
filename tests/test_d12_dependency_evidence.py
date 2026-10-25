@@ -193,3 +193,12 @@ def test_missing_license_evidence_is_explicitly_unknown(tmp_path):
     assert "NO_LEGAL_FILES_DISCOVERED" in r["unresolved_resolution_issues"]
     assert "NO_LICENSE_DECLARATION" in r["unresolved_resolution_issues"]
     assert r["legal_compliance_status"] == "UNKNOWN"
+
+
+def test_windows_drive_and_backslash_parent_path_are_not_read(tmp_path):
+    hostile = ["C:\\\\private\\\\LICENSE", "..\\\\LICENSE"]
+    dist = FakeDist(tmp_path, files=hostile, declared_files=hostile)
+    r = _legal_evidence(dist)
+    assert len(r["legal_file_evidence"]) == 2
+    assert all(f["status"] == "UNSAFE_RELATIVE_PATH"
+               for f in r["legal_file_evidence"])
