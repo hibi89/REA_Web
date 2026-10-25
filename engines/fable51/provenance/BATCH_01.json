@@ -1,0 +1,18 @@
+{
+  "source_commit": "bbe72c0acd3a3e355062d6bd0d866af33e5274b0",
+  "batch": 1,
+  "upstream_github_git_blob_sha": {
+    ".github/workflows/dashboard-diagnostic.yml": "ec80fddf5adb3c45cffe0bb563735d0df0b1ff5b",
+    ".github/workflows/final-review-package.yml": "786074504663a81b877fd68535e071369be91b06",
+    ".github/workflows/linux-python311.yml": "910afc2151c11aea9d0364aef4e3ec91c038930a",
+    ".github/workflows/macos-python311.yml": "5aa496f0092c1273f9d9629d3ab96696e727e1dd",
+    ".github/workflows/public-website-smoke.yml": "9e32d4b5a474c48038caa6e95bc3d25a3965d542",
+    ".github/workflows/runtime-python311.yml": "a8c587f5d5462b8b86598c600c80933102343952",
+    ".github/workflows/step1-final-public-smoke.yml": "c3abaa55ffaef51362e982fb50bf7b5d94642954",
+    ".github/workflows/windows-python311.yml": "d928336c26a2895293fea0f93095a7a35c0683fe",
+    ".gitignore": "a17eb715bf9c81e5a7c20bafdb8a4c4d0ca4cf20",
+    "AGENTS.md": "ad4e4a6ce005703ba50ed17ff25746de31b10681",
+    "HANDOFF.md": "0ca11f5fe1980a071ba053dc8406ff5ad982ff0d",
+    "README.md": "0ec7d2237f328f92e2e47258fe185929a26cc1bf"
+  }
+}

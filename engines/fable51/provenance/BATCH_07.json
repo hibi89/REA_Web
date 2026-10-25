@@ -1,0 +1,18 @@
+{
+  "source_commit": "bbe72c0acd3a3e355062d6bd0d866af33e5274b0",
+  "batch": 7,
+  "upstream_github_git_blob_sha": {
+    "tests/test_contracts.py": "e43ee0f8a7f97d07ec9ead2b54d935f85e47b30c",
+    "tests/test_final_acceptance.py": "71e773446d74d950c6d7d5ca33e629f1eeb2d79d",
+    "tests/test_fingerprint_rules_v4.py": "18ccf7db35c111e249a9d14a58aa1af3795a2fbd",
+    "tests/test_fingerprints.py": "8a0fc42b1a7d1677d659844d3ed4aa6f1f042acd",
+    "tests/test_json_prefix_hints.py": "566626239639467e1ceed52cf8bf4cbf746ca867",
+    "tests/test_llm_payload.py": "5fe4255f108a01d8e594c3805d7e9714883cf5ad",
+    "tests/test_llm_report.py": "842b6ca67f61b8659071549e2650653fe25a6adc",
+    "tests/test_llm_sdk_transport.py": "b2d2bd4c847d18b1c2289d6686026a55e4faf464",
+    "tests/test_llm_validation.py": "3144f0d1c2902861787d95534f6044bfdf89b666",
+    "tests/test_network.py": "1657ba527657c1c2b1b93d492bbd66c5ee87ff6b",
+    "tests/test_record.py": "0191a065ec8b7d518e86796a847efbc2c15bde13",
+    "tests/test_runtime_bootstrap.py": "16006c43c62cebc31a4482f633cdf9e56bd4fd10"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "source_commit": "bbe72c0acd3a3e355062d6bd0d866af33e5274b0",
+  "batch": 4,
+  "upstream_github_git_blob_sha": {
+    "scanner/cdp_decoded_size.py": "0fd9eb17d01d27a3d82786ced63a66806927796d",
+    "scanner/chart_mapping.py": "cc704e3aa8fba838591f85acfe777a684625d584",
+    "scanner/compare.py": "5612711cdee04a5c0c08ad080ec9a81823ac136b",
+    "scanner/connections.py": "5f654eb04117c877a7e1e98bde5fcac45bcab8b8",
+    "scanner/contracts.py": "e503d9662a61a61d35f2743af84f210549939e8a",
+    "scanner/fingerprints.py": "c3b390d03dc773f88b51d0af5a9034731b6be09e",
+    "scanner/json_prefix_hints.py": "22deec443ef3fae97dc3390d75b2536e4d96f3bb",
+    "scanner/llm_client.py": "d6b1d258d500964243c9bd67b445c595218aff1a",
+    "scanner/llm_flow.py": "33867b9b198fde712d739dfc1585c74acd38a4cf",
+    "scanner/llm_payload.py": "d76f82265b0ab9337ef540ee2889aa5d56823ee9",
+    "scanner/llm_report.py": "6478c1a7cda963d2e8dcb0e8c9a868aeb01a2a2c",
+    "scanner/llm_validate.py": "5886a8a4a50d8881bf01f7d7b4956388a290e8eb"
+  }
+}
