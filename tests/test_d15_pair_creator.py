@@ -88,7 +88,10 @@ def test_stale_sha_denied_no_output(tmp_path,which):
     target = a if which=="first" else b
     data=target.read_bytes()
     assert len(data)>0
-    target.write_bytes(data+b" ")
+    # Change a valid CSV cell, or legal insignificant JSON trailing space,
+    # so source digest drift is the only rejection under test.
+    target.write_bytes(data.replace(b"S01", b"S99", 1) if which=="first"
+                       else data+b" ")
     with pytest.raises(DataError,match="changed"):
         allowed(ctl,tmp_path/"no.zip",a,b)
     assert not (tmp_path/"no.zip").exists()
