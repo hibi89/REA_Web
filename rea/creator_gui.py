@@ -114,6 +114,16 @@ def launch() -> int:
         print(CLI_FALLBACK + " (" + type(exc).__name__ + ")", file=sys.stderr)
         return 2
 
+    build_window(root)
+    root.mainloop()
+    return 0
+
+
+def build_window(root):
+    """Construct actual Tk widgets with a testable synthetic-only handle."""
+    from tkinter import filedialog, messagebox, ttk
+    from types import SimpleNamespace
+
     controller = CreatorController()
     root.title("REA_Web | 로컬 웹앱 제작")
     root.minsize(670, 610)
@@ -208,16 +218,19 @@ def launch() -> int:
             invalidate()
             messagebox.showerror("검사 거부", str(exc))
 
-    ttk.Button(frame, text="1. 원본 검사 / 컬럼 미리보기",
-               command=inspect_action).pack(anchor="w", pady=(5, 12))
+    inspect_button = ttk.Button(frame, text="1. 원본 검사 / 컬럼 미리보기",
+                                command=inspect_action)
+    inspect_button.pack(anchor="w", pady=(5, 12))
     source_var.trace_add("write", invalidate)
-    ttk.Checkbutton(frame, text="원본 데이터의 사용 권한이 있고 비민감 정보임을 확인합니다.",
-                    variable=rights_var).pack(anchor="w", pady=(8, 6))
+    rights_checkbox = ttk.Checkbutton(
+        frame, text="원본 데이터의 사용 권한이 있고 비민감 정보임을 확인합니다.",
+        variable=rights_var)
+    rights_checkbox.pack(anchor="w", pady=(8, 6))
     confirm_row = ttk.Frame(frame)
     confirm_row.pack(fill="x", pady=(3, 10))
     ttk.Label(confirm_row, text="직접 APPROVE 입력").pack(side="left")
-    ttk.Entry(confirm_row, textvariable=approval_var, width=18).pack(
-        side="left", padx=8)
+    approval_entry = ttk.Entry(confirm_row, textvariable=approval_var, width=18)
+    approval_entry.pack(side="left", padx=8)
     ttk.Label(frame, text="구분된 2개 파일 JOIN/데이터 수집/공개 호스팅은 지원하지 않습니다.",
               wraplength=620).pack(anchor="w", pady=(0, 10))
 
@@ -238,11 +251,20 @@ def launch() -> int:
             status_var.set("생성 거부. 원본은 보존됩니다. 오류를 확인하세요.")
             messagebox.showerror("생성 거부", str(exc))
 
-    ttk.Button(frame, text="2. 승인 후 새 ZIP 생성", command=export_action).pack(anchor="w")
+    export_button = ttk.Button(frame, text="2. 승인 후 새 ZIP 생성", command=export_action)
+    export_button.pack(anchor="w")
     ttk.Label(frame, textvariable=status_var, wraplength=620).pack(
         anchor="w", pady=(14, 0))
-    root.mainloop()
-    return 0
+    # Test seam exposes REAL Tk widgets and callbacks, not substitute logic.
+    return SimpleNamespace(
+        source_var=source_var, output_var=output_var, name_var=name_var,
+        approval_var=approval_var, rights_var=rights_var, status_var=status_var,
+        fields=mapped_vars, combos=combos, inspect_button=inspect_button,
+        export_button=export_button, rights_checkbox=rights_checkbox,
+        approval_entry=approval_entry, preview_label=preview_label,
+        choose_source=choose_source, choose_output=choose_output,
+        controller=controller,
+    )
 
 
 def main() -> int:
