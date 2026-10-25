@@ -26,3 +26,6 @@
 - 인수인계: STATUS.md · HANDOFF.md
 
 **첫 유료 판매 전 게이트:** 샘플 3종 동작 + Windows 실제 실행 + 기능/원문 보존 검수 + 작업시간 실측 + 계약 범위 확정.
+
+## 새 채팅에서 복원
+**[REA_Web 총괄 깃헙 레포지토리 확인하고 작업하셈]** 한 문장으로 재개. 반드시 main의 WORKER_START_HERE.md와 최신 docs/17_NEXT_TASK.md를 먼저 읽는다.

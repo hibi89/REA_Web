@@ -21,3 +21,6 @@ P0 sources and confidence, P1 adapter, P2 data safety, P3 minimal generator, P4 
 
 ## Source preservation and truthfulness
 Upstream test claims cannot be copied as new REA passes. Imported Astra subset may have incomplete fixture coverage; no full repo passing status asserted. Test run must specify commit, command, machine, counts and limitations.
+
+## QA branch handoff
+To validate without editing immutable import source branches, use qa/vendor-fable or qa/vendor-astra. Each has top-level tools/verify_vendor_manifests.py and a workflow matching qa/**. Never confuse a submitted workflow with a confirmed PASS; inspect actual run/commit SHA. PRs #1/#2 remain draft and unmerged.

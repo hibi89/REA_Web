@@ -20,3 +20,8 @@
 3. P1 evidence adapter contract (on feature/evidence-adapter) and P2 safe CSV/JSON local data path (on feature/csv-local-mvp) with synthetic fixtures.
 4. First real end-to-end product proof: Fable redacted result → grounded Astra functional draft → approved synthetic CSV schema → local generated FastAPI/SQLite app → pytest/browser.
 5. Update HANDOFF and NEXT_TASK after a measurable work unit.
+
+## QA validation branches configured
+- qa/vendor-fable @ 742b9be11f61ee415c1b46368c7253931be42c2c (source pinned 88 + verifier/workflow)
+- qa/vendor-astra @ 047311ee155dc9d413a51a3fd9d9890559172c1e (source pinned 103 + verifier/workflow)
+- Intended command: python tools/verify_vendor_manifests.py --vendor fable51 OR --vendor astra_p4 on corresponding QA branch. Workflow configured but actual GitHub Actions run completion not yet confirmed.

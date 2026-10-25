@@ -1,13 +1,17 @@
-# 17 — Dispatcher / next unit (2026-10-25)
+# 17 — READY / next task (2026-10-25)
 
-**ACTIVE: REA-P0-04 — Vendor checksum and dependency gate**
-Branch: integration/develop (or qa/cross-platform for test changes).
+TASK ID: **REA-P0-04 / Pinned import QA and dependency isolation**.
 
-Preconditions verified: Fable 88 source snapshot and Astra 103 subset snapshots on separate branches; PR #1/#2 Draft.
-1. Run tools/verify_vendor_manifests.py on each import branch. Expect Fable 88/88 and Astra 103/103 if all source bytes preserved. Hosted CI status must be observed, NOT assumed.
-2. Verify customer data/secret exclusions and third-party licenses. If Astra tests need omitted fixture files, import those as new versioned additions and update truthful PARTIAL manifest.
-3. Isolate Python runtime; run Fable dedicated upstream tests in its own cwd and Astra selected tests in its own cwd, record pass/fail/skip per exact source SHA.
-4. Review PR #1/#2 but do NOT merge until passing source gate and owner approval. Draft state is deliberate.
-5. Then issue REA-P1-01: Fable evidence → Astra functional draft adapter with 15+ deterministic tests on feature/evidence-adapter.
+1. Inspect source PR #1 and #2 and their exact HEADs; remain Draft/unmerged.
+2. On branch **qa/vendor-fable** run: python tools/verify_vendor_manifests.py --vendor fable51; expect 88/88 exact Git blob SHA matches.
+3. On branch **qa/vendor-astra** run: python tools/verify_vendor_manifests.py --vendor astra_p4; expect 103/103 exact Git blob SHA matches.
+4. Check hosted GitHub Actions from each QA branch with actual run IDs; do not mark PASS based on workflow YAML existence.
+5. Identify missing fixtures/tests in bounded Astra subset; supplement only safely after validating license/source and recording missing vs imported.
+6. Isolate dependencies and run upstream-selected offline tests independently. Record real test exit codes, OS, SHA and SKIPs.
+7. After P0 acceptance review, issue **REA-P1-01** on feature/evidence-adapter: Fable JSON→Astra evidence/functional draft schema with source-certainty preserved, >=15 synthetic + negative cases.
+8. In parallel P2 CSV→local app under feature/csv-local-mvp; no live customer database, crawling or paid API.
+9. Update STATUS.md, HANDOFF.md, docs/13_WORK_BREAKDOWN.md and this file on main after actual verified work.
 
-Stop on evidence, never on arbitrary percentage. Customer operation DB/network/deploy requests require separate explicit approval. 'ㄱ' means proceed on next READY safe bounded unit; all changes get STATUS/HANDOFF/dispatcher update and commit SHA.
+**Important:** P0 snapshots exist but neither is merged to integration/develop. The 103-file Astra snapshot is PARTIAL, not a complete Astra checkout. The integrated REA_Web app and final product are NOT implemented. Do not promise order delivery.
+
+User shorthand: 'ㄱ' = proceed with next safe READY work unit. If a step needs approval or customer data, mark BLOCKED and move to the next independent safe unit. Never overwrite source refs.

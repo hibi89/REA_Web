@@ -16,3 +16,5 @@
 Sequence: main bootstrap → source snapshots → draft PRs to integration/develop → integration tests → reviewed main. Never create false commits marked DONE for plans alone.
 
 Every PR must state origin SHA, changed paths, risks, exact test status, permissions, acceptance gates. Changing an immutable import branch requires a new import branch, never silent ref update. Source fixtures must contain NO customer data.
+
+**qa/vendor-fable**, **qa/vendor-astra**: isolated derivatives of import branches for running provenance workflows without editing the original pinned import refs. QA verification does not authorize merge. Feature branch heads can be moved forward from main only when they contain no unique implementation commits; never force-update a working import/vendor branch.
