@@ -17,6 +17,7 @@ from playwright.sync_api import expect, sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from rea.orchestrator import build  # noqa: E402
+from rea.guided import preflight  # noqa: E402
 
 CASES = [
     {"name": "cafe", "csv": "qa_cafe.csv", "total": 4, "category": "음료",
@@ -29,6 +30,14 @@ CASES = [
     {"name": "formulas", "csv": "qa_formula.csv", "total": 4, "category": "공식",
      "category_total": 2, "search": "=1+1", "title": "=1+1", "detail": "=CMD",
      "fable": False, "fields": 4},
+    {"name": "owner_csv", "csv": "qa_guided.csv", "total": 3, "category": "음료",
+     "category_total": 2, "search": "카페라떼", "title": "카페라떼", "detail": "4000",
+     "fable": False, "fields": 4, "category_count": 2,
+     "mapping": {"id": "sku", "title": "display_name", "category": "group_name"}},
+    {"name": "owner_json", "csv": "qa_guided.json", "total": 3, "category": "JP",
+     "category_total": 2, "search": "실버", "title": "실버", "detail": "95",
+     "fable": False, "fields": 4, "category_count": 2,
+     "mapping": {"id": "item_code", "title": "label", "category": "region"}},
     {"name": "trends", "csv": "qa_trends.csv", "total": 5, "category": "JP",
      "category_total": 2, "search": "실버", "title": "JP 실버", "detail": "90", "fable": False, "fields": 6},
 ]
@@ -45,6 +54,9 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
     manifest = build(
         ROOT / "samples" / case["csv"], out,
         fable_result=(ROOT / "samples/fable_record_redacted.json") if case["fable"] else None,
+        approved_mapping=case.get("mapping"),
+        expected_source_sha256=(preflight(ROOT / "samples" / case["csv"])["source_sha256"]
+                                if case.get("mapping") else None),
     )
     assert manifest["rows"] == case["total"]
     assert manifest["fable_review"]["status"] == ("REVIEW_REQUIRED" if case["fable"] else "NOT_REQUESTED")
@@ -79,7 +91,7 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
             expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
             expect(page.locator(".item")).to_have_count(case["total"])
             expect(page.locator("#overview-total")).to_have_text(f'{case["total"]}건')
-            expect(page.locator("#category-stats li")).to_have_count(3)
+            expect(page.locator("#category-stats li")).to_have_count(case.get("category_count", 3))
             page.locator("#schema-panel summary").click()
             expect(page.locator("#schema-fields li")).to_have_count(case["fields"])
             expect(page.locator("#schema-status")).to_have_text("검토 전")
@@ -99,6 +111,7 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
             assert page.request.get(base + "/review/fable_review.json").status == 404
             assert page.request.get(base + "/manifest.json").status == 404
             assert page.request.get(base + "/schema_preview.json").status == 404
+            assert page.request.get(base + "/mapping_report.json").status == 404
             assert not errors, f"JS errors: {errors}"
             assert not external, f"Unexpected requests: {external}"
             assert not dialogs, f"Unexpected dialogs: {dialogs}"
@@ -109,6 +122,7 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
                 "category_results": case["category_total"], "search_results": 1,
                 "detail_verified": True, "reload_verified": True,
                 "schema_preview_verified": True, "category_summary_verified": True,
+                "explicit_mapping_verified": bool(case.get("mapping")),
                 "unexpected_network_calls": len(external), "js_errors": len(errors),
                 "dialogs": len(dialogs), "fable_review": manifest["fable_review"]["status"],
                 "browser": "Chromium", "status": "PASS"}
@@ -137,7 +151,7 @@ def main() -> None:
                "case_count": len(cases), "cases": cases}
     (report / "qa_report.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("PASS D7 real Chromium: 4 CSV domains (including inert formula text) + 1 JSON, no JS dialogs/outbound calls")
+    print("PASS D8 real Chromium: 7 synthetic apps including approved mapped CSV/JSON, existing search/filter/reload, no unexpected requests")
     print(json.dumps(summary, ensure_ascii=False))
 
 

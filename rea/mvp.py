@@ -29,10 +29,10 @@ class DataError(ValueError):
     """Invalid customer-supplied file. The original is never changed."""
 
 
-def _validate_records(headers: list[str], records, *, label: str = "Row") -> tuple[list[str], list[dict[str, str]]]:
+def _validate_records(headers: list[str], records, *, label: str = "Row", require_semantics: bool = True) -> tuple[list[str], list[dict[str, str]]]:
     """One bounded row validator for CSV and JSON, preserving CSV behaviour."""
     if (len(headers) > MAX_COLUMNS or len(headers) != len(set(headers))
-            or not set(REQUIRED).issubset(headers)
+            or (require_semantics and not set(REQUIRED).issubset(headers))
             or any(not key or "\x00" in key or len(key) > 2000 for key in headers)):
         raise DataError("Required unique columns: id, title, category (maximum 20)")
     seen: set[str] = set()
@@ -47,19 +47,20 @@ def _validate_records(headers: list[str], records, *, label: str = "Row") -> tup
         clean = {key: row[key].strip() for key in headers}
         if any("\x00" in value or len(value) > 2000 for value in clean.values()):
             raise DataError(f"{label} {number}: invalid cell")
-        for key in REQUIRED:
-            if not clean[key]:
-                raise DataError(f"{label} {number}: missing {key}")
-        if clean["id"] in seen:
-            raise DataError(f"{label} {number}: duplicate id")
-        seen.add(clean["id"])
+        if require_semantics:
+            for key in REQUIRED:
+                if not clean[key]:
+                    raise DataError(f"{label} {number}: missing {key}")
+            if clean["id"] in seen:
+                raise DataError(f"{label} {number}: duplicate id")
+            seen.add(clean["id"])
         entries.append(clean)
     if not entries:
         raise DataError("Input must have at least one record")
     return headers, entries
 
 
-def parse_csv(source: Path) -> tuple[list[str], list[dict[str, str]]]:
+def parse_csv(source: Path, *, require_semantics: bool = True) -> tuple[list[str], list[dict[str, str]]]:
     source = Path(source)
     if not source.is_file() or source.suffix.lower() != ".csv" or source.is_symlink():
         raise DataError("Provide an existing regular .csv file (not a symlink)")
@@ -72,7 +73,7 @@ def parse_csv(source: Path) -> tuple[list[str], list[dict[str, str]]]:
                 raise DataError("CSV must have a header row")
             headers = [key.strip() for key in reader.fieldnames]
             reader.fieldnames = headers
-            return _validate_records(headers, reader)
+            return _validate_records(headers, reader, require_semantics=require_semantics)
     except (UnicodeError, csv.Error) as exc:
         raise DataError("Invalid UTF-8 CSV format") from exc
 
@@ -91,7 +92,7 @@ def _reject_constant(value):
     raise DataError("Non-finite JSON numbers are unsupported")
 
 
-def parse_json(source: Path) -> tuple[list[str], list[dict[str, str]]]:
+def parse_json(source: Path, *, require_semantics: bool = True) -> tuple[list[str], list[dict[str, str]]]:
     """Strict array-of-flat-string-objects; never guess nested structures."""
     source = Path(source)
     if not source.is_file() or source.suffix.lower() != ".json" or source.is_symlink():
@@ -111,16 +112,16 @@ def parse_json(source: Path) -> tuple[list[str], list[dict[str, str]]]:
     headers = list(first)
     if any(not isinstance(key, str) or key != key.strip() for key in headers):
         raise DataError("JSON field names must be nonblank and unpadded")
-    return _validate_records(headers, records, label="Object")
+    return _validate_records(headers, records, label="Object", require_semantics=require_semantics)
 
 
-def parse_input(source: Path) -> tuple[list[str], list[dict[str, str]]]:
+def parse_input(source: Path, *, require_semantics: bool = True) -> tuple[list[str], list[dict[str, str]]]:
     """One accepted owner data file. Multiple-file joining remains unsupported."""
     ext = Path(source).suffix.lower()
     if ext == ".csv":
-        return parse_csv(source)
+        return parse_csv(source, require_semantics=require_semantics)
     if ext == ".json":
-        return parse_json(source)
+        return parse_json(source, require_semantics=require_semantics)
     raise DataError("Data input must be one .csv or .json file")
 
 
@@ -172,14 +173,46 @@ def preview_schema(columns: list[str], rows: list[dict[str, str]], *, source_kin
     }
 
 
-def generate(csv_file: Path, output: Path, name: str = "REA sample web app") -> dict:
+
+def map_owner_fields(
+    headers: list[str], rows: list[dict[str, str]], mapping: dict[str, str]
+) -> tuple[list[str], list[dict[str, str]]]:
+    """Honor exactly the owner-confirmed 1-to-1 source columns. Never infer."""
+    if (not isinstance(mapping, dict) or set(mapping) != set(REQUIRED)
+            or any(type(v) is not str for v in mapping.values())
+            or len(set(mapping.values())) != 3
+            or any(v not in headers for v in mapping.values())):
+        raise DataError("Mapping must name three distinct existing source fields")
+    # An unused source column named a reserved target must not be silently lost.
+    remaining = [h for h in headers if h not in mapping.values()]
+    if any(h in REQUIRED for h in remaining):
+        raise DataError("Unselected source column collides with a reserved target")
+    columns = [*REQUIRED, *remaining]
+    translated = [
+        {**{target: row[mapping[target]] for target in REQUIRED},
+         **{extra: row[extra] for extra in remaining}}
+        for row in rows
+    ]
+    return _validate_records(columns, translated, label="Mapped row")
+
+
+def generate(csv_file: Path, output: Path, name: str = "REA sample web app",
+             *, approved_mapping: dict[str, str] | None = None,
+             expected_source_sha256: str | None = None) -> dict:
     source = Path(csv_file).absolute()
     output = Path(output).absolute()
     if output.exists() or output.is_symlink():
         raise FileExistsError(f"Output already exists: {output}")
     if not name.strip() or len(name) > 100:
         raise DataError("App name must be 1 to 100 characters")
-    columns, rows = parse_input(source)
+    source_digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    if expected_source_sha256 is not None and source_digest != expected_source_sha256:
+        raise DataError("Owner source changed since the approved field preview")
+    if approved_mapping is None:
+        columns, rows = parse_input(source)
+    else:
+        candidate_headers, candidate_rows = parse_input(source, require_semantics=False)
+        columns, rows = map_owner_fields(candidate_headers, candidate_rows, approved_mapping)
     source_kind = "customer_supplied_json" if source.suffix.lower() == ".json" else "customer_supplied_csv"
     output.parent.mkdir(parents=True, exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix=".rea-staging-", dir=output.parent))
@@ -207,6 +240,9 @@ def generate(csv_file: Path, output: Path, name: str = "REA sample web app") -> 
         shutil.copy2(TEMPLATES / "app.py", stage / "app.py")
         shutil.copytree(TEMPLATES / "static", stage / "static")
         (stage / "requirements.txt").write_text("fastapi>=0.110,<1\nuvicorn>=0.27,<1\n", encoding="utf-8")
+        # Abort if the source changed after parsing; never publish inconsistent provenance.
+        if hashlib.sha256(source.read_bytes()).hexdigest() != source_digest:
+            raise DataError("Source changed during generation")
         manifest = {
             "generator": "REA_Web MVP 0.1", "source": source.name,
             "input_kind": source_kind,
@@ -216,6 +252,18 @@ def generate(csv_file: Path, output: Path, name: str = "REA sample web app") -> 
             "run": "python -m uvicorn app:app --host 127.0.0.1 --port 8000",
             "scope": "LOCAL_SYNTHETIC_OR_USER_SUPPLIED_DATA_ONLY",
         }
+        if approved_mapping is not None:
+            manifest["owner_field_mapping"] = {
+                "status": "OWNER_CONFIRMED_FOR_THIS_LOCAL_BUILD",
+                "source_fields": {key: approved_mapping[key] for key in REQUIRED},
+                "confirmation_scope": "ONE_LOCAL_GENERATION_ONLY",
+                "source_sha256": source_digest,
+                "fable_inferred_mapping_used": False,
+            }
+            (stage / "mapping_report.json").write_text(
+                json.dumps(manifest["owner_field_mapping"], ensure_ascii=False,
+                           sort_keys=True, indent=2) + "\n", encoding="utf-8"
+            )
         (stage / "manifest.json").write_text(
             json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
         )

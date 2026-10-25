@@ -37,7 +37,9 @@ def _fable_review(source: Path, astra_root: Path | None) -> dict:
 
 
 def build(csv_file: Path, output: Path, name: str = "REA local app",
-          *, fable_result: Path | None = None, astra_root: Path | None = None) -> dict:
+          *, fable_result: Path | None = None, astra_root: Path | None = None,
+          approved_mapping: dict[str, str] | None = None,
+          expected_source_sha256: str | None = None) -> dict:
     """Build with no production network, DB/API access, or source mutations.
 
     Parse both inputs before touching destination. Stage full deliverable on
@@ -50,15 +52,17 @@ def build(csv_file: Path, output: Path, name: str = "REA local app",
     if not name.strip() or len(name) > 100:
         raise DataError("App name must be 1 to 100 characters")
     # Validate before creating a staging directory (also bounds CSV size/rows).
-    parse_input(csv_file)
+    parse_input(csv_file, require_semantics=approved_mapping is None)
     review = _fable_review(Path(fable_result), astra_root) if fable_result is not None else None
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".rea-orchestrator-", dir=output.parent) as temp:
         project = Path(temp) / "app"
-        manifest = generate(csv_file, project, name)
+        manifest = generate(csv_file, project, name,
+                            approved_mapping=approved_mapping,
+                            expected_source_sha256=expected_source_sha256)
         # Report is sibling to the executable app and not mounted as a web route.
         manifest["generation_input"] = "customer_supplied_json_only" if csv_file.suffix.lower() == ".json" else "customer_supplied_csv_only"
-        manifest["semantic_mapping_status"] = "not_approved"
+        manifest["semantic_mapping_status"] = ("owner_confirmed_single_source" if approved_mapping else "not_approved")
         manifest["fable_review"] = {
             "status": "REVIEW_REQUIRED", "used_for_generation": False,
             "validation": review["astra_contract_validation"],

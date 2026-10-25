@@ -35,7 +35,7 @@ VENDORS = {
 }
 ALLOWED_DELIVERY = frozenset({
     "app/app.py", "app/data.sqlite", "app/manifest.json", "app/README.md",
-    "app/schema_preview.json", "app/requirements.txt",
+    "app/schema_preview.json", "app/mapping_report.json", "app/requirements.txt",
     "app/static/index.html", "app/static/app.js", "app/static/style.css",
     "app/review/fable_review.json", "app/review/README.md",
     "README_WINDOWS.md", "launch_windows.cmd", "delivery_manifest.json",
@@ -108,6 +108,20 @@ def inspect_delivery(archive: Path) -> dict:
             raise AuditError("Schema approval gate changed")
         if schema.get("source_kind") != kind:
             raise AuditError("Schema source kind does not match app")
+        mapped = "app/mapping_report.json" in names
+        if mapped:
+            receipt = json.loads(zf.read("app/mapping_report.json"))
+            mapped_in_manifest = app_manifest.get("owner_field_mapping")
+            if (receipt != mapped_in_manifest
+                    or receipt.get("status") != "OWNER_CONFIRMED_FOR_THIS_LOCAL_BUILD"
+                    or receipt.get("confirmation_scope") != "ONE_LOCAL_GENERATION_ONLY"
+                    or receipt.get("source_sha256") != app_manifest.get("sha256")
+                    or receipt.get("fable_inferred_mapping_used") is not False
+                    or set(receipt.get("source_fields", {})) != {"id", "title", "category"}
+                    or len(set(receipt["source_fields"].values())) != 3):
+                raise AuditError("Unapproved or inconsistent owner mapping report")
+        elif "owner_field_mapping" in app_manifest:
+            raise AuditError("Owner mapping report missing")
         review_present = "app/review/fable_review.json" in names
         if review_present:
             doc = json.loads(zf.read("app/review/fable_review.json"))
@@ -129,6 +143,7 @@ def inspect_delivery(archive: Path) -> dict:
         "vendor_upstream_licenses_cleared": False,
         "raw_fable_capture_bundled": False,
         "review_report_present": review_present,
+        "owner_mapping_receipt_present": mapped,
         "dependencies": dependencies,
         "transitive_dependency_inventory": "NOT_ASSESSED",
         "customer_data_sensitivity": "NOT_ASSESSED",

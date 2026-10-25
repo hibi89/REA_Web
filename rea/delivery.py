@@ -148,7 +148,9 @@ def verify_delivery(archive: Path) -> dict:
 
 def create_delivery(csv_file: Path, output_zip: Path, name: str = "REA local app",
                     *, fable_result: Path | None = None,
-                    astra_root: Path | None = None) -> dict:
+                    astra_root: Path | None = None,
+                    approved_mapping: dict[str, str] | None = None,
+                    expected_source_sha256: str | None = None) -> dict:
     csv_file, output_zip = Path(csv_file), Path(output_zip).absolute()
     if output_zip.exists() or output_zip.is_symlink():
         raise FileExistsError("Output archive already exists: " + str(output_zip))
@@ -158,7 +160,9 @@ def create_delivery(csv_file: Path, output_zip: Path, name: str = "REA local app
     with tempfile.TemporaryDirectory(prefix=".rea-export-", dir=output_zip.parent) as temp:
         work = Path(temp)
         project = work / "app"
-        build(csv_file, project, name, fable_result=fable_result, astra_root=astra_root)
+        build(csv_file, project, name, fable_result=fable_result, astra_root=astra_root,
+              approved_mapping=approved_mapping,
+              expected_source_sha256=expected_source_sha256)
         members = _members(project)
         manifest = _manifest(members)
         members["delivery_manifest.json"] = (
