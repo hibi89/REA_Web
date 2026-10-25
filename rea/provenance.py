@@ -35,7 +35,7 @@ VENDORS = {
 }
 ALLOWED_DELIVERY = frozenset({
     "app/app.py", "app/data.sqlite", "app/manifest.json", "app/README.md",
-    "app/schema_preview.json", "app/mapping_report.json", "app/requirements.txt",
+    "app/schema_preview.json", "app/mapping_report.json", "app/append_report.json", "app/requirements.txt",
     "app/static/index.html", "app/static/app.js", "app/static/style.css",
     "app/review/fable_review.json", "app/review/README.md",
     "README_WINDOWS.md", "launch_windows.cmd", "delivery_manifest.json",
@@ -122,6 +122,43 @@ def inspect_delivery(archive: Path) -> dict:
                 raise AuditError("Unapproved or inconsistent owner mapping report")
         elif "owner_field_mapping" in app_manifest:
             raise AuditError("Owner mapping report missing")
+        appended = "app/append_report.json" in names
+        if appended:
+            receipt = json.loads(zf.read("app/append_report.json"))
+            sources = receipt.get("sources")
+            if (receipt != app_manifest.get("two_file_append")
+                    or receipt.get("schema_version") != "rea.two_file_append.v0.1"
+                    or receipt.get("status") != "OWNER_CONFIRMED_EXPLICIT_APPEND_ONLY"
+                    or receipt.get("mode") != "SAME_SCHEMA_ROW_APPEND_NO_JOIN"
+                    or receipt.get("combined_confirmation") != "APPEND"
+                    or receipt.get("fable_inferred_mapping_used") is not False
+                    or receipt.get("external_join_or_lookup_used") is not False
+                    or app_manifest.get("source_count") != 2
+                    or receipt.get("source_count") != 2
+                    or app_manifest.get("source") != "TWO_OWNER_INPUTS_APPENDED"
+                    or receipt.get("rows") != app_manifest.get("rows")
+                    or receipt.get("fields") != app_manifest.get("fields")
+                    or not isinstance(sources, list) or len(sources) != 2):
+                raise AuditError("Two-source receipt does not match app manifest")
+            count = 0
+            for index, item in enumerate(sources, 1):
+                if not isinstance(item, dict):
+                    raise AuditError("Invalid source entry")
+                digest, fields = item.get("sha256"), item.get("source_fields")
+                if (item.get("position") != index or item.get("confirmed") != "APPROVE"
+                        or item.get("input_kind") not in {"customer_supplied_csv", "customer_supplied_json"}
+                        or type(item.get("row_count")) is not int or item["row_count"] < 1
+                        or not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest)
+                        or not isinstance(fields, dict)
+                        or set(fields) != {"id", "title", "category"}
+                        or any(not isinstance(value, str) for value in fields.values())
+                        or len(set(fields.values())) != 3):
+                    raise AuditError("Invalid source confirmation in append receipt")
+                count += item["row_count"]
+            if count != receipt["rows"]:
+                raise AuditError("Two-source row count mismatch")
+        elif "two_file_append" in app_manifest:
+            raise AuditError("Missing append receipt")
         review_present = "app/review/fable_review.json" in names
         if review_present:
             doc = json.loads(zf.read("app/review/fable_review.json"))
@@ -144,6 +181,7 @@ def inspect_delivery(archive: Path) -> dict:
         "raw_fable_capture_bundled": False,
         "review_report_present": review_present,
         "owner_mapping_receipt_present": mapped,
+        "two_file_append_receipt_present": appended,
         "dependencies": dependencies,
         "transitive_dependency_inventory": "NOT_ASSESSED",
         "customer_data_sensitivity": "NOT_ASSESSED",

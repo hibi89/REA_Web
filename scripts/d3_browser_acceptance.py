@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from rea.orchestrator import build  # noqa: E402
 from rea.guided import preflight  # noqa: E402
+from rea.two_source import preflight_pair, build_pair  # noqa: E402
 
 CASES = [
     {"name": "cafe", "csv": "qa_cafe.csv", "total": 4, "category": "음료",
@@ -38,6 +39,11 @@ CASES = [
      "category_total": 2, "search": "실버", "title": "실버", "detail": "95",
      "fable": False, "fields": 4, "category_count": 2,
      "mapping": {"id": "item_code", "title": "label", "category": "region"}},
+    {"name": "approved_two", "csv": "qa_guided.csv", "second": "qa_pair_extra.json",
+     "total": 5, "category": "디저트", "category_total": 1,
+     "search": "초코케이크", "title": "초코케이크", "detail": "6900",
+     "fable": False, "fields": 4, "category_count": 3,
+     "mapping": {"id": "sku", "title": "display_name", "category": "group_name"}},
     {"name": "trends", "csv": "qa_trends.csv", "total": 5, "category": "JP",
      "category_total": 2, "search": "실버", "title": "JP 실버", "detail": "90", "fable": False, "fields": 6},
 ]
@@ -51,13 +57,22 @@ def free_port() -> int:
 
 def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
     out = work / case["name"]
-    manifest = build(
-        ROOT / "samples" / case["csv"], out,
-        fable_result=(ROOT / "samples/fable_record_redacted.json") if case["fable"] else None,
-        approved_mapping=case.get("mapping"),
-        expected_source_sha256=(preflight(ROOT / "samples" / case["csv"])["source_sha256"]
-                                if case.get("mapping") else None),
-    )
+    if case.get("second"):
+        a, second = ROOT / "samples" / case["csv"], ROOT / "samples" / case["second"]
+        preview = preflight_pair(a, second)
+        manifest = build_pair(
+            a, second, out, "REA synthetic same-schema append",
+            case["mapping"], preview["sources"][0]["sha256"],
+            preview["sources"][1]["sha256"], "APPROVE", "APPROVE", "APPEND")
+        assert manifest["source_count"] == 2
+    else:
+        manifest = build(
+            ROOT / "samples" / case["csv"], out,
+            fable_result=(ROOT / "samples/fable_record_redacted.json") if case["fable"] else None,
+            approved_mapping=case.get("mapping"),
+            expected_source_sha256=(preflight(ROOT / "samples" / case["csv"])["source_sha256"]
+                                    if case.get("mapping") else None),
+        )
     assert manifest["rows"] == case["total"]
     assert manifest["fable_review"]["status"] == ("REVIEW_REQUIRED" if case["fable"] else "NOT_REQUESTED")
     port = free_port()
@@ -112,6 +127,7 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
             assert page.request.get(base + "/manifest.json").status == 404
             assert page.request.get(base + "/schema_preview.json").status == 404
             assert page.request.get(base + "/mapping_report.json").status == 404
+            assert page.request.get(base + "/append_report.json").status == 404
             assert not errors, f"JS errors: {errors}"
             assert not external, f"Unexpected requests: {external}"
             assert not dialogs, f"Unexpected dialogs: {dialogs}"
@@ -123,6 +139,7 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
                 "detail_verified": True, "reload_verified": True,
                 "schema_preview_verified": True, "category_summary_verified": True,
                 "explicit_mapping_verified": bool(case.get("mapping")),
+                "two_file_explicit_append_verified": bool(case.get("second")),
                 "unexpected_network_calls": len(external), "js_errors": len(errors),
                 "dialogs": len(dialogs), "fable_review": manifest["fable_review"]["status"],
                 "browser": "Chromium", "status": "PASS"}
@@ -151,7 +168,7 @@ def main() -> None:
                "case_count": len(cases), "cases": cases}
     (report / "qa_report.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("PASS D8 real Chromium: 7 synthetic apps including approved mapped CSV/JSON, existing search/filter/reload, no unexpected requests")
+    print("PASS D9 real Chromium: 8 synthetic apps incl owner-approved two-file append; safe search/filter/detail/reload")
     print(json.dumps(summary, ensure_ascii=False))
 
 
