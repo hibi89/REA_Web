@@ -66,7 +66,7 @@ def test_tampered_archive_with_recomputed_sha_without_receipt_fails(tmp_path):
     other=tmp_path/"tampered.zip"
     with zipfile.ZipFile(other,"x") as f:
         for n,v in raw.items():f.writestr(n,v)
-    with pytest.raises(AuditError,match="Missing two-file"):
+    with pytest.raises(AuditError,match="Missing append receipt"):
         inspect_delivery(other)
 
 
