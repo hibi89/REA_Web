@@ -24,7 +24,7 @@ LAUNCH = "\r\n".join([
     'cd /d "%~dp0app"',
     "if errorlevel 1 exit /b 1",
     "if not defined REA_WEB_PORT set REA_WEB_PORT=8000",
-    'py -3 -m uvicorn app:app --host 127.0.0.1 --port %REA_WEB_PORT%',
+    'python -m uvicorn app:app --host 127.0.0.1 --port %REA_WEB_PORT%',
     "endlocal",
     "",
 ])
@@ -34,10 +34,10 @@ This ZIP contains a locally generated read-only FastAPI/SQLite app.
 No live customer database, Fable scanner, external AI, payment or login.
 Use only authorized and non-sensitive CSV samples.
 
-1. Install Python 3.11 or later with the Windows py launcher.
+1. Install Python 3.11 or later with python.exe on PATH.
 2. Extract the entire ZIP to a NEW local folder.
 3. Open Command Prompt in the extracted folder.
-4. Run: py -3 -m pip install -r app\\requirements.txt
+4. Run: python -m pip install -r app\\requirements.txt
    Internet may be required for installing packages; runtime is local only.
 5. Run: launch_windows.cmd
 6. Open: http://127.0.0.1:8000/
