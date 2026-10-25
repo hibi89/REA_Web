@@ -130,9 +130,12 @@ def test_cli_synthetic_rehearsal_writes_safe_status(tmp_path):
 
 
 def test_browser_rehearsal_source_preserves_blocked_gates():
-    from scripts import d11_browser_rehearsal
-    # Functional extracted-ZIP/Chromium run executes on Linux CI separately.
-    assert callable(d11_browser_rehearsal.run_case)
-    assert callable(d11_browser_rehearsal.main)
+    import ast
+    # Windows regression never needs the Linux-only Playwright browser binary.
+    # Actual Chromium execution is independently required in the Linux CI job.
+    path = ROOT / "scripts/d11_browser_rehearsal.py"
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    functions = {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
+    assert {"run_case", "main", "free_port"} <= functions
     for case in d11_rehearsal.CASES:
         assert set(case["selected_features"]) <= d11_rehearsal.ALLOWED_FEATURES
