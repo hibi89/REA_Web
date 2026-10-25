@@ -1,6 +1,6 @@
 # REA_Web — 웹서비스 분석·재구축 자동화 엔진
 
-> 2026-10-25 · **3일 MVP 우선 개발 중** · Day1·Day2 통합 앱 + D3 Linux·Windows 합성 QA PASS · D4 스키마·요약 + D5 JSON 입력 검증 PASS · 상용 검증 미완성
+> 2026-10-26 · **MVP 기능 브랜치 D12까지 CI 검증** (Linux·Windows 각 217 tests, 11 Chromium 합성 사례) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
 
 **새 채팅 즉시 재개:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` — 질문 없이 최신 GitHub 문서·코드 확인 후 다음 READY 개발 작업을 수행한다. **최우선 안내:** [WORKER_START_HERE.md](WORKER_START_HERE.md) · [세션 복원 프로토콜](docs/SESSION_RESTART_PROTOCOL.md).
 
@@ -35,7 +35,7 @@
 - [최초 설계 대비 차이표](https://github.com/hibi89/REA_Web/blob/qa/cross-platform/docs/21_MVP_GAP_MATRIX.md); [D3 사용·검수 가이드](https://github.com/hibi89/REA_Web/blob/qa/cross-platform/docs/22_D3_TEST_GUIDE.md).
 
 ## 다음 작업 (지금 시작 가능)
-REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운트, 기존 앱 회귀 검증. D4 완료. 다음 D5는 제한 JSON 입력 및 최초 판매 범위의 2파일 약속 정합성 확인. 그다음 라이선스·보안·Windows 실사용 점검 후 판매 여부 판단. 전체 소스는 Draft PR 상태, 상용화/배포 전.
+**D13-01 READY:** 선택형 오프라인 GUI로 고객 파일 선택·매핑 승인·앱 생성의 사용성 격차를 메운다. D12는 완료; CLI·원본 보존, 유료 서비스 및 상용 권리 승인 차단 유지. 정확한 다음 작업은 [docs/17_NEXT_TASK.md](docs/17_NEXT_TASK.md). 전체 소스는 Draft PR 상태, 상용화/배포 전.
 
 ## 사업/범위
 초기 크몽 가격 가설 300,000원. 소규모 고객 제공 CSV 중심, 2개 화면·3개 단순 기능 이내 정액 납품을 목표로 한다. 데이터 수집 대행·운영 DB 접근·복잡한 인증·결제·무제한 수정 제외. 아직 판매 개시/납품 준비가 완료된 상태가 아니다.
@@ -89,3 +89,9 @@ REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운�
 - [CI 40211563951](https://github.com/hibi89/REA_Web/actions/runs/40211563951) Linux/Windows **각각 201개 pytest PASS**, 기존 Chromium 8개 + 완성된 납품 ZIP을 풀어 실행한 Chromium 3개, Windows 로컬 CMD, Fable 88/Astra 103 원본 Git 해시 PASS.
 - 3개 합성 가상 고객: 카페 목록/검색/필터(4행), 재고 목록/검색/상세(5행), 네일 트렌드 목록/필터/요약(5행). 각 1화면, 계약기능 3개. ZIP·검수표·Chromium 스크린샷·수동시간 **빈 템플릿** 생성. [D11 설명](https://github.com/hibi89/REA_Web/blob/feature/three-case-rehearsal/docs/30_THREE_CASE_QUOTE_REHEARSAL.md).
 - **상용 출시 불가:** 30만 원 가격은 미검증 가설. 실제 고객·참조사이트 허가, 일반 Windows 사용자 수동검수, 제3자 상용 라이선스, 개인정보·복구·완전 보안, 3건의 사람 작업시간·환불/지원 계약 미완료. 다음 D12는 정확한 Python 의존성·라이선스·NOTICE 근거를 조사하되 상용 승인으로 간주하지 않음.
+
+## D12-01 — Linux/Windows 의존성·라이선스 증거 감사 완료 (2026-10-26)
+- `feature/dependency-notice-evidence` @ `e18e07f714199a734699e1baca24d857c873fa60`, [Draft PR #15](https://github.com/hibi89/REA_Web/pull/15), 미병합.
+- [실제 CI #40213031424](https://github.com/hibi89/REA_Web/actions/runs/40213031424) Ubuntu/Windows 각 **217 pytest PASS**, 경고 1건(비차단)씩. 실제 Chromium 합성 앱 8+3 Linux, Windows native ZIP CMD/localhost, Fable 88/Astra PARTIAL 103 소스 SHA 모두 통과.
+- 14개 패키지의 관측 버전·조건부 의존성·기설치 라이선스/NOTICE 파일 SHA 증거(개발 CI 전용). Python wheel 아카이브 해시 완전 lock 아님, 법적 사용권·재배포 권한 판단 아님. 원본·고객 납품 ZIP 무수정. [D12 상세](https://github.com/hibi89/REA_Web/blob/feature/dependency-notice-evidence/docs/31_RUNTIME_DEPENDENCY_EVIDENCE.md).
+- 다음 D13: 고객용 실행/제작 UX 격차(선택형 로컬 GUI). 30만 원 상품 판매·퍼블릭 배포·고객 실제 납품·완전한 라이선스/보안 검증은 승인되지 않음.
