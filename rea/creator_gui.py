@@ -254,6 +254,14 @@ def build_window(root):
 
     export_button = ttk.Button(frame, text="2. 승인 후 새 ZIP 생성", command=export_action)
     export_button.pack(anchor="w")
+    def open_pair():
+        # Optional SECOND window; ordinary 1-file controller and approvals stay intact.
+        from rea.pair_creator_window import build_pair_window
+        return build_pair_window(root)
+
+    pair_button = ttk.Button(frame, text="별도 기능: 같은 컬럼 2파일 행 추가(APPEND)",
+                             command=open_pair)
+    pair_button.pack(anchor="w", pady=(8, 0))
     ttk.Label(frame, textvariable=status_var, wraplength=620).pack(
         anchor="w", pady=(14, 0))
     # Test seam exposes REAL Tk widgets and callbacks, not substitute logic.
@@ -264,7 +272,7 @@ def build_window(root):
         export_button=export_button, rights_checkbox=rights_checkbox,
         approval_entry=approval_entry, preview_label=preview_label,
         choose_source=choose_source, choose_output=choose_output,
-        controller=controller,
+        controller=controller, pair_button=pair_button, open_pair=open_pair,
     )
 
 
