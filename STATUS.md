@@ -1,6 +1,6 @@
 # REA_Web STATUS — 2026-10-26 KST
 
-**D12-01 VERIFIED in Draft PR #15; D13-01 NEXT READY (guided offline creator UI).** main holds documentation/dispatcher; all PR #1–#14 remain Draft/unmerged. No production hosting or commercial release.
+**D13-01 VERIFIED in Draft PR #16; D14-01 NEXT READY (actual GUI synthetic interaction and beginner onboarding).** main holds documentation/dispatcher; all PR #1–#16 remain Draft/unmerged. No production hosting or commercial release.
 
 ## Exact evidence milestone
 | Unit | Synthetic working unit | Verified tests |
@@ -35,7 +35,7 @@ D11 isolated feature branch feature/three-case-rehearsal SHA a49f05e969fd49e44b2
 - Three manually measured jobs and the suggested 6–8 hour service economics remain NOT_RUN.
 - PR branches are not merged or published; no Vercel/live customer API, customer ZIP or real site accessed.
 
-## NEXT READY: D12-01
+## Historical NEXT READY: D12-01 (superseded)
 An isolated, synthetic-only **reproducible CI dependency resolution + NOTICE/license evidence triage** unit: record exact direct/transitive versions, hashes and metadata/notice contents where legally permitted; produce a deterministic *developer-only* constraints/SBOM evidence without automatically modifying customer ZIP or asserting compliance. Test Linux+Windows full regression and actual Chromium. Keep ownership, signed customer license rights, clean Windows human and real buyer blocked. docs/17_NEXT_TASK.md is authoritative.
 
 ## D12-01 VERIFIED — offline exact dependency and legal-file SHA evidence (2026-10-26 01:45 KST)
@@ -44,3 +44,10 @@ An isolated, synthetic-only **reproducible CI dependency resolution + NOTICE/lic
 - `rea/dependency_evidence.py`: no-network read-only installed versions/PEP508 marker/conditional/missing/specifier evidence; hash of installed metadata and observed LICENSE/LICENCE/NOTICE/COPYING bytes where safe, never legal contents. Developer-only candidate constraints; **NO wheel archive hash lock, NO actual compliance approval/CVE scan**. 14 installed distributions observed both OS, extras expansion explicitly unresolved. Linux artifact **12606655901**, Windows artifact **12606481398**. CI reports outside actual delivery ZIP; no customer data, vendor source changes, payment or hosting.
 - G5 and G6 still BLOCKED: actual approved client/reference, 3 measured human jobs, nondeveloper clean Windows, redistribution/license grants and attribution, privacy/recovery/security, actual 300k two-file scope signoff, correction/refund/support. Commercial readiness BLOCKED, Production **not applicable**.
 - **NEXT D13-01:** restore high-value original-vs-MVP gap: optional local guided creator GUI for choosing owner CSV/JSON, reviewing consent/mapping and explicitly approving export; preserve CLI, avoid real files and remote upload. Compare stdlib Tkinter wrapper with localhost browser wizard, prefer optional Tkinter if tested; no autopermission. See docs/17_NEXT_TASK.md.
+
+## D13-01 VERIFIED — optional offline creator GUI (2026-10-26 KST)
+- Source `feature/offline-creator-gui` SHA `6a3fedad101d33b4628ef507887adf8114f7eb3c`, [Draft PR #16](https://github.com/hibi89/REA_Web/pull/16), UNMERGED. Actual [Actions #40214024958](https://github.com/hibi89/REA_Web/actions/runs/40214024958) **SUCCESS**: Ubuntu 3.11 **242 pytest PASS** (1 nonblocking warning), Windows-latest 3.11 **242 pytest PASS** (1 nonblocking warning). Relative to D12, **25 new tests**. GitHub CI Linux 8 existing real Chromium synthetic apps + 3 Chromium of extracted ZIPs PASS; Windows extracted .cmd -> localhost HTTP PASS; pinned Fable 88/Astra PARTIAL 103 SHA both OS PASS; Windows Tkinter & `rea.creator_gui` import PASS, **actual GUI human click NOT RUN**. Developer evidence artifacts Linux 12606887168 and Windows 12606782528.
+- `rea/creator_gui.py` optional Tkinter local file and new ZIP chooser, metadata-only CSV/flat JSON preflight, distinct explicit id/title/category selection, rights checkbox plus exact APPROVE; existing approved_selection → create_delivery → verify_delivery. Controller tests reject stale source SHA, unknown/duplicate mappings, existing output, missing consent, symlinks and approval reuse. No file upload or HTTP listener, customer files or upstream changes. GUI only supports single source; D9 2-file SAME-SCHEMA ROW APPEND remains explicit CLI-only, never inferred join.
+- First Actions for D13 failed **2 newly introduced tests** on Linux (expected uppercase `ZIP` while validation used `.zip`, headless fake Tk initialization order). Fixed test expectation and construct Tk root before loading dialogs, final full `242/242` each OS GREEN on above SHA, NOT skipped.
+- Commercial G5/G6 **BLOCKED**: nondeveloper real Windows GUI/onboarding, actual approved client/reference, 3 real timed jobs, rights/NOTICE/attribution, privacy/backup/security and customer 300k terms. No deployment, merge or sale.
+- **NEXT READY D14-01:** actual Tk synthetic GUI click/visual run via supported virtual display (if available) and Windows synthetic UI session if permissible, screenshot/provenance/interaction checks; plus clear Python/Tk Windows first-run guide. Do not substitute headless import test for real UI E2E; do not claim human Windows acceptance. See `docs/17_NEXT_TASK.md`.
