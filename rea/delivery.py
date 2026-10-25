@@ -28,7 +28,7 @@ LAUNCH = "\r\n".join([
     "endlocal",
     "",
 ])
-CHECK_LAUNCH = "\\r\\n".join([
+CHECK_LAUNCH = "\r\n".join([
     "@echo off",
     "setlocal",
     'python "%~dp0self_check.py" --root "%~dp0"',
