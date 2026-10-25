@@ -1,6 +1,6 @@
 # REA_Web — 웹서비스 분석·재구축 자동화 엔진
 
-> 2026-10-26 · **MVP 기능 브랜치 D13까지 CI 검증** (Linux·Windows 각 242 tests, 11 Chromium 합성 사례) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
+> 2026-10-26 · **MVP 기능 브랜치 D14까지 CI 검증** (Linux·Windows 각 246 tests, 11 Chromium 합성 사례 + 실제 Tk 합성 GUI) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
 
 **새 채팅 즉시 재개:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` — 질문 없이 최신 GitHub 문서·코드 확인 후 다음 READY 개발 작업을 수행한다. **최우선 안내:** [WORKER_START_HERE.md](WORKER_START_HERE.md) · [세션 복원 프로토콜](docs/SESSION_RESTART_PROTOCOL.md).
 
@@ -102,3 +102,9 @@
 - 새 모듈 `rea.creator_gui`: 단일 로컬 비민감 CSV/평면 JSON → 컬럼 이름/행 수 미리보기 → id/title/category 직접 선택 → 권한 체크박스+정확히 APPROVE → 새 ZIP 생성 및 SHA 감사. 원본 덮어쓰기/외부 업로드 없음. ZIP 내 SQLite는 데이터 행을 포함함.
 - Tkinter/display가 없으면 GUI 실패로 처리하고 CLI 대체 경로 안내. Python 3.11·개발자 라이브러리 설치가 필요하며 설치형 exe 아님. 상세 [D13 GUI 안내](https://github.com/hibi89/REA_Web/blob/feature/offline-creator-gui/docs/32_OFFLINE_CREATOR_GUI.md).
 - 아직 크몽 30만원 판매, 상용 재배포 권한, 승인된 고객 사례, 실제 GUI 화면 검수, 사용자 Windows 설치/지원 정책은 미승인. 다음 D14는 GUI 위젯 실제 클릭·스크린샷 합성 수락 테스트와 Windows 첫 실행 안내.
+
+## D14-01 — 실제 Tk GUI 자동조작 검증 (2026-10-26)
+- 기능 브랜치 feature/tk-gui-visual-smoke 소스 SHA abff75bff7ee39686ba00e941b1710fe64dccfeb, [Draft PR #17](https://github.com/hibi89/REA_Web/pull/17) 미병합. [실제 Actions #40215159283](https://github.com/hibi89/REA_Web/actions/runs/40215159283) Linux/Windows **각 246 pytest PASS** (비차단 경고 1건씩), Linux Chromium 합성 8+3, Windows native ZIP CMD/localhost, Fable 88/Astra PARTIAL 103 pinned SHA PASS.
+- Linux Xvfb에서 실제 Tk 창·버튼·콤보박스·권한 체크·APPROVE Entry로 합성 ZIP 생성 및 원본 SHA/덮어쓰기 차단 검증 PASS. **GUI PNG 캡처 CAPTURED**, Actions artifact ID 12607236255. Windows CI **실제 합성 Tk 위젯 실행 PASS**, Windows 화면 캡처는 NOT_CAPTURED, artifact ID 12607058534. 사람이 일반 Windows PC에서 쓴 것은 아직 미검증.
+- Windows 첫 실행/오류/CLI 대체 안내 [D14 가이드](https://github.com/hibi89/REA_Web/blob/feature/tk-gui-visual-smoke/docs/33_WINDOWS_TK_FIRST_RUN.md). 제품은 선택형 로컬 Tk GUI 및 기존 Python CLI, 납품 ZIP 내부 data.sqlite에 데이터 행 포함. 실고객/상용 권리/지원 정책/G5/G6 전부 BLOCKED, Production 배포 미적용.
+- 다음 D15는 기존 CLI에 이미 있는 명시적 동일 구조 2파일 ROW APPEND를 옵션형 GUI에도 연결하는 소규모 프로토타입. 서로 다른 사업 테이블 JOIN이나 보편적 웹 복제가 아님.
