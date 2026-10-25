@@ -27,3 +27,8 @@ Owner approved a fast 3-day *working MVP first* experiment. First generate a use
 ## Day 2 evidence-adapter verified checkpoint (2026-10-25 22:55 KST)
 - Feature `feature/evidence-adapter` @ `fda96076de33ebf4f4b6118972a5033a3f703ba9`; Draft PR #4, unmerged. [CI run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969): **28 pytest PASS** on Ubuntu Python 3.11, actual pinned Astra contract validation and CLI anti-approval PASS.
 - No verified whole-product Fable→Astra→CSV end-to-end run yet; D2-02 orchestrator remains READY. Windows and 3-case browser/packaging remain D3.
+
+## D2-02 combined integration checkpoint (2026-10-25 KST)
+- `feature/orchestrator` SHA `46060b4665560922d0c9cf82b9e5c08971eb9427`; [Draft PR #5](https://github.com/hibi89/REA_Web/pull/5) unmerged.
+- [CI 40200704855](https://github.com/hibi89/REA_Web/actions/runs/40200704855): **55 pytest PASS**, 1 warning, two local CLI modes and **actual Chromium** integration browser PASS (filter/search/detail/reload, zero JS or external calls). PR CI 40200708638 SUCCESS.
+- Working combined MVP, not production readiness. Next D3 compares first target architecture, three scenarios, Windows/packaging; safety and licensing before commercial sale.

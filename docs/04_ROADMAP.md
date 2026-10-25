@@ -1,5 +1,7 @@
 # 2026-10-25 — 3-day MVP-first override
 
+> **Live checkpoint:** D1 CSV app PASS, D2-01 Fable/Astra review adapter PASS, D2-02 optional Fable + CSV local app PASS at `46060b4665560922d0c9cf82b9e5c08971eb9427`; 55 pytest + true Chromium E2E, [CI 40200704855](https://github.com/hibi89/REA_Web/actions/runs/40200704855). D3 three-case/Windows/ZIP/original-design gap matrix NEXT. Below D1 early checkpoint values are historical and not the latest SHAs; consult STATUS.md. Deep security/license/reliability gates remain before release.
+
 Owner approved a fast 3-day *working MVP first* experiment. First generate a useful real local app, then compare to original design, add gaps. Defer advanced pentest, scaling, production ops, vendor license audit, premium features; KEEP CSV input validation, no overwrites, SQL parameterization, XSS-safe DOM, loopback-only binding, authorized data boundaries.
 
 ## Day 1 — working user-facing slice

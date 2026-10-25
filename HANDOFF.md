@@ -1,28 +1,38 @@
-# HANDOFF — REA_Web / 2026-10-25 KST
+# REA_Web — HANDOFF (2026-10-25 KST)
 
-## Latest D2 checkpoint (2026-10-25 22:55 KST)
-**REA-MVP-D2-01 DONE on feature only**. Feature SHA `fda96076de33ebf4f4b6118972a5033a3f703ba9`; Draft PR [#4](https://github.com/hibi89/REA_Web/pull/4), unmerged. Real GitHub Actions [CI run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969) SUCCESS: **28/28 pytest**, pinned Astra validation and CLI approval-block check PASS on Ubuntu Python 3.11. PR CI run 40199766677 SUCCESS. `rea/adapter/fable_to_astra.py` adds read-only Fable schema v1.0 → review-only Astra candidate mapping, synthetic demo and tests; do **not** state functional UI, real backend, API ownership or chart lineage as observed. Windows, real customer data, cross-branch E2E, full vendor license audit, production service all NOT_RUN. No Vercel deployment for this unit (not applicable).
+**Read `WORKER_START_HERE.md`, `STATUS.md`, `docs/17_NEXT_TASK.md` and latest real GitHub branch heads before executing. Exact phrase `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` and `ㄱ` already authorize the next safe READY unit; no other prompt required.**
 
-## Instructions for the next assistant
-When owner writes **[REA_Web 깃헙 레포지토리 보고 작업이어가셈]**, inspect real GitHub and **perform the next READY development work immediately** without asking for context or another 'ㄱ'. Read `WORKER_START_HERE.md`, `STATUS.md`, `docs/17_NEXT_TASK.md`, `docs/SESSION_RESTART_PROTOCOL.md`; these are the canonical handoff. Future new chat will not contain our current code discussion, so this repository is the source of truth.
+## 1. Goal / confirmed requirements / technology
+REA_Web = Fable 5.1 read-only technical reference analysis + Astra P4 observation/spec review + independent local webapp from customer-supplied CSV. Initial service hypothesis 300,000 KRW limited scope (roughly 2 screens, 3 basic behaviors), not arbitrary-site clone or production DB. FastAPI, SQLite, HTML/CSS/JS, Python 3.11, offline CLI, optional Fable 1.0 JSON. Three-day **target**, not guarantee. Strategy: working MVP → compare original design → valuable gaps → thorough safety/reliability/commercial QA last (minimum safety on from first unit).
 
-## Product and commercial intent
-REA_Web is the **Fable 5.1 website technical/evidence analyzer + Astra Web Catcher functional-spec/independent web app engine**. Current customer-value-first MVP = take **customer-provided** clean CSV, generate usable standalone local app; reference URL optional. Avoid OHORA-like indefinite data collection / third-party API quota / unknown production DB complexity. First commercial price hypothesis 300,000 KRW fixed scope (2 screens, 3 simple features), not a 990k complex live DB job. Sale only after acceptance.
+## 2. Completed features / changes / rationale
+- D1: customer CSV → new SQLite+read-only app list/search/category filter/detail.
+- D2-01: conservative Fable 1.0 → Astra P4 review-only evidence and spec; inferred ≠ observed.
+- **D2-02:** `rea/orchestrator.py` combines CSV-only output with optional `--fable-result`; CSV still sole source for generated app logic and data, optional reference creates `review/fable_review.json` separately. No automatic semantic mapping/approval. Tested app can be launched on 127.0.0.1.
+- Reused original D1/D2 implementation via exact Git blob SHAs; did not overwrite either branch or vendor snapshots. Integration chosen over full vendor tree merge to reduce coupling/time and license/secret risk.
 
-## Current technical status, with exact SHAs
-- main documentation baseline before this handoff update: `71ed9a4656ef7642a32c335da9c6d664916cabee` (always refetch remote current SHA).
-- Day1 generated local app: `feature/csv-local-mvp` @ `5515a7286d63211e32d2c577f93f77d61f37ce08`. Code `rea/mvp.py`, `rea/templates/app.py`, static HTML/CSS/JS, tests `tests/test_mvp.py`, actual Playwright browser `scripts/mvp_browser_smoke.py`. Draft PR #3, unmerged.
-- CI run `40198326369`, job `121183903206`: **9 pytest PASS** + synthetic CSV app generation + compileall + real Chromium browser PASS; search, category, detail, reload; zero unexpected external request or JS error. No Windows/browser proof on Windows.
-- Fable 88-source import: `import/fable51-bbe72c0` @ `7e6f273b359b207fad8f92016226e3058cbcb839`, pinned upstream `bbe72c0acd3a3e355062d6bd0d866af33e5274b0`, Draft PR #1.
-- Astra P4 103-file bounded **partial** import (41 core astra_contracts modules): `import/astra-p4-b3166b6` @ `f044b66e799289a5a353fdb9cbfdb324e683ffa3`, pinned upstream `b3166b67604381a9d2afd41667b65f9a9b103b37`, Draft PR #2.
-- Branches: integration/develop, feature/evidence-adapter (D2 next), feature/csv-local-mvp (D1), feature/orchestrator, qa/cross-platform, qa/vendor-fable, qa/vendor-astra; don't force-update feature work or mutate upstream imports.
+## 3. Tests / commands / proof
+Latest `feature/orchestrator` **`46060b4665560922d0c9cf82b9e5c08971eb9427`** at GitHub Actions [40200704855](https://github.com/hibi89/REA_Web/actions/runs/40200704855), Ubuntu Python 3.11, **55 pytest PASS, 0 FAIL, 1 warning**, actual Chromium PASS list/filter/search/detail/reload, zero JS errors/external-origin requests, optional Fable review HTTP 404 from generated site, CSV-only+review CLI PASS and compileall PASS. PR CI [40200708638](https://github.com/hibi89/REA_Web/actions/runs/40200708638) SUCCESS; bootstrap PR 40200708511 SUCCESS.
+Commands: `PYTHONPATH=.vendor/astra/engines/astra_p4:. python -m pytest -q tests/test_mvp.py tests/test_adapter.py tests/test_orchestrator.py`; `PYTHONPATH=.vendor/astra/engines/astra_p4:. python scripts/orchestrator_browser_smoke.py`; `python -m rea.orchestrator --csv samples/products.csv --out ./out/demo`; optional `--fable-result samples/fable_record_redacted.json` requires pinned Astra in PYTHONPATH or `--astra-root`.
+D1 separately [40198326369](https://github.com/hibi89/REA_Web/actions/runs/40198326369) 9 pytest+Chromium PASS; D2-01 separately [40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969) 28 pytest PASS. No full real-customer or Windows proof.
 
-## Single task to execute next
-**REA-MVP-D2-02** `READY`, start automatically on exact trigger or `ㄱ`. Prefer `feature/orchestrator` after checking latest branch HEAD and the previous two feature branches. Use Fable report as **optional** analysis input to existing CSV→local app flow; leave website URL optional, require customer-provided CSV, retain `REVIEW_REQUIRED` and no automatic semantic mapping. Implement/test true synthetic demo, create Draft PR, and update main docs with exact proof. Only one unit per turn; next D3 three-example/browser/Windows/packaging/design-gap checks.
+## 4. Complete / active / queued / blockers
+D1 DONE (feature), D2-01 DONE (feature), D2-02 DONE/verified (feature only), next D3-01 READY. D3: 3 independent synthetic domains, Windows setup and tests, ZIP/delivery, gap matrix. P0 vendor license review deferred before selling. No external blocker for synthetic D3; Windows host execution may require owner/local environment and should be NOT_RUN if unavailable.
 
-Do **not** repeat D2-01. Earlier section was historical. Source import branches remain pinned, partial Astra subset unchanged.
+## 5. Error evidence / root cause / attempts / avoid repeats
+D2-02 latest CI GREEN; no unresolved functional CI failures. Formatting of local guide code fences fixed with `46060b4` docs-only commit, then CI re-run SUCCESS. Nonblocking GitHub runner Node20 deprecation warning persists. Do not redo identical completed D1/D2 work or claim that static Fable evidence confirms UI behavior. Avoid falsely passing Windows, actual customer DB or full Fable/Astra-engine source distribution.
 
-## Way of working
-MVP-first target is 3 days (not a guarantee). Prioritize working result rather than huge theoretical scaffolding. Keep minimum non-deferable no overwrite/bounded CSV/SQL/DOM/localhost/authorization. Defer deeper security hardening until after functional proof, but not past customer delivery. Keep statuses PASS/NOT_RUN/BLOCKED accurate and always record commit SHA and work done in main STATUS/HANDOFF/NEXT_TASK.
+## 6. Repository / branches / SHAs / important paths
+Repo `hibi89/REA_Web`, default `main`. Main at time of this handoff preparation `6a306f37fb7600fd53e53dcf210a286c5c2177d3` (refetch actual HEAD before work); `feature/orchestrator` `46060b4665560922d0c9cf82b9e5c08971eb9427`, Draft [PR #5](https://github.com/hibi89/REA_Web/pull/5) to `integration/develop`. Day1 `feature/csv-local-mvp` `5515a7286d63211e32d2c577f93f77d61f37ce08` (PR #3), D2-01 `feature/evidence-adapter` `fda96076de33ebf4f4b6118972a5033a3f703ba9` (PR #4). Sources Fable `7e6f273...` PR #1 and Astra partial `f044b66...` PR #2. Paths: `rea/orchestrator.py`, `rea/mvp.py`, `rea/adapter/fable_to_astra.py`, `rea/templates/`, `tests/test_orchestrator.py`, `scripts/orchestrator_browser_smoke.py`, `docs/20_ORCHESTRATOR_MVP.md`.
 
-No user actions are required for current D2 synthetic implementation; don't ask the owner for new data, tools, original ZIP, architecture confirmation or a different prompt. Only request explicit approval for production DB, external deployment or risky irreversible actions.
+## 7. Production URL / deployment / environment
+**Vercel: not configured for this unit, no Production URL, not applicable.** Independent app local only: `python -m uvicorn app:app --host 127.0.0.1 --port 8000` inside generated folder; Python 3.11+, FastAPI, Uvicorn. Optional Fable review validation uses Pydantic>=2 and pinned Astra contracts checkout. No paid AI API or external app. Do not silently create deployment.
+
+## 8. Original source / backups / authentication / do-not-edit
+Original Fable repo `hibi89/fable5.1_web_catcher` pinned upstream bbe72c0...; original Astra `hibi89/astra_web_catcher` pinned b3166b6...; Git import source branches immutable. Customer originals never uploaded or altered; synthetic fixtures only. No credentials, tokens or `.env` saved. Existing upstream branches and D1/D2 PRs are recoverable backups. No unapproved production input or external customer data.
+
+## 9. Next priority / procedure / acceptance / approvals
+**D3-01 READY**, target `qa/cross-platform` at last checkpoint original baseline (refetch). Branch off tested D2 `feature/orchestrator` only if no unique commits; no force. Create 3 diverse CSV scenarios, all generated app actual browser E2E; compare `docs/02_ARCHITECTURE.md` and `docs/14_FINAL_DELIVERABLES.md` feature by feature; Windows launch/ZIP manifest/receipt, crash/recovery/negative inputs and no-secret regression. Run CI, Draft PR, update main STATUS/HANDOFF/NEXT_TASK with exact results. No owner input required for synthetic; ask approval before customer data, live site, paid services, security/rights changes, production deploy or merge with irreversible impact. Finished commercial product requires Windows/packaging/license/legal and scope evidence.
+
+## 10. KST update time / verification boundary / doc base
+Updated **2026-10-25 KST** after checking D2 feature commit `46060b4665560922d0c9cf82b9e5c08971eb9427` and GitHub Actions results. Main docs prepared against main `6a306f37fb7600fd53e53dcf210a286c5c2177d3`; GitHub commit after save is canonical documentation baseline. No Windows/real customer/production assertion. PRs are Draft and unmerged.
