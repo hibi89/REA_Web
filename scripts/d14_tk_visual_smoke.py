@@ -21,15 +21,14 @@ FIELDS = {"id": "sku", "title": "display_name", "category": "group_name"}
 
 
 def execute(folder: Path) -> dict:
-    import tkinter as tk
-    from rea.creator_gui import build_window
-    from rea.provenance import inspect_delivery
-
     folder = Path(folder).absolute()
     if folder.exists() or folder.is_symlink():
         raise FileExistsError("D14 synthetic report destination must be NEW")
     if SYNTHETIC.name != "qa_guided.csv":
         raise RuntimeError("Only committed synthetic fixture is allowed")
+    import tkinter as tk
+    from rea.creator_gui import build_window
+    from rea.provenance import inspect_delivery
     # Private transient output; must never reference any external owner data.
     from tempfile import TemporaryDirectory
     with TemporaryDirectory(prefix="rea-d14-local-") as temp:
@@ -160,7 +159,7 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     try:
         report = execute(args.out)
-    except (ImportError, RuntimeError, OSError, ValueError, AssertionError, tk.TclError if "tk" in globals() else RuntimeError) as exc:
+    except Exception as exc:
         print("D14_TK_UI_NOT_VERIFIED: " + type(exc).__name__, file=sys.stderr)
         return 2
     print(json.dumps({"actual_tk_window_opened": report["actual_tk_window_opened"],
