@@ -1,6 +1,6 @@
 # REA_Web — 웹서비스 분석·재구축 자동화 엔진
 
-> 2026-10-25 · **3일 MVP 우선 개발 중** · Fable→Astra 전체 통합은 아직 미완성
+> 2026-10-25 · **3일 MVP 우선 개발 중** · Day1 CSV 웹앱 + Day2 검토용 Fable→Astra 어댑터 구현·CI PASS · 전체 통합 미완성
 
 **새 채팅 즉시 재개:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` — 질문 없이 최신 GitHub 문서·코드 확인 후 다음 READY 개발 작업을 수행한다. **최우선 안내:** [WORKER_START_HERE.md](WORKER_START_HERE.md) · [세션 복원 프로토콜](docs/SESSION_RESTART_PROTOCOL.md).
 
@@ -18,8 +18,13 @@
 - 작업 타깃: `feature/evidence-adapter` (다음 READY), `feature/csv-local-mvp` (Day1), `feature/orchestrator`, `integration/develop`, `qa/cross-platform`.
 - 원본 Fable/Astra 소스 저장소는 변경하지 않는다.
 
+## Day2 구현·검증 완료 (feature 브랜치)
+- `feature/evidence-adapter` `fda96076de33ebf4f4b6118972a5033a3f703ba9`, [Draft PR #4](https://github.com/hibi89/REA_Web/pull/4).
+- 합성 샘플 Fable 결과 → 검토 전용 Astra 증거·명세 제안, 추정/관찰 구분, 승인·생성 차단. GitHub Actions [CI run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969): Ubuntu Python 3.11, **28 테스트 통과**, 고정 Astra 계약 모델 검증 및 CLI 통과.
+- Day1/Day2 서로 다른 브랜치에서 테스트되었으며 **전체 REA_Web 통합 완료가 아님**.
+
 ## 다음 작업 (지금 시작 가능)
-`REA-MVP-D2-01`: Fable 분석 결과 → Astra 검증용 ObservationBundle/FunctionalSpecDraft 제안으로 연결하는 어댑터. 추정과 관찰 구분, 승인되지 않은 DB/생성 잠금 유지. 그다음 3개 샘플 시나리오, Windows 테스트, 통합 수직 흐름, 패키징 및 원 설계 대비 차이 검증.
+`REA-MVP-D2-02`: `feature/orchestrator`에서 선택적 Fable 보고서 + 고객 CSV→로컬 앱 생성 흐름 연결. 그다음 3개 샘플, Windows, 실제 브라우저, 패키징 및 원 설계 차이 검증. **라이브 고객 DB·자동 배포는 제외**.
 
 ## 사업/범위
 초기 크몽 가격 가설 300,000원. 소규모 고객 제공 CSV 중심, 2개 화면·3개 단순 기능 이내 정액 납품을 목표로 한다. 데이터 수집 대행·운영 DB 접근·복잡한 인증·결제·무제한 수정 제외. 아직 판매 개시/납품 준비가 완료된 상태가 아니다.
