@@ -103,10 +103,12 @@ def test_duplicate_id_across_inputs_rejected(tmp_path):
 def test_identical_input_hardlink_and_symlink_refused(tmp_path):
     with pytest.raises(DataError):
         preflight_pair(FIRST,FIRST)
+    local=tmp_path/"local.csv"
+    local.write_bytes(FIRST.read_bytes())
     hard=tmp_path/"hard.csv"
-    hard.hardlink_to(FIRST)
+    hard.hardlink_to(local)
     with pytest.raises(DataError):
-        preflight_pair(FIRST,hard)
+        preflight_pair(local,hard)
     link=tmp_path/"alias.json"
     link.symlink_to(SECOND)
     with pytest.raises(DataError):
