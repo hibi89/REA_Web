@@ -32,3 +32,7 @@ Owner approved a fast 3-day *working MVP first* experiment. First generate a use
 - `feature/orchestrator` SHA `46060b4665560922d0c9cf82b9e5c08971eb9427`; [Draft PR #5](https://github.com/hibi89/REA_Web/pull/5) unmerged.
 - [CI 40200704855](https://github.com/hibi89/REA_Web/actions/runs/40200704855): **55 pytest PASS**, 1 warning, two local CLI modes and **actual Chromium** integration browser PASS (filter/search/detail/reload, zero JS or external calls). PR CI 40200708638 SUCCESS.
 - Working combined MVP, not production readiness. Next D3 compares first target architecture, three scenarios, Windows/packaging; safety and licensing before commercial sale.
+
+## D3-01 verified cross-platform synthetic acceptance (2026-10-25 KST)
+- qa/cross-platform code e88c89f3ec12e61e63d2ca1255736fbf674c6e9e, Draft PR #6. Actions [40202313506](https://github.com/hibi89/REA_Web/actions/runs/40202313506) SUCCESS: **68 pytest PASS each on Ubuntu and Windows-latest**; real Chromium on 3 apps, Windows native CMD launcher + HTTP PASS, reproducible ZIP with SHA-256 verification, screenshot/QA/ZIP artifacts.
+- No clean nondeveloper Windows installation, Windows Chromium, live customer/rights, vendor licenses, broad security or production. Original-design gap matrix enumerates next functional priorities; deep pre-sale QA not waived.

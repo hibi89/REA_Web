@@ -1,21 +1,21 @@
 # REA_Web — New chat one-line resume (canonical)
 
 ## Trigger
-**`[REA_Web 깃헙 레포지토리 보고 작업이어가셈]`**, or **`ㄱ`**. Both mean: inspect GitHub and immediately execute the next safe READY engineering task *in this turn*, without further context, owner's ZIP, branch choice or additional prompts. No autonomous background work.
+[REA_Web 깃헙 레포지토리 보고 작업이어가셈] or ㄱ means inspect latest GitHub and **execute next safe READY task in this turn**. No more user question, ZIP request, branch choice or background work claim. Explicit owner permission required for live/customer data, public deploy, paid APIs, security/rights modification or irreversible merges.
 
-## Mandatory read/verification order
-1. GitHub `hibi89/REA_Web` latest actual main HEAD, `HANDOFF.md`, `STATUS.md`, `AGENTS.md`, `docs/17_NEXT_TASK.md`, `docs/SESSION_RESTART_PROTOCOL.md`.
-2. Latest target feature branch HEAD + commits/files; read assigned code, tests, architecture and acceptance.
-3. Implement next READY, preserve original vendor/feature branches, run real tests/CI. Record exact tested SHA/OS/PASS/FAIL/SKIP, write STATUS/HANDOFF/NEXT_TASK on main. No empty status-only work.
-4. Approval before external network/data, live customer DB, deployment, paid services, rights/security changes, source overwrites. Synthetic offline work and GitHub feature commits already authorized.
+## Mandatory work order
+1. GitHub hibi89/REA_Web current main HEAD; read HANDOFF.md -> STATUS.md -> AGENTS.md -> docs/17_NEXT_TASK.md -> docs/SESSION_RESTART_PROTOCOL.md -> actual source.
+2. Inspect target branch HEAD, compare existing commits, preserve verified source/vendor, then code/tests/CI/PR, update main STATUS/HANDOFF/NEXT_TASK, report PASS/FAIL/NOT_RUN and exact SHA.
+3. No force push, silent vendor merge, fabricated test or production claim. Use synthetic offline input only without external calls.
 
-## Current checkpoint — 2026-10-25 KST
-**D1 CSV webapp DONE**: `feature/csv-local-mvp` @ `5515a7286d63211e32d2c577f93f77d61f37ce08`, 9 tests + actual Chromium PASS ([run 40198326369](https://github.com/hibi89/REA_Web/actions/runs/40198326369)), Draft PR #3.
-**D2-01 review-only Fable/Astra adapter DONE**: `feature/evidence-adapter` @ `fda96076de33ebf4f4b6118972a5033a3f703ba9`, 28 tests + actual pinned Astra contract PASS ([run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969)), Draft PR #4.
-**D2-02 CSV-only + optional Fable review + local app DONE**: `feature/orchestrator` @ **`46060b4665560922d0c9cf82b9e5c08971eb9427`**, [Draft PR #5](https://github.com/hibi89/REA_Web/pull/5), [CI 40200704855](https://github.com/hibi89/REA_Web/actions/runs/40200704855) **55 pytest PASS**, true Chromium E2E and both offline CLI modes PASS, PR CI 40200708638 SUCCESS. This is feature-branch verification, **not** a merged/sale-ready product.
-**NEXT READY: REA-MVP-D3-01** on `qa/cross-platform`; inspect latest head, base off tested orchestrator branch without force. Three synthetic scenarios, real browser, Windows docs/native NOT_RUN unless executed, ZIP/manifest, original-design gap matrix, acceptance. Details in `docs/17_NEXT_TASK.md`.
+## Current verified checkpoint 2026-10-25 KST
+- D1 CSV app feature/csv-local-mvp SHA 5515a7286d63211e32d2c577f93f77d61f37ce08, GitHub Actions 40198326369 9 pytest+Chromium PASS.
+- D2-01 Fable 1.0 to Astra review-only adapter feature/evidence-adapter SHA fda96076de33ebf4f4b6118972a5033a3f703ba9, run 40199741969 28 pytest PASS.
+- D2-02 CSV-only + optional redacted Fable evidence review feature/orchestrator SHA 46060b4665560922d0c9cf82b9e5c08971eb9427, run 40200704855 55 pytest+Chromium PASS.
+- **D3-01 DONE:** qa/cross-platform functional tested SHA e88c89f3ec12e61e63d2ca1255736fbf674c6e9e; latest QA docs head 857a73e1f3e641f851fd4df1212872846528bdb9; Draft PR #6; https://github.com/hibi89/REA_Web/actions/runs/40202313506 SUCCESS: Linux 68/68 pytest + 3 independent actual Chromium app cases; Windows-latest 68/68 pytest + genuine Windows CMD launcher and local HTTP PASS. Synthetic artifact ID 12602316907 with screenshots/QA report/example ZIP. ZIP SHA manifest verified. Windows Chromium/clean nondeveloper/customer NOT_RUN.
+- Fable immutable import 7e6f273..., Astra partial import f044b66..., both unchanged. Draft PRs #1–#6 UNMERGED. No Vercel or production URL. Current main is docs dispatch, not source release.
 
-## Product boundary
-MVP first -> compare preserved target design -> fill meaningful gaps -> final detailed security/reliability/licensing before commercial launch. Minimum safety (no-overwrite, safe CSV, SQL params, XSS-safe DOM, localhost, authorized references) always applies. Customer data CSV-only source; Fable technical clues are inferred and separate `REVIEW_REQUIRED`, never auto-bind schema. Full backend cloning, arbitrarily reproduced websites, live DB/payments/auth or Vercel production excluded from this stage. 300k KRW is a proposed fixed-scope product, not yet for sale.
+## NEXT READY
+**REA-MVP-D4-01** read-only customer CSV schema preview and simple category counts summary; fill gap against original design, never pretend observed reference formula or auto-map fields. Create safe feature branch from tested QA, tests/actual browser and Draft PR. Details in docs/17_NEXT_TASK.md. Afterward required pre-sale license/security/recovery, clean Windows pilot and scope acceptance; 3-day plan is stretch target only.
 
-Fable import `import/fable51-bbe72c0` SHA `7e6f273b...`; Astra P4 partial import `import/astra-p4-b3166b6` SHA `f044b66e...`; both immutable. Main contains docs/dispatch; separate PRs #1–#5 open Draft/unmerged. Refetch actual GitHub at each session.
+Product rule: customer CSV drives the standalone local readonly app; Fable technical hints remain separate REVIEW_REQUIRED, no DB mapping approval; minimum bounds/no overwrite/SQL safe/DOM escaping/loopback always. Deep security and vendor redistribution license checked before sale. Commercial 300k is a hypothesis, not active offer.
