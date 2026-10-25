@@ -159,6 +159,14 @@ def audit_environment(root_requirements=ROOT_REQUIREMENTS, lookup=None) -> dict:
     ))
     if any(e.get("requested_extras") for e in edges):
         unresolved.append("EXTRAS_NOT_FULLY_EXPANDED")
+    if any(not record.get("legal_file_evidence") for record in observed.values()
+           if record.get("status") == "INSTALLED_METADATA_OBSERVED_ONLY"):
+        unresolved.append("NO_LEGAL_FILES_DISCOVERED")
+    if any(not record.get("declared_license_expression")
+           and not record.get("declared_license_legacy")
+           for record in observed.values()
+           if record.get("status") == "INSTALLED_METADATA_OBSERVED_ONLY"):
+        unresolved.append("NO_LICENSE_DECLARATION")
     if any(not record.get("file_list_available", True)
            or record.get("legal_paths_truncated", False)
            or any(f["status"] != "SHA256_OBSERVED"
