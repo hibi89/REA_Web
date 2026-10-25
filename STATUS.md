@@ -1,34 +1,39 @@
-# REA_Web — STATUS (2026-10-26 KST)
+# REA_Web STATUS — 2026-10-26 KST
 
-**D10-01 DONE in isolated Draft PR #13; D11-01 NEXT READY.** Main contains dispatch/documentation only. All feature PRs #1–#13 are Draft and unmerged; NO production web app, no sale authorization.
+**D11-01 VERIFIED in Draft PR #14; D12-01 NEXT READY.** main holds documentation/dispatcher; all PR #1–#14 remain Draft/unmerged. No production hosting or commercial release.
 
-## Verified synthetic engineering
-| Phase | Scope | Recorded evidence |
+## Exact evidence milestone
+| Unit | Synthetic working unit | Verified tests |
 | --- | --- | --- |
-| D1 | Single CSV local app | 40198326369, 9 tests + Chromium |
-| D2-01/02 | Fable technical observation -> Astra REVIEW_REQUIRED adapter and independent app | 40199741969, 28; 40200704855, 55 |
-| D3 | Three browser cases, ZIP, Windows cmd | 40202313506, 68 pytest each OS |
-| D4 | Unapproved schema and category summary | 40203444938, 77 each OS |
-| D5 | Strict JSON OR CSV input | 40204413087, 111 each OS |
-| D6 | Vendor 88 Fable + 103 PARTIAL Astra hashes, ZIP audit | 40205614846, 125 each OS |
-| D7 | No-overwrite atomic output, readonly data, error-path regression | 40206549211, 141 each OS |
-| D8 | Explicit owner-approved 1-source guided mapping | 40207742776, 164 each OS |
-| D9 | Explicit approved same-schema 2-source ROW APPEND only | 40209013017, 181 each OS |
-| **D10** | **Three synthetic RC ZIPs, extracted Windows offline self-check, observed dependency metadata** | **[Actions 40210279358](https://github.com/hibi89/REA_Web/actions/runs/40210279358) SUCCESS: Linux and Windows each 188 pytest PASS** (1 nonblocking warning each); eight actual Chromium synthetic apps, Windows CMD→localhost HTTP PASS, Fable 88 and Astra PARTIAL 103 Git blob SHA checks both OS PASS. |
+| D1 | CSV independent local webapp | 40198326369, 9 tests + Chromium |
+| D2-01/02 | Isolated Fable technical observation -> Astra REVIEW_REQUIRED and app orchestration | 40199741969 28; 40200704855 55 |
+| D3 | Windows ZIP / 3 browser scenarios | 40202313506, 68 pytest per OS |
+| D4 | Unapproved lexical schema and category summary | 40203444938, 77 per OS |
+| D5 | Strict single flat JSON/CSV | 40204413087, 111 per OS |
+| D6 | Vendor 88/103 pinned blobs and ZIP allowlist | 40205614846, 125 per OS |
+| D7 | Atomic no-overwrite, readonly SQL and recovery | 40206549211, 141 per OS |
+| D8 | Guided owner field mapping and SHA/APPROVE | 40207742776, 164 per OS |
+| D9 | Explicit SAME-SCHEMA two-file ROW APPEND, NOT joins | 40209013017, 181 per OS |
+| D10 | Three synthetic RC ZIPs, Windows offline self-check and observed dependencies | 40210279358, 188 per OS |
+| **D11-01** | **Three independent synthetic quotes -> ZIP -> extracted self-check -> browser -> G0–G6 scorecard + EMPTY manual labor log** | **[Actions 40211563951](https://github.com/hibi89/REA_Web/actions/runs/40211563951) SUCCESS: 201 pytest PASS on Ubuntu and 201 pytest PASS on Windows-latest (one nonblocking warning each); existing eight real Chromium synthetic apps PLUS three additional Chromium runs using EXTRACTED customer ZIPs; Windows actual ZIP CMD/localhost HTTP PASS; 88 Fable and PARTIAL 103 Astra pinned blobs PASS on BOTH OS.** |
 
-D10 tested feature SHA `1c0b708a3e5d979ad152e89848ef07f800d367c4`, `feature/rc-selfcheck`, [Draft PR #13](https://github.com/hibi89/REA_Web/pull/13), UNMERGED. Artifact **rea-d10-synthetic-rc** ID **12605835407**, with three synthetic demo ZIPs, checksums, browsers/evidence and observed environment metadata. No real customer data.
+D11 isolated feature branch feature/three-case-rehearsal SHA a49f05e969fd49e44b2c8beed2779447d6d56d3e, [Draft PR #14](https://github.com/hibi89/REA_Web/pull/14), UNMERGED. CI synthetic artifact rea-d11-synthetic-acceptance ID **12606062263** includes three generated app ZIPs, acceptance_scorecard.json, MANUAL_TIME_LOG_BLANK.csv, customer-facing test docs, three screenshots and combined browser acceptance ledger. First D11 CI failed packaging app rows lookup; second Windows source-only test imported absent Playwright; both fixed and final source hash a49f05e969fd49e44b2c8beed2779447d6d56d3e CI green.
 
-## D10 added / qualified
-- `python -m scripts.d10_make_rc --out NEW_FOLDER` produces exactly three reproducible test-only ZIPs: standalone CSV, owner-approved guided JSON, owner-approved two-file same-schema append. Each includes `check_windows.cmd`, `self_check.py`, Korean Windows guide and original app files/SQLite. No original Fable/Astra vendor sources bundled.
-- Windows diagnostic is standard-library-only and makes **no network calls**. Checks extracted-file SHA256 against manifest, Python >=3.11, SQLite readonly and installed FastAPI/Uvicorn. It neither installs dependencies nor starts app or certifies absence of sensitive data; clean nondeveloper Windows human acceptance NOT_RUN.
-- `rea.observed_deps` lists exact **CI-observed** installed package versions, reported license metadata and potential notice file names; **14 distributions** observed in both operating systems. Direct FastAPI **0.162.0**, Uvicorn **0.54.0** in this CI, **not customer version locks or legal clearance**. Detailed [D10 review](https://github.com/hibi89/REA_Web/blob/feature/rc-selfcheck/docs/29_RC_WINDOWS_DEPENDENCY_REVIEW.md).
-- Original D9 and earlier behavior preserved. First D10 Windows test run failed customer CMD path argument parsing; changed check to script-relative root and reran complete CI to PASS.
+## D11 actual simulated order scope
+- **Cafe** 4 synthetic rows, 1 screen; contract list/search/category_filter.
+- **Inventory** 5 synthetic rows, 1 screen; contract list/search/detail.
+- **Trends** 5 synthetic rows, 1 screen; contract list/category_filter/simple_summary.
+- Each fixed KRW 300,000 is a **nonbinding price hypothesis** only; each selected feature is a 3-feature contract, although generated UI may also show existing uncontracted functionality.
+- Each has actual generated deterministic ZIP, D6 provenance audit, extracted standalone self-check, browser screenshot and only requested-feature verification against extracted ZIP app. No external site requests/JS errors/dialogs.
+- Machine-readable G0–G6 ledger allows **PASS_SYNTHETIC_SUBCHECK** for generated app/browser only. G5 (authorized real client/reference + measured manual effort) and G6 (consumer Windows, license/NOTICE, backup, support) remain **BLOCKED**. Main release overall BLOCKED.
+- Manual labor CSV has ONLY header row: no human prep/build/correction/QA/delivery time supplied, no proof of 6–8 hour target. Details [D11 guide](https://github.com/hibi89/REA_Web/blob/feature/three-case-rehearsal/docs/30_THREE_CASE_QUOTE_REHEARSAL.md).
 
-## Commercial gates still unresolved
-1. Draft 300,000 KRW up-to-two-file promise is **only partially met**: explicit SAME-SCHEMA APPEND, not joins between unlike business tables. No owner-approved scope revision/contract.
-2. Source rights/redistribution (Fable/Astra/templates) and exact locked runtime/wheel/NOTICE/transitive licenses not cleared. CI package metadata is not a license grant.
-3. Real nondeveloper clean Windows UI installation, three measured mock jobs/manual labor 6–8h, authorized real client/reference/site, privacy/power-loss/backup/full pentest, merchant support/refunds NOT RUN.
-4. Customer-facing lightweight GUI/multimode wizard only partially represented by CLI; no live DB, public deployment, paid API or real customer ZIPs used.
+## Release blockers that CI cannot clear
+- Initial 300,000 KRW package's up-to-2-files promise supports only explicitly approved same-schema row APPEND, not unlike-table relational joins. No binding scope approval or signed client agreement.
+- Copyright source/redistribution grants for Fable, Astra, generated templates, runtime exact dependency locks and complete SPDX/NOTICE/transitive license compliance not verified.
+- NO actual authorized client/reference site, human clean Windows, GUI onboarding, real personal-data/PII/backup/power-loss/penetration security, buyer acceptance or correction/refund/support signoff.
+- Three manually measured jobs and the suggested 6–8 hour service economics remain NOT_RUN.
+- PR branches are not merged or published; no Vercel/live customer API, customer ZIP or real site accessed.
 
-## NEXT READY D11-01
-Build a **three-case synthetic quote-to-delivery trial and evidence/acceptance scorecard**, with supported features/unsupported scope checked against proposal and G0–G6. Automate reproducible tests and artifact checks but do NOT fabricate elapsed human preparation/correction effort or claim customer acceptance; create a blank manual time-log template instead. No sale until owner scope, copyright/NOTICE, actual Windows/customer approval. See docs/17_NEXT_TASK.md.
+## NEXT READY: D12-01
+An isolated, synthetic-only **reproducible CI dependency resolution + NOTICE/license evidence triage** unit: record exact direct/transitive versions, hashes and metadata/notice contents where legally permitted; produce a deterministic *developer-only* constraints/SBOM evidence without automatically modifying customer ZIP or asserting compliance. Test Linux+Windows full regression and actual Chromium. Keep ownership, signed customer license rights, clean Windows human and real buyer blocked. docs/17_NEXT_TASK.md is authoritative.

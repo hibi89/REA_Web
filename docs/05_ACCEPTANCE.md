@@ -32,3 +32,14 @@ A blocked gate means 'not complete'; upstream CI green alone cannot satisfy REA_
 - G5 3 independent synthetic domains exist, but authorized non-sensitive real reference and **three measured total labor cases** NOT RUN; gate BLOCKED.
 - G6 extracted Windows scripted diagnostics/launcher, ZIP checksum PASS in CI; clean consumer Windows human, power-loss backup, full copyright/dependency redistribution/license/NOTICE and merchant support/correction terms NOT RUN; gate BLOCKED.
 - **Do not mark overall G0–G6 release complete or approve commercial order from CI.**
+
+## Latest D11 evidence (2026-10-26, overrides older D10 progress summary)
+- [Actions 40211563951](https://github.com/hibi89/REA_Web/actions/runs/40211563951) Linux/Windows 201 pytest EACH, Linux eight prior Chromium + **three additional Chromium instances launched from unzipped shipped synthetic ZIPs**, Windows CMD/HTTP, pinned 88/103 vendor SHA check both OS PASS.
+- G0 PARTIAL: exact imported blob source verified, licenses and contributor/copyright distribution rights NOT_CLEARED.
+- G1 PARTIAL: Fable/Astra technical hint rules tested synthetically, no authorized source site customer evidence.
+- G2 PARTIAL: strict owner CSV/JSON and explicitly approved same-schema APPEND tests, real data authorization and locale formats not signed/verified.
+- G3 PASS_SYNTHETIC_SUBCHECK: all three mock quotes generated actual app/SQLite/ZIP, hash and self-check, not a customized client screen contract.
+- G4 PASS_SYNTHETIC_SUBCHECK: extracted-ZIP real Chromium for three quoted feature sets and original eight cases; human accessibility/cross-browser/customer devices NOT_RUN.
+- **G5 BLOCKED:** no authorized real reference/customer signoff; human hours 6–8h target NOT_MEASURED (header-only labor log generated).
+- **G6 BLOCKED:** consumer Windows nondeveloper, copyright/NOTICE and exact dependency licenses/locks, privacy/backup/power-loss/full security, one correction and refund/support terms not approved.
+- **OVERALL commercial ready: BLOCKED**. No PR merge, sale or public hosting based on green synthetic CI alone.

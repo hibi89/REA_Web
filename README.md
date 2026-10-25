@@ -83,3 +83,9 @@ REA-MVP-D4-01: 고객 CSV 스키마 미리보기와 카테고리 요약 카운�
 - [실제 CI 40210279358](https://github.com/hibi89/REA_Web/actions/runs/40210279358): Linux/Windows **각각 188개 테스트 PASS**, Chromium 8개 합성 앱, Windows CMD 로컬 실행, Fable 88/Astra 103 Git 해시 PASS.
 - `python -m scripts.d10_make_rc --out NEW_FOLDER` → 단일 CSV / 고객 승인 JSON / 동일 구조 2파일 APPEND 3가지 **합성 데이터 전용 ZIP**과 SHA256 목록. ZIP 내부 `check_windows.cmd`는 Python·라이브러리·SQLite·파일 무결성만 검사, 자동 설치/인터넷 연결 없음. [D10 가이드](https://github.com/hibi89/REA_Web/blob/feature/rc-selfcheck/docs/29_RC_WINDOWS_DEPENDENCY_REVIEW.md).
 - CI에서 의존성 14개 메타데이터를 확인했으나 상용 라이선스·정확한 배포 버전 고정은 미완료. **진짜 사용자 Windows 수동 설치, 고객/참조사이트 권한, 개인정보·보안·복구, 고객용 GUI, 30만 원 상품 범위는 미승인**. 다음 D11 합성 고객 3건 견적→납품 예행연습과 미검증 사항 기록.
+
+## D11-01 — 합성 고객 3건 견적→납품 예행연습 (2026-10-26)
+- feature/three-case-rehearsal SHA a49f05e969fd49e44b2c8beed2779447d6d56d3e; [Draft PR #14](https://github.com/hibi89/REA_Web/pull/14) 미병합.
+- [CI 40211563951](https://github.com/hibi89/REA_Web/actions/runs/40211563951) Linux/Windows **각각 201개 pytest PASS**, 기존 Chromium 8개 + 완성된 납품 ZIP을 풀어 실행한 Chromium 3개, Windows 로컬 CMD, Fable 88/Astra 103 원본 Git 해시 PASS.
+- 3개 합성 가상 고객: 카페 목록/검색/필터(4행), 재고 목록/검색/상세(5행), 네일 트렌드 목록/필터/요약(5행). 각 1화면, 계약기능 3개. ZIP·검수표·Chromium 스크린샷·수동시간 **빈 템플릿** 생성. [D11 설명](https://github.com/hibi89/REA_Web/blob/feature/three-case-rehearsal/docs/30_THREE_CASE_QUOTE_REHEARSAL.md).
+- **상용 출시 불가:** 30만 원 가격은 미검증 가설. 실제 고객·참조사이트 허가, 일반 Windows 사용자 수동검수, 제3자 상용 라이선스, 개인정보·복구·완전 보안, 3건의 사람 작업시간·환불/지원 계약 미완료. 다음 D12는 정확한 Python 의존성·라이선스·NOTICE 근거를 조사하되 상용 승인으로 간주하지 않음.
