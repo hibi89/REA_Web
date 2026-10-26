@@ -34,7 +34,7 @@ def test_extracted_real_kit_self_check_stdio(tmp_path):
     assert result.returncode == 0, result.stderr
     proof = json.loads(result.stdout.strip())
     assert proof["status"] == "OFFLINE_KIT_INTEGRITY_PASS"
-    assert proof["verified_files"] == 9
+    assert proof["verified_files"] == 10
     assert proof["rows"] == 5
     assert proof["human_acceptance"] == "NOT_RUN"
     assert proof["commercial_clearance"] == "NOT_GRANTED"
@@ -56,6 +56,7 @@ def test_checker_is_read_only_and_does_not_change_kit_bytes(tmp_path):
     "sources/qa_pair_extra.json", "CHECK_PILOT_OFFLINE.py",
     "HUMAN_PILOT_BLANK.csv", "MANUAL_TIME_LOG_BLANK.csv",
     "demo/approved_pair.zip", "CHECK_PILOT_WINDOWS.cmd",
+    "OPERATOR_ONE_PAGE_WINDOWS.txt",
 ])
 def test_changed_extracted_member_refused(tmp_path, name):
     root = unpack(tmp_path)
