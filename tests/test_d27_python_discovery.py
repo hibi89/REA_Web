@@ -31,6 +31,14 @@ def test_shipped_cmds_offer_python_and_py_fallback_without_install(tmp_path):
     assert checker == CHECK_LAUNCH.encode("ascii")
     assert launcher == LAUNCH.encode("ascii")
     assert b"\r\n" in checker and b"\r\n" in launcher
+    # Both genuine .exe and optional .cmd wrappers must return to the owner
+    # launcher to preserve its errorlevel and fallback control flow.
+    assert b'call python -c "' in checker and b'call python -c "' in launcher
+    assert b'call py -3 -c "' in checker and b'call py -3 -c "' in launcher
+    assert b'call python "%~dp0self_check.py"' in checker
+    assert b'call py -3 "%~dp0self_check.py"' in checker
+    assert b'call python "%~dp0self_check.py" --launch' in launcher
+    assert b'call py -3 "%~dp0self_check.py" --launch' in launcher
     assert b'python -c "import sys;sys.exit(0 if sys.version_info[:2]>=(3,11) else 1)" >nul 2>nul' in checker
     assert b'py -3 -c "import sys;sys.exit(0 if sys.version_info[:2]>=(3,11) else 1)" >nul 2>nul' in checker
     assert b'py -3 "%~dp0self_check.py"' in checker
