@@ -96,7 +96,7 @@ WINDOWS OPERATOR — MANUAL CHECKLIST (complete EMPTY logs yourself):
    The demo ZIP bundled here is generated without a human GUI session.
 
 RECORDING RULES:
-- Read OPERATOR_ONE_PAGE_WINDOWS.txt for a single-page MANUAL pilot checklist.
+- Read OPERATOR_ONE_PAGE_WINDOWS.txt for a one-page MANUAL pilot checklist.
 - COPY BOTH HUMAN_PILOT_BLANK.csv and MANUAL_TIME_LOG_BLANK.csv to a NEW,
   SEPARATE private working folder BEFORE entering any results. Never edit
   blank files inside the hash-verified kit; that correctly invalidates it.
