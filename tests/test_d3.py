@@ -64,8 +64,11 @@ def test_export_integrity_and_contents(tmp_path):
         assert "launch_windows.cmd" in names and "README_WINDOWS.md" in names
         assert "app/data.sqlite" in names and "app/app.py" in names
         assert not any("fable_record_redacted" in n for n in names)
-        assert b"127.0.0.1" in z.read("launch_windows.cmd")
-        assert b"REA_WEB_PORT" in z.read("launch_windows.cmd")
+        cmd = z.read("launch_windows.cmd")
+        python_launcher = z.read("self_check.py")
+        assert b'python "%~dp0self_check.py" --launch' in cmd
+        assert b"%REA_WEB_PORT%" not in cmd
+        assert b'"--host", "127.0.0.1"' in python_launcher
 
 
 def test_deterministic_archive_bytes(tmp_path):
