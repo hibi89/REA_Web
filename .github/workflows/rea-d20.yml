@@ -78,22 +78,6 @@ jobs:
         run: |
           python -m scripts.d11_rehearsal --out /tmp/rea-d18-quotes
           python scripts/d11_browser_rehearsal.py --rehearsal /tmp/rea-d18-quotes --report-dir /tmp/rea-d18-zip-browser
-      - name: Windows generated D19 synthetic kit and strict verify, no human claims
-        shell: pwsh
-        run: |
-          python -m scripts.d19_owner_pilot build --out "$env:RUNNER_TEMP/rea-d19-owner-pilot-win.zip"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python -m scripts.d19_owner_pilot verify --zip "$env:RUNNER_TEMP/rea-d19-owner-pilot-win.zip"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-      - name: Windows D20 shipped offline checker on extracted kit (no runtime pip or network)
-        shell: pwsh
-        run: |
-          $out = "$env:RUNNER_TEMP/rea-d20-extracted-kit"
-          New-Item -ItemType Directory -Path $out -Force | Out-Null
-          python -c "import zipfile,sys;zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])" "$env:RUNNER_TEMP/rea-d19-owner-pilot-win.zip" $out
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          python "$out/CHECK_PILOT_OFFLINE.py"
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Offline dependency NOTICE metadata audit OUTSIDE ZIP
         run: python -m rea.dependency_evidence --out ./d18-linux-evidence.json
       - name: Build and VERIFY deterministic synthetic-only D19 owner pilot ZIP
@@ -227,6 +211,22 @@ jobs:
           python -m scripts.d11_rehearsal --out $env:RUNNER_TEMP/rea-d18-win-quotes
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/windows_native_smoke.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Windows generated D19 synthetic kit and strict verify, no human claims
+        shell: pwsh
+        run: |
+          python -m scripts.d19_owner_pilot build --out "$env:RUNNER_TEMP/rea-d19-owner-pilot-win.zip"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m scripts.d19_owner_pilot verify --zip "$env:RUNNER_TEMP/rea-d19-owner-pilot-win.zip"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Windows D20 shipped offline checker on extracted kit (no runtime pip or network)
+        shell: pwsh
+        run: |
+          $out = "$env:RUNNER_TEMP/rea-d20-extracted-kit"
+          New-Item -ItemType Directory -Path $out -Force | Out-Null
+          python -c "import zipfile,sys;zipfile.ZipFile(sys.argv[1]).extractall(sys.argv[2])" "$env:RUNNER_TEMP/rea-d19-owner-pilot-win.zip" $out
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python "$out/CHECK_PILOT_OFFLINE.py"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Offline dependency NOTICE metadata audit OUTSIDE ZIP
         run: python -m rea.dependency_evidence --out ./d18-windows-evidence.json
