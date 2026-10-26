@@ -84,10 +84,15 @@ def test_wrapper_packaging_reproducible_and_no_overwrite(tmp_path):
 
 if os.name == "nt":
     def _cmd(root: Path, *args: str, env=None, stdin=None):
+        # Windows cmd /c strips a first set of quotes. /s with the
+        # conventional double-quoted script syntax preserves the inner
+        # quoted path, including spaces and CMD metacharacters like &.
+        comspec = os.environ["COMSPEC"]
+        wrapper = root / "CHECK_PILOT_WINDOWS.cmd"
+        tail = "".join(" " + subprocess.list2cmdline([a]) for a in args)
+        command = f'"{comspec}" /d /s /c ""{wrapper}"{tail}"'
         return subprocess.run(
-            [os.environ["COMSPEC"], "/d", "/c",
-             str(root / "CHECK_PILOT_WINDOWS.cmd"), *args],
-            cwd=root, env=env, input=stdin,
+            command, executable=comspec, cwd=root, env=env, input=stdin,
             capture_output=True, text=True, encoding="utf-8",
             errors="replace", timeout=45, check=False,
         )
