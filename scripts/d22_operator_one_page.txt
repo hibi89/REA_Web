@@ -1,0 +1,42 @@
+REA_Web D22 — WINDOWS OWNER PILOT / ONE-PAGE CARD (SYNTHETIC ONLY)
+=====================================================================
+This is a future HUMAN trial checklist, NOT an automated PASS or
+commercial release. Run it only on public FAKE demo data.
+
+BEFORE START
+[ ] Use trusted package source. SHA256 checks files, NOT the publisher.
+[ ] Extract the synthetic kit ZIP to a NEW local folder.
+[ ] Never add private/client data to this kit. No admin/elevation.
+[ ] Double-click CHECK_PILOT_WINDOWS.cmd; record actual error/result.
+[ ] If Python3.11+ is missing (exit 10), STOP. No auto-install.
+[ ] If KIT_NOT_VERIFIED or other failure, STOP. Do not launch the app.
+
+IMPORTANT: KEEP THE VERIFIED KIT IMMUTABLE
+Copy HUMAN_PILOT_BLANK.csv and MANUAL_TIME_LOG_BLANK.csv to a DIFFERENT
+personal working folder BEFORE writing results. Rename your external
+copies as appropriate. Do NOT edit the original blank files inside the
+kit: they are hash-pinned, and editing them correctly makes the
+integrity check fail. Do NOT put completed real-user logs in a public
+GitHub issue, CI artifact, or the demo kit ZIP.
+
+MANUAL WINDOWS USER SESSION (record ONLY observed results)
+[ ] Note actual date, Windows version, interpreter/version, browser.
+[ ] Extract demo/approved_pair.zip to ANOTHER NEW empty folder.
+[ ] Run check_windows.cmd; note READY/missing-dependency result.
+[ ] If READY, run launch_windows.cmd; browse 127.0.0.1:8000 ONLY.
+[ ] Verify list has five synthetic IDs S01,S02,S03,S04,S05.
+[ ] Search Hangul 콜드브루: result S05.
+[ ] Filter category 음료: results S01,S02,S05.
+[ ] Open detail S04: label 초코케이크.
+[ ] Press Ctrl+C; verify local server stops.
+[ ] Record setup, environment, generation, manual QA, corrections,
+    and delivery minutes as ACTUAL observed values (not guesses).
+[ ] Note readability, confusing wording, assistive access, errors.
+[ ] Record REAL human acceptance only if THAT human performed it.
+
+DO NOT EQUATE:
+machine verification = human acceptance = data rights = commercial approval.
+The kit is SAME-SCHEMA ROW APPEND ONLY, no JOIN / website clone.
+No production/Vercel deployment. Rights/NOTICE/PII/security/backup,
+three real timed jobs, support/refunds and price scope remain BLOCKED.
+No test or assistant is authorized to fill user results automatically.
