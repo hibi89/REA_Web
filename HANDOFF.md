@@ -252,3 +252,37 @@ NEXT D19-01 per docs/17_NEXT_TASK.md: create an operator-focused synthetic-only 
 
 ## 10. Recorded time, evidence and documentation basis
 Recorded 2026-10-27 KST. D18 proof checked from exact Actions workflow #40348375718, job status BOTH completed success plus Linux/Windows logs (299 each and D18 native marker). Tested source SHA 1d1ac03..., docs-only feature HEAD 8ae75078... subsequently independently verified by [Actions #40348596385](https://github.com/hibi89/REA_Web/actions/runs/40348596385) with both jobs SUCCESS. Main docs continue to be updated after this handoff; compare final main HEAD after all writes. Human testing, license rights and actual final-product delivery remain NOT_RUN/BLOCKED. No claim of Vercel test.
+
+---
+
+# D19 handoff — IMPLEMENTED, final CI still QUEUED (2026-10-27 KST)
+
+## 1. Product, confirmed scope and technology
+REA_Web is a local FastAPI/SQLite/static JS read-only app generator for explicitly owner-mapped CSV or flat JSON, including exactly two SAME-SCHEMA files ROW-APPENDED with APPROVE/APPROVE/APPEND; not a website clone or relational JOIN. D19 task: synthetic-only Windows nondeveloper pilot handoff ZIP with SHA manifest and blank human logs; actual end-user check to be separately performed, not faked. Python3.11+, GitHub Actions CI.
+
+## 2. Completed implementation and choice
+A selected: deterministic ZIP plus handwritten Windows instructions and logs, no installer. D19 branch feature/windows-owner-pilot-kit from D18 verified HEAD 8ae7507805aa23ec51603079248caac0c57b7819. scripts/d19_owner_pilot.py pins two public synthetic fixture SHA256s, stages only canonical bytes, generates 5-row approved sample demo/approved_pair.zip with existing pack_pair, wraps it with exact member allowlist, SHA+byte manifest, README_WINDOWS.txt, and truly header-only HUMAN_PILOT_BLANK.csv / MANUAL_TIME_LOG_BLANK.csv. No user path accepted as data source; output must be new. verify_kit validates inner and outer ZIP evidence. Alternative B installer/EXE deferred (license/signing/updates). docs/38_WINDOWS_OWNER_PILOT.md has usage.
+
+## 3. Commands and verified/unverified actual tests
+Commands: python -m scripts.d19_owner_pilot build --out NEW_KIT.zip ; python -m scripts.d19_owner_pilot verify --zip NEW_KIT.zip ; python -m pytest -q tests. D19 FIRST Linux Actions #40350528423: job SUCCESS with **312 pytest PASS, 1 nonblocking warning**, preserved 8 base + 3 extracted ZIP Chromium, pinned Fable/Astra proof and Tk UI; **Windows job FAILED at new fixture SHA checks**. Exact failure from Windows checkout CRLF bytes conversion. Real D18 baseline fully verified separately: branch 8ae7507805aa23ec51603079248caac0c57b7819, Actions #40348596385 SUCCESS Linux/Windows 299 tests each, including genuine fresh Windows Tk ZIP to HTTP 5 records. Latest D19 branch SHA **990ec2a9421c9a5f34973b2b7584f3c766668ae8** CI [#40351039641](https://github.com/hibi89/REA_Web/actions/runs/40351039641) was **QUEUED** on latest check, so actual fixed Windows pass still **NOT VERIFIED**. Expected 313 tests per OS after added CRLF regression, not an observed count. Do not extrapolate earlier Linux PASS across platforms.
+
+## 4. Done, in progress, blockers, stop point
+Implementation and Draft PR #22 DONE, final Windows and Linux full regression on exact latest SHA IN PROGRESS/CI QUEUED. Stop point = get Actions #40351039641 final per-job conclusion and log evidence. Commercial release BLOCKED; all PRs Draft/unmerged; main docs only.
+
+## 5. Failure evidence, analysis, retry and pivot
+Initial Linux 312 passed but Windows new tests failed because Git working-tree file bytes gained CRLF and no longer equaled strictly hardcoded synthetic Git LF SHA. Fixed without weakening pinned check: canonical_fixture_bytes permits only exact LF digest after CRLF→LF normalization and staging into a new ephemeral fixtures directory; the checked-out original is untouched. Added direct test proving Windows CRLF normalization and corruption rejection. A single principled fix and new CI issued. If latest run fails, inspect distinct root cause before at most one improved retry; stop/pivot on second non-progress failure. Do not disable hash protections, skip tests or auto-approve users.
+
+## 6. Repository/branches/commits/source and recovery
+Public hibi89/REA_Web. Source feature/windows-owner-pilot-kit current HEAD 990ec2a9421c9a5f34973b2b7584f3c766668ae8, [Draft PR #22](https://github.com/hibi89/REA_Web/pull/22) to integration/develop, unmerged. Original verified D18 rollback 8ae7507805aa23ec51603079248caac0c57b7819. Files scripts/d19_owner_pilot.py, tests/test_d19_owner_pilot.py, .github/workflows/rea-d19.yml, docs/38_WINDOWS_OWNER_PILOT.md. Fable pinned 7e6f273b359b207fad8f92016226e3058cbcb839 (88), Astra P4 PARTIAL f044b66e799289a5a353fdb9cbfdb324e683ffa3 (103). Never modify vendor/import refs or force-push.
+
+## 7. Deployment and execution
+No Vercel/Production service: NOT APPLICABLE. Consumer demonstration is offline ZIP extracted and user-initiated localhost 127.0.0.1 via launch_windows.cmd; requires previously installed Python3.11+ and runtime packages, no auto-install/elevation. Build is developer-only. GitHub Actions produces a synthetic kit artifact only when CI step runs.
+
+## 8. Original data, backups, credentials and limitations
+Only pinned public fixtures, 3 CSV + 2 JSON rows; original working-tree bytes unchanged; scratch canonical copies. No actual customer files, log filled data, tokens, .env, vendor engines, private URLs or PII sent. Output ZIP no-overwrite, inner manifest verifies no JOIN/commercial grant. Original working version backed by Git refs; tests CI-generated data in ephemeral environment. No license redistribution approval or audit of real data.
+
+## 9. Next priority and approval boundaries
+IMMEDIATE: confirm latest exact SHA's D19 Linux and Windows workflow jobs success, 313 expected tests each, 11 Chromium Linux, real Windows native two-file Tk+fresh venv localhost HTTP, pinned source proofs; review artifact, update STATUS/HANDOFF/NEXT and Draft PR. If CI success, D20 should focus on **non-intrusive local operator acceptance readiness** (e.g. dry-run kit instructions, artifact consistency) or explicitly mark real human Windows pilot as awaiting user action; do not invent operator results. Real customer/reference and legal/source rights, three real human-timed jobs, nondeveloper Windows session, security/PII/backup, 300k fixed scope/support/refund all require separate real-world approvals.
+
+## 10. Recorded time, basis and unverified
+2026-10-27 KST. GitHub HEAD and Actions jobs checked directly. Actual first Linux 312 PASS and Windows FAILED; latest SHA 990ec2a9... CI #40351039641 QUEUED. This handoff deliberately records pending state, not D19 verified completion. Main docs last changed in this sequence; refetch before editing and record final main SHA.
