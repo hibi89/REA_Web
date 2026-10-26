@@ -9,8 +9,11 @@ import argparse
 import hashlib
 from importlib import metadata
 import json
+import os
 from pathlib import Path
+import re
 import sqlite3
+import subprocess
 import sys
 
 
@@ -91,10 +94,50 @@ def inspect(root: Path) -> dict:
     return result
 
 
+def port_from_environment() -> int:
+    """Parse only a plain ASCII decimal port, never shell or CMD syntax."""
+    literal = os.environ.get("REA_WEB_PORT", "8000")
+    if (re.fullmatch(r"[1-9][0-9]{0,4}", literal, flags=re.ASCII) is None
+            or int(literal) > 65535):
+        raise ValueError("Unsafe REA_WEB_PORT: expected ASCII decimal 1..65535")
+    return int(literal)
+
+
+def launch_local(root: Path) -> int:
+    """Only after read-only integrity/preflight, spawn Uvicorn without shell."""
+    root = Path(root).absolute()
+    check = inspect(root)
+    if check["status"] != "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE":
+        print("REA_LOCAL_LAUNCH_BLOCKED: prerequisites or delivery SHA invalid",
+              file=sys.stderr)
+        return 2
+    try:
+        port = port_from_environment()
+    except ValueError:
+        print("REA_LOCAL_LAUNCH_BLOCKED: unsafe REA_WEB_PORT", file=sys.stderr)
+        return 2
+    # Fixed host and shell=False: an environment variable can never become
+    # an additional shell command, an option, or an externally bound address.
+    command = [sys.executable, "-m", "uvicorn", "app:app",
+               "--host", "127.0.0.1", "--port", str(port)]
+    try:
+        return subprocess.run(command, cwd=root / "app", check=False).returncode
+    except (OSError, ValueError):
+        print("REA_LOCAL_LAUNCH_BLOCKED: local runtime could not start",
+              file=sys.stderr)
+        return 2
+    except KeyboardInterrupt:
+        return 130
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="REA local package offline prerequisites only")
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent)
+    parser.add_argument("--launch", action="store_true",
+                        help="Start validated localhost app using argv, never a shell")
     args = parser.parse_args(argv)
+    if args.launch:
+        return launch_local(args.root)
     result = inspect(args.root)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
     return 0 if result["status"].startswith("PASS_") else 2
