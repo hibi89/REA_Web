@@ -36,9 +36,23 @@ def _rewrite(archive, changed_member, payload):
 def test_pinned_fixture_integrity_and_source_only_contract():
     a, b = pilot._sources()
     assert [a.name, b.name] == ["qa_guided.csv", "qa_pair_extra.json"]
-    assert [pilot.sha(x.read_bytes()) for x in (a, b)] == list(pilot.FIXTURES.values())
+    assert [pilot.sha(pilot.canonical_fixture_bytes(name, source))
+            for name, source in zip(pilot.FIXTURES, (a, b))] == list(pilot.FIXTURES.values())
     assert set(pilot.MAPPING) == {"id", "title", "category"}
     assert set(pilot.MAPPING.values()) == {"sku", "display_name", "group_name"}
+
+
+def test_git_checkout_crlf_canonicalized_without_modifying_fixture(tmp_path):
+    source = tmp_path / "qa_guided.csv"
+    canonical = pilot.canonical_fixture_bytes(
+        "qa_guided.csv", ROOT / "samples" / "qa_guided.csv")
+    source.write_bytes(canonical.replace(b"\n", b"\r\n"))
+    untouched = source.read_bytes()
+    assert pilot.canonical_fixture_bytes("qa_guided.csv", source) == canonical
+    assert source.read_bytes() == untouched
+    source.write_bytes(untouched.replace(b"S01", b"R01"))
+    with pytest.raises(ValueError, match="SHA mismatch"):
+        pilot.canonical_fixture_bytes("qa_guided.csv", source)
 
 
 def test_kit_contains_only_safe_and_expected_files(tmp_path):
@@ -53,7 +67,8 @@ def test_kit_contains_only_safe_and_expected_files(tmp_path):
         assert doc["real_human_acceptance"] == "NOT_RUN"
         assert doc["manual_labor_measurements"] == "BLANK_NOT_RUN"
         for name in pilot.FIXTURES:
-            assert zf.read("sources/" + name) == (ROOT / "samples" / name).read_bytes()
+            assert zf.read("sources/" + name) == pilot.canonical_fixture_bytes(
+                name, ROOT / "samples" / name)
 
 
 def test_both_human_logs_are_truly_blank_header_only(tmp_path):
