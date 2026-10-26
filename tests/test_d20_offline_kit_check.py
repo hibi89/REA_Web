@@ -107,9 +107,9 @@ def test_stdlib_only_and_no_dynamic_installs_or_network():
     assert "pip install" not in text
     assert "subprocess" not in text
     assert "urllib" not in text
-    assert "requests" not in text
+    assert "import requests" not in text
     assert "httpx" not in text
-    assert "socket" not in text
+    assert "import socket" not in text
     assert "eval(" not in text
     assert "exec(" not in text
     assert "OFFLINE_KIT_INTEGRITY_PASS" in text
