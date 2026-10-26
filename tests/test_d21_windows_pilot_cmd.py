@@ -40,9 +40,9 @@ def test_wrapper_is_ninth_sha_pinned_member(tmp_path):
     expected = SOURCE.read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
     assert actual == expected and actual.endswith(b"\r\n")
     assert set(builder.MEMBER_NAMES) == checker.EXPECTED
-    assert len(builder.MEMBER_NAMES) == 9
-    assert builder.verify_kit(tmp_path / "one-owner.zip")["verified_members"] == 9
-    assert checker.verify(root)["verified_files"] == 9
+    assert len(builder.MEMBER_NAMES) == 10
+    assert builder.verify_kit(tmp_path / "one-owner.zip")["verified_members"] == 10
+    assert checker.verify(root)["verified_files"] == 10
     assert "CHECK_PILOT_WINDOWS.cmd" in builder.GUIDE
 
 
