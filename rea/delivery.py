@@ -39,7 +39,12 @@ This package contains generated local readonly FastAPI + SQLite source and a
 synthetic dataset. It is not a standalone exe and never includes Python itself.
 Python 3.11+ and Python packages are required. No admin required for the check.
 
-1. Extract the entire ZIP to a new folder on a writable local disk.
+1. Extract the entire ZIP to a NEW EMPTY folder on a writable local disk.
+   The checker rejects ANY extra/unlisted files and directories, including
+   hidden or executable additions, inside the extracted delivery. Do not run
+   unfamiliar files. Re-extract the trusted ZIP into another clean folder if
+   this check fails. The app launcher prevents local Python bytecode cache
+   creation so later prerequisite checks remain repeatable.
 2. In Windows File Explorer double-click check_windows.cmd (or from CMD run it).
    If it reports missing FastAPI/Uvicorn, open CMD in this folder and choose
    whether to run: python -m pip install --user -r app\\requirements.txt
