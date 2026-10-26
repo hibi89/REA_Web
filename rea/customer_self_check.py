@@ -17,6 +17,37 @@ import subprocess
 import sys
 
 
+
+def verify_exact_delivery_tree(root: Path, members: set[str]) -> None:
+    """Refuse extra files, folders or symlinks inside an extracted delivery.
+
+    This is an extracted-folder safety check, NOT publisher authentication.
+    The manifest itself still needs a trustworthy origin. No network or writes.
+    """
+    expected_files = members | {"delivery_manifest.json"}
+    expected_dirs = set()
+    for name in expected_files:
+        pieces = name.split("/")
+        for end in range(1, len(pieces)):
+            expected_dirs.add("/".join(pieces[:end]))
+    if root.is_symlink() or not root.is_dir():
+        raise ValueError("Unsafe extracted delivery root")
+    for path in root.rglob("*"):
+        if path.is_symlink():
+            raise ValueError("Symlink in extracted delivery")
+        name = path.relative_to(root).as_posix()
+        if name in expected_files:
+            if not path.is_file():
+                raise ValueError("Expected extracted file is not a file")
+        elif name in expected_dirs:
+            if not path.is_dir():
+                raise ValueError("Expected extracted directory is not a directory")
+        else:
+            raise ValueError("Unexpected file or directory in extracted delivery")
+
+
+
+
 def inspect(root: Path) -> dict:
     root = Path(root).absolute()
     result = {
@@ -69,6 +100,9 @@ def inspect(root: Path) -> dict:
         }
         if not required.issubset(seen):
             raise ValueError("Missing essential app/launcher/diagnostic member")
+        # SHA-only verification of listed paths is insufficient: unknown
+        # executable or hidden entries beside them must also fail closed.
+        verify_exact_delivery_tree(root, seen)
         result["integrity"] = "MATCHED_DELIVERY_MANIFEST_SHA256"
         db_file = (root / "app/data.sqlite").as_uri()
         with sqlite3.connect(db_file + "?mode=ro", uri=True) as db:
@@ -121,7 +155,13 @@ def launch_local(root: Path) -> int:
     command = [sys.executable, "-m", "uvicorn", "app:app",
                "--host", "127.0.0.1", "--port", str(port)]
     try:
-        return subprocess.run(command, cwd=root / "app", check=False).returncode
+        environment = os.environ.copy()
+        # Do not create unlisted __pycache__ after a successful launch.
+        # A subsequent clean-room preflight must still accept the same kit.
+        environment["PYTHONDONTWRITEBYTECODE"] = "1"
+        return subprocess.run(
+            command, cwd=root / "app", check=False, env=environment
+        ).returncode
     except (OSError, ValueError):
         print("REA_LOCAL_LAUNCH_BLOCKED: local runtime could not start",
               file=sys.stderr)
