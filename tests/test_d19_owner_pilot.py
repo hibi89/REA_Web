@@ -58,7 +58,7 @@ def test_git_checkout_crlf_canonicalized_without_modifying_fixture(tmp_path):
 def test_kit_contains_only_safe_and_expected_files(tmp_path):
     path = _build(tmp_path)
     audit = pilot.verify_kit(path)
-    assert audit["verified_members"] == 9 and audit["rows"] == 5
+    assert audit["verified_members"] == 10 and audit["rows"] == 5
     assert audit["human_acceptance"] == "NOT_RUN"
     with zipfile.ZipFile(path) as zf:
         assert set(zf.namelist()) == pilot.MEMBER_NAMES
