@@ -53,8 +53,9 @@ def test_default_port_and_shipped_cmd_never_expand_env(monkeypatch, tmp_path):
     monkeypatch.delenv("REA_WEB_PORT", raising=False)
     assert check.port_from_environment() == 8000
     extracted = _unpacked(tmp_path)
-    batch = (extracted / "launch_windows.cmd").read_text(encoding="ascii")
-    assert batch == LAUNCH
+    batch_bytes = (extracted / "launch_windows.cmd").read_bytes()
+    assert batch_bytes == LAUNCH.encode("ascii")
+    batch = batch_bytes.decode("ascii")
     assert 'python "%~dp0self_check.py" --launch' in batch
     assert "%REA_WEB_PORT%" not in batch
     assert "set REA_WEB_PORT=" not in batch
