@@ -58,7 +58,7 @@ def test_git_checkout_crlf_canonicalized_without_modifying_fixture(tmp_path):
 def test_kit_contains_only_safe_and_expected_files(tmp_path):
     path = _build(tmp_path)
     audit = pilot.verify_kit(path)
-    assert audit["verified_members"] == 8 and audit["rows"] == 5
+    assert audit["verified_members"] == 9 and audit["rows"] == 5
     assert audit["human_acceptance"] == "NOT_RUN"
     with zipfile.ZipFile(path) as zf:
         assert set(zf.namelist()) == pilot.MEMBER_NAMES
@@ -154,6 +154,7 @@ def test_operator_guide_is_manual_and_local_only():
     assert "launch_windows.cmd" in guide
     assert "check_windows.cmd" in guide
     assert "python CHECK_PILOT_OFFLINE.py" in guide
+    assert "Double-click CHECK_PILOT_WINDOWS.cmd" in guide
     assert "S01" in guide and "S05" in guide
     assert "Ctrl+C" in guide
     assert "APPEND" in guide and "JOIN" in guide
