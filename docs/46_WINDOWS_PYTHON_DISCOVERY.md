@@ -22,3 +22,7 @@ In `rea/delivery.py`, both generated `.cmd` templates first silently check wheth
 ## Boundaries
 
 This does NOT prove real nondeveloper Windows acceptance. A publisher identity/rights check, installed package security, arbitrary system configurations and business licenses remain unverified. Actual human Windows session/time logs, 3 genuinely measured client service jobs, approved customer/reference rights and Fable/Astra/dependency redistribution NOTICE, privacy/security/backup, written KRW300k SAME-SCHEMA ROW APPEND-only scope/support/refunds are G5/G6 **BLOCKED**. No PR merges, real customer data, production or Vercel.
+
+## CI follow-up (2026-10-27 KST)
+
+Initial run #40376830500 revealed a test assertion mismatch (checker stores exit code10 in `_rea_check_code` for visible no-arg pause; test assumed direct `exit /b 10`) and a genuine Windows test harness issue: `py.cmd` test-only launcher wrapper takes control away from its calling `.cmd` unless invoked through CMD `call`. Updated both generated entrypoints to use `call py -3` for version probe and dispatch; this also supports a Windows environment where `py` itself is a script-wrapper, while real `py.exe` remains supported. Original `python` primary path remains unchanged. These are **source corrections, not verified successes** until a fresh exact SHA Linux and native Windows workflow completes. The test now verifies the checker's actual status-variable propagation and app launcher's direct exit10. Earlier failed run cannot be reused for acceptance.
