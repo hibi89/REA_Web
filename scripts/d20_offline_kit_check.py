@@ -76,8 +76,9 @@ def verify_exact_extracted_inventory(root: Path) -> None:
                 if name.startswith(entry.name + "/")
             }
             for child in entry.iterdir():
-                if (child.is_symlink() or child.name not in allowed
-                        or not child.is_file()):
+                if child.is_symlink():
+                    raise ValueError("Symlinks are not allowed in the pilot kit")
+                if child.name not in allowed or not child.is_file():
                     raise ValueError("Unexpected or unsafe extracted pilot member")
         else:
             raise ValueError("Unexpected or unsafe extracted pilot member")
