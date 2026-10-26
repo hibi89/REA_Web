@@ -8,7 +8,7 @@ Repo [hibi89/REA_Web](https://github.com/hibi89/REA_Web) public. D18 code branch
 
 **New D18 integration confirmed in native Windows CI:** fresh isolated venv MISSING_MODULES exit11 → explicit temporary CI-only pip setup → READY exit0; same interpreter real Tk APPEND first/second synthetic fixtures (3+2) generates SHA-provenance ZIP → extracted app started via same python.exe Uvicorn only 127.0.0.1 → HTTP health 200, five IDs, Hangul search, category filter, second-file detail, 404, summary, UNAPPROVED schema, process/temp cleanup PASS. Windows marker D18_FRESH_WINDOWS_GUI_ZIP_HTTP_PASS. NOT a genuine customer or nondeveloper Windows session. D18 code paths scripts/d18_windows_fresh_http.py, scripts/d18_http_probe.py, scripts/d15_pair_tk_smoke.py opt-in test hook, tests/test_d18_fresh_http.py, workflow rea-d18.yml, doc docs/37_FRESH_WINDOWS_TK_HTTP.md.
 
-Feature later docs-only HEAD 8ae7507805aa23ec51603079248caac0c57b7819; CI #40348596385 was queued when documentation was first written, so check its final status before claiming that HEAD tested. D17 rollback SHA 92355fec1152be0379a398b496f4e382ca57c55d. Main docs baseline; all PR #1–#21 Draft/unmerged. No Vercel/Production URL.
+Feature later docs-only HEAD 8ae7507805aa23ec51603079248caac0c57b7819; [CI #40348596385](https://github.com/hibi89/REA_Web/actions/runs/40348596385) subsequently completed SUCCESS on both OS, 299 pytest each; latest docs-only HEAD also verified. D17 rollback SHA 92355fec1152be0379a398b496f4e382ca57c55d. Main docs baseline; all PR #1–#21 Draft/unmerged. No Vercel/Production URL.
 
 ## NEXT READY D19
 
