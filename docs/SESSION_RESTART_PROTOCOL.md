@@ -34,13 +34,10 @@ This is sufficient authority to load repository documents, inspect latest source
 - **Real Chromium loopback browser** opened generated app and confirmed 5 cards, category filter 2 results, search 1, detail title/price, reload to 5, no JS exception or external request. No Windows real browser/production site/customer dataset tested. Not Fable→Astra integrated. Actions summary must not be extrapolated to final product.
 - Before Day1 Chromium, initial run 40197993285 had 9 pytest PASS + CLI generated app/compileall. Use latest run for current proof.
 
-## The next READY work unit — implement (NOT just plan)
-**REA-MVP-D2-01**, branch `feature/evidence-adapter`.
-Inspect pinned upstream JSON contracts before coding:
-- Fable: `engines/fable51/scanner/models.py`, `scanner/report.py`, `tests/test_contracts.py` (import branch).
-- Astra: `engines/astra_p4/astra_contracts/observation.py` and `functional_spec.py`, `data_mapping.py` and relevant fixtures/tests (import branch).
-Implement a small deterministic `rea/adapter/fable_to_astra.py` and CLI with fixtures/tests, verifying real Fable output **shape**. Preserve `observed/inferred/unknown`: Fable chart→API "candidate" and heuristics must NOT become source-confirmed behavior. When evidence is insufficient, return `REVIEW_REQUIRED` (no fabricated `ObservationBundle`). Every Astra functional candidate needs actual evidence IDs; all mappings and generation remain unapproved. No live URL fetch in CI. Run tests and record pass/fail/skip, exact commit/run; PR draft to `integration/develop`.
-After D2-01: D2-02 optional report/adapter→existing local CSV generator. Day3 3-example validation, Windows, packaging, architecture gap matrix. If tests are blocked, continue next safe independent item, never claim green.
+## The next READY work unit — D2-02, implement (NOT just plan)
+**D2-01 ALREADY DONE:** `feature/evidence-adapter` `fda96076de33ebf4f4b6118972a5033a3f703ba9`, Draft PR #4, [CI run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969) **28/28 pytest** and pinned actual Astra contract/CLI PASS; no vendor change. D2-01 is review-only, not a real source/UI function verifier.
+
+**REA-MVP-D2-02**, branch `feature/orchestrator`. Read `docs/17_NEXT_TASK.md` for precise scope. Combine **optional** Fable reporting with the already verified customer CSV→local app generator, using explicit isolated synthetic contracts and no automatic Fable schema binding/approval. Preserve CSV-only ability; run test/CI and Draft PR; update handoff. Then D3 tests and packaging. Windows, real data, full end-to-end integration and commercial delivery currently NOT_RUN.
 
 ## Handoff and workflow after each bounded unit
 1. Read latest remote main + docs + target branch HEAD and changes; source of truth is git, not chat narrative.

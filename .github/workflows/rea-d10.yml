@@ -1,0 +1,126 @@
+name: REA D10 synthetic RC and Windows diagnostics
+on:
+  push:
+    branches: [feature/rc-selfcheck]
+  pull_request:
+    branches: [integration/develop]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux-full-source-and-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pin Fable exact imported commit (read only)
+        uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: 7e6f273b359b207fad8f92016226e3058cbcb839
+          path: .vendor/fable
+          persist-credentials: false
+      - name: Pin Astra partial exact imported commit (read only)
+        uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: f044b66e799289a5a353fdb9cbfdb324e683ffa3
+          path: .vendor/astra
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "fastapi>=0.110,<1" "uvicorn>=0.27,<1" "httpx>=0.27,<1" "pytest>=8,<10" "pydantic>=2.6,<3" "playwright>=1.50,<2"
+      - name: D1-D10 synthetic RC Windows diagnostic regression
+        env:
+          PYTHONPATH: ".vendor/astra/engines/astra_p4:."
+        run: python -m pytest -q tests/test_mvp.py tests/test_adapter.py tests/test_orchestrator.py tests/test_d3.py tests/test_d4.py tests/test_d5.py tests/test_d6_provenance.py tests/test_d7_recovery.py tests/test_d8_guided.py tests/test_d9_two_source.py tests/test_d9_boundaries.py tests/test_d10_rc.py
+      - name: Pinned upstream exact 88 and 103 Git blob checks
+        run: |
+          mkdir -p /tmp/rea-d10-evidence
+          python -m rea.provenance verify-vendor --vendor fable51 --root .vendor/fable --out /tmp/rea-d10-evidence/fable-provenance.json
+          python -m rea.provenance verify-vendor --vendor astra_p4 --root .vendor/astra --out /tmp/rea-d10-evidence/astra-provenance.json
+      - run: python -m compileall -q rea scripts
+      - run: python -m playwright install --with-deps chromium
+      - name: Eight Chromium apps including D9 append on D10
+        env:
+          PYTHONPATH: ".vendor/astra/engines/astra_p4:."
+        run: python scripts/d3_browser_acceptance.py --report-dir /tmp/rea-d10-evidence/browser
+      - name: CSV/JSON ZIP SHA and provenance after atomic publication
+        run: |
+          python -m rea.delivery pack --csv samples/qa_cafe.csv --out /tmp/rea-d10-evidence/cafe.zip
+          python -m rea.provenance inspect-zip --zip /tmp/rea-d10-evidence/cafe.zip --out /tmp/rea-d10-evidence/cafe-audit.json
+          python -m rea.delivery pack --json samples/qa_products.json --out /tmp/rea-d10-evidence/products.zip
+          python -m rea.provenance inspect-zip --zip /tmp/rea-d10-evidence/products.zip --out /tmp/rea-d10-evidence/products-audit.json
+          python -m rea.guided inspect --csv samples/qa_guided.csv
+          python -m rea.guided inspect --json samples/qa_guided.json
+          python -m rea.two_source inspect --first samples/qa_guided.csv --second samples/qa_pair_extra.json
+          python -m scripts.d10_make_rc --out /tmp/rea-d10-evidence/rc
+          python -m rea.observed_deps --out /tmp/rea-d10-evidence/observed_python_packages_ubuntu.json
+      - name: Upload synthetic provenance and package reports only
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rea-d10-synthetic-rc
+          path: /tmp/rea-d10-evidence/
+          if-no-files-found: warn
+  windows-native-package-and-manifests:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Disable Windows git working-tree CRLF conversion for pinned source checkouts
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf false
+      - name: Pin Fable source for blob checks
+        uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: 7e6f273b359b207fad8f92016226e3058cbcb839
+          path: .vendor/fable
+          persist-credentials: false
+      - name: Pin Astra source and contracts
+        uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: f044b66e799289a5a353fdb9cbfdb324e683ffa3
+          path: .vendor/astra
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "fastapi>=0.110,<1" "uvicorn>=0.27,<1" "httpx>=0.27,<1" "pytest>=8,<10" "pydantic>=2.6,<3"
+      - name: D1-D10 Windows RC and extracted self-check
+        shell: pwsh
+        run: |
+          $env:PYTHONPATH = ".vendor/astra/engines/astra_p4;."
+          python -m pytest -q tests/test_mvp.py tests/test_adapter.py tests/test_orchestrator.py tests/test_d3.py tests/test_d4.py tests/test_d5.py tests/test_d6_provenance.py tests/test_d7_recovery.py tests/test_d8_guided.py tests/test_d9_two_source.py tests/test_d9_boundaries.py tests/test_d10_rc.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Windows verify pinned vendor snapshots
+        shell: pwsh
+        run: |
+          python -m rea.provenance verify-vendor --vendor fable51 --root .vendor/fable
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m rea.provenance verify-vendor --vendor astra_p4 --root .vendor/astra
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Windows observed Python package metadata (not licence approval)
+        shell: pwsh
+        run: |
+          python -m rea.observed_deps --out $env:RUNNER_TEMP/rea-d10-windows-metadata.json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Windows three synthetic RC packages and local self-check
+        shell: pwsh
+        run: |
+          python -m scripts.d10_make_rc --out $env:RUNNER_TEMP/rea-d10-windows-rc
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Windows real extracted CMD to localhost HTTP smoke
+        shell: pwsh
+        run: |
+          python scripts/windows_native_smoke.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
