@@ -50,6 +50,40 @@ def checked_bytes(root: Path, name: str) -> bytes:
     return content
 
 
+
+def verify_exact_extracted_inventory(root: Path) -> None:
+    """Reject extra files/dirs in the extracted kit, including hidden entries.
+
+    A valid SHA of expected files cannot justify executing unknown additions.
+    Only the two fixed one-level subdirectories in EXPECTED are allowed.
+    Neither files nor directories are followed through symlinks.
+    """
+    files = {name for name in EXPECTED if "/" not in name}
+    folders = {name.split("/", 1)[0] for name in EXPECTED if "/" in name}
+    if folders != {"sources", "demo"}:
+        raise ValueError("Unexpected fixed pilot inventory configuration")
+    for entry in root.iterdir():
+        if entry.is_symlink():
+            raise ValueError("Symlinks are not allowed in the pilot kit")
+        if entry.name in files:
+            if not entry.is_file():
+                raise ValueError("Expected pilot file is not a regular file")
+        elif entry.name in folders:
+            if not entry.is_dir():
+                raise ValueError("Expected pilot directory is not a directory")
+            allowed = {
+                name.split("/", 1)[1] for name in EXPECTED
+                if name.startswith(entry.name + "/")
+            }
+            for child in entry.iterdir():
+                if (child.is_symlink() or child.name not in allowed
+                        or not child.is_file()):
+                    raise ValueError("Unexpected or unsafe extracted pilot member")
+        else:
+            raise ValueError("Unexpected or unsafe extracted pilot member")
+
+
+
 def _inner_zip_checks(blob: bytes) -> None:
     import io
     with zipfile.ZipFile(io.BytesIO(blob)) as z:
@@ -107,6 +141,7 @@ def verify(root: Path) -> dict:
     root = Path(root)
     if not root.is_dir() or root.is_symlink():
         raise ValueError("Pilot root must be a real directory")
+    verify_exact_extracted_inventory(root)
     meta = json.loads(checked_bytes(root, "MANIFEST.json").decode("utf-8"))
     if (meta.get("schema") != SCHEMA
             or meta.get("status") != "SYNTHETIC_ONLY_NOT_HUMAN_ACCEPTED"
