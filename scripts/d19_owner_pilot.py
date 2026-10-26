@@ -38,6 +38,7 @@ MEMBER_NAMES = frozenset({
     "MANUAL_TIME_LOG_BLANK.csv",
     "CHECK_PILOT_OFFLINE.py",
     "CHECK_PILOT_WINDOWS.cmd",
+    "OPERATOR_ONE_PAGE_WINDOWS.txt",
     "MANIFEST.json",
 })
 
@@ -95,8 +96,12 @@ WINDOWS OPERATOR — MANUAL CHECKLIST (complete EMPTY logs yourself):
    The demo ZIP bundled here is generated without a human GUI session.
 
 RECORDING RULES:
-- HUMAN_PILOT_BLANK.csv has a HEADER ONLY. Record what actually happened.
-- MANUAL_TIME_LOG_BLANK.csv has a HEADER ONLY. Do not invent human labor hours.
+- Read OPERATOR_ONE_PAGE_WINDOWS.txt for a single-page MANUAL pilot checklist.
+- COPY BOTH HUMAN_PILOT_BLANK.csv and MANUAL_TIME_LOG_BLANK.csv to a NEW,
+  SEPARATE private working folder BEFORE entering any results. Never edit
+  blank files inside the hash-verified kit; that correctly invalidates it.
+- HUMAN_PILOT_BLANK.csv in this kit has a HEADER ONLY, no machine PASS.
+- MANUAL_TIME_LOG_BLANK.csv in kit has HEADER ONLY. Do not invent human labor hours.
 - Success must be marked only after a real nondeveloper Windows session.
 - STOP if inputs are sensitive, unexpected software is requested, or the
   environment requires administrator/global configuration changes.
@@ -192,6 +197,9 @@ def _payloads(work: Path) -> dict[str, bytes]:
         "CHECK_PILOT_WINDOWS.cmd": (
             Path(__file__).resolve().parent / "d21_check_pilot_windows.cmd"
         ).read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"),
+        "OPERATOR_ONE_PAGE_WINDOWS.txt": (
+            Path(__file__).resolve().parent / "d22_operator_one_page.txt"
+        ).read_bytes(),
     }
 
 
@@ -297,6 +305,10 @@ def verify_kit(path: Path) -> dict:
         expected_launcher = expected_launcher.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
         if zf.read("CHECK_PILOT_WINDOWS.cmd") != expected_launcher:
             raise ValueError("Native Windows offline launcher was modified")
+        if zf.read("OPERATOR_ONE_PAGE_WINDOWS.txt") != (
+                Path(__file__).resolve().parent
+                / "d22_operator_one_page.txt").read_bytes():
+            raise ValueError("Human-only checklist must stay exact synthetic guidance")
         for name, expected in {
             "README_WINDOWS.txt": GUIDE,
             "HUMAN_PILOT_BLANK.csv": HUMAN_LOG,
