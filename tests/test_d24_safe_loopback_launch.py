@@ -110,7 +110,9 @@ def test_shipped_selfcheck_has_launch_mode_and_never_checks_out_commmercial(tmp_
     extracted = _unpacked(tmp_path)
     selfcheck = (extracted / "self_check.py").read_text(encoding="utf-8")
     assert "port_from_environment" in selfcheck
-    assert "subprocess.run(command, cwd=root" in selfcheck
+    assert "subprocess.run(" in selfcheck
+    assert 'command, cwd=root / "app", check=False, env=environment' in selfcheck
+    assert 'environment["PYTHONDONTWRITEBYTECODE"] = "1"' in selfcheck
     assert '127.0.0.1' in selfcheck
     assert "shell=True" not in selfcheck
     proc = subprocess.run([sys.executable, str(extracted / "self_check.py"),
