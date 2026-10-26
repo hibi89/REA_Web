@@ -28,9 +28,24 @@ LAUNCH = "\r\n".join([
 ])
 CHECK_LAUNCH = "\r\n".join([
     "@echo off",
-    "setlocal",
+    "setlocal EnableExtensions DisableDelayedExpansion",
+    "rem Double-click shows the diagnostic; --check is noninteractive for scripts.",
+    'if not "%~2"=="" goto invalid',
+    'if "%~1"=="" goto check',
+    'if /I "%~1"=="--check" goto check',
+    "goto invalid",
+    ":check",
     'python "%~dp0self_check.py"',
-    "exit /b %errorlevel%",
+    'set "_rea_check_code=%ERRORLEVEL%"',
+    'if not "%_rea_check_code%"=="0" echo [REA] LOCAL_PREREQUISITES_NOT_VERIFIED. Do not launch the app.',
+    'if "%~1"=="" (',
+    '  echo [REA] Read the diagnostic above. This is NOT human or commercial acceptance.',
+    "  pause",
+    ")",
+    "exit /b %_rea_check_code%",
+    ":invalid",
+    "echo [REA] INVALID_ARGUMENT: Double-click or run check_windows.cmd --check.",
+    "exit /b 2",
     "",
 ])
 WINDOWS_README = """# REA_Web D10 synthetic local delivery (NOT commercially approved)
@@ -45,11 +60,15 @@ Python 3.11+ and Python packages are required. No admin required for the check.
    unfamiliar files. Re-extract the trusted ZIP into another clean folder if
    this check fails. The app launcher prevents local Python bytecode cache
    creation so later prerequisite checks remain repeatable.
-2. In Windows File Explorer double-click check_windows.cmd (or from CMD run it).
-   If it reports missing FastAPI/Uvicorn, open CMD in this folder and choose
+2. In Windows File Explorer double-click check_windows.cmd: the result
+   stays visible until you press a key. In an ALREADY OPEN Command Prompt or
+   in scripts, run check_windows.cmd --check to return immediately with the
+   same status. Neither mode launches the app or downloads dependencies.
+   If missing FastAPI/Uvicorn, open CMD in this folder and separately choose
    whether to run: python -m pip install --user -r app\\requirements.txt
    Package installation might need Internet; only the running app is local.
-3. Run check_windows.cmd again; PASS checks files, SQLite and environment only.
+3. Run check_windows.cmd --check again; PASS checks files, SQLite and
+   environment only. Do NOT launch the app after any failed preflight.
 4. Run launch_windows.cmd and visit http://127.0.0.1:8000/
    It verifies the local delivery files and prerequisites BEFORE starting
    the server. Python invokes Uvicorn with a fixed loopback host and a
