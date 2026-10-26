@@ -91,7 +91,7 @@ def test_guide_separates_real_human_trial_and_machine_pass():
     assert "COPY BOTH HUMAN_PILOT_BLANK.csv" in guide
     assert "PRIVATE" in card or "personal working folder" in card
     assert "one-page" in guide
-    assert "human_acceptance" in checker.verify.__code__.co_consts or True
+    assert "machine verification = human acceptance" in card
 
 
 def test_no_customer_or_operator_results_packed(tmp_path):
