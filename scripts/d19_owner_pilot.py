@@ -50,7 +50,11 @@ This kit contains a demo ZIP and two public fake-data inputs. Do not upload
 private files or share a real customer's generated app ZIP (which contains data).
 
 WINDOWS OPERATOR — MANUAL CHECKLIST (complete EMPTY logs yourself):
-1. Keep the original kit ZIP unchanged. Extract this kit to a NEW local folder.
+1. Keep the original kit ZIP unchanged. Extract this kit to a NEW EMPTY local
+   folder. The kit must contain ONLY its 10 original files and the two fixed
+   folders: an extra .exe, .cmd, hidden file, folder or symlink will fail
+   verification. Do NOT launch any unexpected file; re-extract the trusted
+   source ZIP to another clean folder if there are extra entries.
    The SHA256 hashes in MANIFEST.json describe the files inside the kit;
    generating them does not prove supplier identity or legal permission.
 2. Confirm sources/ contains qa_guided.csv (3 rows), qa_pair_extra.json
