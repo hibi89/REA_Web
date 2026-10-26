@@ -36,6 +36,7 @@ MEMBER_NAMES = frozenset({
     "README_WINDOWS.txt",
     "HUMAN_PILOT_BLANK.csv",
     "MANUAL_TIME_LOG_BLANK.csv",
+    "CHECK_PILOT_OFFLINE.py",
     "MANIFEST.json",
 })
 
@@ -52,7 +53,13 @@ WINDOWS OPERATOR — MANUAL CHECKLIST (complete EMPTY logs yourself):
    generating them does not prove supplier identity or legal permission.
 2. Confirm sources/ contains qa_guided.csv (3 rows), qa_pair_extra.json
    (2 rows). Never replace these with real or confidential files.
-3. Extract demo/approved_pair.zip to ANOTHER NEW, empty local folder.
+3. In the extracted kit root (BEFORE launching the web app) run:
+       python CHECK_PILOT_OFFLINE.py
+   This Python stdlib-only integrity check does NOT install packages or call
+   the network; it returns OFFLINE_KIT_INTEGRITY_PASS only for exact hashes.
+   A hash does NOT establish authenticity or legal/redistribution permission.
+   If it fails, STOP and do not launch the demo. Then extract
+   demo/approved_pair.zip to ANOTHER NEW, empty local folder.
    Its root must have check_windows.cmd, launch_windows.cmd and app/.
 4. Open Command Prompt in the extracted demo root. Run:
        check_windows.cmd
@@ -171,6 +178,9 @@ def _payloads(work: Path) -> dict[str, bytes]:
         "README_WINDOWS.txt": GUIDE.encode("utf-8"),
         "HUMAN_PILOT_BLANK.csv": HUMAN_LOG.encode("utf-8"),
         "MANUAL_TIME_LOG_BLANK.csv": TIME_LOG.encode("utf-8"),
+        "CHECK_PILOT_OFFLINE.py": (
+            Path(__file__).resolve().parent / "d20_offline_kit_check.py"
+        ).read_bytes(),
     }
 
 
@@ -267,6 +277,10 @@ def verify_kit(path: Path) -> dict:
         for name, expected in FIXTURES.items():
             if sha(zf.read("sources/" + name)) != expected:
                 raise ValueError("Pilot fixture changed from committed synthetic original")
+        if zf.read("CHECK_PILOT_OFFLINE.py") != (
+                Path(__file__).resolve().parent / "d20_offline_kit_check.py"
+            ).read_bytes():
+            raise ValueError("Offline pilot checker was modified")
         for name, expected in {
             "README_WINDOWS.txt": GUIDE,
             "HUMAN_PILOT_BLANK.csv": HUMAN_LOG,
