@@ -20,12 +20,10 @@ FIXED_DATE = (2026, 1, 1, 0, 0, 0)
 MAX_ARCHIVE_BYTES = 25 * 1024 * 1024
 LAUNCH = "\r\n".join([
     "@echo off",
-    "setlocal",
-    'cd /d "%~dp0app"',
-    "if errorlevel 1 exit /b 1",
-    "if not defined REA_WEB_PORT set REA_WEB_PORT=8000",
-    'python -m uvicorn app:app --host 127.0.0.1 --port %REA_WEB_PORT%',
-    "endlocal",
+    "setlocal EnableExtensions DisableDelayedExpansion",
+    "rem Fixed local Python launcher. Never expand a user-controlled port in CMD.",
+    'python "%~dp0self_check.py" --launch',
+    "exit /b %errorlevel%",
     "",
 ])
 CHECK_LAUNCH = "\r\n".join([
@@ -48,10 +46,16 @@ Python 3.11+ and Python packages are required. No admin required for the check.
    Package installation might need Internet; only the running app is local.
 3. Run check_windows.cmd again; PASS checks files, SQLite and environment only.
 4. Run launch_windows.cmd and visit http://127.0.0.1:8000/
-5. Ctrl+C stops server. If port 8000 is taken:
+   It verifies the local delivery files and prerequisites BEFORE starting
+   the server. Python invokes Uvicorn with a fixed loopback host and a
+   validated numeric port; the CMD file never expands REA_WEB_PORT.
+5. Ctrl+C stops server. If port 8000 is taken, in Command Prompt type:
    set REA_WEB_PORT=8765
    launch_windows.cmd
    Open http://127.0.0.1:8765/
+   Allowed port values are ASCII digits 1..65535 without leading zeros.
+   Invalid/unsafe text stops before launching Python web server and
+   does NOT run it as an OS shell command.
 
 If 'python' is not recognized, install official Python 3.11+ for your user,
 enable PATH, reopen CMD and repeat. Never run as administrator just for REA.
