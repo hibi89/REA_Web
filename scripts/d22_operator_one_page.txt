@@ -12,8 +12,8 @@ BEFORE START
 [ ] If KIT_NOT_VERIFIED or other failure, STOP. Do not launch the app.
 
 IMPORTANT: KEEP THE VERIFIED KIT IMMUTABLE
-Copy HUMAN_PILOT_BLANK.csv and MANUAL_TIME_LOG_BLANK.csv to a DIFFERENT
-personal working folder BEFORE writing results. Rename your external
+Copy HUMAN_PILOT_BLANK.csv and MANUAL_TIME_LOG_BLANK.csv OUTSIDE the
+verified kit, to a DIFFERENT personal working folder BEFORE writing results. Rename your external
 copies as appropriate. Do NOT edit the original blank files inside the
 kit: they are hash-pinned, and editing them correctly makes the
 integrity check fail. Do NOT put completed real-user logs in a public
