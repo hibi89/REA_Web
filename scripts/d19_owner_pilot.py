@@ -110,13 +110,28 @@ def sha(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def canonical_fixture_bytes(name: str, source: Path) -> bytes:
+    """Accept only pinned committed bytes; undo exact Git Windows CRLF conversion.
+
+    Original checkout files stay unchanged. Any change beyond newline style
+    is rejected and cannot enter the bundled synthetic demo.
+    """
+    if name not in FIXTURES or not source.is_file() or source.is_symlink():
+        raise ValueError("Committed synthetic fixture missing or is a symlink")
+    if source.stat().st_size > 1_000_000:
+        raise ValueError("Fixture SHA mismatch: refusing oversized source")
+    data = source.read_bytes()
+    if sha(data) != FIXTURES[name]:
+        data = data.replace(b"\r\n", b"\n")
+    if sha(data) != FIXTURES[name]:
+        raise ValueError("Fixture SHA mismatch: refusing non-synthetic data")
+    return data
+
+
 def _sources() -> tuple[Path, Path]:
     files = tuple(ROOT / "samples" / name for name in FIXTURES)
     for name, source in zip(FIXTURES, files):
-        if not source.is_file() or source.is_symlink():
-            raise ValueError("Committed synthetic fixture missing or is a symlink")
-        if source.stat().st_size > 1_000_000 or sha(source.read_bytes()) != FIXTURES[name]:
-            raise ValueError("Fixture SHA mismatch: refusing non-synthetic data")
+        canonical_fixture_bytes(name, source)
     return files
 
 
@@ -125,7 +140,21 @@ def _json(data: dict) -> bytes:
 
 
 def _payloads(work: Path) -> dict[str, bytes]:
-    first, second = _sources()
+    first_original, second_original = _sources()
+    # Stage ONLY canonical pinned fixture bytes into scratch. Git checkout can
+    # transform LF to CRLF on Windows; no original file is modified or trusted
+    # without a second exact hash check after staging.
+    fixture_folder = work / "fixtures"
+    fixture_folder.mkdir()
+    staged = []
+    for name, original in zip(FIXTURES, (first_original, second_original)):
+        path = fixture_folder / name
+        with path.open("xb") as handle:
+            handle.write(canonical_fixture_bytes(name, original))
+        if sha(path.read_bytes()) != FIXTURES[name]:
+            raise ValueError("Staged synthetic fixture SHA mismatch")
+        staged.append(path)
+    first, second = staged
     embedded = work / "approved_pair.zip"
     pack_pair(first, second, embedded, "REA D19 synthetic pilot",
               MAPPING, FIXTURES[first.name], FIXTURES[second.name],
@@ -136,8 +165,8 @@ def _payloads(work: Path) -> dict[str, bytes]:
             or provenance["overall_commercial_clearance"] != "NOT_GRANTED"):
         raise ValueError("Demo ZIP has invalid source or rights metadata")
     return {
-        "sources/qa_guided.csv": first.read_bytes(),
-        "sources/qa_pair_extra.json": second.read_bytes(),
+        "sources/qa_guided.csv": canonical_fixture_bytes(first.name, first),
+        "sources/qa_pair_extra.json": canonical_fixture_bytes(second.name, second),
         "demo/approved_pair.zip": embedded.read_bytes(),
         "README_WINDOWS.txt": GUIDE.encode("utf-8"),
         "HUMAN_PILOT_BLANK.csv": HUMAN_LOG.encode("utf-8"),
