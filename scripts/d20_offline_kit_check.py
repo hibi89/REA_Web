@@ -17,7 +17,8 @@ EXPECTED = frozenset({
     "sources/qa_guided.csv", "sources/qa_pair_extra.json",
     "demo/approved_pair.zip", "README_WINDOWS.txt",
     "HUMAN_PILOT_BLANK.csv", "MANUAL_TIME_LOG_BLANK.csv",
-    "CHECK_PILOT_OFFLINE.py", "CHECK_PILOT_WINDOWS.cmd", "MANIFEST.json",
+    "CHECK_PILOT_OFFLINE.py", "CHECK_PILOT_WINDOWS.cmd",
+    "OPERATOR_ONE_PAGE_WINDOWS.txt", "MANIFEST.json",
 })
 FIXTURE_SHA = {
     "sources/qa_guided.csv": "86bee9d74d474baf502cffbfd3071568337812744d143f432dc04b79554025f2",
