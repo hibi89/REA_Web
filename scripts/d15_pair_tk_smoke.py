@@ -14,7 +14,7 @@ SECOND = ROOT / "samples/qa_pair_extra.json"
 MAP = {"id": "sku", "title": "display_name", "category": "group_name"}
 
 
-def execute(folder: Path) -> dict:
+def execute(folder: Path, *, preserve_synthetic_zip: bool = False) -> dict:
     folder = Path(folder).absolute()
     if folder.exists() or folder.is_symlink():
         raise FileExistsError("Choose a NEW synthetic GUI report folder")
@@ -105,6 +105,10 @@ def execute(folder: Path) -> dict:
                 assert before == after
 
                 folder.mkdir(parents=True, exist_ok=False)
+                if preserve_synthetic_zip:
+                    # CI-only D18 handoff: never save a customer ZIP or overwrite.
+                    with (folder / "synthetic_pair_d18.zip").open("xb") as target:
+                        target.write(archive.read_bytes())
                 ui.window.update()
                 screen = {"status": "NOT_CAPTURED"}
                 try:
@@ -142,9 +146,11 @@ def main(argv=None):
     import argparse
     p=argparse.ArgumentParser(description="real Tk two-file synthetic proof")
     p.add_argument("--out",type=Path,required=True)
+    p.add_argument("--retain-synthetic-zip-for-d18", action="store_true",
+                   help="CI-only synthetic fixture handoff, never customer ZIP")
     args=p.parse_args(argv)
     try:
-        result=execute(args.out)
+        result=execute(args.out, preserve_synthetic_zip=args.retain_synthetic_zip_for_d18)
     except Exception as exc:
         print("D15_PAIR_TK_NOT_VERIFIED: "+type(exc).__name__,flush=True)
         return 2
