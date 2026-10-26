@@ -18,34 +18,61 @@ from rea.safe_publish import publish_archive
 SCHEMA = "rea.delivery.v0.1"
 FIXED_DATE = (2026, 1, 1, 0, 0, 0)
 MAX_ARCHIVE_BYTES = 25 * 1024 * 1024
+# Prefer a usable "python" command; fall back to installed "py -3".
+# Never install Python or infer a user machine's executable path.
+PYTHON_VERSION_PROBE = 'import sys;sys.exit(0 if sys.version_info[:2]>=(3,11) else 1)'
 LAUNCH = "\r\n".join([
     "@echo off",
     "setlocal EnableExtensions DisableDelayedExpansion",
-    "rem Fixed local Python launcher. Never expand a user-controlled port in CMD.",
+    "rem Never expand REA_WEB_PORT in CMD; Python owns safe localhost argv.",
+    'python -c "' + PYTHON_VERSION_PROBE + '" >nul 2>nul',
+    "if not errorlevel 1 goto launch_python",
+    'py -3 -c "' + PYTHON_VERSION_PROBE + '" >nul 2>nul',
+    "if not errorlevel 1 goto launch_py",
+    "echo [REA] MISSING_PYTHON: Python 3.11+ needed; nothing installed.",
+    "exit /b 10",
+    ":launch_python",
     'python "%~dp0self_check.py" --launch',
+    "exit /b %errorlevel%",
+    ":launch_py",
+    'py -3 "%~dp0self_check.py" --launch',
     "exit /b %errorlevel%",
     "",
 ])
 CHECK_LAUNCH = "\r\n".join([
     "@echo off",
     "setlocal EnableExtensions DisableDelayedExpansion",
-    "rem Double-click shows the diagnostic; --check is noninteractive for scripts.",
+    "rem No-arg double-click shows diagnostic; --check exits without pause.",
     'if not "%~2"=="" goto invalid',
     'if "%~1"=="" goto check',
     'if /I "%~1"=="--check" goto check',
     "goto invalid",
     ":check",
+    'python -c "' + PYTHON_VERSION_PROBE + '" >nul 2>nul',
+    "if not errorlevel 1 goto check_python",
+    'py -3 -c "' + PYTHON_VERSION_PROBE + '" >nul 2>nul',
+    "if not errorlevel 1 goto check_py",
+    "echo [REA] MISSING_PYTHON: Python 3.11+ needed; nothing installed.",
+    'set "_rea_check_code=10"',
+    "goto finished",
+    ":check_python",
     'python "%~dp0self_check.py"',
     'set "_rea_check_code=%ERRORLEVEL%"',
-    'if not "%_rea_check_code%"=="0" echo [REA] LOCAL_PREREQUISITES_NOT_VERIFIED. Do not launch the app.',
-    'if "%~1"=="" (',
-    '  echo [REA] Read the diagnostic above. This is NOT human or commercial acceptance.',
-    "  pause",
-    ")",
-    "exit /b %_rea_check_code%",
+    "goto finished",
+    ":check_py",
+    'py -3 "%~dp0self_check.py"',
+    'set "_rea_check_code=%ERRORLEVEL%"',
+    "goto finished",
     ":invalid",
     "echo [REA] INVALID_ARGUMENT: Double-click or run check_windows.cmd --check.",
     "exit /b 2",
+    ":finished",
+    'if not "%_rea_check_code%"=="0" echo [REA] LOCAL_PREREQUISITES_NOT_VERIFIED. Do not launch the app.',
+    'if "%~1"=="" (',
+    "  echo [REA] Read the diagnostic above. This is NOT human or commercial acceptance.",
+    "  pause",
+    ")",
+    "exit /b %_rea_check_code%",
     "",
 ])
 WINDOWS_README = """# REA_Web D10 synthetic local delivery (NOT commercially approved)
@@ -64,9 +91,14 @@ Python 3.11+ and Python packages are required. No admin required for the check.
    stays visible until you press a key. In an ALREADY OPEN Command Prompt or
    in scripts, run check_windows.cmd --check to return immediately with the
    same status. Neither mode launches the app or downloads dependencies.
-   If missing FastAPI/Uvicorn, open CMD in this folder and separately choose
-   whether to run: python -m pip install --user -r app\\requirements.txt
-   Package installation might need Internet; only the running app is local.
+   Both CMD entrypoints prefer installed Python 3.11+ from "python";
+   if missing/too old, they try the Windows launcher "py -3". They do
+   NOT install Python. If both are unusable, exit code is 10.
+   If FastAPI/Uvicorn are missing, optionally install into the SAME
+   interpreter selected by the check (separate user decision):
+   python -m pip install --user -r app\\requirements.txt
+   OR py -3 -m pip install --user -r app\\requirements.txt
+   Installation may need Internet; the app itself remains local.
 3. Run check_windows.cmd --check again; PASS checks files, SQLite and
    environment only. Do NOT launch the app after any failed preflight.
 4. Run launch_windows.cmd and visit http://127.0.0.1:8000/
@@ -81,8 +113,8 @@ Python 3.11+ and Python packages are required. No admin required for the check.
    Invalid/unsafe text stops before launching Python web server and
    does NOT run it as an OS shell command.
 
-If 'python' is not recognized, install official Python 3.11+ for your user,
-enable PATH, reopen CMD and repeat. Never run as administrator just for REA.
+If neither 'python' nor 'py -3' can select Python 3.11+, install official
+Python 3.11+ for your user, reopen CMD, then retry. No admin required.
 No files are uploaded by the self-check. Do not run from the Internet.
 The app only binds 127.0.0.1 by default; never expose it with --host 0.0.0.0.
 
