@@ -286,3 +286,10 @@ IMMEDIATE: confirm latest exact SHA's D19 Linux and Windows workflow jobs succes
 
 ## 10. Recorded time, basis and unverified
 2026-10-27 KST. GitHub HEAD and Actions jobs checked directly. Actual first Linux 312 PASS and Windows FAILED; latest SHA 990ec2a9... CI #40351039641 QUEUED. This handoff deliberately records pending state, not D19 verified completion. Main docs last changed in this sequence; refetch before editing and record final main SHA.
+
+
+## D19 corrected source full CI VERIFIED checkpoint (2026-10-27 KST)
+- After initial Git Windows CRLF source SHA failure, the new normalization-only-to-pinned-LF-scratch fix and regression test were verified by [GitHub Actions #40350940022](https://github.com/hibi89/REA_Web/actions/runs/40350940022): both Linux and Windows completed **SUCCESS**, **313 pytest PASS EACH**, zero failed/skipped, one nonblocking warning each, Linux 8 Chromium base + 3 extracted ZIPs, Windows actual fresh venv real Tk->ZIP->127.0.0.1 HTTP, pinned Fable 88/Astra P4 PARTIAL 103, native Windows delivery CMD. Exact tested source **bda41f24bbd41edf599802f822290ac40e5ac423**.
+- GitHub Actions produced and verified **rea-d19-synthetic-windows-owner-pilot** artifact **12663991426** (run 40350940022, artifact archive 16,941 bytes). In CI, strict manifest reports seven members, five synthetic rows, no human results, commercial NOT_GRANTED. Inner sample app and outer kit verified, SHA digest of Linux sample kit **598a8744391540fb7eeeb814d8f3a01d38a27f9d6b7b03ea89d5c707428aa9fa**.
+- HEAD of feature/docs after the code test **990ec2a9421c9a5f34973b2b7584f3c766668ae8** contains only docs/38 update, separate final Actions #40351039641 not yet completed at latest check. Before claiming full latest feature SHA verified, read this run. Main docs (not feature runtime) updates are being persisted.
+- D19 kit is a developer CI synthetic deliverable, not a customer product installation or user-human acceptance. G5/G6 still BLOCKED; Vercel production N/A. Draft PR #22 OPEN UNMERGED.
