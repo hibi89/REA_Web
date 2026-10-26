@@ -119,7 +119,7 @@ def test_ephemeral_port_only_loopback_and_no_automatic_owner_install():
     assert 1 <= probe.loopback_port() <= 65535
     source = (ROOT / "scripts" / "d18_windows_fresh_http.py").read_text(encoding="utf-8")
     assert 'stage_project(project)' in source
-    assert '"MISSING_MODULES:' in source or 'MISSING_MODULES:"' in source
+    assert 'marker="[REA] MISSING_MODULES:"' in source
     assert '"APPROVE_APPROVE_APPEND"' in source
     assert '"NOT_RUN"' in source
     assert "0.0.0.0" not in (ROOT / "scripts" / "d18_http_probe.py").read_text(encoding="utf-8")
