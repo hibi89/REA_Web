@@ -37,6 +37,7 @@ MEMBER_NAMES = frozenset({
     "HUMAN_PILOT_BLANK.csv",
     "MANUAL_TIME_LOG_BLANK.csv",
     "CHECK_PILOT_OFFLINE.py",
+    "CHECK_PILOT_WINDOWS.cmd",
     "MANIFEST.json",
 })
 
@@ -53,8 +54,15 @@ WINDOWS OPERATOR — MANUAL CHECKLIST (complete EMPTY logs yourself):
    generating them does not prove supplier identity or legal permission.
 2. Confirm sources/ contains qa_guided.csv (3 rows), qa_pair_extra.json
    (2 rows). Never replace these with real or confidential files.
-3. In the extracted kit root (BEFORE launching the web app) run:
+3. In the extracted kit root (BEFORE launching the web app) on Windows:
+       Double-click CHECK_PILOT_WINDOWS.cmd
+   Or in an existing Command Prompt (CI/no pause):
+       CHECK_PILOT_WINDOWS.cmd --check
+   On Linux/non-Windows, use:
        python CHECK_PILOT_OFFLINE.py
+   The Windows launcher uses existing Python 3.11+ only and leaves its result
+   visible when double-clicked. MISSING_PYTHON (10), MISSING_CHECKER (11),
+   and INVALID_ARGUMENT (2) are failures. It never launches the app.
    This Python stdlib-only integrity check does NOT install packages or call
    the network; it returns OFFLINE_KIT_INTEGRITY_PASS only for exact hashes.
    A hash does NOT establish authenticity or legal/redistribution permission.
@@ -181,6 +189,9 @@ def _payloads(work: Path) -> dict[str, bytes]:
         "CHECK_PILOT_OFFLINE.py": (
             Path(__file__).resolve().parent / "d20_offline_kit_check.py"
         ).read_bytes(),
+        "CHECK_PILOT_WINDOWS.cmd": (
+            Path(__file__).resolve().parent / "d21_check_pilot_windows.cmd"
+        ).read_bytes().replace(b"\r\n", b"\n").replace(b"\n", b"\r\n"),
     }
 
 
@@ -281,6 +292,11 @@ def verify_kit(path: Path) -> dict:
                 Path(__file__).resolve().parent / "d20_offline_kit_check.py"
             ).read_bytes():
             raise ValueError("Offline pilot checker was modified")
+        expected_launcher = (Path(__file__).resolve().parent
+                             / "d21_check_pilot_windows.cmd").read_bytes()
+        expected_launcher = expected_launcher.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+        if zf.read("CHECK_PILOT_WINDOWS.cmd") != expected_launcher:
+            raise ValueError("Native Windows offline launcher was modified")
         for name, expected in {
             "README_WINDOWS.txt": GUIDE,
             "HUMAN_PILOT_BLANK.csv": HUMAN_LOG,
