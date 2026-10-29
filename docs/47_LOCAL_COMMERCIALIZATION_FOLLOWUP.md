@@ -43,5 +43,12 @@ The current implementation can generate one-source CSV/flat JSON apps and explic
 
 ## GitHub reflection state and durable bundle
 
-The original folder has no `.git`. The GitHub connector can create a normal child commit on the existing branch only while its head remains at the verified D27 parent; PR #30 stays Draft/unmerged. The patch is `E:\REA_Web_Kmong\REA_Web_Kmong_D27_followup_20261030\REA_Web_kmong_followup.patch`. The original/modified file bundle is under `E:\REA_Web_Kmong\REA_Web_Kmong_D27_followup_20261030\files` and is also archived as `E:\REA_Web_Kmong\REA_Web_Kmong_D27_followup_20261030.zip`. These deliverables survive cleanup of the temporary work copy. Exact commit and new CI status will be appended after remote reflection.
+The original folder has no `.git`. The GitHub connector created normal child commits on the existing branch; PR #30 stays Draft/unmerged. The patch is `E:\REA_Web_Kmong\REA_Web_Kmong_D27_followup_20261030\REA_Web_kmong_followup.patch`. The original/modified file bundle is under `E:\REA_Web_Kmong\REA_Web_Kmong_D27_followup_20261030\files` and is also archived as `E:\REA_Web_Kmong\REA_Web_Kmong_D27_followup_20261030.zip`. These deliverables survive cleanup of the temporary work copy.
+
+## Follow-up CI findings and fixes (2026-10-30)
+
+- The initial follow-up head `0fd8008f9f3a9126e1ec017a7d9d11bff65bafe4` was tested by Actions run [#40906386284](https://github.com/hibi89/REA_Web/actions/runs/40906386284). Full D1-D27 regression failed on both Linux and Windows: **80 failed, 340 passed, 4 skipped, 1 warning** on Linux. The failures traced to the new checklist not being admitted by the existing ZIP provenance allowlist, a port-error compatibility token, and the D27 guide wording assertion. This is a real integration regression, not an environment-only CI issue.
+- Fixed the allowlist/required member and restored `unsafe REA_WEB_PORT` in the actionable Korean error. Commits: `4343c68b180645c22eb88bee460722a6ce946c79` (allowlist), `bf4e6f75a5a60cb1971179aa7edf0d7ac3662b6b` (port token), and `8dbb50438aa45a4a752d906605731564122c1f19` (normalize allowlist).
+- At the time of this update PR #30 is still Draft/open/unmerged and the D27 workflow for latest head `8dbb50438aa45a4a752d906605731564122c1f19` is queued. Do not mark these fixes as CI verified until the exact-head Windows and Linux D27 jobs complete successfully.
+- Local focused customer guidance remains **8 passed** and `compileall` passes. Local package-export tests remain blocked before assertions by this desktop sandbox's Windows `WinError 5` on the intentional atomic directory rename. No actual customer machine was exercised.
 
