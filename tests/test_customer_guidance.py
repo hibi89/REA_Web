@@ -1,6 +1,11 @@
 """Customer-readable prerequisite guidance without touching app files."""
 from __future__ import annotations
 
+import hashlib
+import json
+import sqlite3
+
+from rea import customer_self_check
 from rea.customer_self_check import _version_meets_minimum, render_customer_report
 from rea.delivery import CHECK_LAUNCH, DELIVERY_ACCEPTANCE, LAUNCH, WINDOWS_README
 
@@ -25,6 +30,51 @@ def test_dependency_security_floor_rejects_affected_starlette_versions():
     assert not _version_meets_minimum("1.3.0", (1, 3, 1))
     assert not _version_meets_minimum("1.3.1rc1", (1, 3, 1))
     assert not _version_meets_minimum("0.99.0", (1, 3, 1))
+
+
+def test_inspect_fails_closed_when_installed_starlette_is_below_security_floor(tmp_path, monkeypatch):
+    root = tmp_path
+    app = root / "app"
+    (app / "static").mkdir(parents=True)
+    db = sqlite3.connect(app / "data.sqlite")
+    db.execute("CREATE TABLE items (id INTEGER)")
+    db.close()
+    members = {
+        "app/app.py": b"app = None\n",
+        "app/data.sqlite": (app / "data.sqlite").read_bytes(),
+        "app/manifest.json": b"{}\n",
+        "app/requirements.txt": b"fastapi>=0.110,<1\nstarlette>=1.3.1,<2\nuvicorn>=0.27,<1\n",
+        "app/static/index.html": b"<html></html>\n",
+        "app/static/app.js": b"\n",
+        "app/static/style.css": b"\n",
+        "launch_windows.cmd": b"@echo off\n",
+        "check_windows.cmd": b"@echo off\n",
+        "self_check.py": b"pass\n",
+        "README_WINDOWS.md": b"guide\n",
+        "ACCEPTANCE_CHECKLIST.md": b"checklist\n",
+    }
+    for rel, content in members.items():
+        target = root / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(content)
+    manifest = {
+        "schema_version": "rea.delivery.v0.1",
+        "files": [
+            {"path": rel, "bytes": len(content), "sha256": hashlib.sha256(content).hexdigest()}
+            for rel, content in members.items()
+        ],
+    }
+    (root / "delivery_manifest.json").write_text(
+        json.dumps(manifest), encoding="utf-8"
+    )
+    installed = {"fastapi": "0.143.3", "starlette": "1.0.0", "uvicorn": "0.54.0"}
+    monkeypatch.setattr(customer_self_check.metadata, "version", lambda name: installed[name])
+
+    report = customer_self_check.inspect(root)
+    assert report["status"] == "FAIL_LOCAL_PREREQUISITES"
+    starlette = next(item for item in report["dependencies"] if item["name"] == "starlette")
+    assert starlette["status"] == "VERSION_BELOW_MINIMUM"
+    assert starlette["minimum_version"] == "1.3.1"
 
 
 def test_outdated_dependency_has_customer_recovery_guidance():
