@@ -51,7 +51,8 @@ def test_shipped_cmds_offer_python_and_py_fallback_without_install(tmp_path):
     assert b"MISSING_PYTHON" in checker and b"MISSING_PYTHON" in launcher
     assert b'set "_rea_check_code=10"' in checker
     assert b"exit /b %_rea_check_code%" in checker
-    assert b"exit /b 10" in launcher
+    assert b'set "_rea_launch_code=10"' in launcher
+    assert b"exit /b %_rea_launch_code%" in launcher
     assert b"%REA_WEB_PORT%" not in checker + launcher
     for cmd in (checker, launcher):
         low = cmd.lower()
