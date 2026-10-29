@@ -179,7 +179,7 @@ def launch_local(root: Path) -> int:
     try:
         port = port_from_environment()
     except ValueError:
-        print("REA_LOCAL_LAUNCH_BLOCKED: 포트 번호는 1~65535 숫자만 사용할 수 있습니다.",
+        print("REA_LOCAL_LAUNCH_BLOCKED: unsafe REA_WEB_PORT. 포트 번호는 1~65535 숫자만 사용할 수 있습니다.",
               file=sys.stderr)
         print("CMD에서 set REA_WEB_PORT=8765 입력 후 다시 실행할 수 있습니다.",
               file=sys.stderr)
