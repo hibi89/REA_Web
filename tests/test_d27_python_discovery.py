@@ -62,7 +62,7 @@ def test_shipped_cmds_offer_python_and_py_fallback_without_install(tmp_path):
             assert forbidden not in low
     guide = (root / "README_WINDOWS.md").read_text(encoding="utf-8")
     assert 'Windows launcher "py -3"' in guide
-    assert "same" in guide.lower()
+    # The localized install instructions must not depend on English wording.
     assert "위에서 버전을 확인한 동일한 Python 실행기" in guide
     assert "same interpreter that passed" not in guide.lower()
     assert "NOT commercially approved" in guide
