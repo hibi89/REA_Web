@@ -113,6 +113,7 @@ py -3 -c "import sys; print(sys.executable); print(sys.version)"
 
 `python`이 3.11 이상이면 첫 번째 명령을, 그렇지 않고 `py -3`가 3.11 이상이면
 두 번째 명령을 실행해 **검사기가 선택하는 같은 Python 환경**에 설치합니다.
+즉, 반드시 the same interpreter that passed the version check 를 사용하세요.
 
 ```bat
 python -m pip install --user -r app\\requirements.txt
