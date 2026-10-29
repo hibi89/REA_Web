@@ -100,6 +100,11 @@ def test_port_error_message_is_customer_actionable(monkeypatch, capsys):
     assert "BAD" not in report
 
 
+def test_windows_readme_discloses_unencrypted_customer_database():
+    assert "암호화되지 않았으며" in WINDOWS_README
+    assert "app\\data.sqlite" in WINDOWS_README
+    assert "개인/민감정보" in WINDOWS_README
+
 def test_customer_cli_mode_is_plain_text_and_preserves_exit_code(monkeypatch, capsys):
     from rea import customer_self_check
 
