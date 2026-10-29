@@ -19,24 +19,28 @@ import sys
 
 
 
-DEPENDENCY_MINIMUMS = {
-    "fastapi": (0, 110, 0),
-    "starlette": (1, 3, 1),
-    "uvicorn": (0, 27, 0),
+DEPENDENCY_BOUNDS = {
+    "fastapi": ((0, 110, 0), (1, 0, 0)),
+    "starlette": ((1, 3, 1), (2, 0, 0)),
+    "uvicorn": ((0, 27, 0), (1, 0, 0)),
 }
 
 
-def _version_meets_minimum(version: str, minimum: tuple[int, int, int]) -> bool:
-    """Compare numeric release components without importing non-stdlib packages."""
+def _version_in_supported_range(
+    version: str,
+    bounds: tuple[tuple[int, int, int], tuple[int, int, int]],
+) -> bool:
+    """Check a stable version against both bounds without a non-stdlib dependency."""
     matched = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)(.*)", version)
     if matched is None:
         return False
     actual = tuple(int(matched.group(index)) for index in (1, 2, 3))
-    if actual != minimum:
-        return actual > minimum
+    minimum, maximum = bounds
+    if actual < minimum or actual >= maximum:
+        return False
     suffix = matched.group(4)
-    # A post-release is newer than the base release; dev/rc/local ambiguity fails closed.
-    return not suffix or suffix.startswith(".post")
+    # Only a numeric post-release of a supported stable version is accepted.
+    return not suffix or re.fullmatch(r"\.post\d+", suffix, flags=re.IGNORECASE) is not None
 
 
 def verify_exact_delivery_tree(root: Path, members: set[str]) -> None:
@@ -133,22 +137,26 @@ def inspect(root: Path) -> dict:
         result["row_count_only"] = count
     except (OSError, ValueError, KeyError, sqlite3.Error, json.JSONDecodeError) as exc:
         result["issues"].append("Archive/extraction/SQLite validation failed: " + type(exc).__name__)
-    for name, minimum in DEPENDENCY_MINIMUMS.items():
+    for name, bounds in DEPENDENCY_BOUNDS.items():
+        minimum, maximum = bounds
         minimum_text = ".".join(map(str, minimum))
+        maximum_text = ".".join(map(str, maximum))
         try:
             version = metadata.version(name)
-            if _version_meets_minimum(version, minimum):
+            if _version_in_supported_range(version, bounds):
                 state = "INSTALLED_UNVERIFIED_LICENSE"
             else:
-                state = "VERSION_BELOW_MINIMUM"
+                state = "VERSION_OUT_OF_RANGE"
                 result["issues"].append(
-                    f"Python dependency below minimum: {name} {version}; required >= {minimum_text}"
+                    f"Python dependency outside supported range: {name} {version}; "
+                    f"required >= {minimum_text}, < {maximum_text}"
                 )
         except metadata.PackageNotFoundError:
             version, state = None, "MISSING_INSTALL_REQUIRED"
             result["issues"].append("Missing Python dependency: " + name)
         result["dependencies"].append({
-            "name": name, "version": version, "minimum_version": minimum_text, "status": state,
+            "name": name, "version": version, "minimum_version": minimum_text,
+            "maximum_exclusive": maximum_text, "status": state,
         })
     result["status"] = "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE" if (
         result["python_311_or_later"] and result["integrity"] == "MATCHED_DELIVERY_MANIFEST_SHA256"
@@ -177,17 +185,18 @@ def render_customer_report(result: dict) -> str:
             lines.append("조치: 앱 데이터 파일을 편집하지 말고, 신뢰한 원본 ZIP에서 새로 압축을 푸세요.")
         missing = [item.get("name") for item in result.get("dependencies", [])
                    if item.get("status") == "MISSING_INSTALL_REQUIRED"]
-        outdated = [item for item in result.get("dependencies", [])
-                    if item.get("status") == "VERSION_BELOW_MINIMUM"]
+        out_of_range = [item for item in result.get("dependencies", [])
+                        if item.get("status") == "VERSION_OUT_OF_RANGE"]
         if missing:
             lines.append("MISSING_INSTALL_REQUIRED: 필수 Python 패키지가 없습니다: "
                          + ", ".join(missing) + ".")
             lines.append("README_WINDOWS.md의 선택적 설치 절차를 따라 같은 Python 환경에 설치하세요.")
-        if outdated:
-            lines.append("VERSION_BELOW_MINIMUM: 보안 최소 버전보다 오래된 Python 패키지: "
+        if out_of_range:
+            lines.append("VERSION_OUT_OF_RANGE: 지원 범위를 벗어난 Python 패키지: "
                          + ", ".join(
-                             f"{item['name']} {item['version']} (필요 >= {item['minimum_version']})"
-                             for item in outdated
+                             f"{item['name']} {item['version']} "
+                             f"(필요 >= {item['minimum_version']}, < {item['maximum_exclusive']})"
+                             for item in out_of_range
                          ) + ".")
             lines.append("README_WINDOWS.md의 업그레이드 명령으로 같은 Python 환경의 패키지를 갱신한 뒤 다시 검사하세요.")
         if result.get("issues") and not (missing or result.get("integrity") != "MATCHED_DELIVERY_MANIFEST_SHA256"

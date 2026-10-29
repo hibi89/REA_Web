@@ -5,8 +5,10 @@ import hashlib
 import json
 import sqlite3
 
+import pytest
+
 from rea import customer_self_check
-from rea.customer_self_check import _version_meets_minimum, render_customer_report
+from rea.customer_self_check import _version_in_supported_range, render_customer_report
 from rea.delivery import CHECK_LAUNCH, DELIVERY_ACCEPTANCE, LAUNCH, WINDOWS_README
 
 
@@ -23,16 +25,26 @@ def result(**changes):
     return value
 
 
-def test_dependency_security_floor_rejects_affected_starlette_versions():
-    assert _version_meets_minimum("1.3.1", (1, 3, 1))
-    assert _version_meets_minimum("1.3.1.post1", (1, 3, 1))
-    assert _version_meets_minimum("1.8.0", (1, 3, 1))
-    assert not _version_meets_minimum("1.3.0", (1, 3, 1))
-    assert not _version_meets_minimum("1.3.1rc1", (1, 3, 1))
-    assert not _version_meets_minimum("0.99.0", (1, 3, 1))
+def test_dependency_ranges_enforce_security_floor_and_compatible_major():
+    assert _version_in_supported_range("1.3.1", ((1, 3, 1), (2, 0, 0)))
+    assert _version_in_supported_range("1.3.1.post1", ((1, 3, 1), (2, 0, 0)))
+    assert _version_in_supported_range("1.8.0", ((1, 3, 1), (2, 0, 0)))
+    assert not _version_in_supported_range("1.3.0", ((1, 3, 1), (2, 0, 0)))
+    assert not _version_in_supported_range("1.3.1rc1", ((1, 3, 1), (2, 0, 0)))
+    assert not _version_in_supported_range("1.3.1.postjunk", ((1, 3, 1), (2, 0, 0)))
+    assert not _version_in_supported_range("2.0.0", ((1, 3, 1), (2, 0, 0)))
+    assert _version_in_supported_range("0.110.0", ((0, 110, 0), (1, 0, 0)))
+    assert not _version_in_supported_range("1.0.0", ((0, 110, 0), (1, 0, 0)))
 
 
-def test_inspect_fails_closed_when_installed_starlette_is_below_security_floor(tmp_path, monkeypatch):
+@pytest.mark.parametrize("starlette_version,expected_status", [
+    ("1.0.0", "FAIL_LOCAL_PREREQUISITES"),
+    ("2.0.0", "FAIL_LOCAL_PREREQUISITES"),
+    ("1.8.0", "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE"),
+])
+def test_inspect_enforces_installed_starlette_supported_range(
+    tmp_path, monkeypatch, starlette_version, expected_status
+):
     root = tmp_path
     app = root / "app"
     (app / "static").mkdir(parents=True)
@@ -67,27 +79,32 @@ def test_inspect_fails_closed_when_installed_starlette_is_below_security_floor(t
     (root / "delivery_manifest.json").write_text(
         json.dumps(manifest), encoding="utf-8"
     )
-    installed = {"fastapi": "0.143.3", "starlette": "1.0.0", "uvicorn": "0.54.0"}
+    installed = {"fastapi": "0.143.3", "starlette": starlette_version, "uvicorn": "0.54.0"}
     monkeypatch.setattr(customer_self_check.metadata, "version", lambda name: installed[name])
 
     report = customer_self_check.inspect(root)
-    assert report["status"] == "FAIL_LOCAL_PREREQUISITES"
+    assert report["status"] == expected_status
     starlette = next(item for item in report["dependencies"] if item["name"] == "starlette")
-    assert starlette["status"] == "VERSION_BELOW_MINIMUM"
     assert starlette["minimum_version"] == "1.3.1"
+    assert starlette["maximum_exclusive"] == "2.0.0"
+    if expected_status == "FAIL_LOCAL_PREREQUISITES":
+        assert starlette["status"] == "VERSION_OUT_OF_RANGE"
+    else:
+        assert starlette["status"] == "INSTALLED_UNVERIFIED_LICENSE"
 
 
 def test_outdated_dependency_has_customer_recovery_guidance():
     report = render_customer_report(result(
         dependencies=[{
-            "name": "starlette", "version": "1.0.0",
-            "minimum_version": "1.3.1", "status": "VERSION_BELOW_MINIMUM",
+            "name": "starlette", "version": "2.0.0",
+            "minimum_version": "1.3.1", "maximum_exclusive": "2.0.0",
+            "status": "VERSION_OUT_OF_RANGE",
         }],
-        issues=["Python dependency below minimum: starlette 1.0.0; required >= 1.3.1"],
+        issues=["Python dependency outside supported range: starlette 2.0.0; required >= 1.3.1, < 2.0.0"],
     ))
-    assert "VERSION_BELOW_MINIMUM" in report
-    assert "starlette 1.0.0" in report
-    assert "필요 >= 1.3.1" in report
+    assert "VERSION_OUT_OF_RANGE" in report
+    assert "starlette 2.0.0" in report
+    assert "필요 >= 1.3.1, < 2.0.0" in report
     assert "업그레이드 명령" in report
     assert "python -m pip install --user --upgrade -r app\\requirements.txt" in WINDOWS_README
     assert "py -3 -m pip install --user --upgrade -r app\\requirements.txt" in WINDOWS_README
