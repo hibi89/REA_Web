@@ -1,24 +1,25 @@
-# REA_Web dispatcher — SINGLE ACTIVE READY TASK
-Updated 2026-10-25 22:55 KST. The exact trigger **[REA_Web 깃헙 레포지토리 보고 작업이어가셈]** or **ㄱ** authorizes immediate execution of the next safe synthetic development unit. Do not ask the owner to resupply the Fable ZIP or approve normal offline development.
+# REA_Web — current delivery dispatcher (2026-10-30)
 
-## Last task DONE: REA-MVP-D2-01
-- `feature/evidence-adapter` @ `fda96076de33ebf4f4b6118972a5033a3f703ba9`; [Draft PR #4](https://github.com/hibi89/REA_Web/pull/4), unmerged.
-- Source file `rea/adapter/fable_to_astra.py`; test `tests/test_adapter.py`; sample `samples/fable_record_redacted.json`; docs `docs/19_FABLE_ASTRA_ADAPTER.md`; workflow `.github/workflows/rea-adapter.yml`.
-- Pinned vendor source unchanged. [CI run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969) Ubuntu Python 3.11 **28 PASS**, zero failed/skipped; actual Astra Pydantic contract validation, CLI rejection of automatic approval and compileall PASS. PR run 40199766677 SUCCESS. Local standalone **24 PASS / 2 SKIP** before CI; skipped actual Astra import is covered by CI.
-- These are synthetic unit/contract tests; no real website, customer data, Windows, whole product E2E or production deployment. Output stays `REVIEW_REQUIRED`.
+## Verified baseline
 
-## ACTIVE READY: REA-MVP-D2-02 — optional report + local CSV app orchestration
-**Status: READY** · **Target: feature/orchestrator** · **Scope: offline/synthetic only**.
+- `feature/d27-windows-python-discovery` at D27 source SHA `6ca9a03bcb3619fd4d1ea9922cf2e4a1557ec225`.
+- Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30), OPEN and UNMERGED.
+- GitHub Actions [#40378905450](https://github.com/hibi89/REA_Web/actions/runs/40378905450) COMPLETED SUCCESS on both jobs: Linux 412 pytest PASS / 4 SKIP / 1 warning; Windows 426 pytest PASS / 1 warning. Linux Chromium 8+3 synthetic browser scenarios and Windows native CMD/ZIP localhost flows passed. D27 Windows PATH fallback suite: 3 PASS. Synthetic artifact `rea-d27-synthetic-windows-owner-pilot`, ID **12678683196**; checker says human acceptance NOT_RUN and commercial clearance NOT_GRANTED.
+- Original feature SHA does not include the local Korean diagnostics follow-up described below.
 
-1. Read latest remote `main` HEAD, `WORKER_START_HERE.md`, `STATUS.md`, `HANDOFF.md`, this file, and `docs/SESSION_RESTART_PROTOCOL.md`.
-2. Read source and tested SHAs on `feature/csv-local-mvp` (Day1 `5515a7286d63211e32d2c577f93f77d61f37ce08`) and `feature/evidence-adapter` (D2-01 `fda96076de33ebf4f4b6118972a5033a3f703ba9`), plus current `feature/orchestrator`. Do not force-update unique commits or merge unreviewed vendors.
-3. Add a small deterministic CLI/orchestrator that takes **customer-supplied CSV** and optionally Fable analysis/report. CSV-only flow must remain usable, and analysis must only generate a report requiring review; it must never automatically map Fable API/tech/record-marker guesses to customer fields or authorize generation on the basis of the Fable scan.
-4. Generate a separate independent localhost FastAPI/SQLite+HTML app using the already tested CSV MVP code, with no source overwrites, live requests, DB credentials, unapproved files, or new external deployment. Avoid copying entire vendor trees.
-5. Run focused unit/negative tests plus synthetic vertical acceptance, verify checks on GitHub Actions, open Draft PR to `integration/develop`, record exact SHA/OS/pass counts and any NOT_RUN items. Update `STATUS.md`, `HANDOFF.md`, this dispatcher, and `WORKER_START_HERE.md` on main after the unit.
+## Current local unit — customer-readable Windows package diagnostics
 
-## Queue
-- **REA-MVP-D3-01:** 3 synthetic domains, actual browser E2E of orchestrated output, Windows smoke/instructions, packaging/manifest, original-design gap and acceptance matrix.
-- **REA-P0-04 (DEFERRED):** full vendor provenance/license and distribution review before sale.
-- Complex auth, real DB, production deploy, payment and advanced pentest are out of this current unit.
+**Scope:** make the extracted delivery ZIP understandable to a Korean Windows user without changing the approved runtime boundary. `check_windows.cmd` remains offline and read-only; a new `--customer-check` option prints concise next steps. Default self-check output remains JSON for scripts. Launch preflight failures and unsafe port messages explain recovery. The embedded ZIP manual covers new-folder extraction, `python` then `py -3` selection, same-interpreter optional package setup, localhost-only run/stop/restart, port collision, corrupted ZIP, access-denied paths, UTF-8 input and data preservation.
 
-One task per turn; truthfully differentiate tests, GitHub CI, Windows and real browser checks. No asynchronous work.
+**Local validation:** focused report-renderer tests and compile checks only. ZIP-generation tests cannot complete in this desktop sandbox because Windows denies the app's intentional atomic `os.link` publish operation (WinError 5); this is an executor filesystem restriction, not a passing package test. The D27 remote CI does not validate these new changes. Do not label this unit verified until new-source CI and extracted ZIP checks pass.
+
+## Next independent work
+
+1. Run exact D1–D27 regressions and packaging on a normal Windows runner after committing the follow-up. Verify Korean customer-check text in the generated ZIP, Python fallback, successful ZIP extraction, local HTTP search/filter/detail, Ctrl+C and rerun persistence.
+2. Review product scope against current functions: customer-provided UTF-8 CSV/flat JSON, explicit mapping approval, one source or explicit same-schema two-file ROW APPEND, list/search/category filter/detail, local SQLite/FastAPI ZIP. Do not promise SQL joins, CRUD, hosting, login/payment, scraping or data collection.
+3. Keep actual nondeveloper human Windows acceptance, three manually measured service jobs, source/data rights, dependency/vendor redistribution NOTICE, privacy/security/backup/recovery and buyer agreement/refund/support terms BLOCKED until the owner supplies genuine evidence. No synthetic test can clear them.
+
+## Release decision
+
+**Not ready to list as an approved commercial service.** Proposed price is 299,000 KRW, but binding acceptance scope, support/refund terms, actual customer rights and G5/G6 evidence remain unapproved. Keep all PRs Draft/unmerged and do not publish a website or accept a customer order from these test results.
+
