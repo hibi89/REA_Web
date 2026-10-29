@@ -1,0 +1,59 @@
+name: REA D31 generated-runtime vulnerability audit
+
+on:
+  pull_request:
+    branches: [integration/develop]
+    paths:
+      - .github/workflows/rea-d31-generated-runtime-audit.yml
+      - rea/delivery.py
+      - rea/orchestrator.py
+      - rea/mvp.py
+      - samples/qa_cafe.csv
+  push:
+    branches: [feature/d27-windows-python-discovery]
+    paths:
+      - .github/workflows/rea-d31-generated-runtime-audit.yml
+      - rea/delivery.py
+      - rea/orchestrator.py
+      - rea/mvp.py
+      - samples/qa_cafe.csv
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-generated-runtime:
+    name: audit (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11"]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install scanner only
+        run: python -m pip install pip-audit
+      - name: Generate synthetic customer runtime package
+        run: python -m rea.delivery pack --csv samples/qa_cafe.csv --out rea-d31-audit.zip
+      - name: Extract generated runtime
+        run: python -c "import zipfile; zipfile.ZipFile('rea-d31-audit.zip').extractall('rea-d31-audit')"
+      - name: Record audit scope
+        run: python -c "import pathlib, platform, sys; from importlib.metadata import version; r=pathlib.Path('rea-d31-audit'); (r/'audit-metadata.txt').write_text('fixture=synthetic-only\npython='+sys.version+'\nplatform='+platform.platform()+'\npip-audit='+version('pip-audit')+'\nresolution=latest-compatible-versions-from-generated-range-requirements; not a lockfile\n', encoding='utf-8'); (r/'requirements-audited.txt').write_bytes((r/'app'/'requirements.txt').read_bytes())"
+      - name: Audit generated requirement ranges and transitive dependencies
+        run: python -m pip_audit --requirement rea-d31-audit/app/requirements.txt --format json --output rea-d31-audit/pip-audit.json
+      - name: Upload synthetic audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rea-d31-vulnerability-audit-${{ runner.os }}
+          path: rea-d31-audit/
+          if-no-files-found: warn
+
