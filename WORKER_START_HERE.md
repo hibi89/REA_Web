@@ -1,5 +1,13 @@
 # REA_Web — CURRENT RESUME SNAPSHOT (2026-10-30)
 
+## Follow-up resume pointer (2026-10-30)
+
+The designated feature branch currently resolves to `64b28c986618c68472649474c6604c2b1fce7372`. GitHub CI connector returned 27 successful completed runs, but omitted one expected workflow from its first-page response; do not claim 28/28. Local patched customer-guidance tests 18 PASS and compileall PASS. Full local regression is incomplete/blocked by sandbox WinError 5 during atomic file publication; D27/D26 focused tests reproduce that restriction.
+
+Continue from `bundle_update_notes/REA_Web_kmong_db6711_to_64b28c9.patch` and `customer_bundle_changes/`. Patch applies to exact `db6711e` base. The original source ZIP snapshot has no `.git`; do not modify it as the only copy. Never use helper branch `codex/REA_Web-bounds-regression` (incomplete one-file tree). Target feature branch remains at 64b and was not changed in the rejected ref update.
+
+Sale gates remain: independent human Windows acceptance NOT_RUN, commercial source/dependency redistribution NOT_GRANTED, real customer-data permission/privacy NOT_APPROVED, and seller terms/price NOT_APPROVED. Resume independent local work without waiting for CI; do not mark those gates complete from automation.
+
 Latest feature branch HEAD: `578442b2bd22bb64a004e77bbd091a17930f614a`. Draft PR #30 is open and unmerged.
 
 Exact-head GitHub Actions **28/28 SUCCESS**, including D27 Windows/Linux full regression, D6 supply-chain/security, extracted Windows CMD and localhost smoke, and Chromium synthetic scenarios. D27 runs: [PR #40954859581](https://github.com/hibi89/REA_Web/actions/runs/40954859581) and [push #40954852936](https://github.com/hibi89/REA_Web/actions/runs/40954852936); D6: [#40954859774](https://github.com/hibi89/REA_Web/actions/runs/40954859774).

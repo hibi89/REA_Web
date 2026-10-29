@@ -8,7 +8,7 @@ import sqlite3
 import pytest
 
 from rea import customer_self_check
-from rea.customer_self_check import _version_in_supported_range, render_customer_report
+from rea.customer_self_check import DEPENDENCY_BOUNDS, _version_in_supported_range, render_customer_report
 from rea.delivery import CHECK_LAUNCH, DELIVERY_ACCEPTANCE, LAUNCH, WINDOWS_README
 
 
@@ -23,6 +23,19 @@ def result(**changes):
     }
     value.update(changes)
     return value
+
+
+
+@pytest.mark.parametrize("name,valid,below,above", [
+    ("fastapi", "0.143.3", "0.109.9", "1.0.0"),
+    ("starlette", "1.8.0", "1.3.0", "2.0.0"),
+    ("uvicorn", "0.54.0", "0.26.9", "1.0.0"),
+])
+def test_each_direct_package_bound_is_enforced(name, valid, below, above):
+    bounds = DEPENDENCY_BOUNDS[name]
+    assert _version_in_supported_range(valid, bounds)
+    assert not _version_in_supported_range(below, bounds)
+    assert not _version_in_supported_range(above, bounds)
 
 
 def test_dependency_ranges_enforce_security_floor_and_compatible_major():

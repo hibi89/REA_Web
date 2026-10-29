@@ -1,5 +1,13 @@
 # 크몽 상품 출시 게이트 (2026-10-30) — 승인 전 문서
 
+## Follow-up verification state (2026-10-30, exact feature HEAD)
+
+- Current branch HEAD `64b28c986618c68472649474c6604c2b1fce7372`; latest source compare reports 5 commits ahead / 0 behind `db6711e`.
+- GitHub CI connector returned 27 completed successful workflows, including D27 Windows, D26, D24, D6, D3, D9, D20, D22 and D23. The connector response is first-page-only and omits one expected run; exact 28/28 remains unconfirmed.
+- Customer preflight now enforces lower and exclusive upper package versions for FastAPI, Starlette, and Uvicorn. Latest isolated guidance tests 18 PASS. Local full suite is incomplete in the managed Windows sandbox due repeated WinError 5 on atomic file publication; D27/D26 targeted tests include 9 such blocked failures.
+- Existing three Windows sample packages pass CRC but predate source `f6e34f6`; rebuild them at exact 64b before using them as current-head evidence. Human acceptance remains NOT_RUN; commercial source/vendor and dependency rights remain NOT_GRANTED; customer permission/privacy review and sale terms remain NOT_APPROVED.
+- Local update did not move the feature branch. An incomplete connector-created helper branch exists and must not be used as a source branch.
+
 **현재 상태: NOT APPROVED FOR LISTING OR ORDER INTAKE.** 이 문서는 승인·법률 의견·고객 수락을 뜻하지 않는다.
 
 ## 현재 코드·검증 기준

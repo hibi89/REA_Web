@@ -1,5 +1,17 @@
 # STATUS — REA_Web / latest verified snapshot
 
+## Follow-up state (2026-10-30, checked after 64b28c9)
+
+- Named branch `feature/d27-windows-python-discovery` currently resolves exactly to `64b28c986618c68472649474c6604c2b1fce7372`; compare confirms 5 commits ahead of `db6711e`, 0 behind. PR #30 remains open/draft/unmerged.
+- GitHub Actions connector returned 27 workflow runs for this SHA; all 27 were completed/success, including D27, D26, D24, D6, D3, D9, D20, D22, and D23. Connector is first-page-only and omitted one of the historically observed 28 runs; report 27/27 returned, not 28/28.
+- Commit `64b28c9` bounds FastAPI/Starlette/Uvicorn versions at lower and exclusive upper limits. Isolated customer guidance tests: 18 PASS including local additional table-driven boundaries; those extra three parameterized cases are preserved in the local patch but not in this remote HEAD.
+- Isolated copy `python -m compileall -q rea tests scripts`: PASS. Full local suite on this restricted Windows sandbox: 235 PASS, 17 SKIP, 174 FAIL on the first run, dominated by filesystem `WinError 5`; a workspace-local temp retry stalled and was interrupted, so no complete current local regression claim. Focused D27/D26/guidance: 18 PASS, 9 FAIL at `os.link`/atomic package publication with sandbox `WinError 5`.
+- Three preserved synthetic sample ZIPs pass CRC, but were built from earlier `f6e34f6` source. Current-head extracted Windows delivery and Chromium evidence in older receipts also references that earlier snapshot, not a rebuild at 64b.
+- Commercial source/dependency redistribution rights **NOT_GRANTED**; independent human Windows acceptance **NOT_RUN**; real-customer data/privacy authorization **NOT_APPROVED**; listing/seller terms **NOT_APPROVED**. Estimated progress remains 95% development / 77% sale preparation, qualitative only.
+- No change was pushed to the feature branch during this follow-up. A connector-created helper branch `codex/REA_Web-bounds-regression` has an incomplete one-file tree after an unsafe tree creation; automatic review blocked moving the real feature branch. Connector offers no branch deletion operation. Record and do not use this helper as a source branch.
+
+The preceding status sections are dated historical evidence. This follow-up block supersedes their branch-head, CI and test statements.
+
 ## Current verified state (2026-10-30)
 
 - Repository: `hibi89/REA_Web`; branch: `feature/d27-windows-python-discovery`; exact current HEAD: `578442b2bd22bb64a004e77bbd091a17930f614a`.

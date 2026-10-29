@@ -1,5 +1,21 @@
 # HANDOFF — REA_Web / current handoff (2026-10-30)
 
+## Follow-up handoff state (2026-10-30)
+
+- Feature branch exact HEAD: `64b28c986618c68472649474c6604c2b1fce7372`; branch compare shows 5 ahead / 0 behind `db6711e`. PR #30 remains OPEN/DRAFT/UNMERGED.
+- Current CI evidence from connector: 27 returned workflows, all 27 SUCCESS. One expected workflow was not returned by the first-page-only API, so do not claim 28/28.
+- Code at 64b bounds FastAPI, Starlette, and Uvicorn to supported lower/upper ranges. Local isolated customer guidance: 18 PASS, compileall PASS. Full local regression is incomplete due Windows sandbox filesystem `WinError 5`; targeted D27/D26 tests also encounter denied `os.link` at package publication.
+- Cumulative patch is validated against `db6711e`; original ZIP snapshot stays untouched. Customer bundle and machine hashes live in `bundle_update_notes/`.
+- Human/customer acceptance NOT_RUN; commercial redistribution rights NOT_GRANTED; seller listing/terms NOT_APPROVED. Do not promote CI or synthetic cases to those gates.
+- A helper branch created via connector has an incomplete one-file tree and is not a usable source branch. The feature branch was not moved. Connector provides no safe branch delete operation; record it and do not build on it.
+
+## Next independent work
+
+1. Re-run the current complete D27/D1-D27 regression in an unrestricted, ordinary Windows environment so atomic rename/hard-link tests can run; mark this sandbox run incomplete.
+2. Rebuild synthetic delivery ZIPs from exact 64b source, then execute extracted CMD, browser search/filter/detail and append flows; older `f6e34f6` receipts are not current-head proof.
+3. Continue exact dependency vulnerability and license notice checks using source/release artifacts; legal source and vendor rights remain NOT_GRANTED until documented clearance.
+4. Keep the human Windows acceptance protocol unfilled until an independent nondeveloper performs it.
+
 ## Verified remote head and product status
 
 - Current feature branch HEAD: `578442b2bd22bb64a004e77bbd091a17930f614a`. Exact-head CI completed **28/28 SUCCESS**, including D27 Windows/Linux full regression and D6 supply-chain/security.

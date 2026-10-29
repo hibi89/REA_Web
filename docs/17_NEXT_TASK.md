@@ -1,5 +1,23 @@
 # REA_Web — current delivery dispatcher (2026-10-30)
 
+## Follow-up state and next task (2026-10-30)
+
+- Exact feature branch HEAD `64b28c986618c68472649474c6604c2b1fce7372`; 5 commits ahead/0 behind baseline `db6711e`; PR #30 remains draft and unmerged.
+- Latest CI connector response: 27 workflows returned, 27 completed SUCCESS. The first-page-only response omitted one expected run, so 28/28 is unconfirmed.
+- FastAPI/Starlette/Uvicorn lower and upper supported ranges are enforced by code at 64b. Local isolated guidance 18 PASS; compileall PASS. Full local suite did not complete cleanly in the managed Windows sandbox: 235 PASS/17 SKIP/174 FAIL on first run, dominated by WinError 5; workspace temp retry stalled and was interrupted. Focused D27/D26/guidance ran 18 PASS/9 filesystem-publication FAIL (sandbox `os.link` denial).
+- Older sample ZIP and Chromium/Windows receipts are synthetic, some from source `f6e34f6`; rebuild at exact 64b before claiming fresh exact-head delivery/browser acceptance.
+
+## Next independent actions
+
+1. Run full D1-D27 tests on unrestricted Windows to validate hard-link/atomic publication paths; current sandbox run is incomplete.
+2. Regenerate synthetic single-source and approved same-schema append ZIPs from exact 64b source. Verify manifest, CRC, extraction, launcher `/health`, query/detail, restart/data persistence, and Chromium UI.
+3. Update package vulnerability and license/NOTICE evidence from exact release artifacts. Rights stay NOT_GRANTED until a documented human decision.
+4. Keep independent nondeveloper customer Windows acceptance NOT_RUN until actually performed. Keep seller fees, delivery/revision/support/refund terms unapproved until checked in the seller account.
+
+## Release gate
+
+Not approved for listing or customer release. CI, isolated tests, and synthetic samples do not establish human acceptance, customer data authorization, commercial rights, or seller approval.
+
 ## Verified remote state
 
 - Repository `hibi89/REA_Web`; branch `feature/d27-windows-python-discovery`; exact HEAD `578442b2bd22bb64a004e77bbd091a17930f614a`.
@@ -24,4 +42,3 @@ Customer-authorized UTF-8 CSV or flat JSON → preview → explicit field-mappin
 ## Release gate
 
 Not approved for listing or customer release. CI and synthetic packages do not grant source rights, authorize customer data, or equal human acceptance. Preserve existing source and customer data; do not force-push or merge PR #30.
-
