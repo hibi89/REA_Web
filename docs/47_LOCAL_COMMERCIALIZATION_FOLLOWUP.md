@@ -39,7 +39,7 @@ The original `E:\REA_Web_Kmong\REA_Web-feature-d27-windows-python-discovery` is 
 - **PASS:** extracted synthetic delivery ZIP Chromium E2E: 3/3 cases; list/search/filter/detail/summary, reload, zero JavaScript errors, dialogs or external requests.
 - **NOT RUN:** nondeveloper customer manual installation/recovery review, actual customer-authorized dataset, and commercial work-time measurement.
 - The earlier D27 green run is evidence for the source baseline only. The exact-head CI for the current remote branch is separately tracked below.
-- **PASS:** `git apply --check` and `git apply` succeeded against a fresh copy of the original D27 files; all **12** resulting Git blob hashes equal the modified work copy.
+- **PASS:** `git apply --check` and `git apply` succeeded against a fresh copy of the original D27 files; all **15** resulting file SHA-256 hashes equal the preserved modified copies.
 
 ## Commercial and delivery status
 
