@@ -136,6 +136,25 @@ def test_windows_zip_publication_uses_atomic_rename_without_hardlinks(tmp_path, 
     assert collision.read_bytes() == b"OWNER ARCHIVE"
     assert stage.read_bytes() == b"other ZIP"
 
+    race_target = tmp_path / "race-owner.zip"
+    race_stage = tmp_path / "race-stage.zip"
+    race_stage.write_bytes(b"complete staged ZIP")
+    real_os = os
+
+    def destination_appears_after_precheck(source, destination):
+        Path(destination).write_bytes(b"RACE OWNER")
+        return real_os.rename(source, destination)
+
+    windows_os = type("WindowsRenameProxy", (), {
+        "name": "nt", "rename": staticmethod(destination_appears_after_precheck),
+    })()
+    with monkeypatch.context() as scoped:
+        scoped.setattr(safe_publish, "os", windows_os)
+        with pytest.raises(FileExistsError):
+            safe_publish.publish_archive(race_stage, race_target)
+    assert race_target.read_bytes() == b"RACE OWNER"
+    assert race_stage.read_bytes() == b"complete staged ZIP"
+
 
 def test_zip_atomic_publish_failure_does_not_create_partial_archive(tmp_path, monkeypatch):
     archive = tmp_path / "not-created.zip"
