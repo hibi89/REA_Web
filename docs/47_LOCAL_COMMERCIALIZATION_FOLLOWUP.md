@@ -83,3 +83,12 @@ The original folder has no `.git`. The GitHub connector created normal child com
 - **BLOCKED/NOT_CONFIRMED:** after this small launcher change, a fresh free-port HTTP launch was not re-confirmed in this Windows sandbox; the loopback request was denied/no 4-row response was obtained. Do not treat the older native HTTP receipt as validation of this new code delta.
 - The Windows sandbox also denied the delivery publisher's `os.link` operation with WinError 5. For the isolated launcher-content exercise only, the final archive publish was substituted with `os.replace`; this does not verify the production hard-link publisher in this environment.
 
+
+
+## Complete local Windows regression after launcher correction (2026-10-30)
+
+- Updated `tests/test_d27_python_discovery.py` to assert the launcher's actual status-variable flow (`_rea_launch_code`) and visible failure pause instead of expecting the obsolete literal `exit /b 10` line. This corrects the test contract; runtime behavior is unchanged by this test-only edit.
+- D27 Python discovery Windows-focused tests: **3 passed** against the current modified source.
+- Full local Windows suite: **407 passed, 22 skipped, 6 blocked**. All six blocked cases attempt to create symbolic links and fail at fixture setup with Windows `WinError 1314` (required privilege absent), before their product assertions. They are not counted as passes. No assertions were disabled.
+- The previous run's launcher assertion failure was stale compiled test bytecode; the final run disabled bytecode writes after clearing that one test cache. The final suite's six failures are limited to the symlink fixture-setup permission barrier.
+- Remote exact-head D27 workflow must be rechecked after the test correction; local results are not CI evidence. Human customer acceptance and commercial redistribution clearance remain **NOT_RUN / NOT_GRANTED**.
