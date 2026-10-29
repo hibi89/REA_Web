@@ -2,17 +2,19 @@
 
 ## Verified remote head and product status
 
-- 기능 및 D27 CI 검증 기준 커밋은 `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6`이며, unavailable Python discovery guidance를 수정했습니다. 후속 문서 커밋은 해당 검증 결과를 반영합니다.
-- Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30) is **OPEN, UNMERGED**.
-- Code commit D27 run [#40927550941](https://github.com/hibi89/REA_Web/actions/runs/40927550941) and D8 run [#40927551084](https://github.com/hibi89/REA_Web/actions/runs/40927551084) both completed **SUCCESS** on Linux and Windows. Exact-head D27 run [#40930084158](https://github.com/hibi89/REA_Web/actions/runs/40930084158) and D3 run [#40930083982](https://github.com/hibi89/REA_Web/actions/runs/40930083982) both completed SUCCESS on Linux and Windows.
-- Local Windows focused tests: **12 passed**, plus CP949 inspect/wizard **2 passed**. Full regression: 407 passed, 22 skipped, 6 symlink-dependent tests deselected due host WinError 1314. Native synthetic ZIP smoke: actual Windows `cmd.exe`, loopback `/health`, four-row API **PASS**; same-folder stop/restart and copied-backup relaunch preserved four-row search/detail **PASS**. Recovery/customer-guidance tests: 23 passed, 2 symlink cases deselected. D3 run [#40930083982](https://github.com/hibi89/REA_Web/actions/runs/40930083982) completed SUCCESS on Windows native and Linux Chromium jobs. Local Chromium synthetic acceptance: 7/7 PASS, zero JS errors/external calls; the optional Fable/Astra case is BLOCKED locally because contracts are absent. Successful real `py.exe`/installed-runtime selection remains **NOT_RUN** on this workstation. Korean-named CSV/ZIP/extraction path and Korean search/title on actual Windows CMD also PASS with synthetic data.
-- Human/customer acceptance remains **NOT_RUN**; source/dependency commercial redistribution clearance remains **NOT_GRANTED**. This is not a commercial release approval.
+- Current feature branch HEAD: `578442b2bd22bb64a004e77bbd091a17930f614a`. Exact-head CI completed **28/28 SUCCESS**, including D27 Windows/Linux full regression and D6 supply-chain/security.
+- D27 runs: PR [#40954859581](https://github.com/hibi89/REA_Web/actions/runs/40954859581), push [#40954852936](https://github.com/hibi89/REA_Web/actions/runs/40954852936). D6 run: [#40954859774](https://github.com/hibi89/REA_Web/actions/runs/40954859774).
+- PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains **OPEN, DRAFT, UNMERGED**. No force push or merge was performed.
+- Generated runtime requirement includes Starlette `>=1.3.1,<2`; the customer preflight rejects lower versions and offers Korean recovery instructions for both `python` and `py -3`.
+- Supported: customer-authorized CSV or flat JSON, preview/explicit mapping approval, same-schema two-file ROW APPEND with both approvals, local read-only FastAPI/SQLite app (list/search/category filter/detail), Windows ZIP. Different-schema JOIN, scraping, hosting, accounts, payments, sync, and general CRUD are excluded.
+- Local: focused tests **13 PASS**, Python compile, dependency floor and `pip check` PASS; five synthetic ZIPs passed Windows preflight. Local interactive customer acceptance: **NOT_RUN**.
+- Human acceptance **NOT_RUN**; source/dependency commercial redistribution rights **NOT_GRANTED**; customer-data/privacy operating agreement **NOT_APPROVED**. Sale is not approved. Current estimates: development **95%**, sale preparation **77%**.
 
-## Product boundaries
+## Next independent unit
 
-Supported: customer-authorized CSV or flat JSON, preview and explicit mapping approval, same-schema two-file ROW APPEND with both approvals, generated local read-only FastAPI/SQLite app with list/search/category filter/detail, and delivery ZIP. Different-schema SQL JOIN, scraping, hosting, accounts, payment, live sync and general CRUD are out of scope.
+Prepare a reproducible runtime dependency/license inventory from the actual generated-app dependency graph and the tested Windows environment. Record package versions, dependency edges, license metadata/source hashes, missing notices, and the limits of that evidence. Keep commercial clearance NOT_GRANTED until rights-holder/legal review. Then continue other independent package/privacy checks while any new docs-only CI runs.
 
-The source snapshot and validation evidence remain preserved locally. Continue with synthetic/local QA when independent; do not infer customer acceptance or rights from CI. Do not merge PR #30 without explicit review/approval.
+The source snapshot and validation evidence remain preserved locally. Do not infer customer acceptance or rights from CI. Do not merge PR #30 without explicit approval.
 
 ---
 

@@ -1,12 +1,18 @@
 # REA_Web — CURRENT RESUME SNAPSHOT (2026-10-30)
 
-Latest verified feature-code commit: `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6`. A following documentation-only commit refreshes its verification status. Draft PR #30 is open and unmerged.
+Latest feature branch HEAD: `578442b2bd22bb64a004e77bbd091a17930f614a`. Draft PR #30 is open and unmerged.
 
-D27 run [#40927550941](https://github.com/hibi89/REA_Web/actions/runs/40927550941) and D8 run [#40927551084](https://github.com/hibi89/REA_Web/actions/runs/40927551084) passed on Linux and Windows for the current feature-code commit. Exact-head D27 run #40930084158 and D3 run #40930083982 both completed SUCCESS.
+Exact-head GitHub Actions **28/28 SUCCESS**, including D27 Windows/Linux full regression, D6 supply-chain/security, extracted Windows CMD and localhost smoke, and Chromium synthetic scenarios. D27 runs: [PR #40954859581](https://github.com/hibi89/REA_Web/actions/runs/40954859581) and [push #40954852936](https://github.com/hibi89/REA_Web/actions/runs/40954852936); D6: [#40954859774](https://github.com/hibi89/REA_Web/actions/runs/40954859774).
 
-Latest local verification: focused Windows interpreter/customer guidance tests 12 PASS, D8 inspect/wizard CP949 tests 2 PASS, same-folder stop/restart and copied-backup relaunch PASS, 23 recovery/customer-guidance tests PASS (2 symlink cases excluded), and Chromium CSV/JSON/approved APPEND 7/7 PASS (Fable/Astra case BLOCKED locally); synthetic delivery ZIP generated, extracted and launched by actual Windows `cmd.exe`; `127.0.0.1` health and four-row API PASS. Korean CSV/ZIP/folder names and Korean search/title also passed through an actual `cmd.exe` launch. Successful real `py.exe` discovery of an installed runtime remains NOT_RUN on this workstation. Customer/human acceptance remains NOT_RUN; commercial source/dependency rights remain NOT_GRANTED. Do not call this approved for sale.
+The runtime security floor is Starlette `>=1.3.1,<2`. Customer preflight checks installed minimum versions; Korean recovery instructions cover both `python` and `py -3`. Local focused preflight/guidance tests: **13 PASS**; compile, local dependency floor check, pip check, five synthetic extracted ZIP checks and patch application: **PASS**. The ZIPs are synthetic and retain human-acceptance/commercial-rights disclaimers.
 
-Exact-head D27 run #40930084158 and D3 run #40930083982 both completed SUCCESS on Linux and Windows. Local full regression on reconstructed head: 407 passed, 22 skipped, 6 symlink fixtures deselected (WinError 1314). Continue independent package checks; customer acceptance remains NOT_RUN and commercial rights NOT_GRANTED. Keep source and customer data intact. Never force-push or merge the Draft PR. Read the current STATUS, HANDOFF and docs/17_NEXT_TASK before choosing the next unit.
+Customer-authorized CSV/flat JSON → explicit mapping approval → local SQLite webapp → ZIP is implemented and CI-verified. Same-schema two-file APPEND requires both approvals. Different-schema JOIN is unsupported.
+
+**Not released for sale:** PR #30 remains draft; human/nondeveloper acceptance **NOT_RUN**; source and dependency redistribution rights **NOT_GRANTED**; real customer-data authorization/privacy review **NOT_APPROVED**. Current estimates: development **95%**, sale preparation **77%**. Do not treat CI as human or legal approval.
+
+## Next safe task
+
+Build a reproducible runtime dependency graph and license/NOTICE evidence for the generated app and tested environment. Report gaps and exact artifact/version limits; do not mark rights granted. Then continue independent local package/privacy checks. Preserve existing source and customer data; never force-push or merge the draft PR.
 
 ## Historical resume notes follow (2026-10-27)
 

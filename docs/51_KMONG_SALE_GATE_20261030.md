@@ -1,14 +1,15 @@
 # 크몽 상품 출시 게이트 (2026-10-30) — 승인 전 문서
 
-**상태: NOT APPROVED FOR LISTING OR ORDER INTAKE.** 이 기록은 상품 승인·법률 의견·고객 수락을 뜻하지 않는다. 기존 D27 코드를 다시 작성하지 않았으며 이번 변경은 출시 조건 기록만 추가한다.
+**현재 상태: NOT APPROVED FOR LISTING OR ORDER INTAKE.** 이 문서는 승인·법률 의견·고객 수락을 뜻하지 않는다.
 
-## 기준 코드와 자동 검증 범위
+## 현재 코드·검증 기준
 
-- 저장소 `hibi89/REA_Web`, 브랜치 `feature/d27-windows-python-discovery`; 기준 런타임 코드 SHA `f6e34f604cc2769f06927af8b9cd5ac6aad998f4`.
-- 고객 권한이 있는 UTF-8 CSV 또는 flat JSON 배열 → 미리보기 → 명시적 매핑 확인 → 로컬 읽기 전용 FastAPI/SQLite 앱 → 목록·검색·카테고리 필터·상세 → Windows 납품 ZIP.
-- 동일 매핑 스키마의 두 파일은 각각 명시 승인한 경우에만 행 추가(ROW APPEND). 서로 다른 테이블 자동 JOIN은 제공하지 않는다.
-- 세 synthetic delivery ZIP, 추출/실제 Windows CMD 실행, loopback health/search, 오류 복구, restart와 복사 백업 검증은 자동 QA 자료에 기록돼 있다. 이는 고객 Windows 인수 검수 증거가 아니다.
-- 기능 개발률 88%, 판매 준비율 68%는 추정치이며 출시 승인이 아니다.
+- 저장소 `hibi89/REA_Web`, 브랜치 `feature/d27-windows-python-discovery`, 정확한 최신 HEAD `578442b2bd22bb64a004e77bbd091a17930f614a`.
+- 최신 HEAD의 GitHub CI **28/28 SUCCESS**: D27 Windows/Linux 전체 회귀, D6 공급망/보안 검사 포함. PR #30은 OPEN/DRAFT/UNMERGED.
+- 생성 런타임은 FastAPI/Starlette/Uvicorn을 사용하며 Starlette 하한은 `>=1.3.1,<2`. 고객 사전검사가 낮은 버전을 차단하고 `python`/Windows `py -3` 복구를 안내한다.
+- 지원 흐름: 고객 권한이 있는 UTF-8 CSV 또는 flat JSON 배열 → 미리보기와 명시적 필드 매핑 승인 → 로컬 읽기 전용 FastAPI/SQLite 앱 → 목록·검색·카테고리 필터·상세 → Windows 납품 ZIP. 동일 스키마 2파일은 둘 다 별도 승인된 경우 ROW APPEND. 서로 다른 테이블의 자동 JOIN은 미지원.
+- 자동 합성 Windows/Chromium 검증은 PASS이나 비개발자 사람의 Windows 검수는 **NOT_RUN**. 상용 코드/의존성 권리는 **NOT_GRANTED**. 개인정보·보존·백업 운영은 **NOT_APPROVED**.
+- 기능 개발률 **95%**, 판매 준비율 **77%**는 근거 기반 추정치이며 상품 승인이나 완료 보증이 아니다.
 
 ## 크몽 등록 초안에 허용된 범위
 

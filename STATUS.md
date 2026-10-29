@@ -2,17 +2,15 @@
 
 ## Current verified state (2026-10-30)
 
-- 기능 및 D27 CI 검증 기준 커밋: `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6`; 그 뒤에는 상태 문서 갱신 커밋이 추가됐습니다. PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains **OPEN, DRAFT, UNMERGED**.
-- Exact-code D27 run [#40927550941](https://github.com/hibi89/REA_Web/actions/runs/40927550941) and D8 run [#40927551084](https://github.com/hibi89/REA_Web/actions/runs/40927551084) completed **SUCCESS** on Linux and Windows. Exact-head D27 run [#40930084158](https://github.com/hibi89/REA_Web/actions/runs/40930084158) and D3 run [#40930083982](https://github.com/hibi89/REA_Web/actions/runs/40930083982) both completed **SUCCESS** on their Linux and Windows jobs.
-- Latest local Windows focused tests: 12 passed (D27 interpreter discovery + customer guidance); D8 CP949 inspect/wizard tests 2 passed. Latest native Windows smoke: generated synthetic ZIP → extract → actual `cmd.exe` launcher → loopback `/health` and four-row API: **PASS**. Same-folder stop/restart and copied-backup relaunch both preserved four SQLite rows, search and detail: **PASS**.
-- Korean filename/data Windows delivery smoke: synthetic CSV and ZIP with Korean names, extraction under a Korean-named folder, actual CMD launch, Korean search and title API: **PASS**.
-- Actual Windows recovery/customer-guidance tests: 23 passed, 2 symlink cases deselected due WinError 1314.
+- Repository: `hibi89/REA_Web`; branch: `feature/d27-windows-python-discovery`; exact current HEAD: `578442b2bd22bb64a004e77bbd091a17930f614a`.
+- Exact-head GitHub Actions: **28/28 SUCCESS**, including D27 Windows/Linux full regression and D6 supply-chain/security checks. D27 runs: PR [#40954859581](https://github.com/hibi89/REA_Web/actions/runs/40954859581), push [#40954852936](https://github.com/hibi89/REA_Web/actions/runs/40954852936); D6 [#40954859774](https://github.com/hibi89/REA_Web/actions/runs/40954859774).
+- The generated customer runtime now requires Starlette `>=1.3.1,<2`; extracted-package preflight blocks versions below the security floor and explains the `python` and `py -3` recovery commands. PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains **OPEN, DRAFT, UNMERGED**.
+- Delivery flow remains customer-authorized CSV or flat JSON → preview/explicit mapping approval → local read-only FastAPI/SQLite app → list/search/category filter/detail → Windows ZIP. Same-schema two-file ROW APPEND requires both approvals. Different-schema automatic JOIN is not supported.
+- Latest local focused preflight/guidance tests: **13 PASS**; modified Python compile, local dependency floor check, `pip check`, and patch apply-check **PASS**. Five separate synthetic ZIPs passed manifest/CRC and Windows `check_windows.cmd --check`; exact-head D27 CI covers fresh generation and extracted localhost/browser scenarios.
+- Human/nondeveloper acceptance: **NOT_RUN**. Source/dependency redistribution rights: **NOT_GRANTED**. Customer data permission/privacy operations: **NOT_APPROVED**. The 299,000 KRW target and sale listing remain **NOT_APPROVED**.
+- Progress estimates: development **95%**, sale preparation **77%**. These estimates do not clear the external release gates. Patch and portable source/evidence addendum are retained in the local task bundle.
 
-- Local Chromium acceptance: 7/7 CSV/JSON/approved-APPEND cases **PASS**, zero unexpected network calls and zero JS errors; one optional Fable/Astra case **BLOCKED** because pinned Astra contracts are absent from this local snapshot. Successful real `py.exe` discovery of an installed runtime remains **NOT_RUN** on this workstation; failure path is tested and fails closed. Local regression: 407 passed / 22 skipped / 6 explicitly deselected because this host cannot create symlinks (WinError 1314). An earlier unfiltered run confirmed the same six fixture failures.
-- Human/customer acceptance: **NOT_RUN**. Source/dependency redistribution rights: **NOT_GRANTED**. Proposed 299,000 KRW price and sale approval: **NOT_APPROVED**.
-- Latest local evidence and portable patch are retained in the task evidence bundle; no PR merge or force push was performed.
-
-The historical records below are retained as dated evidence. Where their “queued/in progress” CI statement conflicts with the exact-head results above, this current block is authoritative.
+The historical records below are preserved as dated evidence. This block is authoritative for the current branch and status.
 
 ---
 
