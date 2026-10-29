@@ -1,7 +1,7 @@
 """Customer-readable prerequisite guidance without touching app files."""
 from __future__ import annotations
 
-from rea.customer_self_check import render_customer_report
+from rea.customer_self_check import _version_meets_minimum, render_customer_report
 from rea.delivery import CHECK_LAUNCH, DELIVERY_ACCEPTANCE, LAUNCH, WINDOWS_README
 
 
@@ -16,6 +16,29 @@ def result(**changes):
     }
     value.update(changes)
     return value
+
+
+def test_dependency_security_floor_rejects_affected_starlette_versions():
+    assert _version_meets_minimum("1.3.1", (1, 3, 1))
+    assert _version_meets_minimum("1.3.1.post1", (1, 3, 1))
+    assert _version_meets_minimum("1.8.0", (1, 3, 1))
+    assert not _version_meets_minimum("1.3.0", (1, 3, 1))
+    assert not _version_meets_minimum("1.3.1rc1", (1, 3, 1))
+    assert not _version_meets_minimum("0.99.0", (1, 3, 1))
+
+
+def test_outdated_dependency_has_customer_recovery_guidance():
+    report = render_customer_report(result(
+        dependencies=[{
+            "name": "starlette", "version": "1.0.0",
+            "minimum_version": "1.3.1", "status": "VERSION_BELOW_MINIMUM",
+        }],
+        issues=["Python dependency below minimum: starlette 1.0.0; required >= 1.3.1"],
+    ))
+    assert "VERSION_BELOW_MINIMUM" in report
+    assert "starlette 1.0.0" in report
+    assert "필요 >= 1.3.1" in report
+    assert "업그레이드 명령" in report
 
 
 def test_integrity_failure_explains_clean_recovery_and_no_launch():

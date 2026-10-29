@@ -32,7 +32,7 @@ def test_csv_json_package_allowlist_and_bounded_sbom(tmp_path, name, kind):
     assert report["raw_fable_capture_bundled"] is False
     assert report["customer_data_sensitivity"] == "NOT_ASSESSED"
     assert report["transitive_dependency_inventory"] == "NOT_ASSESSED"
-    assert {d["name"] for d in report["dependencies"]} == {"fastapi", "uvicorn"}
+    assert {d["name"] for d in report["dependencies"]} == {"fastapi", "starlette", "uvicorn"}
     assert all(d["license_verified"] is False for d in report["dependencies"])
     assert all(d["installed_version"] is None for d in report["dependencies"])
     with zipfile.ZipFile(archive) as zf:
@@ -91,11 +91,12 @@ def test_unauthorized_dotenv_rejected(tmp_path):
 
 
 @pytest.mark.parametrize("requirements", [
-    "fastapi>=0.110,<1\nuvicorn>=0.27,<1\nrequests>=2,<3\n",
-    "fastapi>=0.110,<1\nuvicorn @ https://example.com/pkg.whl\n",
-    "fastapi>=0.110,<1\nfastapi>=0.110,<1\nuvicorn>=0.27,<1\n",
-    "fastapi>=0.110,<1\n",
-    "fastapi==0.115.2\nuvicorn>=0.27,<1\n",
+    "fastapi>=0.110,<1\nstarlette>=1.3.1,<2\nuvicorn>=0.27,<1\nrequests>=2,<3\n",
+    "fastapi>=0.110,<1\nstarlette>=1.3.1,<2\nuvicorn @ https://example.com/pkg.whl\n",
+    "fastapi>=0.110,<1\nstarlette>=1.3.1,<2\nfastapi>=0.110,<1\nuvicorn>=0.27,<1\n",
+    "fastapi>=0.110,<1\nstarlette>=1.3.1,<2\n",
+    "fastapi==0.115.2\nstarlette>=1.3.1,<2\nuvicorn>=0.27,<1\n",
+    "fastapi>=0.110,<1\nstarlette>=0.46.0,<2\nuvicorn>=0.27,<1\n",
 ])
 def test_unreviewed_runtime_dependency_changes_rejected(requirements):
     with pytest.raises(AuditError):

@@ -239,7 +239,7 @@ def generate(csv_file: Path, output: Path, name: str = "REA sample web app",
         )
         shutil.copy2(TEMPLATES / "app.py", stage / "app.py")
         shutil.copytree(TEMPLATES / "static", stage / "static")
-        (stage / "requirements.txt").write_text("fastapi>=0.110,<1\nuvicorn>=0.27,<1\n", encoding="utf-8")
+        (stage / "requirements.txt").write_text("fastapi>=0.110,<1\nstarlette>=1.3.1,<2\nuvicorn>=0.27,<1\n", encoding="utf-8")
         # Abort if the source changed after parsing; never publish inconsistent provenance.
         if hashlib.sha256(source.read_bytes()).hexdigest() != source_digest:
             raise DataError("Source changed during generation")

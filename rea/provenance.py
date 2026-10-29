@@ -51,6 +51,7 @@ REQUIRED_DELIVERY = frozenset({
 # Source requirements are bounded ranges, NOT a locked/verified dependency set.
 EXPECTED_DIRECT = {
     "fastapi": ">=0.110,<1",
+    "starlette": ">=1.3.1,<2",
     "uvicorn": ">=0.27,<1",
 }
 REQUIREMENT = re.compile(r"([a-z][a-z0-9_-]*)([<>=!0-9.,]+)\Z")

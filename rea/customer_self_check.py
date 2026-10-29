@@ -19,6 +19,26 @@ import sys
 
 
 
+DEPENDENCY_MINIMUMS = {
+    "fastapi": (0, 110, 0),
+    "starlette": (1, 3, 1),
+    "uvicorn": (0, 27, 0),
+}
+
+
+def _version_meets_minimum(version: str, minimum: tuple[int, int, int]) -> bool:
+    """Compare numeric release components without importing non-stdlib packages."""
+    matched = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)(.*)", version)
+    if matched is None:
+        return False
+    actual = tuple(int(matched.group(index)) for index in (1, 2, 3))
+    if actual != minimum:
+        return actual > minimum
+    suffix = matched.group(4)
+    # A post-release is newer than the base release; dev/rc/local ambiguity fails closed.
+    return not suffix or suffix.startswith(".post")
+
+
 def verify_exact_delivery_tree(root: Path, members: set[str]) -> None:
     """Refuse extra files, folders or symlinks inside an extracted delivery.
 
@@ -113,18 +133,28 @@ def inspect(root: Path) -> dict:
         result["row_count_only"] = count
     except (OSError, ValueError, KeyError, sqlite3.Error, json.JSONDecodeError) as exc:
         result["issues"].append("Archive/extraction/SQLite validation failed: " + type(exc).__name__)
-    for name in ("fastapi", "uvicorn"):
+    for name, minimum in DEPENDENCY_MINIMUMS.items():
+        minimum_text = ".".join(map(str, minimum))
         try:
             version = metadata.version(name)
-            state = "INSTALLED_UNVERIFIED_LICENSE"
+            if _version_meets_minimum(version, minimum):
+                state = "INSTALLED_UNVERIFIED_LICENSE"
+            else:
+                state = "VERSION_BELOW_MINIMUM"
+                result["issues"].append(
+                    f"Python dependency below minimum: {name} {version}; required >= {minimum_text}"
+                )
         except metadata.PackageNotFoundError:
             version, state = None, "MISSING_INSTALL_REQUIRED"
             result["issues"].append("Missing Python dependency: " + name)
-        result["dependencies"].append({"name": name, "version": version, "status": state})
+        result["dependencies"].append({
+            "name": name, "version": version, "minimum_version": minimum_text, "status": state,
+        })
     result["status"] = "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE" if (
         result["python_311_or_later"] and result["integrity"] == "MATCHED_DELIVERY_MANIFEST_SHA256"
         and result["database"] == "READONLY_OPEN_SUCCESS"
-        and all(item["version"] for item in result["dependencies"])
+        and all(item["version"] and item["status"] == "INSTALLED_UNVERIFIED_LICENSE"
+                for item in result["dependencies"])
     ) else "FAIL_LOCAL_PREREQUISITES"
     return result
 
@@ -147,10 +177,19 @@ def render_customer_report(result: dict) -> str:
             lines.append("조치: 앱 데이터 파일을 편집하지 말고, 신뢰한 원본 ZIP에서 새로 압축을 푸세요.")
         missing = [item.get("name") for item in result.get("dependencies", [])
                    if item.get("status") == "MISSING_INSTALL_REQUIRED"]
+        outdated = [item for item in result.get("dependencies", [])
+                    if item.get("status") == "VERSION_BELOW_MINIMUM"]
         if missing:
             lines.append("MISSING_INSTALL_REQUIRED: 필수 Python 패키지가 없습니다: "
                          + ", ".join(missing) + ".")
             lines.append("README_WINDOWS.md의 선택적 설치 절차를 따라 같은 Python 환경에 설치하세요.")
+        if outdated:
+            lines.append("VERSION_BELOW_MINIMUM: 보안 최소 버전보다 오래된 Python 패키지: "
+                         + ", ".join(
+                             f"{item['name']} {item['version']} (필요 >= {item['minimum_version']})"
+                             for item in outdated
+                         ) + ".")
+            lines.append("README_WINDOWS.md의 업그레이드 명령으로 같은 Python 환경의 패키지를 갱신한 뒤 다시 검사하세요.")
         if result.get("issues") and not (missing or result.get("integrity") != "MATCHED_DELIVERY_MANIFEST_SHA256"
                                           or result.get("database") != "READONLY_OPEN_SUCCESS"
                                           or not result.get("python_311_or_later", False)):
