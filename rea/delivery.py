@@ -41,7 +41,7 @@ LAUNCH = "\r\n".join([
     'set "_rea_launch_code=%ERRORLEVEL%"',
     "goto launch_result",
     ":missing_python",
-    "echo [REA] MISSING_PYTHON: Python 3.11+ needed; nothing installed.",
+    "echo [REA] MISSING_PYTHON: No usable Python 3.11+ found with 'python' or 'py -3'. Add it to PATH or repair its launcher. Nothing was installed.",
     'set "_rea_launch_code=10"',
     ":launch_result",
     'if "%_rea_launch_code%"=="0" goto launch_done',
@@ -66,7 +66,7 @@ CHECK_LAUNCH = "\r\n".join([
     "if not errorlevel 1 goto check_python",
     'call py -3 -c "' + PYTHON_VERSION_PROBE + '" >nul 2>nul',
     "if not errorlevel 1 goto check_py",
-    "echo [REA] MISSING_PYTHON: Python 3.11+ needed; nothing installed.",
+    "echo [REA] MISSING_PYTHON: No usable Python 3.11+ found with 'python' or 'py -3'. Add it to PATH or repair its launcher. Nothing was installed.",
     'set "_rea_check_code=10"',
     "goto finished",
     ":check_python",
@@ -154,7 +154,7 @@ py -3 -m pip install --user -r app\\requirements.txt
 
 | 표시/증상 | 조치 |
 | --- | --- |
-| `MISSING_PYTHON` 또는 exit 10 | Python 3.11 이상을 사용자 계정에 설치하고 새 CMD를 연 뒤 검사하세요. `python`이 없고 `py -3`만 있는 환경도 지원합니다. |
+| `MISSING_PYTHON` 또는 exit 10 | 사용 가능한 Python 3.11+를 `python` 또는 Windows launcher `py -3`에서 찾지 못했습니다. 설치되어 있다면 PATH 또는 launcher 구성을 확인한 뒤 새 CMD에서 다시 검사하세요. 미설치 상태라면 Python 3.11+를 설치하세요. 납품기가 자동 설치하지는 않습니다. |
 | `MISSING_INSTALL_REQUIRED` 또는 FastAPI/Uvicorn 누락 | 위 Python 버전을 확인하고 같은 실행기에서 pip 명령을 실행한 뒤 다시 검사하세요. 설치가 싫거나 실패하면 ZIP을 보존하고 지원을 요청하세요. |
 | 무결성, 파일 개수, SQLite 검사 실패 | 원본 ZIP을 보존하세요. 실패한 폴더 파일을 고치거나 삭제하지 말고, 원본 ZIP 전체를 **다른 새 빈 폴더**에 다시 압축 해제해 검사하세요. 원본 ZIP도 손상됐다면 납품자에게 재전달을 요청하세요. |
 | 압축 해제 위치/접근 거부 | 사용자 문서 폴더처럼 쓰기 권한이 있는 짧은 로컬 경로를 사용하세요. `Program Files`, 네트워크 드라이브, 동기화 중인 폴더는 피하세요. |

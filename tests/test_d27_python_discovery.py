@@ -64,6 +64,7 @@ def test_shipped_cmds_offer_python_and_py_fallback_without_install(tmp_path):
     assert 'Windows launcher "py -3"' in guide
     assert "same" in guide.lower()
     assert "NOT commercially approved" in guide
+    assert "PATH 또는 launcher 구성을 확인" in guide
     assert "새 빈 폴더" in guide
     assert "set REA_WEB_PORT=8765" in guide
     assert "개인정보" in guide
@@ -130,10 +131,12 @@ def test_native_python_launcher_only_fallback_and_error_codes(tmp_path):
     missing = run("check_windows.cmd", "--check")
     assert missing.returncode == 10, (missing.stdout, missing.stderr)
     assert "MISSING_PYTHON" in missing.stdout
+    assert "Add it to PATH or repair its launcher." in missing.stdout
     assert "LOCAL_PREREQUISITES_NOT_VERIFIED" in missing.stdout
     no_launch = run("launch_windows.cmd")
     assert no_launch.returncode == 10, (no_launch.stdout, no_launch.stderr)
     assert "MISSING_PYTHON" in no_launch.stdout
+    assert "Add it to PATH or repair its launcher." in no_launch.stdout
     no_pause = run("check_windows.cmd", stdin="\n")
     assert no_pause.returncode == 10, (no_pause.stdout, no_pause.stderr)
     assert "Press any key" in no_pause.stdout
