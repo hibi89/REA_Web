@@ -68,7 +68,7 @@ def _explicit_parser(p: argparse.ArgumentParser) -> None:
 
 
 def _print_preview(report: dict) -> None:
-    print("LOCAL OWNER FILE — only header metadata shown; cell values omitted")
+    print("LOCAL OWNER FILE - only header metadata shown; cell values omitted")
     print(f"Records: {report['row_count']}, SHA256: {report['source_sha256']}")
     for field in report["fields"]:
         print(f"  {field['name']}: {field['inferred_type']} "

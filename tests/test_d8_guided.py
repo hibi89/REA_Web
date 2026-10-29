@@ -166,6 +166,7 @@ def test_inspect_cli_does_not_print_record_values(tmp_path):
     p=subprocess.run([sys.executable,"-m","rea.guided","inspect","--csv",str(CSV)],
                      cwd=ROOT,capture_output=True,text=True)
     assert p.returncode==0,p.stderr
+    assert "LOCAL OWNER FILE -" in p.stdout
     assert "sku:" in p.stdout
     assert "S01" not in p.stdout and "아메리카노" not in p.stdout
 
