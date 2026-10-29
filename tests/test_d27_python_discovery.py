@@ -63,6 +63,8 @@ def test_shipped_cmds_offer_python_and_py_fallback_without_install(tmp_path):
     guide = (root / "README_WINDOWS.md").read_text(encoding="utf-8")
     assert 'Windows launcher "py -3"' in guide
     assert "same" in guide.lower()
+    assert "위에서 버전을 확인한 동일한 Python 실행기" in guide
+    assert "same interpreter that passed" not in guide.lower()
     assert "NOT commercially approved" in guide
     assert "PATH 또는 launcher 구성을 확인" in guide
     assert "새 빈 폴더" in guide
