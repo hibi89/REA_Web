@@ -1,5 +1,15 @@
 # REA_Web — CURRENT RESUME SNAPSHOT (2026-10-30)
 
+## Current continuation note (2026-10-30; commit `2be8bb6`)
+
+- Exact branch `feature/d27-windows-python-discovery` now points to `2be8bb6c6092ce771124977125502306f9dd2389`, a normal fast-forward child of `64b28c986618c68472649474c6604c2b1fce7372`. No force update or merge was used. This is six commits ahead of baseline `db6711e`.
+- The connector showed nine workflows queued when queried immediately after `2be8bb6`; no success result for that commit is claimed here. The earlier 27/27 returned successes refer only to commit `64b28c9`.
+- The direct dependency-boundary cases have now been committed. The isolated guidance tests were 18 PASS; compileall passed. Full local regression remains incomplete/blocked by sandbox filesystem denials; see the detailed validation receipt.
+- Change patch and SHA-verified source/document bundle are in `bundle_update_notes`; these are GitHub review artifacts, not an independently runnable customer delivery ZIP.
+- Helper branch `codex/REA_Web-bounds-regression` remains an accidental incomplete one-file tree. The connector exposes no branch deletion. Do not use it. The designated feature branch was safely advanced only after constructing/verifying a full base-tree-preserving commit.
+- Human Windows acceptance: NOT_RUN; commercial redistribution rights: NOT_GRANTED; customer authorization/privacy: NOT_APPROVED; listing terms: NOT_APPROVED. **Not approved for sale/intake.**
+
+The dated status snapshots below this note are historical and are superseded where they state an older branch head, test boundary status, or that the feature branch was not updated.
 ## Follow-up resume pointer (2026-10-30)
 
 The designated feature branch currently resolves to `64b28c986618c68472649474c6604c2b1fce7372`. GitHub CI connector returned 27 successful completed runs, but omitted one expected workflow from its first-page response; do not claim 28/28. Local patched customer-guidance tests 18 PASS and compileall PASS. Full local regression is incomplete/blocked by sandbox WinError 5 during atomic file publication; D27/D26 focused tests reproduce that restriction.
