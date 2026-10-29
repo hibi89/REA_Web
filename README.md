@@ -1,5 +1,13 @@
 # REA_Web — 고객 데이터 기반 로컬 웹앱 제작 도구
 
+
+## 현재 검증 상태 (2026-10-30)
+
+- 지정 개발 브랜치 HEAD `970bbde8c853f4ed1382c038091bb2ee48abea9f`의 GitHub Actions 28/28이 성공했습니다. D27 Linux/Chromium 및 Windows/native-package 전체 자동 회귀와 D31 Ubuntu/Windows 생성 런타임 감사가 포함됩니다. 입력 자료는 합성 fixture입니다.
+- 로컬 집중 검사: 안내/D27 21 passed, D6 14 passed/1 skipped, D9 15 passed/2 deselected. 깨끗한 합성 ZIP 추출과 Windows CMD 사전 검사는 통과했습니다. 이 환경의 실제 로컬 서버 HTTP 스모크는 응답 시간 초과로 BLOCKED/NOT_RUN이며 독립 고객 검수는 NOT_RUN입니다.
+- 개발 95% / 판매 준비 77%는 정성적 추정치입니다. 재배포 권리 NOT_GRANTED, 고객 데이터/개인정보와 판매 조건 NOT_APPROVED이므로 판매 승인 상태가 아닙니다.
+
+
 REA_Web은 고객이 권한을 가진 CSV 또는 flat JSON에서 별도의 읽기 전용 FastAPI + SQLite 웹앱을 만들고 ZIP으로 전달하는 도구입니다. 참고 사이트 분석은 선택 사항이며, 추정된 기능이나 API는 고객 데이터 매핑을 자동 승인하지 않습니다.
 
 ## 현재 지원하는 범위

@@ -1,5 +1,14 @@
 # REA_Web — current delivery dispatcher (2026-10-30)
 
+## 최신 인계와 다음 작업 (2026-10-30; 정확한 HEAD `970bbde8c853f4ed1382c038091bb2ee48abea9f`)
+
+- 정확한 HEAD의 GitHub Actions 28/28 SUCCESS. D27 Linux/Windows 전체 회귀 및 D31 Linux/Windows generated-runtime 취약점 검사 통과. PR #30은 OPEN/DRAFT/UNMERGED.
+- 로컬 집중검사: 안내+D27 21 passed, D6 14 passed/1 skipped, D9 15 passed/2 deselected. Windows 생성 ZIP CRC 및 깨끗한 폴더 추출 후 실제 CMD 사전검사 PASS. 로컬 서버 HTTP smoke는 /health timeout 및 sqlite cleanup lock으로 BLOCKED/NOT_RUN. 원인 미확정이며 PASS로 간주하지 않는다.
+- 다음 업무는 사람/권리자의 입력을 기다리지 말고 가능한 독립 검증을 이어가되, 다음 세 게이트는 증거가 생길 때까지 열어 둔다: (1) 독립 비개발자 Windows 인수검수(docs/52), (2) 소스·공급 코드·의존성 재배포 권리 확인(docs/25, docs/48), (3) 데이터 동의·개인정보/보존/백업 및 판매자 계정 거래조건(docs/51, docs/53).
+- Actions가 다음 작업의 전제조건은 아니다. 최신 결과를 확인한 뒤 미완료여도 독립 작업을 계속하고, 실제 완료 전에는 사람/법률 게이트를 통과 처리하지 않는다.
+- 정성 추정: 개발 95%, 판매 준비 77%, 재측정 안 함. Not approved for sale.
+
+
 ## D27 product follow-up refresh (snapshot before this documentation update, 2026-10-30)
 
 - The feature ref was re-read at `ab3eb2dd39ba334999fca95dcfaf65af4842c0c2`. Its 27 returned GitHub Actions runs later all completed successfully. D27 Windows+Linux run `40960995478`, D3 Windows-native+Linux-browser run `40960995506`, and D6 `40960995289`, D21 `40960995434`, D26 `40960995430` all passed.
