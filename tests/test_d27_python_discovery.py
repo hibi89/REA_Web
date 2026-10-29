@@ -31,12 +31,16 @@ def test_shipped_cmds_offer_python_and_py_fallback_without_install(tmp_path):
     assert checker == CHECK_LAUNCH.encode("ascii")
     assert launcher == LAUNCH.encode("ascii")
     assert b"\r\n" in checker and b"\r\n" in launcher
+    assert b"chcp 65001 >nul" in checker and b"chcp 65001 >nul" in launcher
+    assert b'set "PYTHONIOENCODING=utf-8"' in checker + launcher
     # Both genuine .exe and optional .cmd wrappers must return to the owner
     # launcher to preserve its errorlevel and fallback control flow.
     assert b'call python -c "' in checker and b'call python -c "' in launcher
     assert b'call py -3 -c "' in checker and b'call py -3 -c "' in launcher
     assert b'call python "%~dp0self_check.py"' in checker
     assert b'call py -3 "%~dp0self_check.py"' in checker
+    assert b'call python "%~dp0self_check.py" --customer-check' in checker
+    assert b'call py -3 "%~dp0self_check.py" --customer-check' in checker
     assert b'call python "%~dp0self_check.py" --launch' in launcher
     assert b'call py -3 "%~dp0self_check.py" --launch' in launcher
     assert b'python -c "import sys;sys.exit(0 if sys.version_info[:2]>=(3,11) else 1)" >nul 2>nul' in checker
@@ -59,6 +63,9 @@ def test_shipped_cmds_offer_python_and_py_fallback_without_install(tmp_path):
     assert 'Windows launcher "py -3"' in guide
     assert "same" in guide.lower()
     assert "NOT commercially approved" in guide
+    assert "새 빈 폴더" in guide
+    assert "set REA_WEB_PORT=8765" in guide
+    assert "개인정보" in guide
 
 
 @pytest.mark.skipif(os.name != "nt", reason="Actual Windows cmd.exe required")
@@ -142,3 +149,4 @@ def test_native_regular_python_remains_preferred(tmp_path):
                             timeout=40, check=False)
     assert result.returncode == 0, (result.stdout, result.stderr)
     assert "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE" in result.stdout
+
