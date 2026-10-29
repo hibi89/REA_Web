@@ -78,3 +78,8 @@ Implement **optional** Fable analysis report/review gate alongside the existing 
 ## New-session start
 Exact user sentence **[REA_Web 깃헙 레포지토리 보고 작업이어가셈]** gives an immediate go-ahead for this READY safe task. Read `WORKER_START_HERE.md` / `docs/SESSION_RESTART_PROTOCOL.md`, current remote HEAD first. No extra owner question; implement/verify/commit then update this file and HANDOFF/NEXT_TASK.
 
+
+## Current CI refresh (2026-10-30; commit `b7eaaf405e686a93f8060ef3bbf5999a988a7bdd`)
+
+- GitHub Actions now reports all 27 returned workflows completed successfully at this head. The D27 Windows and Linux jobs both passed; the D26 Windows and Linux jobs both passed; D3 Windows-native and Linux-browser delivery jobs passed. Other successful checks include extracted delivery, offline, recovery, provenance, and creator workflows.
+- This is automated synthetic-data CI evidence only. Local app launch in this workspace remains unverified; human customer acceptance is NOT_RUN; commercial redistribution rights are NOT_GRANTED; customer-data permission/privacy and seller terms are NOT_APPROVED. This product is not approved for sale.
