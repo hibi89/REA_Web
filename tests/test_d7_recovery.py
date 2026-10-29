@@ -114,11 +114,37 @@ def test_last_moment_zip_collision_is_atomic_and_preserves_owner(tmp_path, monke
     assert not list(tmp_path.glob(".rea-export-*"))
 
 
-def test_zip_hardlink_failure_does_not_create_partial_archive(tmp_path, monkeypatch):
+@pytest.mark.skipif(os.name != "nt", reason="Windows rename branch only")
+def test_windows_zip_publication_uses_atomic_rename_without_hardlinks(tmp_path, monkeypatch):
+    archive = tmp_path / "published.zip"
+    stage = tmp_path / "staged.zip"
+    stage.write_bytes(b"complete verified ZIP")
+
+    def forbidden_link(*a, **kw):
+        pytest.fail("Windows archive publication must not require hard links")
+
+    monkeypatch.setattr(safe_publish.os, "link", forbidden_link)
+    safe_publish.publish_archive(stage, archive)
+    assert archive.read_bytes() == b"complete verified ZIP"
+    assert not stage.exists()
+
+    collision = tmp_path / "owner.zip"
+    collision.write_bytes(b"OWNER ARCHIVE")
+    stage.write_bytes(b"other ZIP")
+    with pytest.raises(FileExistsError):
+        safe_publish.publish_archive(stage, collision)
+    assert collision.read_bytes() == b"OWNER ARCHIVE"
+    assert stage.read_bytes() == b"other ZIP"
+
+
+def test_zip_atomic_publish_failure_does_not_create_partial_archive(tmp_path, monkeypatch):
     archive = tmp_path / "not-created.zip"
-    def no_links(*a, **kw):
+    def no_atomic_publish(*a, **kw):
         raise OSError("simulated unsupported destination filesystem")
-    monkeypatch.setattr(safe_publish.os, "link", no_links)
+    if os.name == "nt":
+        monkeypatch.setattr(safe_publish.os, "rename", no_atomic_publish)
+    else:
+        monkeypatch.setattr(safe_publish.os, "link", no_atomic_publish)
     with pytest.raises(OSError, match="unsupported"):
         create_delivery(CSV, archive)
     assert not archive.exists()

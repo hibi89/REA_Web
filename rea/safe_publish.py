@@ -50,6 +50,12 @@ def publish_archive(stage: Path, destination: Path) -> None:
     source, target = Path(stage), Path(destination)
     if target.exists() or target.is_symlink():
         raise FileExistsError(f"Archive already exists: {target}")
-    # Both paths reside in the *same parent filesystem*; hard link is atomic.
-    # Unsupported file systems fail closed with no target created.
-    os.link(source, target)
+    # The staged ZIP is inside the destination's parent, so Windows rename is
+    # same-volume and fails atomically when the target already exists. Avoid
+    # hard links: some Windows environments deny them even on writable NTFS.
+    if os.name == "nt":
+        os.rename(source, target)
+    else:
+        # On POSIX, rename could replace an owner's file; hard-link creation is
+        # atomic and fails if the destination name already exists.
+        os.link(source, target)
