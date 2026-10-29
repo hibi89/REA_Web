@@ -96,7 +96,7 @@ def inspect(root: Path) -> dict:
             "app/app.py", "app/data.sqlite", "app/manifest.json",
             "app/requirements.txt", "app/static/index.html", "app/static/app.js",
             "app/static/style.css", "launch_windows.cmd", "check_windows.cmd",
-            "self_check.py", "README_WINDOWS.md",
+            "self_check.py", "README_WINDOWS.md", "ACCEPTANCE_CHECKLIST.md",
         }
         if not required.issubset(seen):
             raise ValueError("Missing essential app/launcher/diagnostic member")
@@ -128,6 +128,36 @@ def inspect(root: Path) -> dict:
     return result
 
 
+def render_customer_report(result: dict) -> str:
+    """Render the bounded self-check result as plain, actionable Korean text."""
+    status = result.get("status", "FAIL_LOCAL_PREREQUISITES")
+    lines = ["REA_Web 납품 앱 사전 검사", f"결과: {status}"]
+    if status == "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE":
+        lines.append("파일 무결성, SQLite 읽기 검사, Python 버전과 필수 패키지를 확인했습니다.")
+        lines.append("이 결과는 사람의 고객 검수나 상용 권리 승인을 뜻하지 않습니다.")
+    else:
+        if not result.get("python_311_or_later", False):
+            lines.append("조치: Python 3.11 이상을 설치한 뒤 CMD 창을 새로 열고 다시 검사하세요.")
+        if result.get("integrity") != "MATCHED_DELIVERY_MANIFEST_SHA256":
+            lines.append("조치: 원본 ZIP을 보존하고, 비어 있는 새 폴더에 다시 압축을 푸세요.")
+            lines.append("압축 해제 폴더의 파일을 직접 편집하거나 추가하지 마세요.")
+        if result.get("database") != "READONLY_OPEN_SUCCESS":
+            lines.append("조치: 앱 데이터 파일을 편집하지 말고, 신뢰한 원본 ZIP에서 새로 압축을 푸세요.")
+        missing = [item.get("name") for item in result.get("dependencies", [])
+                   if item.get("status") == "MISSING_INSTALL_REQUIRED"]
+        if missing:
+            lines.append("MISSING_INSTALL_REQUIRED: 필수 Python 패키지가 없습니다: "
+                         + ", ".join(missing) + ".")
+            lines.append("README_WINDOWS.md의 선택적 설치 절차를 따라 같은 Python 환경에 설치하세요.")
+        if result.get("issues") and not (missing or result.get("integrity") != "MATCHED_DELIVERY_MANIFEST_SHA256"
+                                          or result.get("database") != "READONLY_OPEN_SUCCESS"
+                                          or not result.get("python_311_or_later", False)):
+            lines.append("조치: 원본 ZIP과 앱 폴더를 보존하고, 오류 종류를 확인해 지원을 요청하세요.")
+        lines.append("검사가 실패하면 launch_windows.cmd를 실행하지 마세요.")
+    lines.append("검사는 로컬 읽기 전용이며 고객 파일을 업로드하거나 자동 수정하지 않습니다.")
+    return "\n".join(lines)
+
+
 def port_from_environment() -> int:
     """Parse only a plain ASCII decimal port, never shell or CMD syntax."""
     literal = os.environ.get("REA_WEB_PORT", "8000")
@@ -142,13 +172,17 @@ def launch_local(root: Path) -> int:
     root = Path(root).absolute()
     check = inspect(root)
     if check["status"] != "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE":
-        print("REA_LOCAL_LAUNCH_BLOCKED: prerequisites or delivery SHA invalid",
+        print(render_customer_report(check), file=sys.stderr)
+        print("REA_LOCAL_LAUNCH_BLOCKED: local prerequisites were not verified",
               file=sys.stderr)
         return 2
     try:
         port = port_from_environment()
     except ValueError:
-        print("REA_LOCAL_LAUNCH_BLOCKED: unsafe REA_WEB_PORT", file=sys.stderr)
+        print("REA_LOCAL_LAUNCH_BLOCKED: 포트 번호는 1~65535 숫자만 사용할 수 있습니다.",
+              file=sys.stderr)
+        print("CMD에서 set REA_WEB_PORT=8765 입력 후 다시 실행할 수 있습니다.",
+              file=sys.stderr)
         return 2
     # Fixed host and shell=False: an environment variable can never become
     # an additional shell command, an option, or an externally bound address.
@@ -175,13 +209,19 @@ def main(argv=None) -> int:
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent)
     parser.add_argument("--launch", action="store_true",
                         help="Start validated localhost app using argv, never a shell")
+    parser.add_argument("--customer-check", action="store_true",
+                        help="Print a short customer-readable prerequisite report")
     args = parser.parse_args(argv)
     if args.launch:
         return launch_local(args.root)
     result = inspect(args.root)
+    if args.customer_check:
+        print(render_customer_report(result))
+        return 0 if result["status"].startswith("PASS_") else 2
     print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
     return 0 if result["status"].startswith("PASS_") else 2
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
