@@ -51,6 +51,8 @@ def test_success_report_does_not_claim_commercial_or_human_acceptance():
     ))
     assert "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE" in report
     assert "사람의 고객 검수나 상용 권리 승인을 뜻하지 않습니다" in report
+    assert "human_acceptance=NOT_RUN" in report
+    assert "commercial_clearance=NOT_GRANTED" in report
 
 
 def test_delivery_acceptance_checklist_covers_core_customer_flow():
