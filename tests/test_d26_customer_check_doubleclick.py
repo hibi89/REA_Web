@@ -40,8 +40,8 @@ def test_packaged_check_has_exact_crlf_and_no_network_or_app_start(tmp_path):
                  b"http://", b"https://", b"uvicorn", b"launch_windows.cmd",
                  b"%REA_WEB_PORT%", b"start ", b"setx ", b"reg add"]:
         assert text not in launcher.lower()
-    assert "double-click check_windows.cmd" in (root / "README_WINDOWS.md").read_text()
-    assert "check_windows.cmd --check" in (root / "README_WINDOWS.md").read_text()
+    assert "double-click check_windows.cmd" in (root / "README_WINDOWS.md").read_text(encoding="utf-8")
+    assert "check_windows.cmd --check" in (root / "README_WINDOWS.md").read_text(encoding="utf-8")
 
 
 def test_python_selfcheck_still_read_only_and_not_commercial(tmp_path):
@@ -105,3 +105,4 @@ if os.name == "nt":
             assert "LOCAL_PREREQUISITES_NOT_VERIFIED" in proc.stdout
         assert "Press any key" not in automated.stdout
         assert "Press any key" in human.stdout
+
