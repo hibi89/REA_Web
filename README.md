@@ -29,7 +29,7 @@ Python 3.11+, Tkinter, FastAPI, Uvicorn, Pydantic가 필요합니다. 실행기�
 ## 최근 확인된 상태 (2026-10-30)
 
 - 제품 코드 검증 기준 커밋: `b7eaaf405e686a93f8060ef3bbf5999a988a7bdd`. 이후 `e8e975c`는 이 상태를 기록한 `STATUS.md` 전용 커밋입니다.
-- 기준 커밋에서 반환된 GitHub Actions 워크플로 27개가 모두 성공했습니다. D27/D26 Windows 및 Linux, D3 생성 앱 Chromium 납품 흐름, D9 동일 구조 2파일 ROW APPEND, Windows 추출 ZIP의 CMD/localhost HTTP 검증을 포함합니다. 상세 단계는 [STATUS.md](STATUS.md)와 [상세 CI 증거](../bundle_update_notes/current_head_end_to_end_evidence_b7eaaf4.json)를 참고하세요.
+- 기준 커밋에서 반환된 GitHub Actions 워크플로 27개가 모두 성공했습니다. D27/D26 Windows 및 Linux, D3 생성 앱 Chromium 납품 흐름, D9 동일 구조 2파일 ROW APPEND, Windows 추출 ZIP의 CMD/localhost HTTP 검증을 포함합니다. 상세 단계는 [STATUS.md](STATUS.md)와 D27 [run](https://github.com/hibi89/REA_Web/actions/runs/40963047232), D26 [run](https://github.com/hibi89/REA_Web/actions/runs/40963047281), D3 [run](https://github.com/hibi89/REA_Web/actions/runs/40963047275), D9 [run](https://github.com/hibi89/REA_Web/actions/runs/40963046981)를 참고하세요.
 - 별도 로컬 점검: 고객 안내 18 PASS, D6 provenance 14 PASS / 1 SKIP, `compileall` 및 `pip check` PASS. 이 작업 환경의 전체 로컬 회귀·D7 symlink 사례·직접 CMD 실행은 sandbox 권한/프로세스 정리 문제로 NOT_COMPLETE이며 성공으로 보고하지 않습니다.
 - 모든 자동 검증은 합성 데이터 기준입니다. 사람의 일반 고객 Windows 검수는 **NOT_RUN**입니다. 실제 고객 데이터 권리·동의와 개인정보/백업 검토는 **NOT_APPROVED**입니다.
 - 목표 가격 299,000원은 검토용 제안이며 미승인입니다. 저장소 및 vendor 코드의 상용 재배포 권리는 **NOT_GRANTED**, 판매 약관과 지원·환불 조건도 **NOT_APPROVED**입니다. 이 프로젝트는 판매 승인 상태가 아닙니다. PR #30은 Draft/open/unmerged입니다.
