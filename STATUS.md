@@ -4,7 +4,7 @@
 
 **Not a sale-ready approval:** no actual nondeveloper customer Windows acceptance, measured real jobs, redistribution/license grant, approved client/reference rights, privacy/security/backup review, or final 299,000 KRW scope/support/refund signoff is evidenced. PR #30 remains Draft/unmerged and no production deployment was performed.
 
-**Local follow-up in isolated copy:** customer-readable preflight and Windows recovery improvements are being prepared on top of D27. They are not included in the D27 CI proof; see [docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md](docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md) and the generated patch bundle after its checks.
+**Local follow-up:** customer-readable preflight, UTF-8 Windows launch, recovery guide, acceptance checklist, and ZIP allowlist integration are committed on `feature/d27-windows-python-discovery` through `8dbb50438aa45a4a752d906605731564122c1f19`. PR #30 remains Draft/open/unmerged. The first exact delta Actions run #40906386284 failed (80 failed / 340 passed / 4 skipped on Linux); allowlist and port compatibility fixes are committed, and the D27 rerun for latest head is queued. Do not use the earlier baseline green run as proof of these follow-up changes. See [docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md](docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md).
 
 ---
 
