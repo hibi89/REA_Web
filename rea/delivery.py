@@ -31,14 +31,24 @@ LAUNCH = "\r\n".join([
     "if not errorlevel 1 goto launch_python",
     'call py -3 -c "' + PYTHON_VERSION_PROBE + '" >nul 2>nul',
     "if not errorlevel 1 goto launch_py",
-    "echo [REA] MISSING_PYTHON: Python 3.11+ needed; nothing installed.",
-    "exit /b 10",
+    "goto missing_python",
     ":launch_python",
     'call python "%~dp0self_check.py" --launch',
-    "exit /b %errorlevel%",
+    'set "_rea_launch_code=%ERRORLEVEL%"',
+    "goto launch_result",
     ":launch_py",
     'call py -3 "%~dp0self_check.py" --launch',
-    "exit /b %errorlevel%",
+    'set "_rea_launch_code=%ERRORLEVEL%"',
+    "goto launch_result",
+    ":missing_python",
+    "echo [REA] MISSING_PYTHON: Python 3.11+ needed; nothing installed.",
+    'set "_rea_launch_code=10"',
+    ":launch_result",
+    'if "%_rea_launch_code%"=="0" goto launch_done',
+    "echo [REA] Startup stopped. Follow the recovery steps shown above.",
+    "pause",
+    ":launch_done",
+    "exit /b %_rea_launch_code%",
     "",
 ])
 CHECK_LAUNCH = "\r\n".join([
@@ -148,7 +158,7 @@ py -3 -m pip install --user -r app\\requirements.txt
 | `MISSING_INSTALL_REQUIRED` 또는 FastAPI/Uvicorn 누락 | 위 Python 버전을 확인하고 같은 실행기에서 pip 명령을 실행한 뒤 다시 검사하세요. 설치가 싫거나 실패하면 ZIP을 보존하고 지원을 요청하세요. |
 | 무결성, 파일 개수, SQLite 검사 실패 | 원본 ZIP을 보존하세요. 실패한 폴더 파일을 고치거나 삭제하지 말고, 원본 ZIP 전체를 **다른 새 빈 폴더**에 다시 압축 해제해 검사하세요. 원본 ZIP도 손상됐다면 납품자에게 재전달을 요청하세요. |
 | 압축 해제 위치/접근 거부 | 사용자 문서 폴더처럼 쓰기 권한이 있는 짧은 로컬 경로를 사용하세요. `Program Files`, 네트워크 드라이브, 동기화 중인 폴더는 피하세요. |
-| 주소를 열 수 없거나 포트 8000 사용 중 | CMD에서 `set REA_WEB_PORT=8765` 입력 후 `launch_windows.cmd`를 실행하고 `http://127.0.0.1:8765/`를 여세요. 허용 포트는 1~65535 숫자입니다. |
+| `REA_LOCAL_PORT_UNAVAILABLE` 또는 포트 8000 사용 중 | 실행기는 서버 시작 전 포트 충돌을 검사하고 복구 방법을 표시합니다. 다른 앱을 종료하거나 CMD에서 `set REA_WEB_PORT=8765` 입력 후 `launch_windows.cmd`를 실행하고 `http://127.0.0.1:8765/`를 여세요. 허용 포트는 1~65535 숫자입니다. 오류 창은 키를 누를 때까지 유지됩니다. |
 | 브라우저가 열리지 않음 | 주소를 직접 입력하세요. 서버 창이 실행 중이어야 합니다. 서버를 중지했다면 다시 실행하세요. |
 | 한글이 깨지거나 CSV를 읽지 못함 | 원본을 보존하고 UTF-8로 다시 내보낸 복사본을 사용하세요. 확장자만 바꾸거나 원본을 덮어쓰지 마세요. 데이터 변환은 납품자와 범위를 먼저 정하세요. |
 

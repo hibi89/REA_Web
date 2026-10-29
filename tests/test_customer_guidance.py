@@ -76,6 +76,9 @@ def test_generated_windows_assets_are_included_and_keep_safe_interpreter_routes(
     assert "검사 폴더 밖" in WINDOWS_README
     assert "원본 ZIP" in WINDOWS_README
     assert "ROW APPEND" in DELIVERY_ACCEPTANCE
+    assert "REA_LOCAL_PORT_UNAVAILABLE" in WINDOWS_README
+    assert "pause" in LAUNCH.lower()
+    assert "Follow the recovery steps shown above." in LAUNCH
 
 
 def test_port_error_message_is_customer_actionable(monkeypatch, capsys):
@@ -115,4 +118,28 @@ def test_default_cli_keeps_json_contract(monkeypatch, capsys):
     assert customer_self_check.main(["--root", "."]) == 2
     document = json.loads(capsys.readouterr().out)
     assert document["status"] == "FAIL_LOCAL_PREREQUISITES"
+
+
+def test_occupied_port_is_reported_before_server_launch(monkeypatch, capsys):
+    import socket
+    from rea import customer_self_check
+
+    monkeypatch.setattr(customer_self_check, "inspect", lambda root: {
+        "status": "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE",
+        "python_311_or_later": True,
+        "integrity": "MATCHED_DELIVERY_MANIFEST_SHA256",
+        "database": "READONLY_OPEN_SUCCESS",
+        "dependencies": [],
+        "issues": [],
+    })
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as occupied:
+        occupied.bind(("127.0.0.1", 0))
+        occupied.listen(1)
+        monkeypatch.setenv("REA_WEB_PORT", str(occupied.getsockname()[1]))
+        monkeypatch.setattr(customer_self_check.subprocess, "run",
+                            lambda *args, **kwargs: pytest.fail("must not launch on occupied port"))
+        assert customer_self_check.launch_local(".") == 2
+    report = capsys.readouterr().err
+    assert "REA_LOCAL_PORT_UNAVAILABLE" in report
+    assert "set REA_WEB_PORT=8765" in report
 

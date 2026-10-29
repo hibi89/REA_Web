@@ -12,9 +12,9 @@
 
 | File | Change | Reason |
 | --- | --- | --- |
-| `rea/customer_self_check.py` | Add `--customer-check` Korean summary, clean-extract recovery actions, actionable unsafe-port message and UTF-8 output; keep default JSON contract. Require the delivered acceptance checklist in fresh packages. | Customers need understandable diagnostics and a checklist without weakening default integrations. |
-| `rea/delivery.py` | Generated checker invokes customer-readable mode; generated CMD sets UTF-8 output; embedded Windows README documents setup, recovery, run/stop/restart and privacy; add `ACCEPTANCE_CHECKLIST.md` to every ZIP. | The actual delivered ZIP needs actionable instructions and a review checklist. |
-| `tests/test_customer_guidance.py` | Add focused summary/recovery/port output, generated asset contract, and acceptance checklist content checks. | Cover wording and fail-closed messaging without packaging side effects. |
+| `rea/customer_self_check.py` | Add `--customer-check` Korean summary, clean-extract recovery actions, actionable unsafe-port and occupied-port messages, UTF-8 output and loopback bind probe; keep default JSON contract. Require the delivered acceptance checklist in fresh packages. | Customers need understandable diagnostics and a checklist without weakening default integrations. |
+| `rea/delivery.py` | Generated checker invokes customer-readable mode; generated CMD sets UTF-8 output and pauses on failure so double-click errors remain visible; embedded Windows README documents setup, recovery, run/stop/restart and privacy; add `ACCEPTANCE_CHECKLIST.md` to every ZIP. | The actual delivered ZIP needs actionable instructions and a review checklist. |
+| `tests/test_customer_guidance.py` | Add focused summary/recovery/port output, occupied-port refusal, generated asset contract, and acceptance checklist content checks. | Cover wording and fail-closed messaging without packaging side effects. |
 | `tests/test_d27_python_discovery.py` | Assert generated check command uses customer-readable mode and its guide includes recovery content. | Keep D27 Windows fallback packaging assertions aligned with the new generated files. |
 | `README.md` | Replace stale D2 overview with current product scope, 299,000 KRW as an unapproved target, current CI evidence, limitations, and guide links. | Prevent stale project instructions from appearing current. |
 | `STATUS.md` | Add current D27 CI outcome and separate local work status above historical entries. | Preserve old record while making current evidence visible. |
@@ -72,4 +72,14 @@ The original folder has no `.git`. The GitHub connector created normal child com
 - Python D12 dependency evidence regression: **16 passed**. Dependency metadata is environment evidence only; it does not establish a full lock, vulnerability audit, commercial license clearance or redistribution rights.
 - Updated customer offer now labels those automated synthetic checks as passed; human customer acceptance remains **NOT_RUN** and commercial/license clearance remains **NOT_GRANTED**.
 - Current branch head before this documentation refresh: `2c620e2a6cef815d61e5e515679953c334aad7dd`. Exact-head Actions run [#40910468140](https://github.com/hibi89/REA_Web/actions/runs/40910468140): Linux and Windows jobs are both **queued**. This is not a pass; do not wait on it to continue local work.
+
+
+## Occupied-port recovery improvement (2026-10-30)
+
+- `rea/customer_self_check.py` now performs a loopback-only bind probe before starting Uvicorn. An already occupied or locally unavailable port exits before server launch with `REA_LOCAL_PORT_UNAVAILABLE`, Korean recovery guidance, and `set REA_WEB_PORT=8765`. The probe is a short preflight, not a reservation; the server remains responsible for its definitive bind.
+- `rea/delivery.py` keeps generated CMD files ASCII-only, and the launcher pauses after any non-zero exit so the error remains visible on double-click. The embedded guide names the new error token and the recovery action.
+- **PASS:** `python -m pytest -q tests/test_customer_guidance.py` — **9 passed**; `compileall` of the modified package/tests passed.
+- **PASS:** actual Windows `cmd.exe` occupied-port test on an extracted, manifest-verified synthetic delivery: exit code 2, `REA_LOCAL_PORT_UNAVAILABLE`, Korean recovery output, alternate-port command and failure pause all observed. The customer data was synthetic.
+- **BLOCKED/NOT_CONFIRMED:** after this small launcher change, a fresh free-port HTTP launch was not re-confirmed in this Windows sandbox; the loopback request was denied/no 4-row response was obtained. Do not treat the older native HTTP receipt as validation of this new code delta.
+- The Windows sandbox also denied the delivery publisher's `os.link` operation with WinError 5. For the isolated launcher-content exercise only, the final archive publish was substituted with `os.replace`; this does not verify the production hard-link publisher in this environment.
 

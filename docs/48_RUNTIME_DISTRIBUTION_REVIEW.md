@@ -41,3 +41,11 @@
 - 개발자 안내: `dependency_metadata_README.md`.
 - 프로젝트 생성기에서 출력하는 현재 런타임 범위: 보존된 원본 스냅샷 `rea/mvp.py`와 `rea/delivery.py`.
 
+
+## Windows startup recovery check (2026-10-30)
+
+- The generated app performs a loopback-only selected-port probe before Uvicorn launch. The actual Windows CMD occupied-port case returned exit code 2 with stable `REA_LOCAL_PORT_UNAVAILABLE`, Korean instructions to choose another port, and a visible pause. The probe does not reserve the port, so a race can still occur before Uvicorn binds.
+- Focused automated customer-guidance tests: **9 passed**.
+- Fresh free-port HTTP startup after this launcher change is **NOT_CONFIRMED**: this Windows sandbox did not return the synthetic API rows during the attempt. Prior HTTP evidence refers to the earlier code delta and is not carried forward as proof.
+- Fresh delivery ZIP generation reached manifest validation after a test-harness-only `os.replace` substitute for the Windows-sandbox-denied hard-link publish. Actual `os.link` publishing remains unverified in this sandbox; ZIP content validation is not a legal or commercial clearance.
+

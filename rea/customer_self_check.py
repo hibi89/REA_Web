@@ -12,6 +12,7 @@ import json
 import os
 from pathlib import Path
 import re
+import socket
 import sqlite3
 import subprocess
 import sys
@@ -183,6 +184,18 @@ def launch_local(root: Path) -> int:
         print("REA_LOCAL_LAUNCH_BLOCKED: unsafe REA_WEB_PORT. 포트 번호는 1~65535 숫자만 사용할 수 있습니다.",
               file=sys.stderr)
         print("CMD에서 set REA_WEB_PORT=8765 입력 후 다시 실행할 수 있습니다.",
+              file=sys.stderr)
+        return 2
+    # Detect the common occupied/reserved-port case before starting Uvicorn.
+    # Bind only to loopback and close immediately; this is a friendly preflight,
+    # not a reservation, so Uvicorn still owns the definitive bind.
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+            probe.bind(("127.0.0.1", port))
+    except OSError:
+        print(f"REA_LOCAL_PORT_UNAVAILABLE: 로컬 포트 {port}를 사용할 수 없습니다.",
+              file=sys.stderr)
+        print("다른 앱을 종료하거나 CMD에서 set REA_WEB_PORT=8765 입력 후 다시 실행하세요.",
               file=sys.stderr)
         return 2
     # Fixed host and shell=False: an environment variable can never become
