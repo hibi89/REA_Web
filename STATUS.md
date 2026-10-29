@@ -1,10 +1,15 @@
 # STATUS — REA_Web / latest verified snapshot
 
-**2026-10-30 current status:** GitHub branch `feature/d27-windows-python-discovery` at `6ca9a03bcb3619fd4d1ea9922cf2e4a1557ec225`; Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30), open and unmerged. Exact Actions run [#40378905450](https://github.com/hibi89/REA_Web/actions/runs/40378905450) completed SUCCESS on both jobs: Ubuntu **412 passed, 4 skipped, 1 warning**; Windows-latest **426 passed, 1 warning**. Linux Chromium 8 source apps + 3 extracted ZIP apps, actual synthetic Tk flows, Windows native CMD interpreter fallback/exit-code checks, generated ZIP localhost HTTP, and vendor source hash checks passed. Synthetic kit artifact **12678683196**; its receipt states human acceptance `NOT_RUN` and commercial clearance `NOT_GRANTED`.
+## Current verified state (2026-10-30)
 
-**Not a sale-ready approval:** no actual nondeveloper customer Windows acceptance, measured real jobs, redistribution/license grant, approved client/reference rights, privacy/security/backup review, or final 299,000 KRW scope/support/refund signoff is evidenced. PR #30 remains Draft/unmerged and no production deployment was performed.
+- Branch `feature/d27-windows-python-discovery` head: `6a6f07d0350368deacf413cab0be2a79eaca296f`; PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains **OPEN, DRAFT, UNMERGED**.
+- Exact-head Actions runs [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) and [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228) both completed **SUCCESS** on Linux D1–D27/Chromium and Windows D1–D27/native-package jobs.
+- Latest local Windows focused tests: 12 passed (D27 interpreter discovery + customer guidance). Latest native Windows smoke: generated synthetic ZIP → extract → actual `cmd.exe` launcher → loopback `/health` and four-row API: **PASS**.
+- Successful real `py.exe` discovery of an installed runtime remains **NOT_RUN** on this workstation; failure path is tested and fails closed. Full local pytest has known Windows symlink-fixture permission failures; see detailed test receipts.
+- Human/customer acceptance: **NOT_RUN**. Source/dependency redistribution rights: **NOT_GRANTED**. Proposed 299,000 KRW price and sale approval: **NOT_APPROVED**.
+- Latest local evidence and portable patch are retained in the task evidence bundle; no PR merge or force push was performed.
 
-**Local follow-up (2026-10-30):** Windows recovery, customer guide, delivery ZIP checks, and D27 launcher test correction are committed on `feature/d27-windows-python-discovery`; PR #30 remains Draft/open/unmerged. The latest exact-head D27 Actions workflow is queued; no CI pass is reported. Full local Windows pytest: 407 passed, 22 skipped, 6 blocked at symlink fixture setup (`WinError 1314`); D27 Windows-focused tests 3/3 passed. Post-port-change native Windows smoke used the production ZIP publisher, extracted the package, launched actual `cmd.exe`, and received `/health` plus four synthetic rows on `127.0.0.1`. Human customer acceptance remains NOT_RUN and commercial/source redistribution clearance NOT_GRANTED. See [docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md](docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md).
+The historical records below are retained as dated evidence. Where their “queued/in progress” CI statement conflicts with the exact-head results above, this current block is authoritative.
 
 ---
 

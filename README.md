@@ -26,7 +26,12 @@ Python 3.11+, Tkinter, FastAPI, Uvicorn, Pydantic가 필요합니다. 실행기�
 
 자동 크롤링·사이트 복제, 임의 API/실DB 연결, 서로 다른 스키마 자동 JOIN, 로그인·역할, 결제, 공개 호스팅, CRUD 데이터 수정, 실시간 동기화, 무제한 데이터 정리 및 수정은 제공하지 않습니다.
 
-## 현재 작업 상태
+## 현재 확인된 상태 (2026-10-30)
 
-원격 D27을 기준으로 고객용 오류 안내와 복구 경로를 보완하고 있습니다. 이 보완은 D27의 녹색 CI와 별도이며, 새 브랜치 커밋 및 CI가 끝나기 전에는 검증 완료로 보지 않습니다. 작업 기록과 파일 목록은 [docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md](docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md)에 있습니다.
+- 원격 기준 커밋: `6a6f07d0350368deacf413cab0be2a79eaca296f` on `feature/d27-windows-python-discovery`.
+- 새 커밋의 D27 GitHub Actions [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) 및 [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228): Linux D1–D27/Chromium 및 Windows D1–D27/native package 모두 **SUCCESS**.
+- 로컬 Windows 검증: D27·고객 안내 focused tests 12 PASS; 합성 납품 ZIP 생성·압축 해제·실제 `cmd.exe` 실행·`127.0.0.1` health 및 4행 API **PASS**.
+- 고객의 실제 비개발자 검수는 **NOT_RUN**, 성공적인 실기기 `py -3` 런타임 선택은 **NOT_RUN**, 소스·의존성 상용 재배포 권리는 **NOT_GRANTED**입니다.
+- 목표가 299,000원은 미승인 가정이며, 현 상태를 판매 승인/고객 인수 완료로 표현하지 않습니다. PR #30은 Draft/open/unmerged입니다.
 
+기능 범위와 제외 항목은 위의 지원 범위를 따릅니다. 상세 기록은 [docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md](docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md)를 참고하세요.

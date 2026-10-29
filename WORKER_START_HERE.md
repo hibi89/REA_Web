@@ -1,8 +1,12 @@
 # REA_Web — CURRENT RESUME SNAPSHOT (2026-10-30)
 
-`feature/d27-windows-python-discovery` D27 source `6ca9a03bcb3619fd4d1ea9922cf2e4a1557ec225` is now verified: Actions [#40378905450](https://github.com/hibi89/REA_Web/actions/runs/40378905450) SUCCESS, Linux 412 passed/4 skipped and Windows 426 passed. Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains open and unmerged. Exact D27 synthetic artifact ID 12678683196; human acceptance NOT_RUN, commercial clearance NOT_GRANTED.
+Authoritative branch: `feature/d27-windows-python-discovery` at `6a6f07d0350368deacf413cab0be2a79eaca296f`. Draft PR #30 is open and unmerged.
 
-The current local follow-up adds Korean customer-readable self-check guidance to the generated Windows ZIP. It is not included in the D27 source SHA or its CI proof until a new commit is created and tested. The supplied source folder is a ZIP snapshot without `.git`; preserve it and work in a temporary copy. Current work log: [docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md](docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md). Current patch instructions and gates: [docs/17_NEXT_TASK.md](docs/17_NEXT_TASK.md).
+The latest exact-head D27 runs [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) and [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228) both passed Linux D1–D27/Chromium and Windows D1–D27/native-package jobs.
+
+Latest local verification: focused Windows interpreter/customer guidance tests 12 PASS; synthetic delivery ZIP generated, extracted and launched by actual Windows `cmd.exe`; `127.0.0.1` health and four-row API PASS. Successful real `py.exe` discovery of an installed runtime remains NOT_RUN on this workstation. Customer/human acceptance remains NOT_RUN; commercial source/dependency rights remain NOT_GRANTED. Do not call this approved for sale.
+
+Next, finish independent synthetic Chromium/package checks and update receipts/patches. Keep source and customer data intact. Never force-push or merge the Draft PR. Read the current STATUS, HANDOFF and docs/17_NEXT_TASK before choosing the next unit.
 
 ## Historical resume notes follow (2026-10-27)
 

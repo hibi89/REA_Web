@@ -1,21 +1,18 @@
 # HANDOFF — REA_Web / current handoff (2026-10-30)
 
-## Verified remote D27 baseline
+## Verified remote head and product status
 
-- Branch: `feature/d27-windows-python-discovery`, exact D27 source `6ca9a03bcb3619fd4d1ea9922cf2e4a1557ec225`.
-- Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30) is OPEN, unmerged. Do not merge it as part of packaging work.
-- Exact GitHub Actions [#40378905450](https://github.com/hibi89/REA_Web/actions/runs/40378905450) SUCCESS: Linux **412 pass / 4 skip / 1 warning**; Windows **426 pass / 1 warning**. Linux synthetic Chromium 8+3 and Tk; Windows native CMD D27 Python-path fallback, D24 port injection refusal, D25 archive inventory refusal, D26 readable pause, generated ZIP localhost HTTP and fresh isolated venv app proof all passed. Synthetic-only artifact **12678683196** says `human_acceptance=NOT_RUN`, `commercial_clearance=NOT_GRANTED`.
-- Source snapshot verification: local `rea/delivery.py`, `tests/test_d27_python_discovery.py`, `docs/46_WINDOWS_PYTHON_DISCOVERY.md` and `STATUS.md` blob hashes matched the D27 branch files when copied into the isolated task folder. There is no `.git` in the provided source snapshot.
+- `feature/d27-windows-python-discovery` is at `6a6f07d0350368deacf413cab0be2a79eaca296f`; latest commit clarifies unavailable Python discovery guidance.
+- Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30) is **OPEN, UNMERGED**.
+- Exact-head runs [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) and [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228) both completed **SUCCESS**: Linux D1–D27/Chromium and Windows D1–D27/native package.
+- Local Windows focused tests: **12 passed**. Native synthetic ZIP smoke: actual Windows `cmd.exe`, loopback `/health`, four-row API **PASS**. Successful real `py.exe`/installed-runtime selection remains **NOT_RUN** on this workstation.
+- Human/customer acceptance remains **NOT_RUN**; source/dependency commercial redistribution clearance remains **NOT_GRANTED**. This is not a commercial release approval.
 
-## Current local follow-up (not part of D27 proof)
+## Product boundaries
 
-Implementing readable Korean prerequisite output for the shipped ZIP, recovery instructions, a focused report-renderer test and current status documentation. Run isolated tests and compile checks. The D27 Windows workflow does not verify these changes until a new branch commit runs CI. Keep the original source folder untouched; work only in `REA_Web-feature-d27-windows-python-discovery-work-20261030`.
+Supported: customer-authorized CSV or flat JSON, preview and explicit mapping approval, same-schema two-file ROW APPEND with both approvals, generated local read-only FastAPI/SQLite app with list/search/category filter/detail, and delivery ZIP. Different-schema SQL JOIN, scraping, hosting, accounts, payment, live sync and general CRUD are out of scope.
 
-## Next gates
-
-1. Finish the local package usability delta, run tests that do not require denied filesystem operations, and prepare a GitHub-applicable `.patch` plus changed-file bundle.
-2. If repository write access is available, create a normal fast-forward commit on the existing D27 branch using its current head as parent; never force-update the ref. Keep PR #30 Draft and unmerged. Verify new CI before claiming the follow-up passed.
-3. Real human Windows pilot and all G5/G6 business/legal checks remain blocked until evidence exists. Do not fabricate human acceptance, labor logs, client permissions, redistribution license or 299,000 KRW agreement.
+The source snapshot and validation evidence remain preserved locally. Continue with synthetic/local QA when independent; do not infer customer acceptance or rights from CI. Do not merge PR #30 without explicit review/approval.
 
 ---
 
