@@ -32,7 +32,8 @@
 ## 검증 상태와 판매 차단 항목
 
 - D27 원격 baseline: Actions [#40378905450](https://github.com/hibi89/REA_Web/actions/runs/40378905450) Linux 412 pass/4 skip, Windows 426 pass. 이는 CI 합성 검증이며 사람의 고객 검수가 아니다.
-- **NOT RUN:** 새 한국어 안내가 포함된 ZIP의 실행과 추출, 실제 비개발자 Windows 검수, 고객 승인 데이터 및 실제 업무 시간 측정.
+- **자동 합성 검증 PASS:** 수정된 CSV/JSON 납품 ZIP 생성·무결성 확인·압축 해제·자가 점검, 실제 Windows `cmd.exe` 실행, Chromium 목록/검색/필터/상세 확인, 서버 종료·재실행 뒤 SQLite 4행 유지.
+- **NOT RUN:** 비개발자 고객의 수동 Windows 설치·복구 검수, 실제 고객 승인 데이터 시험, 실제 납품 작업시간 측정.
 - **NOT CLEARED:** Fable/Astra 및 모든 런타임 의존성의 상업 재배포 권리/NOTICE, 고객 데이터와 참고 사이트 권한, 개인정보/보안/백업, 판매 범위·수정·취소·환불·지원 약관.
 - 사용자 목표가 299,000원으로 정리됐지만 실제 크몽 주문·정책·세금·플랫폼 수수료와 비용/수익성은 확인하지 않았다.
 
