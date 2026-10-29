@@ -2,7 +2,7 @@
 
 ## Verified remote head and product status
 
-- `feature/d27-windows-python-discovery` is at `6a6f07d0350368deacf413cab0be2a79eaca296f`; latest commit clarifies unavailable Python discovery guidance.
+- 기능 및 D27 CI 검증 기준 커밋은 `6a6f07d0350368deacf413cab0be2a79eaca296f`이며, unavailable Python discovery guidance를 수정했습니다. 후속 문서 커밋은 해당 검증 결과를 반영합니다.
 - Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30) is **OPEN, UNMERGED**.
 - Exact-head runs [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) and [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228) both completed **SUCCESS**: Linux D1–D27/Chromium and Windows D1–D27/native package.
 - Local Windows focused tests: **12 passed**. Native synthetic ZIP smoke: actual Windows `cmd.exe`, loopback `/health`, four-row API **PASS**. Successful real `py.exe`/installed-runtime selection remains **NOT_RUN** on this workstation.

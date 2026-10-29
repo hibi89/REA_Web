@@ -1,6 +1,6 @@
 # REA_Web — CURRENT RESUME SNAPSHOT (2026-10-30)
 
-Authoritative branch: `feature/d27-windows-python-discovery` at `6a6f07d0350368deacf413cab0be2a79eaca296f`. Draft PR #30 is open and unmerged.
+Latest verified feature-code commit: `6a6f07d0350368deacf413cab0be2a79eaca296f`. A following documentation-only commit refreshes its verification status. Draft PR #30 is open and unmerged.
 
 The latest exact-head D27 runs [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) and [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228) both passed Linux D1–D27/Chromium and Windows D1–D27/native-package jobs.
 

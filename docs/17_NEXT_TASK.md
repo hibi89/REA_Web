@@ -2,7 +2,7 @@
 
 ## Verified remote state
 
-- Repository: `hibi89/REA_Web`; branch `feature/d27-windows-python-discovery`; exact current head `6a6f07d0350368deacf413cab0be2a79eaca296f`.
+- Repository: `hibi89/REA_Web`; branch `feature/d27-windows-python-discovery`; exact D27 code/CI checkpoint `6a6f07d0350368deacf413cab0be2a79eaca296f`. A following documentation-only commit records its results.
 - PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains OPEN, DRAFT, UNMERGED.
 - Exact-head D27 runs [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) and [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228) both completed SUCCESS: Linux D1–D27/Chromium and Windows D1–D27/native-package jobs.
 - Latest local Windows focused tests: 12 passed. Actual native Windows synthetic ZIP test: generated ZIP, extraction, `cmd.exe` launcher, loopback health and four-row API all PASS.

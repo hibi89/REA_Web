@@ -28,7 +28,7 @@ Python 3.11+, Tkinter, FastAPI, Uvicorn, Pydantic가 필요합니다. 실행기�
 
 ## 현재 확인된 상태 (2026-10-30)
 
-- 원격 기준 커밋: `6a6f07d0350368deacf413cab0be2a79eaca296f` on `feature/d27-windows-python-discovery`.
+- 기능 및 D27 CI 검증 기준 커밋: `6a6f07d0350368deacf413cab0be2a79eaca296f` on `feature/d27-windows-python-discovery`; 후속 커밋은 검증 결과를 반영하는 문서 갱신입니다.
 - 새 커밋의 D27 GitHub Actions [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) 및 [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228): Linux D1–D27/Chromium 및 Windows D1–D27/native package 모두 **SUCCESS**.
 - 로컬 Windows 검증: D27·고객 안내 focused tests 12 PASS; 합성 납품 ZIP 생성·압축 해제·실제 `cmd.exe` 실행·`127.0.0.1` health 및 4행 API **PASS**.
 - 고객의 실제 비개발자 검수는 **NOT_RUN**, 성공적인 실기기 `py -3` 런타임 선택은 **NOT_RUN**, 소스·의존성 상용 재배포 권리는 **NOT_GRANTED**입니다.
