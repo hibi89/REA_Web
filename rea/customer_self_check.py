@@ -135,6 +135,7 @@ def render_customer_report(result: dict) -> str:
     if status == "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE":
         lines.append("파일 무결성, SQLite 읽기 검사, Python 버전과 필수 패키지를 확인했습니다.")
         lines.append("이 결과는 사람의 고객 검수나 상용 권리 승인을 뜻하지 않습니다.")
+        lines.append("human_acceptance=NOT_RUN; commercial_clearance=NOT_GRANTED")
     else:
         if not result.get("python_311_or_later", False):
             lines.append("조치: Python 3.11 이상을 설치한 뒤 CMD 창을 새로 열고 다시 검사하세요.")
