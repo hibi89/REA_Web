@@ -1,32 +1,32 @@
-# REA_Web — 웹서비스 분석·재구축 자동화 엔진
+# REA_Web — 고객 데이터 기반 로컬 웹앱 제작 도구
 
-> 2026-10-25 · **3일 MVP 우선 개발 중** · Day1 CSV 웹앱 + Day2 검토용 Fable→Astra 어댑터 구현·CI PASS · 전체 통합 미완성
+REA_Web은 고객이 권한을 가진 CSV 또는 flat JSON에서 별도의 읽기 전용 FastAPI + SQLite 웹앱을 만들고 ZIP으로 전달하는 도구입니다. 참고 사이트 분석은 선택 사항이며, 추정된 기능이나 API는 고객 데이터 매핑을 자동 승인하지 않습니다.
 
-**새 채팅 즉시 재개:** `[REA_Web 깃헙 레포지토리 보고 작업이어가셈]` — 질문 없이 최신 GitHub 문서·코드 확인 후 다음 READY 개발 작업을 수행한다. **최우선 안내:** [WORKER_START_HERE.md](WORKER_START_HERE.md) · [세션 복원 프로토콜](docs/SESSION_RESTART_PROTOCOL.md).
+## 현재 지원하는 범위
 
-## 제품 목표
-고객이 권한을 가진 참고 웹사이트의 관찰 정보를 Fable 5.1로 분석하고, Astra의 증거·명세·매핑 모듈을 사용해 **고객 제공 CSV/JSON으로 동작하는 별도의 웹앱**을 생성·검증한다. 외부 소스 복제, 숨겨진 서버 로직 추출 또는 무허가 데이터 수집 제품이 아니다.
+- 고객 제공 CSV 1개 또는 flat JSON 1개 입력, 파일 검사와 스키마 미리보기
+- 소유자 명시 승인 이후 필드 매핑
+- 같은 구조의 두 파일은 양쪽 입력자 승인 이후 **ROW APPEND**만 지원합니다. 서로 다른 표의 SQL JOIN은 지원하지 않습니다.
+- 생성 앱: 목록, 검색, 카테고리 필터, 상세 조회. 로컬 SQLite를 사용하고 기본적으로 읽기 전용입니다.
+- 생성된 ZIP은 Windows 사전 검사, 무결성 검사, `127.0.0.1` 실행기를 포함합니다. 인터넷은 선택적 Python 패키지 설치 때만 필요할 수 있습니다.
+- 프로젝트 제작 GUI 실행: `START_REA_CREATOR.cmd`. Windows 안내는 [docs/35_WINDOWS_CREATOR_LAUNCHER.md](docs/35_WINDOWS_CREATOR_LAUNCHER.md), 고객용 납품 안내는 생성 ZIP의 `README_WINDOWS.md`를 따르세요.
 
-## 지금 실제로 동작하는 것 (Day1)
-- `feature/csv-local-mvp` @ `5515a7286d63211e32d2c577f93f77d61f37ce08`: UTF-8 CSV → 새 SQLite → 독립 로컬 FastAPI 웹앱 (목록·검색·카테고리 필터·상세).
-- 실제 GitHub Actions [40198326369](https://github.com/hibi89/REA_Web/actions/runs/40198326369): 9 pytest PASS, Chromium 루프백 E2E PASS (5개 목록, 필터 2, 검색 1, 상세, 새로고침), JS·외부 요청 오류 0건. Windows와 실제 고객 데이터는 미검증.
-- [Draft PR #3](https://github.com/hibi89/REA_Web/pull/3) · 미병합. **main은 현재 통합 앱 실행 브랜치가 아니라 프로젝트 명세/인수인계 기준점**이다.
+## Windows 제작 GUI 사전 조건
 
-## 코드 및 브랜치
-- Fable 5.1 고정 소스 88개: `import/fable51-bbe72c0`, [Draft PR #1](https://github.com/hibi89/REA_Web/pull/1).
-- Astra P4 선택 소스 103개(41개 계약 모듈; PARTIAL): `import/astra-p4-b3166b6`, [Draft PR #2](https://github.com/hibi89/REA_Web/pull/2).
-- 작업 타깃: `feature/evidence-adapter` (다음 READY), `feature/csv-local-mvp` (Day1), `feature/orchestrator`, `integration/develop`, `qa/cross-platform`.
-- 원본 Fable/Astra 소스 저장소는 변경하지 않는다.
+Python 3.11+, Tkinter, FastAPI, Uvicorn, Pydantic가 필요합니다. 실행기는 기존 로컬 환경을 검사하고 GUI를 엽니다. 자동 설치나 관리자 권한 상승은 하지 않습니다. 진단만 하려면 프로젝트 폴더에서 `START_REA_CREATOR.cmd --check`를 실행합니다.
 
-## Day2 구현·검증 완료 (feature 브랜치)
-- `feature/evidence-adapter` `fda96076de33ebf4f4b6118972a5033a3f703ba9`, [Draft PR #4](https://github.com/hibi89/REA_Web/pull/4).
-- 합성 샘플 Fable 결과 → 검토 전용 Astra 증거·명세 제안, 추정/관찰 구분, 승인·생성 차단. GitHub Actions [CI run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969): Ubuntu Python 3.11, **28 테스트 통과**, 고정 Astra 계약 모델 검증 및 CLI 통과.
-- Day1/Day2 서로 다른 브랜치에서 테스트되었으며 **전체 REA_Web 통합 완료가 아님**.
+## 상용 및 검수 상태
 
-## 다음 작업 (지금 시작 가능)
-`REA-MVP-D2-02`: `feature/orchestrator`에서 선택적 Fable 보고서 + 고객 CSV→로컬 앱 생성 흐름 연결. 그다음 3개 샘플, Windows, 실제 브라우저, 패키징 및 원 설계 차이 검증. **라이브 고객 DB·자동 배포는 제외**.
+- 목표 상품가: **299,000원 (검토 중, 미승인)**
+- D27 코드 CI: GitHub Actions [#40378905450](https://github.com/hibi89/REA_Web/actions/runs/40378905450) — Linux 412 PASS/4 SKIP, Windows 426 PASS. 상세 상태는 [STATUS.md](STATUS.md)를 봅니다.
+- Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30)은 아직 병합되지 않았습니다.
+- 실제 비개발자 Windows 사용성, 고객 데이터/사이트 권한, 소스·의존성 재배포 라이선스, 개인정보·보안·백업, 계약·수정·환불·지원 범위는 확인되지 않았습니다. 따라서 이 프로젝트를 판매 승인 또는 고객 인수 완료로 설명하지 않습니다.
 
-## 사업/범위
-초기 크몽 가격 가설 300,000원. 소규모 고객 제공 CSV 중심, 2개 화면·3개 단순 기능 이내 정액 납품을 목표로 한다. 데이터 수집 대행·운영 DB 접근·복잡한 인증·결제·무제한 수정 제외. 아직 판매 개시/납품 준비가 완료된 상태가 아니다.
+## 기능 제외
 
-**설계도:** [아키텍처](docs/02_ARCHITECTURE.md) · [3일 계획](docs/MVP_3DAY_SPRINT_PLAN.md) · [최종 산출물](docs/14_FINAL_DELIVERABLES.md) · [인수검사](docs/05_ACCEPTANCE.md) · [30만원 범위](docs/07_KMONG_OFFER.md) · [최신 작업지시](docs/17_NEXT_TASK.md).
+자동 크롤링·사이트 복제, 임의 API/실DB 연결, 서로 다른 스키마 자동 JOIN, 로그인·역할, 결제, 공개 호스팅, CRUD 데이터 수정, 실시간 동기화, 무제한 데이터 정리 및 수정은 제공하지 않습니다.
+
+## 현재 작업 상태
+
+원격 D27을 기준으로 고객용 오류 안내와 복구 경로를 보완하고 있습니다. 이 보완은 D27의 녹색 CI와 별도이며, 새 브랜치 커밋 및 CI가 끝나기 전에는 검증 완료로 보지 않습니다. 작업 기록과 파일 목록은 [docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md](docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md)에 있습니다.
+
