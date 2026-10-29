@@ -25,7 +25,7 @@
 | `docs/07_KMONG_OFFER.md` | Replace stale 300,000 KRW/D5 draft with the user-requested 299,000 KRW proposed scope and implemented limits. | Avoid promising two screens, joins, or unverified commercial readiness. |
 | `docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md` | Record file-level change rationale, baseline evidence, validation and blockers. | Provide a durable change ledger. |
 
-All edits are in `E:\REA_Web_Kmong\REA_Web-feature-d27-windows-python-discovery-work-20261030`, an isolated copy. The original `REA_Web-feature-d27-windows-python-discovery` remains the source snapshot and is not the worktree.
+The original `E:\REA_Web_Kmong\REA_Web-feature-d27-windows-python-discovery` is preserved as a read-only source snapshot. The temporary implementation copy has been removed after its changes and QA evidence were preserved in the durable follow-up bundle.
 
 ## Validation actually performed
 
@@ -33,8 +33,12 @@ All edits are in `E:\REA_Web_Kmong\REA_Web-feature-d27-windows-python-discovery-
 - **PASS:** `python -m compileall -q rea tests/test_customer_guidance.py tests/test_d27_python_discovery.py`.
 - **PASS:** static generated-asset contract check verified the checklist/manual link, customer-check mode, UTF-8 console setup and absence of CMD port expansion.
 - **BLOCKED locally:** `python -m pytest -q tests/test_d27_python_discovery.py` — all 3 cases failed before reaching their assertions because Windows denied the generator's intentional atomic `os.rename`/`os.link` publication (`WinError 5: Access denied`) in both sandbox temp and project-local paths. This environment-level denial is not counted as a product test pass or a CI failure. No test was skipped or weakened.
-- **NOT RUN for this local delta:** full regression, generated ZIP extraction after the changes, Windows CMD execution on a customer machine, browser E2E of a newly generated ZIP, a real nondeveloper user pilot, or new-source GitHub CI.
-- The earlier D27 green run is evidence for the unmodified baseline SHA only; it cannot be used to claim these changes passed CI.
+- **PASS:** synthetic JSON ZIP generation, integrity verification, extraction, checklist presence and customer self-check (4 rows); receipt: `json_delivery_smoke.json`.
+- **PASS:** explicit mapping and same-schema two-file ROW APPEND integration, SQLite/provenance and original-file exclusion: 33 passed, 2 symlink-dependent cases deselected; receipt: `mapping_append_smoke.json`.
+- **PASS:** actual Windows `cmd.exe` launch, stop and relaunch from the same extracted ZIP; loopback-only service returned 4 rows before and after restart; receipt: `windows_restart_persistence.json`. This validates the local Windows host and synthetic package, not a separate customer computer.
+- **PASS:** extracted synthetic delivery ZIP Chromium E2E: 3/3 cases; list/search/filter/detail/summary, reload, zero JavaScript errors, dialogs or external requests.
+- **NOT RUN:** nondeveloper customer manual installation/recovery review, actual customer-authorized dataset, and commercial work-time measurement.
+- The earlier D27 green run is evidence for the source baseline only. The exact-head CI for the current remote branch is separately tracked below.
 - **PASS:** `git apply --check` and `git apply` succeeded against a fresh copy of the original D27 files; all **12** resulting Git blob hashes equal the modified work copy.
 
 ## Commercial and delivery status
@@ -58,4 +62,14 @@ The original folder has no `.git`. The GitHub connector created normal child com
 - Generated three deterministic synthetic deliveries, verified ZIP hashes and extracted self-checks, and ran the extracted ZIPs in real local Chromium: **3/3 PASS** for list/search/filter/detail/summary as contracted, reload persistence, zero JavaScript errors, zero dialogs, and zero external requests. This is automation against synthetic fixtures, not human/customer acceptance. Screens and JSON receipts are preserved in the follow-up bundle.
 - At the time of this update PR #30 is still Draft/open/unmerged and latest-head D27 Actions run [#40908092345](https://github.com/hibi89/REA_Web/actions/runs/40908092345) is queued on Linux and Windows. Do not mark those exact-head CI checks verified until both jobs complete.
 - `python -m compileall -q rea scripts tests` and focused customer guidance tests: **8 passed**. The PR check runs queued on latest code after the initial failure; no actual nondeveloper customer machine or manual recovery review was performed.
+
+
+## Additional local verification and current remote status (2026-10-30)
+
+- Guided mapping / same-schema ROW APPEND: **33 passed, 2 deselected** because the Windows host cannot create symlinks.
+- Synthetic JSON delivery: **PASS**, 4 rows; ZIP digest verification, extraction, checklist and customer self-check.
+- Native Windows persistence: **PASS** using actual `cmd.exe`; extracted app served on `127.0.0.1`; 4 SQLite rows remained after stop and restart.
+- Python D12 dependency evidence regression: **16 passed**. Dependency metadata is environment evidence only; it does not establish a full lock, vulnerability audit, commercial license clearance or redistribution rights.
+- Updated customer offer now labels those automated synthetic checks as passed; human customer acceptance remains **NOT_RUN** and commercial/license clearance remains **NOT_GRANTED**.
+- Current branch head before this documentation refresh: `2c620e2a6cef815d61e5e515679953c334aad7dd`. Exact-head Actions run [#40910468140](https://github.com/hibi89/REA_Web/actions/runs/40910468140): Linux and Windows jobs are both **queued**. This is not a pass; do not wait on it to continue local work.
 
