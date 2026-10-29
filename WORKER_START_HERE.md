@@ -2,11 +2,11 @@
 
 Latest verified feature-code commit: `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6`. A following documentation-only commit refreshes its verification status. Draft PR #30 is open and unmerged.
 
-D27 run [#40927550941](https://github.com/hibi89/REA_Web/actions/runs/40927550941) and D8 run [#40927551084](https://github.com/hibi89/REA_Web/actions/runs/40927551084) passed on Linux and Windows for the current feature-code commit. Other optional workflows need not block independent local work.
+D27 run [#40927550941](https://github.com/hibi89/REA_Web/actions/runs/40927550941) and D8 run [#40927551084](https://github.com/hibi89/REA_Web/actions/runs/40927551084) passed on Linux and Windows for the current feature-code commit. Exact-head D27 run #40930084158 and D3 run #40930083982 both completed SUCCESS.
 
 Latest local verification: focused Windows interpreter/customer guidance tests 12 PASS, D8 inspect/wizard CP949 tests 2 PASS, same-folder stop/restart and copied-backup relaunch PASS, 23 recovery/customer-guidance tests PASS (2 symlink cases excluded), and Chromium CSV/JSON/approved APPEND 7/7 PASS (Fable/Astra case BLOCKED locally); synthetic delivery ZIP generated, extracted and launched by actual Windows `cmd.exe`; `127.0.0.1` health and four-row API PASS. Successful real `py.exe` discovery of an installed runtime remains NOT_RUN on this workstation. Customer/human acceptance remains NOT_RUN; commercial source/dependency rights remain NOT_GRANTED. Do not call this approved for sale.
 
-D3 GitHub run #40928853301 has Linux SUCCESS and Windows QUEUED at last check. Continue independent package checks; do not wait on the Windows queue. Keep source and customer data intact. Never force-push or merge the Draft PR. Read the current STATUS, HANDOFF and docs/17_NEXT_TASK before choosing the next unit.
+Exact-head D27 run #40930084158 and D3 run #40930083982 both completed SUCCESS on Linux and Windows. Local full regression on reconstructed head: 407 passed, 22 skipped, 6 symlink fixtures deselected (WinError 1314). Continue independent package checks; customer acceptance remains NOT_RUN and commercial rights NOT_GRANTED. Keep source and customer data intact. Never force-push or merge the Draft PR. Read the current STATUS, HANDOFF and docs/17_NEXT_TASK before choosing the next unit.
 
 ## Historical resume notes follow (2026-10-27)
 

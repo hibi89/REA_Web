@@ -17,7 +17,7 @@ Customer-authorized UTF-8 CSV or flat JSON → preview → explicit field-mappin
 
 ## Next independent actions
 
-1. Continue the package recovery/privacy review and only rerun optional CI after the independent local work; code-specific D27 and D8 workflows have passed at commit `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6`. D3 run [#40928853301](https://github.com/hibi89/REA_Web/actions/runs/40928853301) has Linux SUCCESS and Windows QUEUED; continue independent work and recheck later.
+1. Exact-head D27 run [#40930084158](https://github.com/hibi89/REA_Web/actions/runs/40930084158) and D3 run [#40930083982](https://github.com/hibi89/REA_Web/actions/runs/40930083982) both completed SUCCESS on Linux and Windows. Continue independent package recovery/privacy review; customer acceptance remains NOT_RUN and commercial/source redistribution clearance NOT_GRANTED.
 2. Continue local synthetic failure/recovery checks and delivery receipts that do not require customer data.
 3. When genuine evidence exists, complete nondeveloper Windows acceptance, successful `py -3` on a typical customer setup, source/data permission and redistribution review, privacy/security/backup review, measured service-time pilot and buyer scope/support/refund approval.
 
