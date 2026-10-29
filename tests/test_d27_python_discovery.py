@@ -150,4 +150,3 @@ def test_native_regular_python_remains_preferred(tmp_path):
                             timeout=40, check=False)
     assert result.returncode == 0, (result.stdout, result.stderr)
     assert "PASS_LOCAL_PREREQUISITES_NOT_COMMERCIAL_CLEARANCE" in result.stdout
-
