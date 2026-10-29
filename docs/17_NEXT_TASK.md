@@ -5,7 +5,8 @@
 - Repository: `hibi89/REA_Web`; branch `feature/d27-windows-python-discovery`; exact D27 code/CI checkpoint `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6`. A following documentation-only commit records its results.
 - PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains OPEN, DRAFT, UNMERGED.
 - D27 run [#40927550941](https://github.com/hibi89/REA_Web/actions/runs/40927550941) and D8 run [#40927551084](https://github.com/hibi89/REA_Web/actions/runs/40927551084) completed SUCCESS on Linux and Windows for the current code commit.
-- Latest local Windows focused tests: 12 passed. Actual native Windows synthetic ZIP test: generated ZIP, extraction, `cmd.exe` launcher, loopback health and four-row API all PASS.
+- Latest local Windows focused tests: 12 passed; D8 CP949 inspect/wizard: 2 passed. Actual native Windows ZIP launch and copied-backup relaunch both PASS; four SQLite rows/search/detail persist.
+- Local Windows Chromium acceptance: 7/7 CSV/JSON/approved APPEND cases PASS, zero JS errors/external calls; Fable/Astra case BLOCKED because this source snapshot lacks pinned Astra contract modules.
 - Workstation `py.exe` reports no registered runtime; the no-runtime error path is tested. Successful `py -3` runtime selection is NOT_RUN.
 - Local regression: 407 passed, 22 skipped, 6 symlink tests deselected due WinError 1314. The unfiltered run is not clean on this host. Exact-head GitHub Windows/Linux CI is green.
 - Human/customer acceptance NOT_RUN; commercial/source/dependency redistribution rights NOT_GRANTED; 299,000 KRW pricing and support/refund terms are not approved.
@@ -16,7 +17,7 @@ Customer-authorized UTF-8 CSV or flat JSON → preview → explicit field-mappin
 
 ## Next independent actions
 
-1. Finish and record the synthetic Chromium acceptance across generated CSV/JSON and explicitly approved same-schema APPEND cases; verify search, filter, detail, reload, no unexpected network calls and no JS errors. Recheck CI after the work, not as a prerequisite.
+1. Continue the package recovery/privacy review and only rerun optional CI after the independent local work; code-specific D27 and D8 workflows have passed at commit `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6`. A D3 QA-harness commit follows and its full workflow is pending.
 2. Continue local synthetic failure/recovery checks and delivery receipts that do not require customer data.
 3. When genuine evidence exists, complete nondeveloper Windows acceptance, successful `py -3` on a typical customer setup, source/data permission and redistribution review, privacy/security/backup review, measured service-time pilot and buyer scope/support/refund approval.
 
