@@ -18,7 +18,7 @@ Python 3.11+, Tkinter, FastAPI, Uvicorn, Pydantic가 필요합니다. 실행기�
 ## 상용 및 검수 상태
 
 - 목표 상품가: **299,000원 (검토 중, 미승인)**
-- D27 코드 CI: GitHub Actions [#40378905450](https://github.com/hibi89/REA_Web/actions/runs/40378905450) — Linux 412 PASS/4 SKIP, Windows 426 PASS. 상세 상태는 [STATUS.md](STATUS.md)를 봅니다.
+- 최신 제품 코드 검증 헤드 `b7eaaf405e686a93f8060ef3bbf5999a988a7bdd`: D27 [run](https://github.com/hibi89/REA_Web/actions/runs/40963047232) 및 D26 [run](https://github.com/hibi89/REA_Web/actions/runs/40963047281) Windows·Linux job PASS, 반환된 GitHub Actions 27개 모두 성공. 현재 브랜치 문서 헤드는 `2bdbee3e7ce1ae68eabc7b6a73b260368888d643`.
 - Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30)은 아직 병합되지 않았습니다.
 - 실제 비개발자 Windows 사용성, 고객 데이터/사이트 권한, 소스·의존성 재배포 라이선스, 개인정보·보안·백업, 계약·수정·환불·지원 범위는 확인되지 않았습니다. 따라서 이 프로젝트를 판매 승인 또는 고객 인수 완료로 설명하지 않습니다.
 
