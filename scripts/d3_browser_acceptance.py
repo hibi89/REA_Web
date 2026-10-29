@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import platform
 from pathlib import Path
 import socket
 import subprocess
@@ -98,11 +99,14 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
         context = browser.new_context()
         try:
             page = context.new_page()
+            page.set_default_timeout(15_000)
             page.on("pageerror", lambda error: errors.append(str(error)))
             page.on("dialog", lambda dialog: (dialogs.append(dialog.message), dialog.dismiss()))
             page.on("request", lambda request: external.append(request.url)
                     if not request.url.startswith(base + "/") else None)
-            page.goto(base, wait_until="networkidle")
+            # Wait for the document, then let assertions wait for API data.
+            # networkidle is brittle when the local app has in-flight fetches.
+            page.goto(base, wait_until="domcontentloaded")
             expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
             expect(page.locator(".item")).to_have_count(case["total"])
             expect(page.locator("#overview-total")).to_have_text(f'{case["total"]}건')
@@ -121,7 +125,7 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
             if case["name"] in {"inventory", "formulas"}:
                 assert page.locator("#detail script").count() == 0
             page.screenshot(path=str(report_dir / f"{case['name']}.png"), full_page=True)
-            page.reload(wait_until="networkidle")
+            page.reload(wait_until="domcontentloaded")
             expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
             assert page.request.get(base + "/review/fable_review.json").status == 404
             assert page.request.get(base + "/manifest.json").status == 404
@@ -155,20 +159,31 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--report-dir", required=True, type=Path)
+    parser.add_argument(
+        "--skip-fable-review", action="store_true",
+        help="Run local CSV/JSON/browser cases when pinned Astra contracts are unavailable",
+    )
     args = parser.parse_args()
     report = args.report_dir.absolute()
     report.mkdir(parents=True, exist_ok=False)
+    skipped = ([{"case": case["name"], "status": "BLOCKED_MISSING_LOCAL_ASTRA_CONTRACTS"}
+                for case in CASES if case["fable"]]
+               if args.skip_fable_review else [])
+    cases_to_run = ([case for case in CASES if not case["fable"]]
+                    if args.skip_fable_review else CASES)
     with tempfile.TemporaryDirectory(prefix="rea-d3-browser-") as folder:
         with sync_playwright() as pw:
-            cases = [run_one(case, Path(folder), pw, report) for case in CASES]
+            cases = [run_one(case, Path(folder), pw, report) for case in cases_to_run]
     summary = {"schema_version": "rea.qa.v0.1",
-               "environment": "CI platform; see workflow",
+               "environment": f"{platform.system()} {platform.release()} / Python {platform.python_version()}",
                "fixture_kind": "synthetic_only",
                "windows_native": "NOT_TESTED_BY_THIS_SCRIPT",
-               "case_count": len(cases), "cases": cases}
+               "case_count": len(cases), "cases": cases,
+               "skipped_cases": skipped,
+               "status": "PASS" if not skipped else "PARTIAL"}
     (report / "qa_report.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print("PASS D9 real Chromium: 8 synthetic apps incl owner-approved two-file append; safe search/filter/detail/reload")
+    print(f"{summary['status']} D9 real Chromium: {len(cases)} synthetic apps; safe search/filter/detail/reload")
     print(json.dumps(summary, ensure_ascii=False))
 
 
