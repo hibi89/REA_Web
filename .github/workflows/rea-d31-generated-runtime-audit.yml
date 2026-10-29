@@ -56,4 +56,3 @@ jobs:
           name: rea-d31-vulnerability-audit-${{ runner.os }}
           path: rea-d31-audit/
           if-no-files-found: warn
-
