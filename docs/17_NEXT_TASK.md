@@ -1,3 +1,16 @@
+# Exact-head continuation recheck (2026-10-30; source HEAD `55ea2da6b95d763acf1c7f36371fba1f1f418b7e`)
+
+- Reconstructed the complete source tree from verified source plus current remote files: **172/172 Git blob IDs match** exact branch HEAD. Python AST parsing: 66 files PASS; `pip check`: PASS. Exact source tree has no LICENSE/LICENCE/COPYING/NOTICE path; commercial rights stay NOT_GRANTED.
+- Focused local checks: customer guidance + D27 21 PASS; D6 14 PASS/1 SKIP; D9 15 PASS/2 DESELECTED. Manual synthetic same-schema ROW APPEND generated 5 SQLite rows and a verified 16-member ZIP; both input source hashes stayed unchanged.
+- Fresh synthetic single-file ZIP: CRC PASS; clean extraction; actual `cmd.exe /d /c check_windows.cmd --check` exit 0.
+- Native local HTTP remains **BLOCKED/NOT_RUN**: isolated probe bound to `127.0.0.1` successfully but sandbox denied client loopback connect with Windows `WinError 10013`. A bounded launcher probe did not obtain `/health`; no local HTTP success is claimed. An initial system TEMP attempt also hit sandbox `WinError 5`; workspace TEMP avoided that publication error.
+- Unfiltered/filtered local full pytest attempts stalled before final summaries; the unfiltered attempt showed a failure marker without captured diagnostic. They are incomplete, not PASS. Exact-head GitHub D27 CI remains the full automated evidence: Windows 446 PASS/1 warning, Linux 431 PASS/5 skipped/1 warning; exact-head Check Runs 56/56 SUCCESS. These are synthetic CI results, not human acceptance.
+- Cumulative patch `db6711e → 55ea2da` applies on the exact base and all 14 target file blobs match. Local evidence and package hashes are preserved outside the source tree in `EXACT_HEAD_CONTINUATION_RECHECK_20261030.json`.
+
+Sale remains NOT_APPROVED. Independent nondeveloper Windows acceptance NOT_RUN; source/dependency redistribution rights NOT_GRANTED; customer data/privacy and seller terms NOT_APPROVED. Development 95% / sale preparation 77% are carried estimates, not recalculated.
+
+---
+
 # REA_Web — current delivery dispatcher (2026-10-30)
 
 ## 최신 원격 재확인 (2026-10-30; `50c82814821f89f0326cefcf04c2ee78e080d5c4`)
