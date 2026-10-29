@@ -1,3 +1,11 @@
+# REA_Web — CURRENT RESUME SNAPSHOT (2026-10-30)
+
+`feature/d27-windows-python-discovery` D27 source `6ca9a03bcb3619fd4d1ea9922cf2e4a1557ec225` is now verified: Actions [#40378905450](https://github.com/hibi89/REA_Web/actions/runs/40378905450) SUCCESS, Linux 412 passed/4 skipped and Windows 426 passed. Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains open and unmerged. Exact D27 synthetic artifact ID 12678683196; human acceptance NOT_RUN, commercial clearance NOT_GRANTED.
+
+The current local follow-up adds Korean customer-readable self-check guidance to the generated Windows ZIP. It is not included in the D27 source SHA or its CI proof until a new commit is created and tested. The supplied source folder is a ZIP snapshot without `.git`; preserve it and work in a temporary copy. Current work log: [docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md](docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md). Current patch instructions and gates: [docs/17_NEXT_TASK.md](docs/17_NEXT_TASK.md).
+
+## Historical resume notes follow (2026-10-27)
+
 # REA_Web — NEW CHAT ZERO-QUESTION RESUME ENTRYPOINT
 
 ## EXACT USER TRIGGER
@@ -38,3 +46,4 @@ The exact sentence above is a **standing instruction to immediately inspect this
 - For full contract, architecture, branch policy, honest verification rules: `docs/SESSION_RESTART_PROTOCOL.md`.
 
 **At any future session, latest actual GitHub HEADs and dispatch docs override this historical snapshot.**
+
