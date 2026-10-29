@@ -46,6 +46,6 @@
 
 - The generated app performs a loopback-only selected-port probe before Uvicorn launch. The actual Windows CMD occupied-port case returned exit code 2 with stable `REA_LOCAL_PORT_UNAVAILABLE`, Korean instructions to choose another port, and a visible pause. The probe does not reserve the port, so a race can still occur before Uvicorn binds.
 - Focused automated customer-guidance tests: **9 passed**.
-- Fresh free-port HTTP startup after this launcher change is **NOT_CONFIRMED**: this Windows sandbox did not return the synthetic API rows during the attempt. Prior HTTP evidence refers to the earlier code delta and is not carried forward as proof.
-- Fresh delivery ZIP generation reached manifest validation after a test-harness-only `os.replace` substitute for the Windows-sandbox-denied hard-link publish. Actual `os.link` publishing remains unverified in this sandbox; ZIP content validation is not a legal or commercial clearance.
+- **PASS after the port-probe change:** existing `scripts/windows_native_smoke.py` generated a synthetic delivery ZIP, extracted it, launched the actual CMD file on a free dynamically selected loopback port, and received `/health` plus four `/api/items` rows.
+- **PASS on this Windows host:** the smoke used the production `os.link` archive publisher without substitution. The full suite passed 407 tests; six symlink fixtures remain blocked at setup by WinError 1314. ZIP verification does not grant commercial rights.
 
