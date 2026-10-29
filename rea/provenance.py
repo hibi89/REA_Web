@@ -39,8 +39,7 @@ ALLOWED_DELIVERY = frozenset({
     "app/static/index.html", "app/static/app.js", "app/static/style.css",
     "app/review/fable_review.json", "app/review/README.md",
     "README_WINDOWS.md", "launch_windows.cmd", "check_windows.cmd",
-    "self_check.py", "README_WINDOWS.md", "ACCEPTANCE_CHECKLIST.md",
-    "delivery_manifest.json",
+    "self_check.py", "ACCEPTANCE_CHECKLIST.md", "delivery_manifest.json",
 })
 REQUIRED_DELIVERY = frozenset({
     "app/app.py", "app/data.sqlite", "app/manifest.json",
