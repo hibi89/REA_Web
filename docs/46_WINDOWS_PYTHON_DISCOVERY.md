@@ -26,3 +26,12 @@ This does NOT prove real nondeveloper Windows acceptance. A publisher identity/r
 ## CI follow-up (2026-10-27 KST)
 
 Initial run #40376830500 revealed a test assertion mismatch (checker stores exit code10 in `_rea_check_code` for visible no-arg pause; test assumed direct `exit /b 10`) and a genuine Windows test harness issue: `py.cmd` test-only launcher wrapper takes control away from its calling `.cmd` unless invoked through CMD `call`. Updated both generated entrypoints to use `call py -3` for version probe and dispatch; this also supports a Windows environment where `py` itself is a script-wrapper, while real `py.exe` remains supported. Original `python` primary path remains unchanged. These are **source corrections, not verified successes** until a fresh exact SHA Linux and native Windows workflow completes. The test now verifies the checker's actual status-variable propagation and app launcher's direct exit10. Earlier failed run cannot be reused for acceptance.
+
+## Final D27 verification (2026-10-26 UTC)
+
+- Exact feature source SHA **`6ca9a03bcb3619fd4d1ea9922cf2e4a1557ec225`**, Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30), open and unmerged.
+- GitHub Actions [#40378905450](https://github.com/hibi89/REA_Web/actions/runs/40378905450) completed SUCCESS on both jobs. Linux: **412 passed, 4 skipped, 1 warning**; the skips are platform-specific Windows tests. Windows-latest: **426 passed, 1 warning**.
+- Actual Linux Chromium synthetic cases **8 + 3 extracted ZIP apps** passed; Tk GUI synthetic flows and vendor hash checks passed. Windows native CMD tests including `python` absent/old → `py -3` fallback, missing interpreters exit 10, hostile port refusal, generated ZIP HTTP on loopback, and isolated venv flow passed. Windows extraction run returned 4 synthetic rows; owner kit checker passed and reported human acceptance NOT_RUN, commercial clearance NOT_GRANTED.
+- Synthetic-only artifact `rea-d27-synthetic-windows-owner-pilot`, ID **12678683196**.
+- This proves CI behavior for the exact D27 source. It does NOT prove a nondeveloper human completed onboarding, legal redistribution, actual customer acceptance, or sale readiness. The separate Korean customer-readable diagnostic update is not included in this SHA or run.
+
