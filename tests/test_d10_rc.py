@@ -54,7 +54,7 @@ def test_all_three_rc_modes_and_reproducible_archive_digests(tmp_path):
         cmd = (unpack / "launch_windows.cmd").read_text()
         assert 'python "%~dp0self_check.py" --launch' in cmd
         assert "%REA_WEB_PORT%" not in cmd
-        assert '"--host", "127.0.0.1"' in (unpack / "self_check.py").read_text()
+        assert '"--host", "127.0.0.1"' in (unpack / "self_check.py").read_text(encoding="utf-8")
         assert "NOT commercially approved" in (unpack / "README_WINDOWS.md").read_text(encoding="utf-8")
         check, payload = _self_check(unpack)
         assert check.returncode == 0, check.stderr
@@ -135,7 +135,7 @@ def test_customer_windows_cmd_uses_local_selfcheck_only(tmp_path):
     assert "https://" not in launch
     if sys.platform == "win32":
         result = subprocess.run(["cmd", "/c", str(out / "check_windows.cmd"), "--check"],
-                                cwd=out, capture_output=True, text=True)
+                                cwd=out, capture_output=True, text=True, encoding="utf-8")
         assert result.returncode == 0, result.stdout + result.stderr
         assert "PASS_LOCAL_PREREQUISITES" in result.stdout
 
@@ -152,3 +152,4 @@ def test_observed_dependency_inventory_is_not_license_approval():
     assert report["exact_installed_versions_are_observations_not_customer_lock"] is True
     assert all(not x.get("legal_contents_reviewed", False)
                for x in report["distributions"])
+
