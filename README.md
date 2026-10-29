@@ -26,13 +26,11 @@ Python 3.11+, Tkinter, FastAPI, Uvicorn, Pydantic가 필요합니다. 실행기�
 
 자동 크롤링·사이트 복제, 임의 API/실DB 연결, 서로 다른 스키마 자동 JOIN, 로그인·역할, 결제, 공개 호스팅, CRUD 데이터 수정, 실시간 동기화, 무제한 데이터 정리 및 수정은 제공하지 않습니다.
 
-## 현재 확인된 상태 (2026-10-30)
+## 최근 확인된 상태 (2026-10-30)
 
-- 기능 및 D27 CI 검증 기준 커밋: `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6` on `feature/d27-windows-python-discovery`; 후속 커밋은 검증 결과를 반영하는 문서 갱신입니다.
-- 기능 코드 커밋의 D27 [#40927550941](https://github.com/hibi89/REA_Web/actions/runs/40927550941) 및 D8 [#40927551084](https://github.com/hibi89/REA_Web/actions/runs/40927551084): Linux·Windows 핵심 워크플로 모두 **SUCCESS**.
-- 로컬 Windows 검증: D27·고객 안내 focused tests 12 PASS; D8 inspect/wizard CP949 회귀 2 PASS; same-folder stop/restart and copied-backup SQLite persistence smoke PASS; 합성 납품 ZIP 생성·압축 해제·실제 `cmd.exe` 실행·`127.0.0.1` health 및 4행 API **PASS**. 한글 파일명 CSV·ZIP 생성, 한글 폴더 압축 해제, 실제 CMD 실행 및 한글 검색/API 응답도 합성 데이터로 PASS.
-- Exact-head D3 run [#40930083982](https://github.com/hibi89/REA_Web/actions/runs/40930083982) and D27 run [#40930084158](https://github.com/hibi89/REA_Web/actions/runs/40930084158) both completed **SUCCESS** on Linux and Windows.
-- Windows 로컬 Chromium acceptance 7/7 synthetic cases PASS (검색·필터·상세·새로고침·명시적 APPEND; JS 오류/외부 요청 0). Astra 계약이 없는 로컬 소스 스냅샷의 Fable 케이스 1개는 BLOCKED입니다. 고객의 실제 비개발자 검수는 **NOT_RUN**, 성공적인 실기기 `py -3` 런타임 선택은 **NOT_RUN**, 소스·의존성 상용 재배포 권리는 **NOT_GRANTED**입니다.
-- 목표가 299,000원은 미승인 가정이며, 현 상태를 판매 승인/고객 인수 완료로 표현하지 않습니다. PR #30은 Draft/open/unmerged입니다.
-
-기능 범위와 제외 항목은 위의 지원 범위를 따릅니다. 상세 기록은 [docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md](docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md)를 참고하세요.
+- 제품 코드 검증 기준 커밋: `b7eaaf405e686a93f8060ef3bbf5999a988a7bdd`. 이후 `e8e975c`는 이 상태를 기록한 `STATUS.md` 전용 커밋입니다.
+- 기준 커밋에서 반환된 GitHub Actions 워크플로 27개가 모두 성공했습니다. D27/D26 Windows 및 Linux, D3 생성 앱 Chromium 납품 흐름, D9 동일 구조 2파일 ROW APPEND, Windows 추출 ZIP의 CMD/localhost HTTP 검증을 포함합니다. 상세 단계는 [STATUS.md](STATUS.md)와 [상세 CI 증거](../bundle_update_notes/current_head_end_to_end_evidence_b7eaaf4.json)를 참고하세요.
+- 별도 로컬 점검: 고객 안내 18 PASS, D6 provenance 14 PASS / 1 SKIP, `compileall` 및 `pip check` PASS. 이 작업 환경의 전체 로컬 회귀·D7 symlink 사례·직접 CMD 실행은 sandbox 권한/프로세스 정리 문제로 NOT_COMPLETE이며 성공으로 보고하지 않습니다.
+- 모든 자동 검증은 합성 데이터 기준입니다. 사람의 일반 고객 Windows 검수는 **NOT_RUN**입니다. 실제 고객 데이터 권리·동의와 개인정보/백업 검토는 **NOT_APPROVED**입니다.
+- 목표 가격 299,000원은 검토용 제안이며 미승인입니다. 저장소 및 vendor 코드의 상용 재배포 권리는 **NOT_GRANTED**, 판매 약관과 지원·환불 조건도 **NOT_APPROVED**입니다. 이 프로젝트는 판매 승인 상태가 아닙니다. PR #30은 Draft/open/unmerged입니다.
+- 지원 범위·제외 기능은 위 설명과 동일합니다. 서로 다른 테이블의 자동 JOIN, 로그인·결제, 공개 호스팅, CRUD, 실시간 동기화는 제공하지 않습니다.
