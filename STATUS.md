@@ -1,4 +1,14 @@
-# STATUS — REA_Web / 2026-10-25 KST
+# STATUS — REA_Web / latest verified snapshot
+
+**2026-10-30 current status:** GitHub branch `feature/d27-windows-python-discovery` at `6ca9a03bcb3619fd4d1ea9922cf2e4a1557ec225`; Draft PR [#30](https://github.com/hibi89/REA_Web/pull/30), open and unmerged. Exact Actions run [#40378905450](https://github.com/hibi89/REA_Web/actions/runs/40378905450) completed SUCCESS on both jobs: Ubuntu **412 passed, 4 skipped, 1 warning**; Windows-latest **426 passed, 1 warning**. Linux Chromium 8 source apps + 3 extracted ZIP apps, actual synthetic Tk flows, Windows native CMD interpreter fallback/exit-code checks, generated ZIP localhost HTTP, and vendor source hash checks passed. Synthetic kit artifact **12678683196**; its receipt states human acceptance `NOT_RUN` and commercial clearance `NOT_GRANTED`.
+
+**Not a sale-ready approval:** no actual nondeveloper customer Windows acceptance, measured real jobs, redistribution/license grant, approved client/reference rights, privacy/security/backup review, or final 299,000 KRW scope/support/refund signoff is evidenced. PR #30 remains Draft/unmerged and no production deployment was performed.
+
+**Local follow-up in isolated copy:** customer-readable preflight and Windows recovery improvements are being prepared on top of D27. They are not included in the D27 CI proof; see [docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md](docs/47_LOCAL_COMMERCIALIZATION_FOLLOWUP.md) and the generated patch bundle after its checks.
+
+---
+
+## Historical status below (2026-10-25)
 
 **CURRENT PHASE:** Day1 runnable CSV MVP verified; Day2 D2-01 Fable→Astra review-only adapter DONE; D2-02 optional analysis→CSV MVP flow READY. No end-to-end combined product or commercial readiness yet.
 
@@ -32,3 +42,4 @@ Implement **optional** Fable analysis report/review gate alongside the existing 
 
 ## New-session start
 Exact user sentence **[REA_Web 깃헙 레포지토리 보고 작업이어가셈]** gives an immediate go-ahead for this READY safe task. Read `WORKER_START_HERE.md` / `docs/SESSION_RESTART_PROTOCOL.md`, current remote HEAD first. No extra owner question; implement/verify/commit then update this file and HANDOFF/NEXT_TASK.
+
