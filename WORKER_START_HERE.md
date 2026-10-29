@@ -1,10 +1,10 @@
 # REA_Web — CURRENT RESUME SNAPSHOT (2026-10-30)
 
-Latest verified feature-code commit: `6a6f07d0350368deacf413cab0be2a79eaca296f`. A following documentation-only commit refreshes its verification status. Draft PR #30 is open and unmerged.
+Latest verified feature-code commit: `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6`. A following documentation-only commit refreshes its verification status. Draft PR #30 is open and unmerged.
 
-The latest exact-head D27 runs [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) and [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228) both passed Linux D1–D27/Chromium and Windows D1–D27/native-package jobs.
+D27 run [#40927550941](https://github.com/hibi89/REA_Web/actions/runs/40927550941) and D8 run [#40927551084](https://github.com/hibi89/REA_Web/actions/runs/40927551084) passed on Linux and Windows for the current feature-code commit. Other optional workflows need not block independent local work.
 
-Latest local verification: focused Windows interpreter/customer guidance tests 12 PASS; synthetic delivery ZIP generated, extracted and launched by actual Windows `cmd.exe`; `127.0.0.1` health and four-row API PASS. Successful real `py.exe` discovery of an installed runtime remains NOT_RUN on this workstation. Customer/human acceptance remains NOT_RUN; commercial source/dependency rights remain NOT_GRANTED. Do not call this approved for sale.
+Latest local verification: focused Windows interpreter/customer guidance tests 12 PASS, D8 inspect/wizard CP949 tests 2 PASS; synthetic delivery ZIP generated, extracted and launched by actual Windows `cmd.exe`; `127.0.0.1` health and four-row API PASS. Successful real `py.exe` discovery of an installed runtime remains NOT_RUN on this workstation. Customer/human acceptance remains NOT_RUN; commercial source/dependency rights remain NOT_GRANTED. Do not call this approved for sale.
 
 Next, finish independent synthetic Chromium/package checks and update receipts/patches. Keep source and customer data intact. Never force-push or merge the Draft PR. Read the current STATUS, HANDOFF and docs/17_NEXT_TASK before choosing the next unit.
 

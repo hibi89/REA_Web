@@ -2,12 +2,12 @@
 
 ## Verified remote state
 
-- Repository: `hibi89/REA_Web`; branch `feature/d27-windows-python-discovery`; exact D27 code/CI checkpoint `6a6f07d0350368deacf413cab0be2a79eaca296f`. A following documentation-only commit records its results.
+- Repository: `hibi89/REA_Web`; branch `feature/d27-windows-python-discovery`; exact D27 code/CI checkpoint `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6`. A following documentation-only commit records its results.
 - PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains OPEN, DRAFT, UNMERGED.
-- Exact-head D27 runs [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) and [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228) both completed SUCCESS: Linux D1–D27/Chromium and Windows D1–D27/native-package jobs.
+- D27 run [#40927550941](https://github.com/hibi89/REA_Web/actions/runs/40927550941) and D8 run [#40927551084](https://github.com/hibi89/REA_Web/actions/runs/40927551084) completed SUCCESS on Linux and Windows for the current code commit.
 - Latest local Windows focused tests: 12 passed. Actual native Windows synthetic ZIP test: generated ZIP, extraction, `cmd.exe` launcher, loopback health and four-row API all PASS.
 - Workstation `py.exe` reports no registered runtime; the no-runtime error path is tested. Successful `py -3` runtime selection is NOT_RUN.
-- Local full regression has known symlink-fixture permission failures; do not report the unfiltered local run clean. Exact-head GitHub Windows/Linux CI is green.
+- Local regression: 407 passed, 22 skipped, 6 symlink tests deselected due WinError 1314. The unfiltered run is not clean on this host. Exact-head GitHub Windows/Linux CI is green.
 - Human/customer acceptance NOT_RUN; commercial/source/dependency redistribution rights NOT_GRANTED; 299,000 KRW pricing and support/refund terms are not approved.
 
 ## Supported delivery scope

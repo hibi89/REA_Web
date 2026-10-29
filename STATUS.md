@@ -2,10 +2,10 @@
 
 ## Current verified state (2026-10-30)
 
-- 기능 및 D27 CI 검증 기준 커밋: `6a6f07d0350368deacf413cab0be2a79eaca296f`; 그 뒤에는 상태 문서 갱신 커밋이 추가됐습니다. PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains **OPEN, DRAFT, UNMERGED**.
-- Exact-head Actions runs [#40923311077](https://github.com/hibi89/REA_Web/actions/runs/40923311077) and [#40923323228](https://github.com/hibi89/REA_Web/actions/runs/40923323228) both completed **SUCCESS** on Linux D1–D27/Chromium and Windows D1–D27/native-package jobs.
-- Latest local Windows focused tests: 12 passed (D27 interpreter discovery + customer guidance). Latest native Windows smoke: generated synthetic ZIP → extract → actual `cmd.exe` launcher → loopback `/health` and four-row API: **PASS**.
-- Successful real `py.exe` discovery of an installed runtime remains **NOT_RUN** on this workstation; failure path is tested and fails closed. Full local pytest has known Windows symlink-fixture permission failures; see detailed test receipts.
+- 기능 및 D27 CI 검증 기준 커밋: `2dfbb90f514f94cb2f3bbe1a8ec4e4dc1a9376c6`; 그 뒤에는 상태 문서 갱신 커밋이 추가됐습니다. PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains **OPEN, DRAFT, UNMERGED**.
+- Exact-code D27 run [#40927550941](https://github.com/hibi89/REA_Web/actions/runs/40927550941) and D8 run [#40927551084](https://github.com/hibi89/REA_Web/actions/runs/40927551084) completed **SUCCESS** on Linux and Windows. Other optional branch workflows were still running when checked.
+- Latest local Windows focused tests: 12 passed (D27 interpreter discovery + customer guidance); D8 CP949 inspect/wizard tests 2 passed. Latest native Windows smoke: generated synthetic ZIP → extract → actual `cmd.exe` launcher → loopback `/health` and four-row API: **PASS**.
+- Successful real `py.exe` discovery of an installed runtime remains **NOT_RUN** on this workstation; failure path is tested and fails closed. Local regression: 407 passed / 22 skipped / 6 explicitly deselected because this host cannot create symlinks (WinError 1314). An earlier unfiltered run confirmed the same six fixture failures.
 - Human/customer acceptance: **NOT_RUN**. Source/dependency redistribution rights: **NOT_GRANTED**. Proposed 299,000 KRW price and sale approval: **NOT_APPROVED**.
 - Latest local evidence and portable patch are retained in the task evidence bundle; no PR merge or force push was performed.
 
