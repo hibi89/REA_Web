@@ -39,6 +39,8 @@ def test_outdated_dependency_has_customer_recovery_guidance():
     assert "starlette 1.0.0" in report
     assert "필요 >= 1.3.1" in report
     assert "업그레이드 명령" in report
+    assert "python -m pip install --user --upgrade -r app\\requirements.txt" in WINDOWS_README
+    assert "py -3 -m pip install --user --upgrade -r app\\requirements.txt" in WINDOWS_README
 
 
 def test_integrity_failure_explains_clean_recovery_and_no_launch():

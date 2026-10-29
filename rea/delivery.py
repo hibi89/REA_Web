@@ -156,7 +156,7 @@ py -3 -m pip install --user -r app\\requirements.txt
 | --- | --- |
 | `MISSING_PYTHON` 또는 exit 10 | 사용 가능한 Python 3.11+를 `python` 또는 Windows launcher `py -3`에서 찾지 못했습니다. 설치되어 있다면 PATH 또는 launcher 구성을 확인한 뒤 새 CMD에서 다시 검사하세요. 미설치 상태라면 Python 3.11+를 설치하세요. 납품기가 자동 설치하지는 않습니다. |
 | `MISSING_INSTALL_REQUIRED` 패키지 누락 | 위 Python 버전을 확인하고 같은 실행기에서 pip 명령을 실행한 뒤 다시 검사하세요. 설치가 싫거나 실패하면 ZIP을 보존하고 지원을 요청하세요. |
-| `VERSION_BELOW_MINIMUM` | 보안 최소 버전보다 오래된 패키지가 있습니다. 같은 실행기에서 `python -m pip install --user --upgrade -r app\\requirements.txt`를 실행하고 다시 검사하세요. 오류가 계속되면 ZIP을 보존하고 지원을 요청하세요. |
+| `VERSION_BELOW_MINIMUM` | 보안 최소 버전보다 오래된 패키지가 있습니다. CMD에서 `python` 실행기를 쓰면 `python -m pip install --user --upgrade -r app\\requirements.txt`, Windows launcher만 쓰면 `py -3 -m pip install --user --upgrade -r app\\requirements.txt`를 실행하고 다시 검사하세요. 오류가 계속되면 ZIP을 보존하고 지원을 요청하세요. |
 | 무결성, 파일 개수, SQLite 검사 실패 | 원본 ZIP을 보존하세요. 실패한 폴더 파일을 고치거나 삭제하지 말고, 원본 ZIP 전체를 **다른 새 빈 폴더**에 다시 압축 해제해 검사하세요. 원본 ZIP도 손상됐다면 납품자에게 재전달을 요청하세요. |
 | 압축 해제 위치/접근 거부 | 사용자 문서 폴더처럼 쓰기 권한이 있는 짧은 로컬 경로를 사용하세요. `Program Files`, 네트워크 드라이브, 동기화 중인 폴더는 피하세요. |
 | `REA_LOCAL_PORT_UNAVAILABLE` 또는 포트 8000 사용 중 | 실행기는 서버 시작 전 포트 충돌을 검사하고 복구 방법을 표시합니다. 다른 앱을 종료하거나 CMD에서 `set REA_WEB_PORT=8765` 입력 후 `launch_windows.cmd`를 실행하고 `http://127.0.0.1:8765/`를 여세요. 허용 포트는 1~65535 숫자입니다. 오류 창은 키를 누를 때까지 유지됩니다. |
