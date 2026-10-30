@@ -89,23 +89,43 @@ async function loadItems() {
 
 
 async function loadOverview() {
-  const [summary, schema] = await Promise.all([jsonGet("/api/summary"), jsonGet("/api/schema")]);
-  ui.overviewTotal.textContent = summary.total_items + "건";
-  ui.categoriesList.replaceChildren();
-  for (const row of summary.category_counts) {
-    const item = element("li");
-    item.append(element("span", row.category), element("strong", row.count + "건"));
-    ui.categoriesList.append(item);
+  // Summary and schema are independently useful. Keep the successful view
+  // when the other API is temporarily unavailable; never show stale values.
+  const [summaryResult, schemaResult] = await Promise.allSettled([
+    jsonGet("/api/summary"), jsonGet("/api/schema")
+  ]);
+  const warnings = [];
+  if (summaryResult.status === "fulfilled") {
+    const summary = summaryResult.value;
+    ui.overviewTotal.textContent = summary.total_items + "건";
+    ui.categoriesList.replaceChildren();
+    for (const row of summary.category_counts) {
+      const item = element("li");
+      item.append(element("span", row.category), element("strong", row.count + "건"));
+      ui.categoriesList.append(item);
+    }
+    ui.categoryWarning.hidden = !summary.categories_truncated;
+  } else {
+    ui.overviewTotal.textContent = "요약 조회 실패";
+    ui.categoriesList.replaceChildren();
+    ui.categoryWarning.hidden = true;
+    warnings.push("요약 정보를 불러오지 못했습니다.");
   }
-  ui.categoryWarning.hidden = !summary.categories_truncated;
-  ui.schemaFields.replaceChildren();
-  for (const field of schema.fields) {
-    const item = element("li");
-    item.append(element("strong", field.name),
-      element("span", field.inferred_type + " · 값 " + field.present_count +
-      " · 비어 있음 " + field.missing_count));
-    ui.schemaFields.append(item);
+  if (schemaResult.status === "fulfilled") {
+    const schema = schemaResult.value;
+    ui.schemaFields.replaceChildren();
+    for (const field of schema.fields) {
+      const item = element("li");
+      item.append(element("strong", field.name),
+        element("span", field.inferred_type + " · 값 " + field.present_count +
+        " · 비어 있음 " + field.missing_count));
+      ui.schemaFields.append(item);
+    }
+  } else {
+    ui.schemaFields.replaceChildren();
+    warnings.push("스키마 정보를 불러오지 못했습니다.");
   }
+  return warnings;
 }
 
 async function init() {
@@ -123,12 +143,14 @@ async function init() {
     })
   ]);
   const notices = [];
-  if (outcomes[1].status === "rejected") {
+  if (outcomes[1].status === "fulfilled") {
+    notices.push(...outcomes[1].value);
+  } else {
     ui.overviewTotal.textContent = "요약 조회 실패";
     ui.categoriesList.replaceChildren();
     ui.categoryWarning.hidden = true;
     ui.schemaFields.replaceChildren();
-    notices.push("요약 정보를 불러오지 못했습니다.");
+    notices.push("요약과 스키마를 표시하지 못했습니다.");
   }
   if (outcomes[2].status === "rejected") {
     notices.push("카테고리 필터를 불러오지 못했습니다.");

@@ -127,7 +127,7 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
             page.screenshot(path=str(report_dir / f"{case['name']}.png"), full_page=True)
             # Inject a real browser fetch failure after a successful detail load:
             # old rows and details must not masquerade as the new search result.
-            if case["name"] == "cafe":
+            if case["name"] == "inventory":
                 page.route("**/api/items**", lambda route: route.abort())
                 page.locator("#search").fill("SYNTHETIC_NETWORK_ERROR")
                 expect(page.locator("#error")).to_be_visible()
@@ -150,6 +150,26 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
                 page.unroute("**/api/categories")
                 page.reload(wait_until="domcontentloaded")
                 expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
+                # One failing metadata endpoint must not erase the other.
+                page.route("**/api/schema", lambda route: route.abort())
+                page.reload(wait_until="domcontentloaded")
+                expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
+                expect(page.locator("#overview-total")).to_have_text(f'{case["total"]}건')
+                expect(page.locator("#category-stats li")).to_have_count(case.get("category_count", 3))
+                expect(page.locator("#schema-fields li")).to_have_count(0)
+                expect(page.locator("#error")).to_contain_text("스키마 정보")
+                page.unroute("**/api/schema")
+                page.route("**/api/summary", lambda route: route.abort())
+                page.reload(wait_until="domcontentloaded")
+                expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
+                expect(page.locator("#overview-total")).to_have_text("요약 조회 실패")
+                expect(page.locator("#category-stats li")).to_have_count(0)
+                expect(page.locator("#schema-fields li")).to_have_count(case["fields"])
+                expect(page.locator("#error")).to_contain_text("요약 정보")
+                page.unroute("**/api/summary")
+                page.reload(wait_until="domcontentloaded")
+                expect(page.locator("#overview-total")).to_have_text(f'{case["total"]}건')
+                expect(page.locator("#schema-fields li")).to_have_count(case["fields"])
             assert page.request.get(base + "/review/fable_review.json").status == 404
             assert page.request.get(base + "/manifest.json").status == 404
             assert page.request.get(base + "/schema_preview.json").status == 404
