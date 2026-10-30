@@ -13,6 +13,7 @@ import json
 import os
 import shutil
 import sqlite3
+import stat
 import tempfile
 from pathlib import Path
 
@@ -27,6 +28,33 @@ TEMPLATES = Path(__file__).resolve().parent / "templates"
 
 class DataError(ValueError):
     """Invalid customer-supplied file. The original is never changed."""
+
+def source_sha256(source: Path) -> str:
+    """Hash a bounded, regular owner input without unbounded read_bytes()."""
+    source = Path(source)
+    if (source.suffix.lower() not in (".csv", ".json")
+            or source.is_symlink() or not source.is_file()):
+        raise DataError("Provide a regular .csv or .json source (not a symlink)")
+    if source.stat().st_size > MAX_BYTES:
+        raise DataError("Source exceeds 10 MiB")
+    digest = hashlib.sha256()
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        fd = os.open(source, flags)
+    except OSError as exc:
+        raise DataError("Cannot safely open owner source") from exc
+    with os.fdopen(fd, "rb") as handle:
+        if not stat.S_ISREG(os.fstat(handle.fileno()).st_mode):
+            raise DataError("Owner source must be a regular file")
+        total = 0
+        for chunk in iter(lambda: handle.read(64 * 1024), b""):
+            total += len(chunk)
+            if total > MAX_BYTES:
+                raise DataError("Source exceeds 10 MiB")
+            digest.update(chunk)
+    if source.is_symlink():
+        raise DataError("Owner source changed into a symlink")
+    return digest.hexdigest()
 
 
 def _validate_records(headers: list[str], records, *, label: str = "Row", require_semantics: bool = True) -> tuple[list[str], list[dict[str, str]]]:
@@ -205,7 +233,7 @@ def generate(csv_file: Path, output: Path, name: str = "REA sample web app",
         raise FileExistsError(f"Output already exists: {output}")
     if not name.strip() or len(name) > 100:
         raise DataError("App name must be 1 to 100 characters")
-    source_digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    source_digest = source_sha256(source)
     if expected_source_sha256 is not None and source_digest != expected_source_sha256:
         raise DataError("Owner source changed since the approved field preview")
     if approved_mapping is None:
@@ -241,12 +269,12 @@ def generate(csv_file: Path, output: Path, name: str = "REA sample web app",
         shutil.copytree(TEMPLATES / "static", stage / "static")
         (stage / "requirements.txt").write_text("fastapi>=0.110,<1\nstarlette>=1.3.1,<2\nuvicorn>=0.27,<1\n", encoding="utf-8")
         # Abort if the source changed after parsing; never publish inconsistent provenance.
-        if hashlib.sha256(source.read_bytes()).hexdigest() != source_digest:
+        if source_sha256(source) != source_digest:
             raise DataError("Source changed during generation")
         manifest = {
             "generator": "REA_Web MVP 0.1", "source": source.name,
             "input_kind": source_kind,
-            "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+            "sha256": source_digest,
             "name": name.strip(), "fields": columns, "rows": len(rows),
             "features": ["list", "search", "category_filter", "detail", "schema_preview", "category_summary"],
             "run": "python -m uvicorn app:app --host 127.0.0.1 --port 8000",
