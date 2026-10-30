@@ -1,3 +1,9 @@
+## [ACTIVE 2026-10-31 KST] After Linux exact-code localhost privacy pass: await latest-source CI completion
+
+- Code SHA `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`; exact committed generated `rea/templates/app.py` Git blob `63470882a74b5e2bf76858638d6aeb592a7c091a` independently exercised on previous verified synthetic five-row ZIP extraction. Real ephemeral Uvicorn loopback and 14 HTTP responses, expected HTTP status + 4 privacy headers PASS; no SQLite bytes changed. This is not a newly regenerated final ZIP or a Windows owner test.
+- At checkpoint, GitHub Actions 28 runs: 13 completed success, 12 running, 3 queued; 0 known failure. D27 Linux 645 PASS / 5 SKIP, Chromium 8+3 E2E PASS. Windows pytest stage success but overall D27 native Windows job pending. **Do not infer full pass** until all current source SHA workflows end; do not re-run old SHA or make needless commits.
+- When all CI PASS, source technically verified within synthetic acceptance. Human Windows operator, actual licensing/rights/privacy/terms/time remain BLOCKED. If failing, inspect failure logs and minimal repair. Draft PR #30 unmerged, no sales, no public deployment.
+
 ## [ACTIVE 2026-10-31 KST] First inspect cache hardening code SHA CI; original sale gates unchanged
 
 - Source commit `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`, generated `rea/templates/app.py` privacy response headers + regression tests. Isolated synthetic mirror 11 GET routes and untrusted-host 400 header checks PASS; **exact-source CI still PENDING at this checkpoint**. Prior 28/28 success pertains to `dc277de5`, NOT this new SHA. No customer source or local published app modified.

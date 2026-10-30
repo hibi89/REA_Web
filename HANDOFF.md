@@ -1,3 +1,16 @@
+## 2026-10-31 KST — REA latest privacy HTTP proof, exact-source CI pending
+
+1. Goal: technical closure of REA_Web independent owner CSV/JSON→read-only local FastAPI/SQLite ZIP with four anti-cache/referrer headers, no new features or user data processing.
+2. Completed: `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` generated app blob `63470882a74b5e2bf76858638d6aeb592a7c091a` confirmed byte-exact against transformed synthetic extracted app, then Uvicorn localhost on ephemeral Linux port and 14 HTTP real client tests performed, all expected statuses + 4 headers PASS, SQLite exact hash unchanged. Original pilot ZIP untouched. No Windows user PC or Chromium in local test.
+3. CI/tests: source GitHub 28 workflow runs at checkpoint 13 SUCCESS / 12 IN_PROGRESS / 3 QUEUED / 0 FAIL, must refresh. D27 Linux 645 PASS 5 SKIP plus Chromium 8+3 E2E PASS, D27 Windows pytest step SUCCESS with rest of job pending. Independent no-mock Linux 14 HTTP PASS. Prior source `dc277de5` 28 PASS is historical and cannot close current source.
+4. Status: release code hardened, *exact-source CI PARTIAL*, no commercial/release approval, Draft PR #30 OPEN/DRAFT/UNMERGED, no public production.
+5. Failures: no current verified failures at checkpoint. Runtime cannot test real owner Windows. Old Windows SQLite lock/JSON bugs resolved at previous SHA and regressed in new CI. Do not repeat unnecessary code or automated CI fanout.
+6. Repo/branch: `hibi89/REA_Web@feature/d27-windows-python-discovery`, code `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`, original pre-privacy parent `a43316d9c5185d6bd18540f7059c639247e8ef57`. Key: `rea/templates/app.py`, `tests/test_generated_privacy_cache.py`. This is docs-only successor.
+7. Env: local synthetic Linux Uvicorn/httpx Python3.11+ at 127.0.0.1 ephemeral port, OS native Windows tested via GitHub Actions only. Production/Vercel N/A.
+8. Original: `REA_Web_Synthetic_Windows_Pilot_20261031.zip` checked original SHA `ff6228e4bf3d9b12bd51ee9c5bdc63e9f854fc3109b32bb005ff31cc40480cc0`, temporary isolated extraction only, no secrets or real customer data; artifact durable on GitHub Actions #12996213068; working temp reports not permanently saved in GitHub. Source rollback via reviewed revert if necessary.
+9. Next: refresh all current source SHA CI runs; then one actual Windows human synthetic pilot and independent legal/owner rights, customer privacy/source operations, seller scope/support/refund and time measurement approval. Cannot mark sold/released even after CI.
+10. Checkpoint KST 2026-10-31; verified GitHub commit+source blob and real temp Linux network tests, not owner PC. Documentation update `[skip ci]` with preserved code test SHA.
+
 ## [2026-10-31 KST] REA_Web privacy cache hardening handoff — exact SHA waiting full CI
 
 1. **Goal/scope/stack:** preserve owner-approved CSV/flat JSON → explicit local mapping/APPEND → SQLite read-only FastAPI/HTML/JS Windows ZIP MVP. No new cloud, scraping, accounts or paid APIs.
