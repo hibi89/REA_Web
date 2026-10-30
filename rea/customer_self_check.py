@@ -43,6 +43,27 @@ def _version_in_supported_range(
     return not suffix or re.fullmatch(r"\.post\d+", suffix, flags=re.IGNORECASE) is not None
 
 
+def _safe_member(name: str) -> bool:
+    """Standalone counterpart to the exporter Windows ZIP path policy."""
+    if not isinstance(name, str):
+        return False
+    parts = name.split("/")
+    reserved = {"CON", "PRN", "AUX", "NUL", "CONIN$", "CONOUT$"} | {
+        f"COM{i}" for i in range(1, 10)
+    } | {f"LPT{i}" for i in range(1, 10)}
+    return bool(
+        name and len(name) <= 260 and not name.startswith("/")
+        and "\\" not in name and ":" not in name
+        and not any(ch in '<>"|?*' or ord(ch) < 32 for ch in name)
+        and all(
+            part not in ("", ".", "..") and not part.startswith(".")
+            and not part.endswith((" ", "."))
+            and part.split(".", 1)[0].upper() not in reserved
+            and part != "__pycache__"
+            for part in parts
+        )
+    )
+
 def verify_exact_delivery_tree(root: Path, members: set[str]) -> None:
     """Refuse extra files, folders or symlinks inside an extracted delivery.
 
@@ -99,17 +120,18 @@ def inspect(root: Path) -> dict:
         if manifest.get("schema_version") != "rea.delivery.v0.1" or not isinstance(records, list):
             raise ValueError("Invalid delivery_manifest.json")
         seen = set()
+        seen_folded = set()
         for record in records:
             if not isinstance(record, dict):
                 raise ValueError("Invalid manifest record")
             rel = record.get("path")
-            if not isinstance(rel, str) or rel in seen or len(rel) > 260:
+            if not _safe_member(rel):
+                raise ValueError("Unsafe package path")
+            if rel in seen or rel.casefold() in seen_folded:
                 raise ValueError("Duplicate/invalid member path")
             pieces = rel.split("/")
-            if (not pieces or any(not p or p in (".", "..") or p.startswith(".") for p in pieces)
-                    or "\\" in rel or ":" in rel):
-                raise ValueError("Unsafe package path")
             seen.add(rel)
+            seen_folded.add(rel.casefold())
             path = root.joinpath(*pieces)
             if any(item.is_symlink() for item in [path, *path.parents] if item != root.parent):
                 raise ValueError("Symlink in extracted delivery")
