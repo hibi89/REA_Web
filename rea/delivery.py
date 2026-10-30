@@ -248,6 +248,20 @@ def _safe(name: str) -> bool:
                         and not p.endswith((" ", "."))
                         and p.split(".", 1)[0].upper() not in reserved
                         and p != "__pycache__" for p in parts))
+
+
+def _member_paths_conflict(names) -> bool:
+    """Reject Windows case-insensitive aliases and file-as-directory conflicts."""
+    folded = [name.casefold() for name in names]
+    existing = set(folded)
+    if len(existing) != len(folded):
+        return True
+    for name in folded:
+        segments = name.split("/")
+        if any("/".join(segments[:index]) in existing
+               for index in range(1, len(segments))):
+            return True
+    return False
 
 
 def _members(project: Path) -> dict[str, bytes]:
@@ -269,7 +283,7 @@ def _members(project: Path) -> dict[str, bytes]:
     members["check_windows.cmd"] = CHECK_LAUNCH.encode("ascii")
     members["self_check.py"] = (Path(__file__).resolve().parent / "customer_self_check.py").read_bytes()
     # Windows treats paths case-insensitively: refuse clashing generated files.
-    if len({name.casefold() for name in members}) != len(members):
+    if _member_paths_conflict(members):
         raise DeliveryError("Case-insensitive ZIP member collision")
     if sum(len(x) for x in members.values()) > MAX_ARCHIVE_BYTES:
         raise DeliveryError("Delivery exceeds 25 MiB")
@@ -302,7 +316,7 @@ def verify_delivery(archive: Path) -> dict:
         info = zf.infolist()
         names = [item.filename for item in info]
         if (len(names) > 100 or len(names) != len(set(names))
-                or len({name.casefold() for name in names}) != len(names)
+                or _member_paths_conflict(names)
                 or any(not _safe(n) for n in names)
                 or any(stat.S_ISLNK(item.external_attr >> 16) for item in info)):
             raise DeliveryError("Unsafe, symlink, or duplicate ZIP member")
