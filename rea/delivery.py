@@ -237,6 +237,22 @@ def _manifest_object_pairs(pairs: list[tuple[str, object]]) -> dict:
     return unique
 
 
+def _json_depth_exceeds(doc, limit: int = 64) -> bool:
+    """Bound JSON container nesting independently of the Python parser version."""
+    pending = [(doc, 0)]
+    while pending:
+        value, depth = pending.pop()
+        if isinstance(value, dict):
+            if depth >= limit:
+                return True
+            pending.extend((child, depth + 1) for child in value.values())
+        elif isinstance(value, list):
+            if depth >= limit:
+                return True
+            pending.extend((child, depth + 1) for child in value)
+    return False
+
+
 def _manifest_constant(value: str):
     raise DeliveryError("Non-finite ZIP manifest JSON constant")
 
@@ -350,6 +366,8 @@ def verify_delivery(archive: Path) -> dict:
             raise DeliveryError("Malformed ZIP manifest JSON") from exc
         if not isinstance(doc, dict):
             raise DeliveryError("Invalid manifest object")
+        if _json_depth_exceeds(doc):
+            raise DeliveryError("ZIP manifest nesting exceeds 64 levels")
         if doc.get("schema_version") != SCHEMA:
             raise DeliveryError("Unsupported manifest")
         rows = doc.get("files")
