@@ -113,6 +113,8 @@ async function init() {
 }
 let debounce;
 ui.search.addEventListener("input", () => {
+  // Invalidate old responses immediately, not only after the debounce fires.
+  ++requestId;
   pageOffset = 0;
   clearTimeout(debounce);
   debounce = setTimeout(loadItems, 160);
