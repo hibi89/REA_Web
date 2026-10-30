@@ -1,3 +1,15 @@
+## 2026-10-30 REA_Web SQLite integrity and recovery closeout
+
+- **Code checkpoint before docs:** `c7d335d504eff70029f0d3286830d5410f810b84`. Branch `feature/d27-windows-python-discovery`, PR #30 still DRAFT/OPEN/UNMERGED. No Vercel deployment; only local ZIP.
+- **Actual bug fixed:** a SQLite database may answer `SELECT COUNT(*) FROM items` successfully while an unused B-tree table is corrupted. Previously extracted-kit checker accepted the database despite this separate corruption. `rea/customer_self_check.py` now runs read-only `PRAGMA integrity_check` for the entire SQLite database before considering `READONLY_OPEN_SUCCESS`; SQLite errors fail closed with `FAIL_LOCAL_PREREQUISITES`. Because `rea/recovery.py` refuses any database other than `READONLY_OPEN_SUCCESS`, corrupted DB can never be published into a new recovery folder.
+- **Regression committed:** `tests/test_delivery_publication_guards.py` reconstructs synthetic SQLite corruption of a separate unused table B-tree page, updates manifest SHA, demonstrates `COUNT(items)=1` passes yet full SQLite validation rejects it. `tests/test_recovery.py` builds actual synthetic package, creates a rehashed tampered ZIP where `verify_delivery` still passes and `COUNT(items)=4` passes, and asserts `restore_delivery` refuses publication. `tests/test_d11_rehearsal.py` now asserts recovery failure aborts the three-case synthetic quote-to-delivery trial without publishing a partial batch.
+- **Executed isolated Linux Python 3.13:** relevant prior focused test modules + new synthetic corrupted-DB recovery test **83/83 PASS**, 0 FAIL. The exact GitHub `inspect` function normalized to 6711 chars / Adler32 fdcad913 and matched local isolated implementation; checker blob 766780b832bc291d08f1542f8c85e85854dea4e9. The integrated original-repository new regression modules, full Windows CMD and browser E2E remain NOT_RUN; isolated workspace includes partial modules and stubbed semantic provenance.
+- **CI:** first-page 28 runs on previous HEAD all QUEUED. CI remains non-blocking; do not claim the latest code passed Windows/full CI. Later inspect exact-commit D11, D27 Windows/Linux/browser and D31 audit only after runners execute. Do not repeatedly poll.
+- **Unchanged commercial blockers:** independent nondeveloper Windows acceptance, source redistribution rights, shipped dependency NOTICE and licenses, actual data/privacy authorization, seller terms, human timed delivery rehearsal. Historical estimates 95% engineering / 77% sale prep are qualitative unmodified estimates, not verified completion. NOT APPROVED FOR SALE.
+- **Next:** direct exact-source full checkout D11 3 case, recovery 11 case, bounded SQLite integrity and Windows CMD/localhost/browser; fix only confirmed failures. No PR merge or force push.
+
+---
+
 ## REA_Web new local recovery capability — 2026-10-30 KST
 
 - Product checkpoint preceding handoff: `ae028d7923165eb4d5286501e7af272446c59836`; PR #30 OPEN/DRAFT/UNMERGED; production URL/Vercel N/A (offline Windows ZIP).
