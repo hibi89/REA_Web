@@ -1,3 +1,12 @@
+## Exact-head continuation update (2026-10-30; `4ce86ec2472bd350b0009390f8ed49111d29b8ae`)
+
+- GitHub branch `feature/d27-windows-python-discovery` and PR #30 were re-read at this SHA. PR is OPEN / DRAFT / UNMERGED; no merge or force push was performed.
+- Current-head Actions query returned **28/28 completed SUCCESS**. D27 run `40976199908`: Windows **446 passed / 1 warning**, Linux **431 passed / 5 skipped / 1 warning**. D3 run `40976200008` passed Windows native and Chromium checks against three generated apps. D31 run `40976199915` passed Ubuntu and Windows generated-runtime audit. Fixtures and generated packages are synthetic.
+- The exact-head local mirror matches **173/173 Git blobs**. Exact-136 synthetic CSV, flat-JSON, and approved same-schema two-file APPEND ZIPs pass CRC, clean extraction and Windows CMD prerequisite check. The runtime source was unchanged between 136e023 and 4ce86ec; the latter adds a recheck document only. Direct generated-handler checks cover health/list/search/category/detail/404 and SQLite quick_check; they are **not localhost HTTP or full browser tests**.
+- Current sandbox localhost client connection remains **BLOCKED/NOT_RUN** (`WinError 10013`); local full pytest did not produce a final summary and is **INCOMPLETE**. GitHub Windows CI separately passed the extracted-package localhost checks. Do not conflate those scopes.
+- Development **95%** / Kmong preparation **77%** are prior qualitative estimates, not recalculated. Independent nondeveloper Windows acceptance **NOT_RUN**; source/vendor/runtime redistribution rights **NOT_GRANTED**; real-customer data authorization/privacy and seller terms **NOT_APPROVED**. The product is **NOT_APPROVED_FOR_SALE**.
+- Next independent engineering work: refresh the exact-head generated-runtime dependency/license evidence and continue synthetic privacy/backup checks. Keep external human and rightsholder gates open until evidence is supplied.
+
 # REA_Web — CURRENT RESUME SNAPSHOT (2026-10-30)
 
 ## 최신 원격 재확인 (2026-10-30; `50c82814821f89f0326cefcf04c2ee78e080d5c4`)
