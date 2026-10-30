@@ -1,3 +1,13 @@
+## [ACTIVE 2026-10-31 KST] D27 P0 fix CI closed; next is human pilot and commercial rights, not another synthetic build
+
+**Code SHA:** `dc277de57d6d8686b47ff08a49168caf10335ecf`; exact-source [Actions D27 #41096230436](https://github.com/hibi89/REA_Web/actions/runs/41096230436) Linux 633 pass/5 skip and Windows 644 pass/4 skip; all **28/28 Actions SUCCESS**, D7/D11/D18/D31 included; native Windows CMD/ZIP/localhost in CI + Linux Chromium 8+3 synthetic PASS. PR #30 still OPEN/DRAFT/UNMERGED. No Production.
+
+**Ready for owner (not completed):** GitHub [synthetic-only Windows owner pilot artifact #12996213068](https://github.com/hibi89/REA_Web/actions/runs/41096230436/artifacts/12996213068) is available (metadata verified, 34,628 bytes). Extract outer kit to NEW empty directory and run `CHECK_PILOT_WINDOWS.cmd`; separately extract contained `demo/approved_pair.zip` to another NEW empty directory and run `check_windows.cmd`, then `launch_windows.cmd`. Verify `http://127.0.0.1:8000` list/search/category/detail, stop/restart and Korean text; use synthetic data ONLY. Human acceptance evidence and true manual minutes stored privately *outside* signed demo archive. A failed prerequisite should be recorded as BLOCKED, not bypassed via auto-install or admin changes.
+
+**No-code blockers:** source/vendor/transitive runtime redistribution rights and LICENSE/NOTICE, customer rights/consent/PII/privacy and backups, actual three paid-like measured jobs, seller price/limits/support/refund approval. 299,000 KRW remains unapproved hypothesis. Do not use unlicensed vendors or sell/release based on automatic CI. No repeated code-only QA unless human pilot discovers real regression; no feature scope reduction/PR merge without approval.
+
+---
+
 ## 2026-10-30 KST — independent UI fault paths + loopback Host safety / latest handoff
 
 - **Function commits on feature/d27-windows-python-discovery:** `870f502fc203476126b4a46d3adadfa5e5f9b976` (frontend independent metadata recovery + Chromium regression) and `18398b434cd4134ff341de7f6537ab195fd7cc1c` (generated FastAPI trusted Host guard + regression tests). PR #30 stays DRAFT/open/unmerged; no force pushes or production deployment (offline ZIP).
