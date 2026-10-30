@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import sqlite3
 import zipfile
 
 import pytest
@@ -156,3 +157,48 @@ def test_recovery_cli_reports_only_local_integrity(tmp_path, capsys):
     assert result["commercial_clearance"] == "NOT_GRANTED"
     assert result["native_windows_launch_accepted"] is False
     assert destination.is_dir()
+
+
+def test_recovery_refuses_rehashed_corruption_outside_items_table(tmp_path):
+    """A matching SHA and COUNT(items) must not accept another broken B-tree."""
+    original = tmp_path / "source.zip"
+    create_delivery(ROOT / "samples/qa_cafe.csv", original)
+    with zipfile.ZipFile(original) as zipped:
+        payloads = {name: zipped.read(name) for name in zipped.namelist()
+                    if name != "delivery_manifest.json"}
+    database = tmp_path / "tampered.sqlite"
+    database.write_bytes(payloads["app/data.sqlite"])
+    db = sqlite3.connect(database)
+    try:
+        db.execute("CREATE TABLE unused (value TEXT)")
+        db.executemany("INSERT INTO unused VALUES (?)",
+                       [(f"synthetic-{i}",) for i in range(100)])
+        page = db.execute(
+            "SELECT rootpage FROM sqlite_master WHERE name = 'unused'"
+        ).fetchone()[0]
+        page_size = db.execute("PRAGMA page_size").fetchone()[0]
+        db.commit()
+    finally:
+        db.close()
+    with database.open("r+b") as stream:
+        stream.seek((page - 1) * page_size)
+        stream.write(b"\x00")
+    with sqlite3.connect(database.as_uri() + "?mode=ro", uri=True) as connection:
+        assert connection.execute("SELECT COUNT(*) FROM items").fetchone()[0] == 4
+    payloads["app/data.sqlite"] = database.read_bytes()
+    inventory = [{"path": name, "bytes": len(value),
+                  "sha256": hashlib.sha256(value).hexdigest()}
+                 for name, value in sorted(payloads.items())]
+    payloads["delivery_manifest.json"] = json.dumps({
+        "schema_version": "rea.delivery.v0.1", "files": inventory,
+    }).encode("utf-8")
+    altered = tmp_path / "rehashed-corrupt.zip"
+    with zipfile.ZipFile(altered, "x") as result:
+        for name, value in sorted(payloads.items()):
+            result.writestr(name, value)
+    verify_delivery(altered)  # Valid cryptographic inventory, broken SQLite.
+    destination = tmp_path / "must-not-restore"
+    with pytest.raises(DeliveryError, match="SQLite"):
+        restore_delivery(altered, destination)
+    assert not destination.exists()
+    assert original.exists()
