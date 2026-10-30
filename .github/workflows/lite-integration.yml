@@ -8,6 +8,8 @@ on:
       - "rea/lite_assets/**"
       - "tests/test_rea_lite_builder.py"
       - "tests/test_lite_file_browser.py"
+      - "tests/test_csv_contract.cjs"
+      - "tests/test_vm_interactions.cjs"
       - ".github/workflows/lite-integration.yml"
   workflow_dispatch:
 
@@ -32,6 +34,13 @@ jobs:
         run: |
           python -m pip install "pytest>=8,<10" "playwright>=1.45,<2"
           python -m playwright install chromium
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Offline CSV and JS DOM contracts
+        run: |
+          node tests/test_csv_contract.cjs
+          node tests/test_vm_interactions.cjs
       - name: Actual Pro parser integrated unit checks
         run: python -m pytest -q tests/test_rea_lite_builder.py
       - name: On-disk file URL HTML, CSV and download/reopen in Chromium

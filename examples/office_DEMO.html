@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>REA WEB Lite — 로컬 데이터 카탈로그</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif;line-height:1.5;color:#192b36;background:#f3f6f9;--accent:#168574;--accent-pale:#e8f7f2;--ink:#192b36;--edge:#dfe7ed;--muted:#647685;--header:#152d39}*{box-sizing:border-box}body{margin:0}body[data-theme=inventory]{--accent:#305caa;--accent-pale:#eaf0fe;--header:#172843}body[data-theme=office]{--accent:#7655a7;--accent-pale:#f2ecfa;--header:#2e2346}
+header{background:var(--header);color:white;padding:20px max(20px,calc((100vw - 1160px)/2));display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{font-size:16px;letter-spacing:.08em;font-weight:850}.brand span{font-size:12px;color:#b6cbd2;letter-spacing:0}.offline{font-size:12px;padding:6px 10px;border:1px solid #ffffff45;border-radius:999px;color:#e4f1f4}
+main{max-width:1190px;margin:auto;padding:31px 20px 55px}.eyebrow{font-size:11px;letter-spacing:.18em;font-weight:850;color:var(--accent);margin:0 0 6px}.intro h1{font-size:clamp(25px,3.3vw,39px);letter-spacing:-.05em;line-height:1.2;margin:4px 0 9px}.intro p{color:var(--muted);margin:0 0 25px;font-size:14px}.panel{background:white;border:1px solid var(--edge);border-radius:17px;box-shadow:0 10px 30px #162a3808;padding:21px}.controls-panel{margin-bottom:16px}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.toolbar h2{margin:0;font-size:17px}.toolbar p{font-size:12px;color:var(--muted);margin:4px 0 0}.button-row{display:flex;flex-wrap:wrap;gap:8px}.file-button,.save-button{border:0;background:var(--accent);color:white;padding:11px 14px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font:700 13px inherit;font-size:13px;font-weight:750}.save-button{background:var(--header)}.file-button:focus-within,.save-button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}.file-button input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}.save-button:hover,.file-button:hover{filter:brightness(1.08)}.hint{font-size:12px;color:var(--muted);margin:13px 0 0}.status{margin:10px 0 0;font-size:12px;font-weight:650;color:var(--accent);min-height:18px}.status.bad{color:#b92d37}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}.metric{padding:14px 16px;border-radius:12px;background:#f6f9fb;border:1px solid var(--edge)}.metric span{font-size:12px;color:var(--muted);display:block}.metric strong{font-size:24px;letter-spacing:-.03em}.body-grid{display:grid;grid-template-columns:minmax(0,1.48fr) minmax(280px,1fr);gap:16px}.section-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}.section-top h2{margin:0;font-size:17px}.section-top span{font-size:12px;color:var(--muted)}.filters{display:grid;grid-template-columns:minmax(0,1fr) 180px 125px;gap:8px;margin-bottom:16px}.filters input,.filters select{width:100%;padding:11px 12px;border-radius:9px;border:1px solid #cfdae3;background:#fff;font:inherit;font-size:13px;color:var(--ink)}input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid #80b6e4;outline-offset:2px}.item-list{display:grid;gap:8px;min-height:160px}.record{padding:13px;border:1px solid var(--edge);border-radius:11px;background:#fff;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;color:var(--ink);font:inherit}.record:hover,.record:focus-visible{background:var(--accent-pale);border-color:var(--accent)}.record strong{font-size:14px;overflow-wrap:anywhere}.record small{display:block;color:var(--muted);margin-top:3px;font-size:11px}.pill{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:5px 9px;background:var(--accent-pale);color:var(--accent);font-size:11px;font-weight:800;white-space:nowrap}.detail h3{font-size:25px;letter-spacing:-.04em;margin:10px 0}.detail dl{display:grid;grid-template-columns:95px minmax(0,1fr);gap:10px 14px;padding-top:14px;border-top:1px solid var(--edge);font-size:13px}.detail dt{color:var(--muted)}.detail dd{margin:0;overflow-wrap:anywhere}.empty{color:var(--muted);font-size:13px}.paging{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:15px;padding-top:15px;border-top:1px solid var(--edge)}.paging button{border:1px solid var(--edge);background:white;border-radius:8px;padding:8px 12px;cursor:pointer;color:var(--ink)}.paging button:disabled{opacity:.35;cursor:not-allowed}.paging span{font-size:12px;color:var(--muted)}footer{color:var(--muted);margin-top:18px;font-size:11px;line-height:1.7}
+body[data-theme=cafe] .item-list{grid-template-columns:repeat(2,minmax(0,1fr))}body[data-theme=cafe] .record{display:flex;flex-direction:column;align-items:flex-start;min-height:115px}body[data-theme=inventory] .record{border-radius:5px;min-height:60px}body[data-theme=inventory] .record strong{font-family:ui-monospace,monospace;font-size:13px}body[data-theme=office] .record{border-left:4px solid var(--accent)}
+@media(max-width:850px){.body-grid{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}.filters input{grid-column:1/-1}}@media(max-width:560px){main{padding:22px 14px 40px}.panel{padding:16px}.metrics{grid-template-columns:repeat(3,1fr)}.metric{padding:10px}.metric strong{font-size:20px}.file-button,.save-button{flex:1}body[data-theme=cafe] .item-list{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="brand">REA WEB <span>LITE</span></div><div class="offline">내 컴퓨터에서만 · 오프라인</div></header>
+<main>
+<section class="intro"><p class="eyebrow">LOCAL DATA · ZERO INSTALL</p><h1 id="app-title">데이터 카탈로그</h1><p id="tagline">검색하고, 분류하고, 필요한 정보를 빠르게 찾으세요.</p></section>
+<section class="panel controls-panel"><div class="toolbar"><div><h2>내 데이터</h2><p>원본 파일은 수정하지 않습니다. 새 CSV를 선택하면 화면에서 확인합니다.</p></div><div class="button-row"><label class="file-button" role="button" tabindex="0">CSV 파일 변경<input id="csv-file" type="file" accept=".csv,text/csv" aria-label="새 CSV 파일 선택"></label><button id="export" class="save-button" type="button">변경 내용 HTML로 저장</button></div></div><p class="hint">CSV 갱신은 현재 화면에만 적용됩니다. 다음에 다시 열어도 유지하려면 <strong>변경 내용 HTML로 저장</strong>을 누르고 새로 내려받은 파일을 사용하세요. 기존 파일은 덮어쓰지 않습니다.</p><p class="status" id="status" role="status" aria-live="polite">로컬 데이터 준비 완료</p><div class="metrics"><div class="metric"><span>전체 항목</span><strong id="total">0</strong></div><div class="metric"><span>분류 수</span><strong id="category-count">0</strong></div><div class="metric"><span>검색 결과</span><strong id="matched">0</strong></div></div></section>
+<section class="body-grid"><div class="panel"><div class="section-top"><h2>데이터 목록</h2><span id="list-count">0건</span></div><div class="filters"><input id="search" type="search" placeholder="상품명·번호 검색" aria-label="데이터 검색"><select id="category" aria-label="카테고리 선택"><option value="">전체 분류</option></select><select id="sort" aria-label="정렬"><option value="original">기본 순서</option><option value="title">이름순</option><option value="id">번호순</option></select></div><div id="item-list" class="item-list" aria-live="polite"></div><nav class="paging" aria-label="목록 페이지"><button type="button" id="prev">이전</button><span id="page-info">1 / 1</span><button type="button" id="next">다음</button></nav></div><aside class="panel"><div class="section-top"><h2>상세 조회</h2><span>선택 항목</span></div><div class="detail" id="details"><p class="empty">왼쪽 목록에서 항목을 선택하세요.</p></div></aside></section>
+<footer>REA WEB Lite · 단일 오프라인 HTML · 외부 요청 및 로그인 없음 · 최대 10 MiB / 10,000행 / 20열. 새 HTML에는 데이터가 평문으로 포함되므로 개인·민감정보를 넣거나 외부 공유하지 마세요.</footer>
+</main>
+<script id="rea-payload" type="application/json">{"version":"rea-lite-v1","title":"가상 사무 문서 카탈로그","theme":"office","sourceColumns":["doc_number","doc_title","dept","owner","summary"],"mapping":{"id":"doc_number","title":"doc_title","category":"dept"},"columns":["id","title","category","owner","summary"],"records":[{"id":"D01","title":"지출결의서","category":"재무","owner":"김담당","summary":"월별 비용 처리"},{"id":"D02","title":"협력사 안내","category":"영업","owner":"이담당","summary":"담당사 정보"},{"id":"D03","title":"안전 점검표","category":"총무","owner":"박담당","summary":"월간 시설 점검"}],"limits":{"bytes":10485760,"rows":10000,"columns":20}}</script>
+<script>
+"use strict";
+(() => {
+ const $ = id => document.getElementById(id);
+ const MAX_BYTES=10*1024*1024, MAX_ROWS=10000, MAX_COLS=20, PAGE_SIZE=60;
+ const original=JSON.parse($('rea-payload').textContent);
+ const schema=Object.freeze([...original.sourceColumns]);
+ const mapping=Object.freeze({...original.mapping});
+ const canonical=Object.freeze([...original.columns]);
+ let records=original.records.map(x=>({...x}));
+ let page=0;
+ const safe=(tag,value,cls)=>{ const n=document.createElement(tag); if(value!==undefined)n.textContent=String(value);if(cls)n.className=cls;return n; };
+ const status=(message,isError=false)=>{ $('status').textContent=message;$('status').className=isError?'status bad':'status'; };
+ const norm=(v)=>v.trim();
+ function csvRows(source){
+   if(source.charCodeAt(0)===0xFEFF)source=source.slice(1);
+   let quoted=false,closed=false,started=true,cell='',row=[],table=[];
+   const finishCell=()=>{row.push(cell);cell='';started=true;closed=false;};
+   const finishRow=()=>{finishCell();if(row.length!==1||row[0]!=='')table.push(row);row=[];if(table.length>MAX_ROWS+1)throw Error('행 수가 너무 많습니다.');};
+   for(let i=0;i<source.length;i++){
+     const c=source[i];
+     if(quoted){if(c==='"'){if(source[i+1]==='"'){cell+='"';i++;}else{quoted=false;closed=true;}}else{cell+=c;}}
+     else if(closed){if(c===',')finishCell();else if(c==='\n'||c==='\r'){finishRow();if(c==='\r'&&source[i+1]==='\n')i++;}else throw Error('따옴표 뒤에 잘못된 문자가 있습니다.');}
+     else if(c==='"'){if(!started)throw Error('잘못된 따옴표 위치입니다.');quoted=true;started=false;}
+     else if(c===',')finishCell();
+     else if(c==='\n'||c==='\r'){finishRow();if(c==='\r'&&source[i+1]==='\n')i++;}
+     else{cell+=c;started=false;}
+     if(cell.length>2000)throw Error('셀은 최대 2,000자까지 허용됩니다.');
+   }
+   if(quoted)throw Error('닫히지 않은 CSV 따옴표입니다.');
+   if(row.length||cell.length||closed||!started)finishRow();
+   return table;
+ }
+ function parseCsv(source){
+   const table=csvRows(source);
+   if(table.length<2)throw Error('CSV 헤더와 데이터가 필요합니다.');
+   const heads=table.shift().map(norm);
+   if(heads.length>MAX_COLS||new Set(heads).size!==heads.length||heads.some(x=>!x||x.length>2000||x.includes('\0')))throw Error('컬럼 이름이 잘못되었습니다.');
+   if(heads.length!==schema.length||schema.some(x=>!heads.includes(x)))throw Error('기존 파일과 컬럼 구성이 다릅니다.');
+   const ids=new Set(),data=[];
+   for(const cells of table){
+     if(cells.length!==heads.length)throw Error('행의 컬럼 개수가 다릅니다.');
+     const raw=Object.create(null);heads.forEach((h,i)=>raw[h]=norm(cells[i]));
+     if(Object.values(raw).some(x=>x.length>2000||x.includes('\0')))throw Error('셀 값이 너무 길거나 유효하지 않습니다.');
+     const entry=Object.assign(Object.create(null),{id:raw[mapping.id],title:raw[mapping.title],category:raw[mapping.category]});
+     if(!entry.id||!entry.title||!entry.category||ids.has(entry.id))throw Error('필수값 누락 또는 중복 번호가 있습니다.');
+     ids.add(entry.id);
+     for(const h of heads)if(!Object.values(mapping).includes(h))entry[h]=raw[h];
+     if(Object.keys(entry).length!==canonical.length)throw Error('컬럼 구성이 일치하지 않습니다.');
+     data.push(entry);
+   }
+   if(data.length<1||data.length>MAX_ROWS)throw Error('허용 행 수를 벗어났습니다.');
+   return data;
+ }
+ function categories(){return [...new Set(records.map(x=>x.category))].sort((a,b)=>a.localeCompare(b,'ko'));}
+ function updateCategories(){const current=$('category').value;$('category').replaceChildren(new Option('전체 분류',''));for(const c of categories())$('category').add(new Option(c,c));if(categories().includes(current))$('category').value=current;}
+ function showDetail(x){const d=$('details');d.replaceChildren();d.append(safe('span',x.category,'pill'),safe('h3',x.title),safe('p','ID: '+x.id,'empty'));const dl=safe('dl');for(const k of canonical){if(k==='title'||k==='category')continue;dl.append(safe('dt',k),safe('dd',x[k]??''));}d.append(dl);}
+ function refresh(){
+   const q=$('search').value.trim().toLocaleLowerCase(),cat=$('category').value,order=$('sort').value;
+   let selected=records.filter(x=>(!cat||x.category===cat)&&(!q||canonical.some(k=>String(x[k]??'').toLocaleLowerCase().includes(q))));
+   if(order==='title'||order==='id')selected=[...selected].sort((a,b)=>a[order].localeCompare(b[order],'ko'));
+   const pages=Math.max(1,Math.ceil(selected.length/PAGE_SIZE));page=Math.min(page,pages-1);
+   $('total').textContent=String(records.length);$('category-count').textContent=String(categories().length);$('matched').textContent=String(selected.length);$('list-count').textContent=selected.length+'건';$('page-info').textContent=(page+1)+' / '+pages;
+   $('prev').disabled=page<=0;$('next').disabled=page+1>=pages;
+   const list=$('item-list');list.replaceChildren();$('details').replaceChildren(safe('p','목록에서 항목을 선택하세요.','empty'));
+   const slice=selected.slice(page*PAGE_SIZE,(page+1)*PAGE_SIZE);
+   if(!slice.length)list.append(safe('p','일치하는 데이터가 없습니다.','empty'));
+   for(const item of slice){const b=safe('button',undefined,'record');b.type='button';const info=safe('span');info.append(safe('strong',item.title),safe('small',item.id));b.append(info,safe('span',item.category,'pill'));b.addEventListener('click',()=>showDetail(item));list.append(b);}
+ }
+ function safeJson(obj){return JSON.stringify(obj).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');}
+ function saveHtml(){
+   const clone=document.documentElement.cloneNode(true);
+   const output={...original,records:records.map(x=>({...x}))};
+   clone.querySelector('#rea-payload').textContent=safeJson(output);
+   clone.querySelector('#item-list').replaceChildren();clone.querySelector('#details').replaceChildren();
+   clone.querySelector('#status').textContent='저장한 데이터 준비 완료';
+   const source='<!doctype html>\n'+clone.outerHTML;
+   const blob=new Blob([source],{type:'text/html;charset=utf-8'});
+   const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='REA_Lite_Updated.html';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);
+   status('새 HTML 파일 저장을 요청했습니다. 저장된 파일을 다시 열어 데이터가 유지되는지 확인하세요.');
+ }
+ $('app-title').textContent=original.title;document.body.dataset.theme=original.theme;
+ $('csv-file').addEventListener('change',async ev=>{
+   const file=ev.target.files?.[0];if(!file)return;
+   try{
+     if(file.size>MAX_BYTES||!file.name.toLowerCase().endsWith('.csv'))throw Error('10 MiB 이하 CSV 파일만 선택하세요.');
+     const binary=await file.arrayBuffer();
+     const text=new TextDecoder('utf-8',{fatal:true}).decode(binary);
+     const data=parseCsv(text);
+     records=data;page=0;$('search').value='';$('category').value='';updateCategories();refresh();
+     status('CSV '+data.length+'건 반영됨 · 새로 열어도 유지하려면 변경 내용 HTML로 저장하세요.');
+   }catch(e){status('갱신 실패: '+e.message+' · 기존 데이터는 유지됩니다.',true);}
+   finally{ev.target.value='';}
+ });
+ for(const id of ['search','category','sort'])$(id).addEventListener(id==='search'?'input':'change',()=>{page=0;refresh();});
+ $('prev').addEventListener('click',()=>{page--;refresh();});$('next').addEventListener('click',()=>{page++;refresh();});
+ $('export').addEventListener('click',saveHtml);
+ updateCategories();refresh();
+})();
+</script>
+</body>
+</html>
