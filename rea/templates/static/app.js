@@ -75,7 +75,15 @@ async function loadItems() {
       ui.results.append(button);
     }
   } catch (error) {
-    if (current === requestId) showError(error.message);
+    if (current === requestId) {
+      // A failed new query must not leave the previous query's rows visible.
+      ui.count.textContent = "조회 실패";
+      ui.pageStatus.textContent = "—";
+      ui.pagination.hidden = true;
+      ui.results.replaceChildren(element("p", "목록을 불러오지 못했습니다.", "empty"));
+      ui.detail.replaceChildren(element("p", "조회 실패로 이전 선택을 지웠습니다.", "empty"));
+      showError(error.message);
+    }
   }
 }
 

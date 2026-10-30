@@ -125,6 +125,17 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
             if case["name"] in {"inventory", "formulas"}:
                 assert page.locator("#detail script").count() == 0
             page.screenshot(path=str(report_dir / f"{case['name']}.png"), full_page=True)
+            # Inject a real browser fetch failure after a successful detail load:
+            # old rows and details must not masquerade as the new search result.
+            if case["name"] == "cafe":
+                page.route("**/api/items**", lambda route: route.abort())
+                page.locator("#search").fill("SYNTHETIC_NETWORK_ERROR")
+                expect(page.locator("#error")).to_be_visible()
+                expect(page.locator("#count")).to_have_text("조회 실패")
+                expect(page.locator(".item")).to_have_count(0)
+                expect(page.locator("#detail h3")).to_have_count(0)
+                expect(page.locator("#page-status")).to_have_text("—")
+                page.unroute("**/api/items**")
             page.reload(wait_until="domcontentloaded")
             expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
             assert page.request.get(base + "/review/fable_review.json").status == 404
