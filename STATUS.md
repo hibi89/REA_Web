@@ -1,3 +1,17 @@
+## 2026-10-30 — REA_Web semantic release gating checkpoint
+
+- **Code checkpoint** `323013c2235884537389282045f7ed22437540b5`, feature branch `feature/d27-windows-python-discovery`, PR #30 OPEN/DRAFT/UNMERGED. Previous safety work retained.
+- **Main change:** `rea/provenance.inspect_delivery` now refuses non-object, malformed UTF-8 and duplicate-key generated JSON documents (app manifest, schema preview, mapping receipt, two-file append receipt, optional Fable review) with bounded `AuditError`, and validates owner mapping fields before set/value operations. Rehashed ZIP contents no longer bypass semantic document-shape checks.
+- **Publication integration:** `rea.delivery.create_delivery` now requires full `inspect_delivery(stage)` semantic allowlist/receipt audit AFTER ZIP integrity verification and BEFORE atomic publication, analogous to existing two-source ZIP handling. Stale approved source is rejected before creating destination parent. Existing source SHA is rechecked before publish; original owner files are not modified.
+- **New/expanded regression:** `tests/test_provenance_malformed_metadata.py` contributes 15 parametrized synthetic ZIP cases covering malformed JSON, duplicate metadata keys, wrong input-kind type, mapping field types, two-source malformed receipt and clean-baseline acceptance; `tests/test_delivery_publication_guards.py` adds semantic-audit non-publication and valid semantic audit tests plus no destination parent on stale approval. Tests **committed, not executed on original checkout** in this session; no synthetic test PASS claimed for them.
+- **File checkpoint:** `rea/provenance.py` Git blob a21a989ac6d9dc383978ec893c7f5da93246dc6b; `rea/delivery.py` Git blob 43722783b5d79f782fa6c8fdb41e57c6861f0885; `tests/test_provenance_malformed_metadata.py` Git blob e135f52ff7c31c1ec15b9485ed2aea7112b91a5f; `tests/test_delivery_publication_guards.py` Git blob 8e906f9bf7df06e3f339132f09880ad812480613. Test/commit identifiers point to source, not proof of execution.
+- **CI policy:** Do not block on queued GitHub Actions; inspect D27 Windows/Linux/Chromium and D31 security after runners produce results. Do not infer latest-code PASS from old CI. Prior isolated tests do not establish full Windows E2E.
+- **Scope:** customer-authorized CSV/flat JSON; explicit field mapping and consent; optional same-schema two-file ROW APPEND; local read-only FastAPI/SQLite Windows ZIP. No scraping, different-schema JOIN, auth/payments or hosting. No Vercel project/production deployment.
+- **Commercial gates:** Independent nondeveloper Windows acceptance NOT_RUN; source redistribution and dependency/license notice clearance NOT_GRANTED; data/privacy handling and seller terms NOT_APPROVED; human-timed delivery rehearsal NOT_RUN. Historical qualitative 95% engineering / 77% seller prep not remeasured. **NOT APPROVED FOR SALE.**
+- **Next priority:** Run exact-checkout synthetic ZIP proof for single CSV, JSON, approved mapping, same-schema append and corrupted metadata; execute Windows CMD+localhost+browser once a runner is available; only repair reproduced failures. No merge or force-push.
+
+---
+
 ## REA_Web production-path hardening — 2026-10-30 KST
 
 - Feature branch: feature/d27-windows-python-discovery; PR #30 remains draft and unmerged. Code/test checkpoint **cc894dfd459f1dea55c05c6963bb8f4558a71d67**.
