@@ -1,3 +1,12 @@
+## 2026-10-31 04:24 KST — REA_WEB Lite new technical candidate checkpoint
+
+- Confirmed Lite/Pro separation: existing Pro FastAPI/SQLite unchanged; Lite separate single offline HTML with three themes (cafe/inventory/office), user CSV choose/validate/update and explicit export of updated HTML; no LAN QR, remote API, automatic persistence, EXE, login or hosting.
+- Candidate is a temporary conversation ZIP named REA_WEB_Lite_Release_Candidate_v1_20261031.zip, 19 files; SHA256 8078e56cceedb17f5cbaa40eb032c502fb309d0c475be2f7bfc48c06afb5edc8. Not saved in GitHub or persistent Library. It requires reattachment after chat change if the old artifact is unavailable. Repo is PUBLIC.
+- Actual sandbox commands: node tests/test_csv_contract.cjs: 15 PASS; node tests/test_vm_interactions.cjs: 7 PASS; PYTHONPATH=. pytest -q tests/test_lite_local.py: Chromium 9 PASS through Playwright page.set_content (not true disk file:// open). Local file URL blocked by environment security policy. Actual Windows Chrome/Edge and human acceptance remain NOT_RUN.
+- Actual Pro integration NOT_RUN. Isolated builder pytest tests/test_rea_lite_builder.py fails import ModuleNotFoundError: rea.mvp (Lite ZIP intentionally does not contain Pro). Earlier mock-module 5 Python tests are not proof of real Pro integration. Reuse original Pro parser only after new isolated GitHub branch integration.
+- Prior Pro verified product code bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5 had 28/28 CI PASS. PR #30 is OPEN/DRAFT/UNMERGED. This handoff updates only docs, not Pro code or Lite code in repo. Production N/A, sale NOT_APPROVED.
+- Next: integrate source in new Lite branch; exact real Pro parser contract; native Windows file:// and export/reopen; privacy/source rights/license notices and customer terms/time-cost before sale. No manual data permissions or new features implied. Full ten-point handoff above.
+
 ## 2026-10-31 KST — optional single-click Windows pilot preparer, original sealed ZIP preserved
 
 - **Problem solved:** existing genuine synthetic Windows owner-pilot ZIP requires manual outer/inner extraction and two integrity checks before a human may launch the app. Prepared a **separate optional** source/binary companion in the ChatGPT working container; not inserted into the sealed pilot or production app.
