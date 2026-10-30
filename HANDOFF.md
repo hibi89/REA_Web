@@ -1,3 +1,16 @@
+## REA_Web new local recovery capability — 2026-10-30 KST
+
+- Product checkpoint preceding handoff: `ae028d7923165eb4d5286501e7af272446c59836`; PR #30 OPEN/DRAFT/UNMERGED; production URL/Vercel N/A (offline Windows ZIP).
+- **New useful function** `rea/recovery.py`: `python -m rea.recovery --zip ORIGINAL.zip --out NEW_FOLDER`. Stages bounded archive copy, verifies frozen bytes' delivery SHA+semantic owner-receipt inventory, extracts safely, verifies exact extracted tree, rehashes all files, opens SQLite read-only and compares actual row count with generated manifest, atomically publishes only to a fresh directory with no overwrite. Original ZIP preserved. Results explicitly indicate NO Windows launch/installed dependency/commercial clearance approval. New operator guide `docs/57_OFFLINE_ZIP_RECOVERY.md`, README instructions.
+- **Regression** `tests/test_recovery.py`: nine test functions, ten parametrized cases (CSV, JSON, approved same-schema pair, tampered ZIP, incorrect rehashed row count, existing owner dir, publish race, oversized archive, symlink and CLI). Code committed to GitHub; **full original repo test module NOT_RUN** in this sandbox.
+- `scripts/d11_rehearsal.py`: integration with the existing 3 actual synthetic generated ZIPs; each case now uses new restore CLI API to verify a fresh independent extraction and SQLite row count before synthetic trial publication. `tests/test_d11_rehearsal.py` checks a deterministic non-commercial recovery evidence field. These original repo E2E cases are queued for CI and were NOT_RUN locally.
+- **Executed isolated Linux 3.13**: exact GitHub blob for new `rea/recovery.py` (Git blob `27f1806788a67a31d5aa7f68109ce639036f814e`) matches local file. Focused 7/7 recovery tests PASS (includes temp staging, manifest+SQLite, no-overwrite, corrupted ZIP, wrong row count, race, oversize, CLI); combined earlier isolated tests 82/82 PASS. The local harness used a partial previously mirrored `delivery`/`customer_self_check` and a STUB semantic provenance module; results are NOT full source/Windows validation.
+- Current exact latest-commit CI pass status **NOT_VERIFIED**; prior GitHub checks were queued and do not block development. Check D11, D27 Windows/Linux and D31 audits only after actual execution evidence. Avoid pretending queued == failed/passed.
+- Historical engineering ~95% / commercial prep ~77% remain qualitative unrecalculated estimates. The six independent human/legal gates still open: native end-user Windows acceptance, source redistribution rights, exact dependency notice/licensing, customer privacy/data handling, seller terms and measured manual delivery time. Sale NOT_APPROVED.
+- Next engineering task: run full original-checkout new recovery tests, D11 three-case synthetic regression, Windows cmd/localhost/browser; fix confirmed failures only. Do not merge or force-push PR.
+
+---
+
 ## REA_Web checkpoint — strict ZIP manifest + customer checker — 2026-10-30 KST
 
 - **Code checkpoint:** `7fb2e460bf4aa55abcfdb7d84c3ad33f94ab232a` on `feature/d27-windows-python-discovery`; PR #30 OPEN/DRAFT/UNMERGED. Changes are substantive executable code, not documentation-only.
