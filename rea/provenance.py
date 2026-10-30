@@ -13,7 +13,7 @@ import re
 import sys
 import zipfile
 
-from rea.delivery import DeliveryError, verify_delivery
+from rea.delivery import DeliveryError, verify_delivery, _json_depth_exceeds
 
 BASE = Path(__file__).resolve().parents[1]
 VENDORS = {
@@ -108,6 +108,8 @@ def _zip_json_object(zf: zipfile.ZipFile, path: str) -> dict:
         raise AuditError("Invalid generated metadata JSON: " + path) from exc
     if not isinstance(doc, dict):
         raise AuditError("Generated metadata must be a JSON object: " + path)
+    if _json_depth_exceeds(doc):
+        raise AuditError("Generated metadata nesting exceeds 64 levels: " + path)
     return doc
 
 
