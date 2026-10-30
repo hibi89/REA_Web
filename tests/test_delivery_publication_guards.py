@@ -181,3 +181,30 @@ def test_successful_delivery_passes_full_semantic_audit(tmp_path):
     evidence = inspect_delivery(target)
     assert evidence["delivery_integrity"] == "VERIFIED_SHA256"
     assert evidence["overall_commercial_clearance"] == "NOT_GRANTED"
+
+
+@pytest.mark.parametrize("payload", [
+    b'{"schema_version":"rea.delivery.v0.1","files":[],"files":[]}',
+    b'{"schema_version":"rea.delivery.v0.1","files":[],"extra":{"x":1,"x":2}}',
+    b'{"schema_version":"rea.delivery.v0.1","files":[],"extra":NaN}',
+    b'{"schema_version":"rea.delivery.v0.1","files":[],"extra":Infinity}',
+])
+def test_extracted_manifest_ambiguous_fields_are_rejected(tmp_path, payload):
+    root, _ = synthetic_extracted_kit(tmp_path)
+    (root / "delivery_manifest.json").write_bytes(payload)
+    result = inspect(root)
+    assert result["status"] == "FAIL_LOCAL_PREREQUISITES"
+    assert result["integrity"] == "NOT_VERIFIED"
+    assert any("ValueError" in issue for issue in result["issues"])
+
+
+def test_extracted_manifest_1500_levels_rejected_bounded(tmp_path):
+    root, _ = synthetic_extracted_kit(tmp_path)
+    payload = (b'{"schema_version":"rea.delivery.v0.1","files":[],"extra":'
+               + b"[" * 1500 + b"1" + b"]" * 1500 + b"}")
+    (root / "delivery_manifest.json").write_bytes(payload)
+    result = inspect(root)
+    assert result["status"] == "FAIL_LOCAL_PREREQUISITES"
+    assert result["integrity"] == "NOT_VERIFIED"
+    assert any("ValueError" in issue or "RecursionError" in issue
+               for issue in result["issues"])
