@@ -10,6 +10,7 @@ import hashlib
 import json
 from pathlib import Path
 import tempfile
+import stat
 import zipfile
 
 from rea.orchestrator import build
@@ -234,9 +235,16 @@ def _zipinfo(name: str) -> zipfile.ZipInfo:
 
 def _safe(name: str) -> bool:
     parts = name.split("/")
+    # Windows rejects/resolves device paths, alternate streams and trailing dots.
+    reserved = {"CON", "PRN", "AUX", "NUL"} | {
+        f"COM{i}" for i in range(1, 10)
+    } | {f"LPT{i}" for i in range(1, 10)}
     return bool(name and len(name) <= 260 and not name.startswith("/")
-                and "\\" not in name and all(p not in ("", ".", "..") for p in parts)
-                and not any(p.startswith(".") or p == "__pycache__" for p in parts))
+                and "\\" not in name and ":" not in name
+                and all(p not in ("", ".", "..") and not p.startswith(".")
+                        and not p.endswith((" ", "."))
+                        and p.split(".", 1)[0].upper() not in reserved
+                        and p != "__pycache__" for p in parts))
 
 
 def _members(project: Path) -> dict[str, bytes]:
@@ -287,8 +295,10 @@ def verify_delivery(archive: Path) -> dict:
     with zipfile.ZipFile(archive, "r") as zf:
         info = zf.infolist()
         names = [item.filename for item in info]
-        if len(names) > 100 or len(names) != len(set(names)) or any(not _safe(n) for n in names):
-            raise DeliveryError("Unsafe or duplicate ZIP member")
+        if (len(names) > 100 or len(names) != len(set(names))
+                or any(not _safe(n) for n in names)
+                or any(stat.S_ISLNK(item.external_attr >> 16) for item in info)):
+            raise DeliveryError("Unsafe, symlink, or duplicate ZIP member")
         if "delivery_manifest.json" not in names:
             raise DeliveryError("Missing manifest")
         if sum(item.file_size for item in info) > MAX_ARCHIVE_BYTES:
