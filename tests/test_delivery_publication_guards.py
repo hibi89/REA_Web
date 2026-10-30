@@ -108,7 +108,7 @@ def test_manifest_limits_fail_closed(tmp_path, replacement):
 def test_extracted_file_size_change_during_stream_rejected(tmp_path, monkeypatch):
     root, _ = synthetic_extracted_kit(tmp_path)
     sample = root / "app/app.py"
-    with pytest.raises(ValueError, match="size changed"):
+    with pytest.raises(ValueError, match="changed size"):
         _member_sha256_bounded(sample, 1)
 
 
