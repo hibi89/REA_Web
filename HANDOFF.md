@@ -1,3 +1,16 @@
+## REA_Web production-path hardening — 2026-10-30 KST
+
+- Feature branch: feature/d27-windows-python-discovery; PR #30 remains draft and unmerged. Code/test checkpoint **cc894dfd459f1dea55c05c6963bb8f4558a71d67**.
+- Actual work, not CI waiting: (1) `rea.delivery.create_delivery` now SHA-pins the customer-owned CSV/flat JSON source before building and rechecks it after archive verification but BEFORE atomic ZIP publication; source mutation must leave no new ZIP. An explicit preflight source SHA mismatch also aborts before build. (2) Shipped stdlib-only `rea.customer_self_check` now caps manifest bytes to 256 KiB, inventory to 100 members and total described file bytes to 25 MiB, validates per-member size and SHA-256 format, and hashes extracted files in 64-KiB chunks instead of unbounded `Path.read_bytes()`.
+- New `tests/test_delivery_publication_guards.py`: 8 test functions / 13 pytest cases covering clean extracted SQLite, chunked checksum, oversized manifest, six malformed metadata variants, changed source before publish, stale approved source before build and no overwrite of existing private ZIP. These tests are COMMITTED; the entire original-repository new test module is **NOT_RUN** here. Do not claim 13/13 passing.
+- Independent isolated Python 3.13 smoke on exact-matching checker source excerpts: synthetic ZIP verification PASS; extracted manifest SHA PASS; read-only SQLite row count 4 PASS; unknown extracted file rejected PASS; oversized manifest rejected PASS; 101 inventory rejected PASS; 70KB chunked SHA PASS. `inspect` and `_member_sha256_bounded` excerpts independently matched connected GitHub on normalized function Adler32: 42be1972 and e584c915. This is focused isolated code/excerpt verification, NOT actual product ZIP/Windows customer E2E or native app launch.
+- GitHub blob IDs: checker c9eb3bf24ba9be8313a926a0879aa2a96132e2e2, exporter 4b281f19c560abfc5aad339ca8f2ce0df2f9af83, test f3751b64eb090c1ca3f398b278adb1b7a6c69ab8. Previous bounded source fingerprint (mvp/guided/two_source) and Windows collision hardening remain.
+- CI rule: pending/queued workflows are NON-BLOCKING; do not wait/poll repeatedly. At later natural checkpoint, use exact HEAD D27 Windows/Linux/full pytest, D3 browser and D31 audit outcomes; investigate only actual job failures.
+- Status: offline Windows ZIP, Vercel N/A. Historical development ~95%, sales prep ~77% qualitative estimates unchanged (not recalibrated); **sale NOT APPROVED**. Six real-world gates (independent Windows operator, source redistribution rights, shipped dependency notices, privacy/handling authorization, seller terms, human-timed delivery rehearsal) require external real evidence; no fake signatures or approval.
+- Next: original full checkout/exact-head test module and Windows CMD + generated ZIP/Chromium E2E, ideally when external CI runners execute. Keep feature branch open; no merge/force push.
+
+---
+
 ## REA_Web core intake progress — 2026-10-30 KST
 
 - **Product code checkpoint** `0c6f20927009ec19e2bafa95bc9252b4cc115e06` (last test commit); branch `feature/d27-windows-python-discovery`, PR #30 Draft/unmerged. This tranche works on the ACTUAL CSV/flat-JSON build, GUI/guided approvals and approved same-schema two-file ROW APPEND, rather than blocking on GitHub CI queue.
