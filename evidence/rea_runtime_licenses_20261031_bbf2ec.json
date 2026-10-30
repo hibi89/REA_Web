@@ -1,0 +1,162 @@
+{
+  "schema_version": "rea.runtime_license_comparison.v1",
+  "tested_source_commit": "bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5",
+  "ci_outcome": "28/28 PASS",
+  "artifacts": {
+    "D12 Windows": {
+      "id": 12998156567,
+      "wrapper_sha256": "4e1ac8228735c0d4c26a87e03e3967f4bba5305e8645e543674653f915c2981d",
+      "report_sha256": "76587cae6b7b335443cb5b87e5e04f245f2601a90c63fa2330518cb78df99152"
+    },
+    "D12 Linux": {
+      "id": 12998311375,
+      "wrapper_sha256": "ea5dd78cb10a7dd085b708a18cf76a185583c8d354810e3d6705efd85f8256f4",
+      "report_sha256": "b01320d2e491f408bc67a01da7ff50cb99831eb9a16304eebfc5681a90ffdc98"
+    },
+    "D31 Windows": {
+      "id": 12997517204,
+      "wrapper_sha256": "2353921640b1b2ca8ec7df634a100c51d342e259fe8ddfb681fb296952519106",
+      "report_sha256": "ab809f96298a5e173a7f1fc6a859516c0365c3e895a945046b207b539412e6f1"
+    },
+    "D31 Linux": {
+      "id": 12997592806,
+      "wrapper_sha256": "d783c91c4fb703c4ee7f7ad68e1e61b35042e4f0e2c0dbb49f0451dab9a15c66",
+      "report_sha256": "8b861f41959ec2a77bf033decc52aa2170ef98df3ffc57d2dc9b994b009ab224"
+    }
+  },
+  "observed_platforms": {
+    "windows": "Python 3.11.9",
+    "linux": "Python 3.11.17"
+  },
+  "package_count": 14,
+  "package_versions_match": true,
+  "all_14_legal_files_found": true,
+  "license_hash_mismatch": [
+    "pydantic-core"
+  ],
+  "pip_audit_reported_vulnerabilities": {
+    "windows": 0,
+    "linux": 0
+  },
+  "resolution_issues": [
+    "EXTRAS_NOT_FULLY_EXPANDED"
+  ],
+  "runtime_dependencies_in_customer_zip": "requirements ranges only, no wheels",
+  "commercial_license_clearance": "NOT_GRANTED",
+  "legal_review": "NOT_DONE",
+  "user_windows_human_acceptance": "NOT_RUN",
+  "packages": [
+    {
+      "name": "annotated-doc",
+      "version": "0.0.5",
+      "observed_license_expression_or_legacy": "MIT",
+      "license_file_sha256_windows": "fff170779a6acbf65abdb405c087f1cee1786691e4a96a4034517e4a504a0cdf",
+      "license_file_sha256_linux": "fff170779a6acbf65abdb405c087f1cee1786691e4a96a4034517e4a504a0cdf",
+      "sha256_matching": true
+    },
+    {
+      "name": "annotated-types",
+      "version": "0.8.0",
+      "observed_license_expression_or_legacy": "MIT",
+      "license_file_sha256_windows": "fe1049884b1a0d9342901e88e07f32925d24b3121d9972b6a6805fb9824b095d",
+      "license_file_sha256_linux": "fe1049884b1a0d9342901e88e07f32925d24b3121d9972b6a6805fb9824b095d",
+      "sha256_matching": true
+    },
+    {
+      "name": "anyio",
+      "version": "4.15.1",
+      "observed_license_expression_or_legacy": "MIT",
+      "license_file_sha256_windows": "5361ac9dc58f2ef5fd2e9b09c68297c17f04950909bbc8023bdb82eacf22c2b0",
+      "license_file_sha256_linux": "5361ac9dc58f2ef5fd2e9b09c68297c17f04950909bbc8023bdb82eacf22c2b0",
+      "sha256_matching": true
+    },
+    {
+      "name": "click",
+      "version": "8.5.0",
+      "observed_license_expression_or_legacy": "BSD-3-Clause",
+      "license_file_sha256_windows": "9a8ad106a394e853bfe21f42f4e72d592819a22805d991b5f3275029292b658d",
+      "license_file_sha256_linux": "9a8ad106a394e853bfe21f42f4e72d592819a22805d991b5f3275029292b658d",
+      "sha256_matching": true
+    },
+    {
+      "name": "fastapi",
+      "version": "0.162.0",
+      "observed_license_expression_or_legacy": "MIT",
+      "license_file_sha256_windows": "4ec89ffc81485b97fec584b2d4a961032eeffe834453894fd9c1274906cc744e",
+      "license_file_sha256_linux": "4ec89ffc81485b97fec584b2d4a961032eeffe834453894fd9c1274906cc744e",
+      "sha256_matching": true
+    },
+    {
+      "name": "h11",
+      "version": "0.16.0",
+      "observed_license_expression_or_legacy": "MIT (legacy field)",
+      "license_file_sha256_windows": "37db5bb85926db28a427a25867f10b1232003aea1be69ccb851138adb8e6f361",
+      "license_file_sha256_linux": "37db5bb85926db28a427a25867f10b1232003aea1be69ccb851138adb8e6f361",
+      "sha256_matching": true
+    },
+    {
+      "name": "idna",
+      "version": "3.20",
+      "observed_license_expression_or_legacy": "BSD-3-Clause",
+      "license_file_sha256_windows": "1a9a4f0e3d479a27240ddd59a9137a66ab4a0f9dfdc8ca6188cc0bfd85187f04",
+      "license_file_sha256_linux": "1a9a4f0e3d479a27240ddd59a9137a66ab4a0f9dfdc8ca6188cc0bfd85187f04",
+      "sha256_matching": true
+    },
+    {
+      "name": "opentelemetry-api",
+      "version": "1.45.2",
+      "observed_license_expression_or_legacy": "Apache-2.0",
+      "license_file_sha256_windows": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "license_file_sha256_linux": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "sha256_matching": true
+    },
+    {
+      "name": "pydantic",
+      "version": "2.14.2",
+      "observed_license_expression_or_legacy": "MIT",
+      "license_file_sha256_windows": "a9e186f3ca16b5eef84318e7a701721351a00cb7b8ae3a4394b67b49e3529ef3",
+      "license_file_sha256_linux": "a9e186f3ca16b5eef84318e7a701721351a00cb7b8ae3a4394b67b49e3529ef3",
+      "sha256_matching": true
+    },
+    {
+      "name": "pydantic-core",
+      "version": "2.50.2",
+      "observed_license_expression_or_legacy": "MIT",
+      "license_file_sha256_windows": "fbe7f615f18d135c07000e5a86325db27f42c7729699ef166ac1f7a3f4586bf4",
+      "license_file_sha256_linux": "2afdd30d54b4d62b6f488a6bcc1546e84ec5061f13f4209c03d012348783795a",
+      "sha256_matching": false
+    },
+    {
+      "name": "starlette",
+      "version": "1.10.0",
+      "observed_license_expression_or_legacy": "BSD-3-Clause",
+      "license_file_sha256_windows": "dcb95677a02240243187e964f941847d19b17821cf99e5afae684fab328c19bf",
+      "license_file_sha256_linux": "dcb95677a02240243187e964f941847d19b17821cf99e5afae684fab328c19bf",
+      "sha256_matching": true
+    },
+    {
+      "name": "typing-extensions",
+      "version": "4.16.0",
+      "observed_license_expression_or_legacy": "PSF-2.0",
+      "license_file_sha256_windows": "3b2f81fe21d181c499c59a256c8e1968455d6689d269aa85373bfb6af41da3bf",
+      "license_file_sha256_linux": "3b2f81fe21d181c499c59a256c8e1968455d6689d269aa85373bfb6af41da3bf",
+      "sha256_matching": true
+    },
+    {
+      "name": "typing-inspection",
+      "version": "0.4.4",
+      "observed_license_expression_or_legacy": "MIT",
+      "license_file_sha256_windows": "804b59b25f2c31bd278f9202a19ae49a3945aa2664387e2d0a128c7cacc61ec3",
+      "license_file_sha256_linux": "804b59b25f2c31bd278f9202a19ae49a3945aa2664387e2d0a128c7cacc61ec3",
+      "sha256_matching": true
+    },
+    {
+      "name": "uvicorn",
+      "version": "0.54.0",
+      "observed_license_expression_or_legacy": "BSD-3-Clause",
+      "license_file_sha256_windows": "efe1acf3e62fb99c288b0ec73e5a773b7268ef4320fe757ea994214e4b63c371",
+      "license_file_sha256_linux": "efe1acf3e62fb99c288b0ec73e5a773b7268ef4320fe757ea994214e4b63c371",
+      "sha256_matching": true
+    }
+  ]
+}

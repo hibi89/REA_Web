@@ -1,3 +1,9 @@
+## 2026-10-31 KST — exact-source D12/D31 four artifacts inspected, 14/14 runtime metadata cross-OS reconciled
+
+- Downloaded real current SHA `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` D12 Windows (#12998156567) and Linux (#12998311375), D31 Windows (#12997517204) and Linux (#12997592806) artifacts from successful workflow runs. Cross-compared actual distribution VERSION and exact installed LICENSE SHA256; **14/14 names/versions agree across Windows/Linux** and **14/14 metadata-listed license files observed**. D31 scanner `vulns=[]` for 14/14 on each OS. Important: **pydantic-core==2.50.2 LICENSE hashes differ Windows vs Linux**; actual wheel/license text interpretation remains unreviewed. D12 notes `EXTRAS_NOT_FULLY_EXPANDED`.
+- New immutable evidence report `docs/59_RUNTIME_LICENSE_CROSS_OS_EVIDENCE_20261031.md` + machine-readable `evidence/rea_runtime_licenses_20261031_bbf2ec.json` with 4 original artifact IDs, archive/report SHA256, exact versions, declared SPDX/legacy license and platform SHA. No installed wheel binaries re-bundled or approved; no product logic changed. Docs-only `[skip ci]` avoids redundant 28-run fanout.
+- Sale status **NOT_APPROVED**: exact customer wheel lock / license terms & legal redistribution grant, generator author rights, real Windows end-user validation, privacy/retention, fees/terms and actual timed jobs still outstanding. D27 source code 28/28 Actions PASS, PR #30 DRAFT/UNMERGED.
+
 ## 2026-10-31 KST — VERIFIED CURRENT PRIVACY SOURCE: ALL 28/28 ACTIONS SUCCESS; SYNTHETIC TECHNICAL GATE CLOSED
 
 - **Authoritative tested code SHA:** `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` on `feature/d27-windows-python-discovery`, generated `rea/templates/app.py` blob `63470882a74b5e2bf76858638d6aeb592a7c091a`; prior docs-only branch HEAD `2f42f7f564b5d336d12de1df3e3538f89cc77c8d`. This new note is docs-only `[skip ci]` and does not modify the tested code.
