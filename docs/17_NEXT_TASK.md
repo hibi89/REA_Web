@@ -1,3 +1,9 @@
+## 2026-10-31 04:51 KST — Lite next task after verified Windows Edge CI
+
+- Exact tested SHA `aae9d517f6c0d04d8f76e235bb4e7e5f7284d369`, [run 41118431117](https://github.com/hibi89/REA_Web/actions/runs/41118431117) 2/2 SUCCESS: Windows Edge 3/3, Windows Chromium 3/3, Ubuntu Chromium 3/3 file://; real Pro parser/Node/synthetic CLI also PASS. Detailed `docs/62_LITE_EDGE_CI_EVIDENCE_20261031.md`.
+- **Human P0 still NOT_RUN:** use latest [Windows synthetic artifact #13007070338](https://github.com/hibi89/REA_Web/actions/runs/41117124085/artifacts/13007070338), double-click actual packaged HTML in installed Windows Chrome/Edge; select invalid duplicate ID CSV (old 3 rows), then valid cafe update (5 rows), save-as-new HTML, close and reopen; record browser/version/time/result outside sample. No customer PII.
+- **G3–G6 owner approvals:** original/third-party rights, privacy/storage/retention/delete, three full human timed synthetic deliveries, sale price & revisions/refunds/support policy. Technical CI does not grant rights or commercial permission. No merge/production. Stop expanding features unless a real defect arises.
+
 ## 2026-10-31 04:42 KST — Lite verified automatic delivery closeout
 
 - Exact tested Lite code SHA `202e4dbab9153c4f3003170e8881576d75c63b0c`, [CI run 41117124085](https://github.com/hibi89/REA_Web/actions/runs/41117124085) Windows+Ubuntu 2/2 SUCCESS. Three independent synthetic seller CLI deliveries/OS and sealed pilot ZIPs also PASS. [Windows artifact #13007070338](https://github.com/hibi89/REA_Web/actions/runs/41117124085/artifacts/13007070338). Source/sha/times `docs/61_LITE_CROSS_OS_DELIVERY_EVIDENCE_20261031.md`.

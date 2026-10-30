@@ -1,3 +1,7 @@
+## 2026-10-31 04:51 KST — LITE latest Windows Edge CI update
+
+Tested code SHA `aae9d517f6c0d04d8f76e235bb4e7e5f7284d369`: Windows+Ubuntu GitHub CI 2/2 SUCCESS including Windows Edge true file:// 3/3, Windows Chromium 3/3, Ubuntu Chromium 3/3, real Pro parser 5/OS, Node 15+7/OS and 3 automated synthetic CLI packages/OS. Human Windows nondeveloper Chrome/Edge G2, rights G3, data consent G4, three human timed deliveries G5 and seller terms G6 remain BLOCKED. Draft PR #31 unmerged. See HANDOFF.md/STATUS.md/docs/62_LITE_EDGE_CI_EVIDENCE_20261031.md.
+
 ## 2026-10-31 04:42 KST — Latest Lite synthetic delivery checkpoint
 
 On branch `feature/lite-offline-html-integration`, tested code SHA `202e4dbab9153c4f3003170e8881576d75c63b0c`: GitHub Actions Windows + Ubuntu **2/2 SUCCESS**, with three actual seller CLI synthetic output rehearsals, exact HTML byte-match cross-OS, ZIP+manifest SHA checked. Evidence `docs/61_LITE_CROSS_OS_DELIVERY_EVIDENCE_20261031.md`, artifacts Windows #13007070338 and Ubuntu #13004944630. Original Pro unchanged. Draft PR #31 UNMERGED. Independent human Windows Chrome/Edge, IP/licenses, plaintext privacy, real manual delivery times and seller pricing/refund/support remain BLOCKED/NOT_APPROVED. No Vercel. Handoff in HANDOFF.md.

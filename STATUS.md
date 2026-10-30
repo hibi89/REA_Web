@@ -1,3 +1,11 @@
+## 2026-10-31 04:51 KST — Windows Edge automated real file:// acceptance: 2/2 CI PASS
+
+- `hibi89/REA_Web@feature/lite-offline-html-integration` code SHA `aae9d517f6c0d04d8f76e235bb4e7e5f7284d369`, [GitHub Actions #41118431117](https://github.com/hibi89/REA_Web/actions/runs/41118431117) **Ubuntu SUCCESS + Windows SUCCESS**, completed 04:51:01 KST.
+- Windows real Edge (Playwright `msedge`) **3 PASS** for cafe/inventory/office local `file://`, invalid/valid CSV and exported HTML reopen; same Windows Chromium **3 PASS** and Ubuntu Chromium **3 PASS**. Each OS Pro Python 5 PASS + Node CSV 15 PASS + JS DOM 7 PASS + three synthetic seller CLI builds PASS. No end-user Windows Explorer trial was performed.
+- No Pro code or generated Lite runtime modified; this is additional real browser coverage only. Evidence `docs/62_LITE_EDGE_CI_EVIDENCE_20261031.md`.
+- Draft [PR #31](https://github.com/hibi89/REA_Web/pull/31) remains OPEN/UNMERGED; Pro PR #30/main unchanged. G2 actual human Chrome/Edge, G3 rights, G4 data consent/retention, G5 human timed jobs, G6 seller terms **NOT_RUN/NOT_APPROVED**. Commercial launch BLOCKED. No Vercel production.
+- Next: collect single real Windows human trial; until then don't claim sale readiness or waste time re-running unchanged CI. Status/handoff update docs-only [skip ci].
+
 ## 2026-10-31 04:42 KST — Lite seller CLI 3× synthetic packaging & Windows/Ubuntu proof 2/2 SUCCESS
 
 - **New verified exact code SHA:** `202e4dbab9153c4f3003170e8881576d75c63b0c` on `feature/lite-offline-html-integration`. [Run #41117124085](https://github.com/hibi89/REA_Web/actions/runs/41117124085): Windows SUCCESS, Ubuntu SUCCESS (2/2; 0 failure). Existing Draft PR #31 OPEN/UNMERGED; Pro Draft PR #30 and main untouched.

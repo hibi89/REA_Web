@@ -1,3 +1,7 @@
+## 2026-10-31 04:51 KST latest browser automation verification
+
+Windows **Microsoft Edge** installed in GitHub runner passed genuine file:// three themed tests (3/3) plus Windows Chromium 3/3 and Ubuntu Chromium 3/3, [run 41118431117](https://github.com/hibi89/REA_Web/actions/runs/41118431117), exact code SHA `aae9d517f6c0d04d8f76e235bb4e7e5f7284d369`. Human owner Windows Chrome/Edge **NOT_RUN**. This reduces browser compatibility uncertainty; does NOT close G2 or authorize sale. [Evidence](62_LITE_EDGE_CI_EVIDENCE_20261031.md).
+
 # REA WEB Lite — commercial release gates (2026-10-31)
 
 **Status: TECHNICAL CI & SYNTHETIC PACKAGING PASS / NOT APPROVED FOR SALE.** Code/test SHA `91c1d113f81f0b144ba217820e6f0ca4b2350166`; [Windows and Ubuntu workflow success](https://github.com/hibi89/REA_Web/actions/runs/41116194878). Browser CI is automation, not a real customer acceptance result.
