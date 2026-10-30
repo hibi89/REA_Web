@@ -145,3 +145,17 @@ def test_customer_preflight_handles_nonobject_manifest_without_traceback(tmp_pat
     assert report["integrity"] == "NOT_VERIFIED"
     assert report["status"] == "FAIL_LOCAL_PREREQUISITES"
     assert any("ValueError" in issue for issue in report["issues"])
+
+
+@pytest.mark.parametrize("device", [
+    "COM¹", "COM²", "COM³", "LPT¹", "LPT²", "LPT³",
+])
+def test_windows_superscript_device_names_are_rejected(tmp_path, device):
+    """Windows recognizes Latin-1 superscript digits as COM/LPT device digits."""
+    for name in (f"app/{device}", f"app/{device.lower()}.txt"):
+        assert not _safe(name)
+        assert not _safe_member(name)
+    archive = tmp_path / "superscript_device.zip"
+    _archive(archive, f"app/{device}.txt", link=False)
+    with pytest.raises(DeliveryError, match="Unsafe"):
+        verify_delivery(archive)
