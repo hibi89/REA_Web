@@ -141,3 +141,18 @@ def test_browser_rehearsal_source_preserves_blocked_gates():
     assert {"run_case", "main", "free_port"} <= functions
     for case in d11_rehearsal.CASES:
         assert set(case["selected_features"]) <= d11_rehearsal.ALLOWED_FEATURES
+
+
+def test_rehearsal_aborts_on_failed_recovery_without_publishing(tmp_path, monkeypatch):
+    """A single restore failure must prevent ALL three-case trial publication."""
+    from rea.delivery import DeliveryError
+
+    def fail_restore(*_args, **_kwargs):
+        raise DeliveryError("synthetic corrupted recovery gate")
+
+    monkeypatch.setattr(d11_rehearsal, "restore_delivery", fail_restore)
+    destination = tmp_path / "not-published"
+    with pytest.raises(DeliveryError, match="corrupted recovery gate"):
+        d11_rehearsal.make(destination)
+    assert not destination.exists()
+    assert not list(tmp_path.glob(".rea-d11-*"))
