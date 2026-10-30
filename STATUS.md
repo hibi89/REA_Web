@@ -1,3 +1,21 @@
+## REA_Web current handoff — 2026-10-30 KST, technical closeout sprint
+
+**Verified GitHub code checkpoint:** `c52296bbf388547f118186e5e67298a7e002d0cb`, branch `feature/d27-windows-python-discovery`, Draft PR #30 OPEN/UNMERGED. Vercel production not applicable; offline Windows ZIP delivery product. No merge or force push.
+
+**Two substantive code changes this sprint:**
+1. `d042d99e750c6e1c777b8530bc12a8f71cdd0b17`: generated app `rea/templates/static/app.js` now launches primary list, overview, and optional categories fetch independently using `Promise.allSettled`. Failure of the optional categories endpoint no longer blocks all visible customer rows; overview failure shows explicit bounded error while preserving list functionality. `scripts/d3_browser_acceptance.py` adds a real Chromium network fault injection to the inventory case, checking list/summary survive category API failure and recover after reload. Earlier cafe aborted-list regression is retained.
+2. `c52296bbf388547f118186e5e67298a7e002d0cb`: generated `rea/templates/app.py` now validates bounded (<=256KiB) `schema_preview.json` through a common metadata reader and returns safe HTTP 503 on missing, oversized, malformed or incompatible shape. `/health` now checks both metadata and read-only SQLite, so cannot falsely claim normal readiness when required schema is lost. `/api/schema` and `/api/summary` share the bounded reader. Healthy behavior and read-only SQLite semantics preserved; no customer source altered. `tests/test_generated_db_unavailable.py` adds two committed metadata failure tests. They have not been directly executed in the full original checkout.
+
+**Executed tests with observed results:** Exact GitHub JS blob `010d1218ee2b564039dfc23105f0c5a60ce20648` compiled and executed in a synthetic JS DOM/fetch test harness: four cases PASS/0 FAIL (normal, category unavailable, summary unavailable, list unavailable). Exact GitHub Python app blob `ca185bd1e9df662e12423a76c572da103ff5b723` was reconstructed in a separate Python 3.13.5/FastAPI TestClient Linux sandbox and independently confirmed by Git blob SHA1 equality and Python AST parse. With a generator-compatible synthetic SQLite fixture, **31/31 HTTP assertions PASS** on healthy /health, literal wildcard search, list/summary/schema/category/detail, missing/malformed/oversized metadata (consistent 503), DB missing/table dropped (consistent 503), and no DB recreation/owner row change. Initial harness had a missing `assert_status` helper causing NameError before any assertions; helper was added and the full harness was rerun 31 PASS. These are exact runtime file tests but NOT the full original repository, original `rea.mvp.generate`, Windows CMD/Chromium or independent end-user validation.
+
+**CI:** Latest prior documentation HEAD `fdc541e8` 28 Actions workflows/56 checks were QUEUED, no conclusions. New code-head D3/D27/D31 pending; no current-head CI PASS claim. Do not repeatedly poll. Run full original-checkout pytest, D3 Chromium and Windows generated ZIP native smoke when runners execute. Fix actual failures only; preserve functionality/data.
+
+**Release state:** Historical engineering ~95% and seller readiness ~77% are qualitative old estimates, not remeasured. Independent nondeveloper Windows acceptance NOT_RUN, source/vendor and exact shipped-dependency redistribution rights NOT_GRANTED, data authorization/privacy handling NOT_APPROVED, seller price/terms NOT_APPROVED, human-timed delivery rehearsal NOT_RUN. Therefore **NOT APPROVED FOR SALE**. Completion remains PARTIAL/TECHNICAL-VERIFICATION-PENDING.
+
+**Next steps:** (1) exact-head D27 Linux/Windows full regression and D3 browser, D31 security results after queue drains; (2) real Windows original generated ZIP -> new-folder restore -> command-line prerequisite check -> localhost /health/items/search/detail -> restart, plus manual screenshot/inspection; (3) independently authorize external licensing, data/privacy, seller terms and real Windows operator acceptance. No source license grant may be inferred from passing tests.
+
+---
+
 ## 2026-10-30 KST — generated SQLite API fail-closed handler (exact-source isolated HTTP verified)
 
 - **Code commit** `e6a41eacf86c4f37e72c47ed6e8d84e1faccd3e9`, branch `feature/d27-windows-python-discovery`; Draft PR #30 OPEN/UNMERGED; Vercel/Production **N/A** (local Windows ZIP).
