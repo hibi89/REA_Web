@@ -1,3 +1,5 @@
+> **CURRENT RELEASE-GATE EVIDENCE (2026-10-31):** [실제 Actions ZIP 수령·내부 해시 10/16개·SQLite 5행 검사, D31 14개 의존성 감사·라이선스 위험 분리](docs/58_REA_WEB_RELEASE_GATES_20261031.md). D27 code SHA `dc277de57d6d8686b47ff08a49168caf10335ecf` 28/28 CI SUCCESS. **기술 합성 E2E PASS / 실사용 Windows NOT_RUN / 상용 승인 NOT_GRANTED**. 원본 합성 파일럿 [Actions #12996213068](https://github.com/hibi89/REA_Web/actions/runs/41096230436/artifacts/12996213068). 구버전 'CI 미확정' 텍스트는 역사 기록이다. `ㄱ` 시 신규 반복 빌드보다 사용자 Windows 검수·권리·개인정보/판매 조건 차단 해소 우선. 새 기능/배포/판매 무단 진행 금지.
+
 ## 2026-10-30 — 4개 생성 경로를 한 번에 검증하는 기술 마감 실행기
 
 Windows 소스 폴더에서 `verify_windows_tech.cmd`를 더블클릭하면 CSV, JSON, 사용자 명시 매핑, 같은 스키마 2파일 APPEND의 **실제 합성 ZIP 생성 → 납품 감사 → 새 폴더 복구 → 읽기 전용 FastAPI 목록/검색/상세 → Windows CMD/localhost 실행**을 검사합니다. 실패 시 종료코드와 오류를 표시하며 자동 설치·외부 업로드는 하지 않습니다.
