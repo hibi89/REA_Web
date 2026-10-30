@@ -1,3 +1,14 @@
+## 2026-10-30 KST — REA_Web list-fetch failure safety / current handoff
+
+- **Committed executable fix:** `99caeaa4dfd3a05b3518a725d78000189d6222c5` on `feature/d27-windows-python-discovery`; PR #30 still Draft/open/unmerged. `rea/templates/static/app.js` now clears previous search rows, selected detail, displayed item count and pagination on a current /api/items fetch failure; a stale failed request cannot overwrite newer state (requestId guard retained).
+- **Real-browser regression added, not yet executed:** `scripts/d3_browser_acceptance.py` injects an aborted /api/items request after prior successful item-detail display in its synthetic cafe case, asserts the old rows/details are gone, then restores the route and reloads. Do not claim Chromium PASS until an exact-commit Actions result or local run is available.
+- **Executed direct isolated verification of exact GitHub JS blob `43206978b4b211bd27c90be8ee2303939028f031`:** JavaScript parse PASS; synthetic DOM/fetch test initial list `1건` then simulated fetch exception PASS: count `조회 실패`, old row/detail removed, page status reset, pagination hidden and error shown. An initial test harness had a startup microtask overlap (initial row not yet painted); rerunning with the init microtasks settled passed. This is not Chromium, real HTTP, or full checkout verification.
+- **CI:** code SHA `99caeaa` exact-commit GitHub check-runs query returned 56/56 QUEUED, no conclusions; do not treat queue as PASS or FAIL. No local original-checkout Windows/full-suite execution in this tranche. Previous completed CI results were on older commit(s).
+- **Product/ownership:** customer-approved CSV or flat JSON (optional separately approved same-schema two-file ROW APPEND) → readonly FastAPI/SQLite → offline Windows ZIP. No Vercel production. Historical development 95% / commercial preparation 77% remain unmodified qualitative estimates; human Windows acceptance NOT_RUN, source/dependency redistribution rights NOT_GRANTED, customer privacy/data handling and seller terms NOT_APPROVED, measured human delivery NOT_RUN. **NOT APPROVED FOR SALE.**
+- **Next actionable verification:** inspect exact code SHA D3 Chromium fault-injection job and D27 Windows/Linux full regression when not queued; address reproduced failures only. Run extracted Windows ZIP /health, search/filter/detail/restart on independent user PC. Do not force push, merge Draft PR, or use real customer data without permission.
+
+---
+
 ## 2026-10-30 REA_Web SQLite integrity and recovery closeout
 
 - **Code checkpoint before docs:** `c7d335d504eff70029f0d3286830d5410f810b84`. Branch `feature/d27-windows-python-discovery`, PR #30 still DRAFT/OPEN/UNMERGED. No Vercel deployment; only local ZIP.
