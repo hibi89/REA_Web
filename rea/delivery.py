@@ -379,6 +379,10 @@ def create_delivery(csv_file: Path, output_zip: Path, name: str = "REA local app
                 zf.writestr(_zipinfo(filename), data, compress_type=zipfile.ZIP_DEFLATED,
                             compresslevel=9)
         verify_delivery(stage)
+        # The two-file packer already enforces semantic provenance. Require
+        # the same allowlist and approval-receipt checks for single-file ZIPs.
+        from rea.provenance import inspect_delivery
+        inspect_delivery(stage)
         if source_sha256(csv_file) != source_digest:
             raise DataError("Owner source changed before ZIP publication")
         publish_archive(stage, output_zip)
