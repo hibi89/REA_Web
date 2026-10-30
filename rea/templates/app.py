@@ -23,6 +23,21 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 
 
+@app.middleware("http")
+async def prevent_client_side_cache(request, call_next):
+    """Discourage browser/proxy caching of customer-provided local catalog rows.
+
+    Headers are a privacy-in-depth mitigation, not encryption, authentication,
+    secure erasure, or a guarantee that operating systems keep no copies.
+    """
+    response = await call_next(request)
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "no-referrer"
+    return response
+
+
 @app.exception_handler(sqlite3.Error)
 async def database_unavailable(_request, _error):
     """Fail closed without disclosing local database paths or SQL details."""
