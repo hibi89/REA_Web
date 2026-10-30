@@ -143,6 +143,12 @@ def inspect(root: Path) -> dict:
                 raise ValueError("Missing or wrong-size delivery file")
             if hashlib.sha256(path.read_bytes()).hexdigest() != record.get("sha256"):
                 raise ValueError("Customer delivery hash mismatch")
+        # On Windows, a manifest file cannot also act as a parent directory.
+        for name in seen_folded:
+            segments = name.split("/")
+            if any("/".join(segments[:index]) in seen_folded
+                   for index in range(1, len(segments))):
+                raise ValueError("Conflicting file and directory paths in manifest")
         required = {
             "app/app.py", "app/data.sqlite", "app/manifest.json",
             "app/requirements.txt", "app/static/index.html", "app/static/app.js",
