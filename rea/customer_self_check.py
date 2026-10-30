@@ -233,6 +233,11 @@ def inspect(root: Path) -> dict:
         db_file = (root / "app/data.sqlite").as_uri()
         with sqlite3.connect(db_file + "?mode=ro", uri=True) as db:
             db.execute("PRAGMA query_only=ON")
+            # A matching ZIP SHA does not prove the SQLite B-tree is intact.
+            # Verify ALL pages/indexes, including tables not used by /api/items.
+            checked = db.execute("PRAGMA integrity_check").fetchone()
+            if checked is None or checked[0] != "ok":
+                raise sqlite3.DatabaseError("SQLite integrity_check failed")
             count = db.execute("SELECT COUNT(*) FROM items").fetchone()[0]
         result["database"] = "READONLY_OPEN_SUCCESS"
         result["row_count_only"] = count
