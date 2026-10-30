@@ -5,7 +5,7 @@ from rea.lite_builder import inspect, build
 
 @pytest.mark.parametrize("theme", ["cafe", "inventory", "office"])
 def test_file_url_update_reopen(tmp_path: Path, theme: str):
-    from playwright.sync_api import sync_playwright
+    from playwright.sync_api import sync_playwright, expect
 
     source = tmp_path / "source.csv"
     source.write_text("item_code,item_name,group,price\nA01,First,Alpha,100\nB02,Second,Beta,200\n", encoding="utf-8")
@@ -33,11 +33,11 @@ def test_file_url_update_reopen(tmp_path: Path, theme: str):
             page.locator("#search").fill("")
 
             page.locator("#csv-file").set_input_files(str(malformed))
-            assert "갱신 실패" in page.locator("#status").inner_text()
+            expect(page.locator("#status")).to_contain_text("갱신 실패")
             assert page.locator("#total").inner_text() == "2"
 
             page.locator("#csv-file").set_input_files(str(replacement))
-            assert page.locator("#total").inner_text() == "1"
+            expect(page.locator("#total")).to_have_text("1")
             page.locator(".record").click()
             assert "Updated, item" in page.locator("#details").inner_text()
 
