@@ -48,6 +48,35 @@ def _version_in_supported_range(
     return not suffix or re.fullmatch(r"\.post\d+", suffix, flags=re.IGNORECASE) is not None
 
 
+def _manifest_pairs(pairs: list[tuple[str, object]]) -> dict:
+    """Refuse repeated keys in an extracted customer's JSON manifest."""
+    unique = {}
+    for name, value in pairs:
+        if name in unique:
+            raise ValueError("Duplicate delivery manifest JSON key")
+        unique[name] = value
+    return unique
+
+
+def _reject_manifest_constant(value: str):
+    raise ValueError("Non-finite delivery manifest JSON value")
+
+
+def _manifest_depth_exceeds(doc, limit: int = 64) -> bool:
+    pending = [(doc, 0)]
+    while pending:
+        value, depth = pending.pop()
+        if isinstance(value, dict):
+            if depth >= limit:
+                return True
+            pending.extend((child, depth + 1) for child in value.values())
+        elif isinstance(value, list):
+            if depth >= limit:
+                return True
+            pending.extend((child, depth + 1) for child in value)
+    return False
+
+
 def _safe_member(name: str) -> bool:
     """Standalone counterpart to the exporter Windows ZIP path policy."""
     if not isinstance(name, str):
@@ -142,9 +171,13 @@ def inspect(root: Path) -> dict:
             raise ValueError("Missing safe delivery_manifest.json")
         if manifest_path.stat().st_size > MAX_MANIFEST_BYTES:
             raise ValueError("Delivery manifest exceeds 256 KiB")
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"),
+                              object_pairs_hook=_manifest_pairs,
+                              parse_constant=_reject_manifest_constant)
         if not isinstance(manifest, dict):
             raise ValueError("Invalid delivery_manifest.json")
+        if _manifest_depth_exceeds(manifest):
+            raise ValueError("Delivery manifest nesting exceeds 64 levels")
         records = manifest.get("files")
         if (manifest.get("schema_version") != "rea.delivery.v0.1"
                 or not isinstance(records, list) or len(records) > MAX_DELIVERY_FILES):
@@ -203,7 +236,7 @@ def inspect(root: Path) -> dict:
             count = db.execute("SELECT COUNT(*) FROM items").fetchone()[0]
         result["database"] = "READONLY_OPEN_SUCCESS"
         result["row_count_only"] = count
-    except (OSError, ValueError, KeyError, sqlite3.Error, json.JSONDecodeError) as exc:
+    except (OSError, ValueError, KeyError, sqlite3.Error, json.JSONDecodeError, RecursionError) as exc:
         result["issues"].append("Archive/extraction/SQLite validation failed: " + type(exc).__name__)
     for name, bounds in DEPENDENCY_BOUNDS.items():
         minimum, maximum = bounds
