@@ -5,11 +5,13 @@ import hashlib
 import json
 from pathlib import Path
 import stat
+import sys
 import zipfile
 
 import pytest
 
-from rea.delivery import DeliveryError, _safe, verify_delivery
+from rea.delivery import DeliveryError, _members, _safe, verify_delivery
+from rea.customer_self_check import _safe_member
 
 
 @pytest.mark.parametrize("bad", [
@@ -73,7 +75,7 @@ def test_normal_regular_entry_keeps_manifest_check(tmp_path):
 
 @pytest.mark.parametrize("bad", [
     "app/<invalid>.txt", 'app/"quoted".json', "app/pipe|name",
-    "app/question?.csv", "app/star*.txt", "app/control\\x01name",
+    "app/question?.csv", "app/star*.txt", "app/control\x01name",
     "app/CONIN$", "app/conout$.txt",
 ])
 def test_windows_forbidden_characters_and_additional_devices(bad):
@@ -97,3 +99,31 @@ def test_casefold_collision_is_rejected_even_when_hashes_match(tmp_path):
         }))
     with pytest.raises(DeliveryError, match="duplicate"):
         verify_delivery(archive)
+
+
+@pytest.mark.parametrize("name", [
+    "app/<bad>.txt", "app/questions?.txt", "app/CONIN$",
+    "app/NUL.log", "app/trailing.", "app/control\\x01name",
+    "app/valid\\bad", "app/sub/../escape", "app/pipe|name",
+])
+def test_extracted_preflight_matches_exporter_path_policy(name):
+    assert not _safe(name)
+    assert not _safe_member(name)
+
+
+@pytest.mark.parametrize("name", [
+    "app/static/index.html", "app/catalog.csv", "README_WINDOWS.md",
+])
+def test_extracted_preflight_allows_exporter_normal_names(name):
+    assert _safe(name)
+    assert _safe_member(name)
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="Windows itself cannot create case-clashing files")
+def test_exporter_refuses_case_colliding_files_before_zip_publish(tmp_path):
+    project = tmp_path / "app"
+    project.mkdir()
+    (project / "Items.csv").write_text("synthetic", encoding="utf-8")
+    (project / "items.CSV").write_text("synthetic", encoding="utf-8")
+    with pytest.raises(DeliveryError, match="collision"):
+        _members(project)
