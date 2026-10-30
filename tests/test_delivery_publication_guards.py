@@ -214,7 +214,8 @@ def test_rehashed_corrupt_unused_sqlite_page_rejected_by_customer(tmp_path):
     """A correct delivery SHA and SELECT COUNT(*) do not imply SQLite integrity."""
     root, manifest = synthetic_extracted_kit(tmp_path)
     database = root / "app/data.sqlite"
-    with sqlite3.connect(database) as db:
+    db = sqlite3.connect(database)
+    try:
         db.execute("CREATE TABLE unused (value TEXT)")
         db.executemany("INSERT INTO unused VALUES (?)",
                        [(f"synthetic-{i}",) for i in range(100)])
@@ -222,6 +223,9 @@ def test_rehashed_corrupt_unused_sqlite_page_rejected_by_customer(tmp_path):
             "SELECT rootpage FROM sqlite_master WHERE name = 'unused'"
         ).fetchone()[0]
         page_size = db.execute("PRAGMA page_size").fetchone()[0]
+        db.commit()
+    finally:
+        db.close()
     with database.open("r+b") as stream:
         stream.seek((broken_page - 1) * page_size)
         stream.write(b"\x00")  # Invalid B-tree page type, unrelated to items.
@@ -234,7 +238,7 @@ def test_rehashed_corrupt_unused_sqlite_page_rejected_by_customer(tmp_path):
     (root / "delivery_manifest.json").write_text(
         json.dumps(manifest), encoding="utf-8"
     )
-    with sqlite3.connect(f"file:{database.as_posix()}?mode=ro", uri=True) as db:
+    with sqlite3.connect(database.as_uri() + "?mode=ro", uri=True) as db:
         assert db.execute("SELECT COUNT(*) FROM items").fetchone()[0] == 1
     check = inspect(root)
     assert check["integrity"] == "MATCHED_DELIVERY_MANIFEST_SHA256"
