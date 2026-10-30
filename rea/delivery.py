@@ -309,6 +309,8 @@ def verify_delivery(archive: Path) -> dict:
         if sum(item.file_size for item in info) > MAX_ARCHIVE_BYTES:
             raise DeliveryError("ZIP contents too large")
         doc = json.loads(zf.read("delivery_manifest.json").decode("utf-8"))
+        if not isinstance(doc, dict):
+            raise DeliveryError("Invalid manifest object")
         if doc.get("schema_version") != SCHEMA:
             raise DeliveryError("Unsupported manifest")
         rows = doc.get("files")
