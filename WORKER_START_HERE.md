@@ -1,3 +1,7 @@
+## 2026-10-31 04:42 KST — Latest Lite synthetic delivery checkpoint
+
+On branch `feature/lite-offline-html-integration`, tested code SHA `202e4dbab9153c4f3003170e8881576d75c63b0c`: GitHub Actions Windows + Ubuntu **2/2 SUCCESS**, with three actual seller CLI synthetic output rehearsals, exact HTML byte-match cross-OS, ZIP+manifest SHA checked. Evidence `docs/61_LITE_CROSS_OS_DELIVERY_EVIDENCE_20261031.md`, artifacts Windows #13007070338 and Ubuntu #13004944630. Original Pro unchanged. Draft PR #31 UNMERGED. Independent human Windows Chrome/Edge, IP/licenses, plaintext privacy, real manual delivery times and seller pricing/refund/support remain BLOCKED/NOT_APPROVED. No Vercel. Handoff in HANDOFF.md.
+
 ## 2026-10-31 04:34 KST — LITE integration update on feature/lite-offline-html-integration
 
 Lite independent code is now committed, and current code/test SHA `91c1d113f81f0b144ba217820e6f0ca4b2350166` passed Windows+Ubuntu real Pro parser and Chromium file:// CI 2/2. Draft PR #31 to Pro development branch, unmerged; customer Windows human NOT_RUN and commercial NOT_APPROVED. Follow branch-local HANDOFF.md/STATUS.md and docs/60_LITE_SALE_GATES_20261031.md. Existing Pro branch and PR #30 remain unchanged.

@@ -1,3 +1,10 @@
+## 2026-10-31 04:42 KST — Lite verified automatic delivery closeout
+
+- Exact tested Lite code SHA `202e4dbab9153c4f3003170e8881576d75c63b0c`, [CI run 41117124085](https://github.com/hibi89/REA_Web/actions/runs/41117124085) Windows+Ubuntu 2/2 SUCCESS. Three independent synthetic seller CLI deliveries/OS and sealed pilot ZIPs also PASS. [Windows artifact #13007070338](https://github.com/hibi89/REA_Web/actions/runs/41117124085/artifacts/13007070338). Source/sha/times `docs/61_LITE_CROSS_OS_DELIVERY_EVIDENCE_20261031.md`.
+- **NEXT P0 human:** one Windows Chrome+Edge Explorer doubleclick direct file:// test of CI-generated `cafe_DEMO.html`, `inventory_DEMO.html`, `office_DEMO.html`, invalid CSV must leave original 3 rows, valid update must show 5, save-new-HTML and reopen must keep 5; measure actual human elapsed time. No server/no Python on customer.
+- **NEXT P1 non-automatable:** source/redistribution rights + third-party NOTICE, owner consent/privacy/delete retention handling; three human timed full jobs; owner-approved price/scope/revision/refund/support. Human/sale NOT_RUN / NOT_APPROVED; no basis to merge Draft PR #31 into Pro or ship customer data.
+- Avoid rerunning CI or creating new features absent reproduced defect. Existing Pro source/PR #30/main untouched.
+
 ## 2026-10-31 Lite next task (priority override; separate integration branch)
 
 - **Verified now:** Lite actual Pro parser and genuine Windows+Ubuntu Chromium file:// CI passed on code SHA `91c1d113f81f0b144ba217820e6f0ca4b2350166`, [run 41116194878](https://github.com/hibi89/REA_Web/actions/runs/41116194878); Draft [PR #31](https://github.com/hibi89/REA_Web/pull/31), DO NOT MERGE. Old Pro branch and PR #30 unchanged.
