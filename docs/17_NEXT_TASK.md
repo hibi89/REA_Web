@@ -1,3 +1,9 @@
+## [ACTIVE 2026-10-31 KST] pydantic-core mismatch closed; remaining blockers require human Windows + rights/terms
+
+- Confirmed official `pydantic/pydantic@v2.14.2` pydantic-core `2.50.2` MIT LICENSE: Linux D12 SHA equals LF source (1080 B) and Windows D12 SHA equals only CRLF-converted bytes (1101 B); precise hashes and official commit in `docs/59_RUNTIME_LICENSE_CROSS_OS_EVIDENCE_20261031.md` and JSON. Not a different license type. Direct wheels were not downloaded; no legal/wheel/NOTICE approval.
+- REA code SHA `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`: 28/28 Actions PASS; PR #30 remains Draft/UNMERGED, no production. Human Windows synthetic trial NOT_RUN, privacy/owner rights/terms/actual delivery time NOT_APPROVED.
+- **Next:** one real operator Windows pilot using newest [synthetic privacy artifact #12997912131](https://github.com/hibi89/REA_Web/actions/runs/41099504224/artifacts/12997912131) as documented; no unnecessary CI/code/doc churn while awaiting true user/environment evidence. Do not install packages or publish data without approval.
+
 ## [ACTIVE 2026-10-31 KST] Third-party runtime actual cross-OS evidence ready, license/owner gates still block sale
 
 - Tested product source `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` **28/28 Actions SUCCESS**, [current real Windows synthetic owner pilot](https://github.com/hibi89/REA_Web/actions/runs/41099504224/artifacts/12997912131) still **NOT_RUN on human PC**.

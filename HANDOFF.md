@@ -1,3 +1,16 @@
+## 2026-10-31 KST — official MIT provenance explains the 14th license hash difference
+
+1. **Goal/scope:** REA_Web commercial readiness without changing proven local FastAPI/SQLite CSV/JSON→ZIP MVP.
+2. **Done:** official upstream `pydantic/pydantic@v2.14.2` (`aa540acc29960fb394312cf97d888c99f9686814`) matches `pydantic-core==2.50.2`, declared MIT; exact `pydantic-core/LICENSE` LF hash equals previous Linux D12 record and conversion-only CRLF hash equals Windows D12 record; difference is newline representation, not license type. Existing report/JSON updated.
+3. **Tests/evidence:** exact source 1080-byte LF SHA256 `2afdd30d54b4d62b6f488a6bcc1546e84ec5061f13f4209c03d012348783795a` and 1101-byte CRLF SHA256 `fbe7f615f18d135c07000e5a86325db27f42c7729699ef166ac1f7a3f4586bf4`; D12 recorded hashes match exactly. Current REA code `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` 28/28 Actions success with D27 Windows 656 pass/4 skip and Linux 645 pass/5 skip. PyPI wheel files NOT fetched; not full legal clearance.
+4. **State:** license hash discrepancy RESOLVED, but REA commercial launch BLOCKED (own code rights/required notices, Windows human, real customer data approval/retention, seller terms/actual timed jobs).
+5. **Failure/pivot:** direct PyPI JSON request in container encountered DNS failure; old standalone pydantic-core tag v2.50.2 was absent. Pivot to current official monorepo matching exact `v2.14.2` and source LICENSE, matching both observed SHA by line ending conversion. Do not repeat failed network approach without environment change.
+6. **Git/source:** `hibi89/REA_Web@feature/d27-windows-python-discovery`, tested code SHA `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`; prior docs SHA `7c58778c32c1f03dc788bef94965c093ae8a30c2`. New docs-only follow-up no CI. Latest docs `docs/59_RUNTIME_LICENSE_CROSS_OS_EVIDENCE_20261031.md`, evidence JSON.
+7. **Runtime/production:** Python3.11+ Windows local FastAPI/Uvicorn/SQLite; GitHub Actions synthetic CI only, no public Production/Vercel.
+8. **Originals/security:** no customer data, security settings, external transfers or Fable/Astra/REA original source modified. Git commit history retained as backup. Copyright license upstream MIT source still requires notices if redistributing substantial copies.
+9. **Next priority:** independent human Windows latest privacy ZIP [artifact #12997912131](https://github.com/hibi89/REA_Web/actions/runs/41099504224/artifacts/12997912131) with clean-folder check/demo and actual results; separately verify owner original generator rights, exact shipped wheel/install terms/NOTICE, customer privacy and seller support/refund/price/delivery time approval. No sale or Draft PR merge without approval.
+10. **Verified as of:** 2026-10-31 KST; official GitHub tag source text and D12 machine evidence hashes; raw PyPI Windows/Linux wheel bytes NOT reviewed and customer device NOT RUN.
+
 ## 2026-10-31 KST — actionable D12/D31 cross-OS legal evidence updated
 
 1. **Goal/tech:** preserve tested REA local Tk CSV/JSON→FastAPI/SQLite Windows ZIP code while reducing documentary uncertainty about actual installed runtime dependencies; no new product scope.

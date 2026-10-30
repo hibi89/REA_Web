@@ -158,5 +158,22 @@
       "license_file_sha256_linux": "efe1acf3e62fb99c288b0ec73e5a773b7268ef4320fe757ea994214e4b63c371",
       "sha256_matching": true
     }
-  ]
+  ],
+  "license_hash_mismatch_explanation": {
+    "package": "pydantic-core",
+    "version": "2.50.2",
+    "finding": "Exact same upstream MIT LICENSE bytes after CRLF-vs-LF conversion",
+    "source_repository": "pydantic/pydantic",
+    "source_commit": "aa540acc29960fb394312cf97d888c99f9686814",
+    "source_path": "pydantic-core/LICENSE",
+    "source_release": "v2.14.2",
+    "official_source_license_SHA256_LF": "2afdd30d54b4d62b6f488a6bcc1546e84ec5061f13f4209c03d012348783795a",
+    "converted_to_CRLF_SHA256": "fbe7f615f18d135c07000e5a86325db27f42c7729699ef166ac1f7a3f4586bf4",
+    "bytes_LF": 1080,
+    "bytes_CRLF": 1101,
+    "licence_type": "MIT",
+    "source_verification": "GitHub official tagged source and local SHA256 conversion; NOT raw wheel byte-for-byte content inspection",
+    "hypothesis_resolved_for_one_diff": true
+  },
+  "license_hash_mismatch_status": "EXPLAINED_BY_LINE_ENDINGS_BUT_ORIGINAL_HASHES_DIFFER"
 }

@@ -1,3 +1,10 @@
+## 2026-10-31 KST — pydantic-core 2.50.2 cross-OS LICENSE SHA mismatch explained conclusively
+
+- Official repository `pydantic/pydantic` tag `v2.14.2`, commit [`aa540acc29960f`](https://github.com/pydantic/pydantic/commit/aa540acc29960fb394312cf97d888c99f9686814), identifies `pydantic-core 2.50.2` in `pydantic-core/Cargo.toml`, explicitly `license = "MIT"`; `pydantic-core/pyproject.toml` also declares `license = 'MIT'` and `license-files = ['LICENSE']`.
+- Exact upstream `pydantic-core/LICENSE` 1080 bytes (UTF-8 LF) → SHA256 `2afdd30d54b4d62b6f488a6bcc1546e84ec5061f13f4209c03d012348783795a`, **matches Linux D12 recorded license SHA**. Converting **only** line endings LF→CRLF produces 1101 bytes → SHA256 `fbe7f615f18d135c07000e5a86325db27f42c7729699ef166ac1f7a3f4586bf4`, **matches Windows D12 recorded license SHA**. No source text, copyright text or clauses changed by this conversion. This explains the one hash mismatch without assuming two different license grants.
+- **Limitation:** direct byte extraction of the two specific PyPI wheels was not achieved in this session (network DNS to PyPI unavailable in sandbox, older standalone pydantic-core tag missing; official source used instead). Matching hashes strongly tie both D12 records to the upstream LICENSE line ending variants, but do not replace a complete customer-specific wheel inventory, exact wheel-hash lock or legal notices review.
+- **Status:** license **type** and mismatch explanation CONFIRMED; REA generator ownership, actual customer ZIP, optional extras/license notices and seller's legal review still `NOT_GRANTED/NOT_APPROVED`. This changes neither tested source SHA `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` nor 28/28 passing workflows; no new code build necessary.
+
 # REA_WEB 런타임 라이선스·취약점 대조 기록 — 2026-10-31 KST
 
 **실측 증거 정리 완료 / 상용 배포 허가 아님.** 코드 테스트 SHA: `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`, [D12](https://github.com/hibi89/REA_Web/actions/runs/41099504228) 및 [D31](https://github.com/hibi89/REA_Web/actions/runs/41099504223) Windows/Linux Actions 성공.
@@ -29,7 +36,7 @@
 
 ## 확인된 차이
 
-`pydantic-core==2.50.2`의 Windows/Linux 라이선스 파일 지문은 서로 다르다. 플랫폼별 wheel 내용 차이 등의 가능성은 있으나 원인과 라이선스 고지 의무는 **미확인**이다. 이것만으로 라이선스 위반이라고 결론 내리지 않는다. 나머지 13개 파일의 지문은 일치한다.
+`pydantic-core==2.50.2`의 Windows/Linux 라이선스 파일 지문은 서로 다르지만, **원인(UTF-8 LF 대 CRLF)은 위 최신 검증에서 정확히 설명됨**. 별도 wheel 추출 및 고객 납품용 고지 의무는 미확인이다. 이것만으로 라이선스 위반이라고 결론 내리지 않는다. 나머지 13개 파일의 지문은 일치한다.
 
 ## 실제 출시 전 필요한 판정
 
