@@ -1,0 +1,244 @@
+## 2026-10-30 KST — independent UI fault paths + loopback Host safety / latest handoff
+
+- **Function commits on feature/d27-windows-python-discovery:** `870f502fc203476126b4a46d3adadfa5e5f9b976` (frontend independent metadata recovery + Chromium regression) and `18398b434cd4134ff341de7f6537ab195fd7cc1c` (generated FastAPI trusted Host guard + regression tests). PR #30 stays DRAFT/open/unmerged; no force pushes or production deployment (offline ZIP).
+- **Actual GUI fix:** `rea/templates/static/app.js` previously lost a valid summary when schema-only `/api/schema` failed and lost valid schema when only `/api/summary` failed. Now each API settles independently, leaving successful sections visible, clearing only the failed section, and showing the specific warning. Existing list-fetch failures continue to clear stale list and selected detail.
+- **Exact GitHub JS blob independent execution:** `171ff64486a76fbed7f674973c94fe1dc84b64af` loaded and executed in isolated synthetic JavaScript/DOM/fetch model: six cases PASS (no faults, categories fail, summary fail, schema fail, both metadata fail, items fail). This is **not real Chromium**, full app, or localhost HTTP.
+- **Browser QA regression improved:** `scripts/d3_browser_acceptance.py` now injects aborted list request after valid detail for synthetic inventory (non-Fable), so it is covered even with `--skip-fable-review`. Added independent schema/summary fault-injection + expected successful-section preservation and reset cases for inventory. **Tests committed, not run in Chromium here**.
+- **Security fix:** generated FastAPI uses Starlette `TrustedHostMiddleware` with explicit hosts `127.0.0.1`, `localhost`, `testserver` (last for existing in-process TestClient tests) to reject DNS-rebinding style arbitrary Host headers prior to local SQLite API access. New `tests/test_generated_host_guard.py` includes 3 trusted-host variants, 4 malicious-host variants across 8 paths, and pre-DB rejection assertion (36 parametrized test cases); **new committed pytest module NOT_EXECUTED**.
+- **Executed isolated middleware verification:** FastAPI/TestClient with identical TrustedHostMiddleware allowlist: `127.0.0.1:8765`, `localhost:8000`, `testserver` returned HTTP 200; `attacker.example`, `attacker.example:8765`, `127.0.0.1.attacker.example`, `localhost.attacker.example` returned HTTP 400. 7/7 PASS. This was an isolated focused reproducer, **not** exact generated application checkout.
+- **Exact GitHub code readback:** app blob `2c6e7a35fd16c53d948d815bf3e25ece6b2086bc`, host-test blob `656d56bc22fa742e48d7c11705afd56c16b8995f`. Verify unmodified originals by GitHub connector before any future change.
+- **New exact code SHA CI:** 56/56 checks and 29/29 Actions workflows are QUEUED, not failed and not passed. GitHub direct clone still DNS blocked in current Linux container; independent local full Windows CMD and Chromium runs **NOT_RUN**. Keep CI nonblocking; when runners complete inspect D27 Windows/Linux, D3 Chromium, D31 runtime audit, plus new host and metadata tests, and resolve only reproduced errors. This is a hard verification dependency, not a basis to claim 100%.
+- **Product gate:** engineering 95% and sale prep 77% remain historical qualitative estimates, NOT remeasured. Independent human nondeveloper Windows acceptance NOT_RUN; commercial redistribution rights NOT_GRANTED; real customer privacy/data handling, support/terms NOT_APPROVED; timed human delivery rehearsal NOT_RUN. Commercial sale **NOT APPROVED**.
+
+---
+
+## REA_Web current handoff — 2026-10-30 KST, technical closeout sprint
+
+**Verified GitHub code checkpoint:** `c52296bbf388547f118186e5e67298a7e002d0cb`, branch `feature/d27-windows-python-discovery`, Draft PR #30 OPEN/UNMERGED. Vercel production not applicable; offline Windows ZIP delivery product. No merge or force push.
+
+**Two substantive code changes this sprint:**
+1. `d042d99e750c6e1c777b8530bc12a8f71cdd0b17`: generated app `rea/templates/static/app.js` now launches primary list, overview, and optional categories fetch independently using `Promise.allSettled`. Failure of the optional categories endpoint no longer blocks all visible customer rows; overview failure shows explicit bounded error while preserving list functionality. `scripts/d3_browser_acceptance.py` adds a real Chromium network fault injection to the inventory case, checking list/summary survive category API failure and recover after reload. Earlier cafe aborted-list regression is retained.
+2. `c52296bbf388547f118186e5e67298a7e002d0cb`: generated `rea/templates/app.py` now validates bounded (<=256KiB) `schema_preview.json` through a common metadata reader and returns safe HTTP 503 on missing, oversized, malformed or incompatible shape. `/health` now checks both metadata and read-only SQLite, so cannot falsely claim normal readiness when required schema is lost. `/api/schema` and `/api/summary` share the bounded reader. Healthy behavior and read-only SQLite semantics preserved; no customer source altered. `tests/test_generated_db_unavailable.py` adds two committed metadata failure tests. They have not been directly executed in the full original checkout.
+
+**Executed tests with observed results:** Exact GitHub JS blob `010d1218ee2b564039dfc23105f0c5a60ce20648` compiled and executed in a synthetic JS DOM/fetch test harness: four cases PASS/0 FAIL (normal, category unavailable, summary unavailable, list unavailable). Exact GitHub Python app blob `ca185bd1e9df662e12423a76c572da103ff5b723` was reconstructed in a separate Python 3.13.5/FastAPI TestClient Linux sandbox and independently confirmed by Git blob SHA1 equality and Python AST parse. With a generator-compatible synthetic SQLite fixture, **31/31 HTTP assertions PASS** on healthy /health, literal wildcard search, list/summary/schema/category/detail, missing/malformed/oversized metadata (consistent 503), DB missing/table dropped (consistent 503), and no DB recreation/owner row change. Initial harness had a missing `assert_status` helper causing NameError before any assertions; helper was added and the full harness was rerun 31 PASS. These are exact runtime file tests but NOT the full original repository, original `rea.mvp.generate`, Windows CMD/Chromium or independent end-user validation.
+
+**CI:** Latest prior documentation HEAD `fdc541e8` 28 Actions workflows/56 checks were QUEUED, no conclusions. New code-head D3/D27/D31 pending; no current-head CI PASS claim. Do not repeatedly poll. Run full original-checkout pytest, D3 Chromium and Windows generated ZIP native smoke when runners execute. Fix actual failures only; preserve functionality/data.
+
+**Release state:** Historical engineering ~95% and seller readiness ~77% are qualitative old estimates, not remeasured. Independent nondeveloper Windows acceptance NOT_RUN, source/vendor and exact shipped-dependency redistribution rights NOT_GRANTED, data authorization/privacy handling NOT_APPROVED, seller price/terms NOT_APPROVED, human-timed delivery rehearsal NOT_RUN. Therefore **NOT APPROVED FOR SALE**. Completion remains PARTIAL/TECHNICAL-VERIFICATION-PENDING.
+
+**Next steps:** (1) exact-head D27 Linux/Windows full regression and D3 browser, D31 security results after queue drains; (2) real Windows original generated ZIP -> new-folder restore -> command-line prerequisite check -> localhost /health/items/search/detail -> restart, plus manual screenshot/inspection; (3) independently authorize external licensing, data/privacy, seller terms and real Windows operator acceptance. No source license grant may be inferred from passing tests.
+
+---
+
+## 2026-10-30 KST — generated SQLite API fail-closed handler (exact-source isolated HTTP verified)
+
+- **Code commit** `e6a41eacf86c4f37e72c47ed6e8d84e1faccd3e9`, branch `feature/d27-windows-python-discovery`; Draft PR #30 OPEN/UNMERGED; Vercel/Production **N/A** (local Windows ZIP).
+- **Behavior implemented** in `rea/templates/app.py`: register a FastAPI handler for `sqlite3.Error` that returns HTTP 503 JSON `{"detail":"Local catalog unavailable"}` without revealing a SQLite path or SQL internals. Existing `/health` 503 when DB corrupt/missing remains. Healthy list/category/summary/detail and HTTP 404 on unknown item remain. Data access still uses read-only mode and closes DB handles in `finally`.
+- **New committed synthetic integration regressions** `tests/test_generated_db_unavailable.py`: 3 pytest test functions covering missing database (must not create new DB), missing `items` table (consistent 503 on health/items/categories/summary/detail, schema endpoint independent), and healthy endpoint behavior. These **three original-repository test functions have not been directly run**. Their code is committed, not a pytest-pass claim.
+- **Executed bounded HTTP validation of the exact GitHub app blob:** fetched `rea/templates/app.py` from code commit, recreated it byte-identically in a separate Linux Python 3.13.5 FastAPI TestClient sandbox, and verified its **Git blob SHA matches `7942313106f07cf780bc76e944c89e8e8756aba1`**. Created a synthetic SQLite table with generator-compatible schema, local static path and schema-preview fixture (not actual generator). Ran actual FastAPI TestClient requests: healthy 7/7, dropped items table 6/6, missing database 6/6 = **19 route assertions PASS / 0 FAIL**. Confirmed missing SQLite file is not recreated. Environment FastAPI 0.128.2, Starlette 0.50.0, httpx 0.28.1; these are test-environment packages, **not the shipped product's dependency-clearance evidence**.
+- **CI:** Previous exact HEAD's 28 workflows / 56 checks QUEUED, no failure conclusion. New code-head Actions Windows/Linux full-suite/Chromium results **NOT_VERIFIED**; do not substitute local 19 assertions for full original-checkout pytest, Win CMD, actual browser, or human acceptance. Container git clone failed Github DNS before this change; do not repeat the same blocked clone. CI is nonblocking.
+- **Commercial gates unchanged:** historical engineering 95% / sale readiness 77% are previous qualitative estimates, not recalculated; independent nondeveloper Windows acceptance NOT_RUN, source/runtime redistribution rights NOT_GRANTED, dependency NOTICE/licensing NOT_GRANTED, real customer authorization/privacy NOT_APPROVED, seller terms NOT_APPROVED, timed delivery rehearsal NOT_RUN. **NOT APPROVED FOR SALE**.
+- **Next task:** check D27 (Windows+Linux full pytest), D3 Chromium including previous failed-fetch injection, and D31 generated-runtime audit at latest exact commit once runners conclude. Fix only actual failures. Do not merge or force push Draft PR. Then continue exact-source generated ZIP/localhost/recovery tests, and external human/rights gates when evidence becomes available.
+
+---
+
+## 2026-10-30 KST — Readonly SQLite handle lifecycle and truthful /health (technical code checkpoint)
+
+- **Code commit:** `43d66c60b02b23bed62997e833a7ce45c82b4897` on `feature/d27-windows-python-discovery`; PR #30 still DRAFT/OPEN/UNMERGED. No merge/force update, Vercel N/A (offline local Windows ZIP).
+- **Identified from actual generated runtime:** `rea/templates/app.py` used `with sqlite3.Connection`, which commits/rolls back but does not close its file handle. Wrapped generated SQLite `connection()` in `contextlib.contextmanager` with `finally: db.close()`, covering normal queries, detail 404 and errors. The existing read-only `mode=ro` / `PRAGMA query_only=ON` remains.
+- **False-positive health fixed:** `/health` previously returned unconditional 200 even for a missing/broken SQLite catalog. It now executes read-only `PRAGMA quick_check(1)` and a bounded `items` query; missing DB, corrupt unrelated B-tree and missing items table return HTTP 503 with only `Local catalog unavailable` (no filesystem-path disclosure). Healthy response remains unchanged.
+- **New committed regressions:** `tests/test_mvp.py` contains 3 tests: explicit close tracking on 4 endpoints, missing DB does not get created and health returns 503, corrupt unrelated SQLite page while ordinary items query succeeds forces health 503. Full original-repository test module was **NOT EXECUTED** in this session.
+- **Executed isolated Linux FastAPI/TestClient+SQLite proof:** 2 standalone synthetic scenarios PASS: healthy `/health` 200 and normal `/api/items` with connection handles closed; corruption of unrelated SQLite B-tree leaves `items` query working but health 503; absent DB returns 503 and is never created. This reproduced the exact proposed health/connection mechanism, **not the generated original checkout**, Windows CMD, browser, or full CI.
+- **Exact GitHub source readback:** app blob `952bf4c42e9c0222bdf6f50ac469d80e3ee68581`; tests blob `5b8f0a5761ef19d5dc663c3c5e03c554fbbdd157`; anchors, escaped fixture literals and absence of NUL checked against the committed files. Readback is not execution.
+- **CI and verification gap:** preceding documentation-head exact 56/56 checks QUEUED; latest code-head results require separate check; do not report queued as success. Direct full GitHub ZIP retrieval was blocked by runtime URL restrictions even after an attempted web-open; source was verified through connected GitHub instead. Stop retrying unchanged archive download. Next: review exact-head D27 Windows/Linux full suite and D3 Chromium (including previous failed-list fetch), run original checkout when available; fix only reproducible failures.
+- **Commercial state unchanged:** historical 95% engineering / 77% sales preparation are qualitative carryovers, not remeasured. Real nondeveloper Windows acceptance NOT_RUN; source/dependency commercial redistribution rights NOT_GRANTED; customer privacy/data handling, seller terms NOT_APPROVED; timed human delivery NOT_RUN. **NOT APPROVED FOR SALE.**
+
+---
+
+## 2026-10-30 KST — REA_Web list-fetch failure safety / current handoff
+
+- **Committed executable fix:** `99caeaa4dfd3a05b3518a725d78000189d6222c5` on `feature/d27-windows-python-discovery`; PR #30 still Draft/open/unmerged. `rea/templates/static/app.js` now clears previous search rows, selected detail, displayed item count and pagination on a current /api/items fetch failure; a stale failed request cannot overwrite newer state (requestId guard retained).
+- **Real-browser regression added, not yet executed:** `scripts/d3_browser_acceptance.py` injects an aborted /api/items request after prior successful item-detail display in its synthetic cafe case, asserts the old rows/details are gone, then restores the route and reloads. Do not claim Chromium PASS until an exact-commit Actions result or local run is available.
+- **Executed direct isolated verification of exact GitHub JS blob `43206978b4b211bd27c90be8ee2303939028f031`:** JavaScript parse PASS; synthetic DOM/fetch test initial list `1건` then simulated fetch exception PASS: count `조회 실패`, old row/detail removed, page status reset, pagination hidden and error shown. An initial test harness had a startup microtask overlap (initial row not yet painted); rerunning with the init microtasks settled passed. This is not Chromium, real HTTP, or full checkout verification.
+- **CI:** code SHA `99caeaa` exact-commit GitHub check-runs query returned 56/56 QUEUED, no conclusions; do not treat queue as PASS or FAIL. No local original-checkout Windows/full-suite execution in this tranche. Previous completed CI results were on older commit(s).
+- **Product/ownership:** customer-approved CSV or flat JSON (optional separately approved same-schema two-file ROW APPEND) → readonly FastAPI/SQLite → offline Windows ZIP. No Vercel production. Historical development 95% / commercial preparation 77% remain unmodified qualitative estimates; human Windows acceptance NOT_RUN, source/dependency redistribution rights NOT_GRANTED, customer privacy/data handling and seller terms NOT_APPROVED, measured human delivery NOT_RUN. **NOT APPROVED FOR SALE.**
+- **Next actionable verification:** inspect exact code SHA D3 Chromium fault-injection job and D27 Windows/Linux full regression when not queued; address reproduced failures only. Run extracted Windows ZIP /health, search/filter/detail/restart on independent user PC. Do not force push, merge Draft PR, or use real customer data without permission.
+
+---
+
+## 2026-10-30 REA_Web SQLite integrity and recovery closeout
+
+- **Code checkpoint before docs:** `c7d335d504eff70029f0d3286830d5410f810b84`. Branch `feature/d27-windows-python-discovery`, PR #30 still DRAFT/OPEN/UNMERGED. No Vercel deployment; only local ZIP.
+- **Actual bug fixed:** a SQLite database may answer `SELECT COUNT(*) FROM items` successfully while an unused B-tree table is corrupted. Previously extracted-kit checker accepted the database despite this separate corruption. `rea/customer_self_check.py` now runs read-only `PRAGMA integrity_check` for the entire SQLite database before considering `READONLY_OPEN_SUCCESS`; SQLite errors fail closed with `FAIL_LOCAL_PREREQUISITES`. Because `rea/recovery.py` refuses any database other than `READONLY_OPEN_SUCCESS`, corrupted DB can never be published into a new recovery folder.
+- **Regression committed:** `tests/test_delivery_publication_guards.py` reconstructs synthetic SQLite corruption of a separate unused table B-tree page, updates manifest SHA, demonstrates `COUNT(items)=1` passes yet full SQLite validation rejects it. `tests/test_recovery.py` builds actual synthetic package, creates a rehashed tampered ZIP where `verify_delivery` still passes and `COUNT(items)=4` passes, and asserts `restore_delivery` refuses publication. `tests/test_d11_rehearsal.py` now asserts recovery failure aborts the three-case synthetic quote-to-delivery trial without publishing a partial batch.
+- **Executed isolated Linux Python 3.13:** relevant prior focused test modules + new synthetic corrupted-DB recovery test **83/83 PASS**, 0 FAIL. The exact GitHub `inspect` function normalized to 6711 chars / Adler32 fdcad913 and matched local isolated implementation; checker blob 766780b832bc291d08f1542f8c85e85854dea4e9. The integrated original-repository new regression modules, full Windows CMD and browser E2E remain NOT_RUN; isolated workspace includes partial modules and stubbed semantic provenance.
+- **CI:** first-page 28 runs on previous HEAD all QUEUED. CI remains non-blocking; do not claim the latest code passed Windows/full CI. Later inspect exact-commit D11, D27 Windows/Linux/browser and D31 audit only after runners execute. Do not repeatedly poll.
+- **Unchanged commercial blockers:** independent nondeveloper Windows acceptance, source redistribution rights, shipped dependency NOTICE and licenses, actual data/privacy authorization, seller terms, human timed delivery rehearsal. Historical estimates 95% engineering / 77% sale prep are qualitative unmodified estimates, not verified completion. NOT APPROVED FOR SALE.
+- **Next:** direct exact-source full checkout D11 3 case, recovery 11 case, bounded SQLite integrity and Windows CMD/localhost/browser; fix only confirmed failures. No PR merge or force push.
+
+---
+
+## REA_Web new local recovery capability — 2026-10-30 KST
+
+- Product checkpoint preceding handoff: `ae028d7923165eb4d5286501e7af272446c59836`; PR #30 OPEN/DRAFT/UNMERGED; production URL/Vercel N/A (offline Windows ZIP).
+- **New useful function** `rea/recovery.py`: `python -m rea.recovery --zip ORIGINAL.zip --out NEW_FOLDER`. Stages bounded archive copy, verifies frozen bytes' delivery SHA+semantic owner-receipt inventory, extracts safely, verifies exact extracted tree, rehashes all files, opens SQLite read-only and compares actual row count with generated manifest, atomically publishes only to a fresh directory with no overwrite. Original ZIP preserved. Results explicitly indicate NO Windows launch/installed dependency/commercial clearance approval. New operator guide `docs/57_OFFLINE_ZIP_RECOVERY.md`, README instructions.
+- **Regression** `tests/test_recovery.py`: nine test functions, ten parametrized cases (CSV, JSON, approved same-schema pair, tampered ZIP, incorrect rehashed row count, existing owner dir, publish race, oversized archive, symlink and CLI). Code committed to GitHub; **full original repo test module NOT_RUN** in this sandbox.
+- `scripts/d11_rehearsal.py`: integration with the existing 3 actual synthetic generated ZIPs; each case now uses new restore CLI API to verify a fresh independent extraction and SQLite row count before synthetic trial publication. `tests/test_d11_rehearsal.py` checks a deterministic non-commercial recovery evidence field. These original repo E2E cases are queued for CI and were NOT_RUN locally.
+- **Executed isolated Linux 3.13**: exact GitHub blob for new `rea/recovery.py` (Git blob `27f1806788a67a31d5aa7f68109ce639036f814e`) matches local file. Focused 7/7 recovery tests PASS (includes temp staging, manifest+SQLite, no-overwrite, corrupted ZIP, wrong row count, race, oversize, CLI); combined earlier isolated tests 82/82 PASS. The local harness used a partial previously mirrored `delivery`/`customer_self_check` and a STUB semantic provenance module; results are NOT full source/Windows validation.
+- Current exact latest-commit CI pass status **NOT_VERIFIED**; prior GitHub checks were queued and do not block development. Check D11, D27 Windows/Linux and D31 audits only after actual execution evidence. Avoid pretending queued == failed/passed.
+- Historical engineering ~95% / commercial prep ~77% remain qualitative unrecalculated estimates. The six independent human/legal gates still open: native end-user Windows acceptance, source redistribution rights, exact dependency notice/licensing, customer privacy/data handling, seller terms and measured manual delivery time. Sale NOT_APPROVED.
+- Next engineering task: run full original-checkout new recovery tests, D11 three-case synthetic regression, Windows cmd/localhost/browser; fix confirmed failures only. Do not merge or force-push PR.
+
+---
+
+## REA_Web checkpoint — strict ZIP manifest + customer checker — 2026-10-30 KST
+
+- **Code checkpoint:** `7fb2e460bf4aa55abcfdb7d84c3ad33f94ab232a` on `feature/d27-windows-python-discovery`; PR #30 OPEN/DRAFT/UNMERGED. Changes are substantive executable code, not documentation-only.
+- `rea/delivery.py`: ZIP `delivery_manifest.json` limited to 256 KiB; duplicate JSON object keys, NaN/Infinity, malformed UTF-8/JSON, invalid integer-size metadata including bool, and JSON nesting beyond 64 levels are rejected with bounded DeliveryError. Existing 100-member/25MiB total limits and SHA checks remain.
+- `rea/provenance.py`: generated internal app/schema/mapping/append/review JSON also rejects nonfinite constants and nesting beyond 64 levels, in addition to prior type/duplicate-key checks. One shared `_json_depth_exceeds` in delivery is imported at runtime; no new dependency.
+- Shipped standalone `rea/customer_self_check.py`: extracted delivery manifest now rejects duplicate keys, nonfinite constants and >64-level nesting; catches RecursionError for safe FAIL_LOCAL_PREREQUISITES rather than traceback. Existing bounded manifest/streaming integrity checks retained.
+- Tests committed: `tests/test_delivery_manifest_strict.py` **17 pytest cases**, expanded `tests/test_provenance_malformed_metadata.py` by **8 cases**, expanded `tests/test_delivery_publication_guards.py` by **5 cases**. These three latest test updates are NOT run as a full, unmocked checkout.
+- **Executed focused isolated Python 3.13:** 17/17 ZIP manifest tests + 13/13 generated JSON parser tests = **30 PASS** (functions independently verified against source checksums). Another isolated focused run covering prior sale/ZIP tests and extracted customer manifest = **75 PASS**. SHA/checksum equality matched 5 main ZIP functions, 3 provenance JSON parser functions, and 4 customer-parser/inspect functions. These are separate isolated test scopes and must NOT be described as full original-repo regression, native Windows E2E or consumer signoff.
+- **Important reproduced failure and fix:** initial depth test saw **1 failure** because this Python runtime accepted 1,500 nested arrays. Replaced implicit parser RecursionError expectation with explicit 64-level cap and re-ran: 17/17 PASS. Do not claim the code was correct before this fix.
+- **CI handling:** Initial exact-head GitHub Actions first-page 28 PR-triggered runs all QUEUED, with no conclusion. Skip CI waiting; inspect only after actual completions. No latest-code CI PASS claim.
+- **Scope and gating:** customer-authorized CSV/flat JSON → approved mapping → local read-only FastAPI/SQLite + offline Windows ZIP, optional same-schema ROW APPEND only. No hosted Vercel URL or customer production deployment. Qualitative old development 95% / sale preparation 77% remain estimates, not remeasured. Independent Windows human acceptance, source/dependency redistribution rights, customer privacy/data handling, seller terms and timed manual delivery remain **NOT_RUN/NOT_GRANTED/NOT_APPROVED**. NOT APPROVED FOR SALE.
+- **Next:** on genuine checkout run new strict JSON tests, existing full regression and generated ZIP Windows CMD+localhost+Chromium; fix actual failures. No merge, force push or artificial approval.
+
+---
+
+## 2026-10-30 — REA_Web semantic release gating checkpoint
+
+- **Code checkpoint** `323013c2235884537389282045f7ed22437540b5`, feature branch `feature/d27-windows-python-discovery`, PR #30 OPEN/DRAFT/UNMERGED. Previous safety work retained.
+- **Main change:** `rea/provenance.inspect_delivery` now refuses non-object, malformed UTF-8 and duplicate-key generated JSON documents (app manifest, schema preview, mapping receipt, two-file append receipt, optional Fable review) with bounded `AuditError`, and validates owner mapping fields before set/value operations. Rehashed ZIP contents no longer bypass semantic document-shape checks.
+- **Publication integration:** `rea.delivery.create_delivery` now requires full `inspect_delivery(stage)` semantic allowlist/receipt audit AFTER ZIP integrity verification and BEFORE atomic publication, analogous to existing two-source ZIP handling. Stale approved source is rejected before creating destination parent. Existing source SHA is rechecked before publish; original owner files are not modified.
+- **New/expanded regression:** `tests/test_provenance_malformed_metadata.py` contributes 15 parametrized synthetic ZIP cases covering malformed JSON, duplicate metadata keys, wrong input-kind type, mapping field types, two-source malformed receipt and clean-baseline acceptance; `tests/test_delivery_publication_guards.py` adds semantic-audit non-publication and valid semantic audit tests plus no destination parent on stale approval. Tests **committed, not executed on original checkout** in this session; no synthetic test PASS claimed for them.
+- **File checkpoint:** `rea/provenance.py` Git blob a21a989ac6d9dc383978ec893c7f5da93246dc6b; `rea/delivery.py` Git blob 43722783b5d79f782fa6c8fdb41e57c6861f0885; `tests/test_provenance_malformed_metadata.py` Git blob e135f52ff7c31c1ec15b9485ed2aea7112b91a5f; `tests/test_delivery_publication_guards.py` Git blob 8e906f9bf7df06e3f339132f09880ad812480613. Test/commit identifiers point to source, not proof of execution.
+- **CI policy:** Do not block on queued GitHub Actions; inspect D27 Windows/Linux/Chromium and D31 security after runners produce results. Do not infer latest-code PASS from old CI. Prior isolated tests do not establish full Windows E2E.
+- **Scope:** customer-authorized CSV/flat JSON; explicit field mapping and consent; optional same-schema two-file ROW APPEND; local read-only FastAPI/SQLite Windows ZIP. No scraping, different-schema JOIN, auth/payments or hosting. No Vercel project/production deployment.
+- **Commercial gates:** Independent nondeveloper Windows acceptance NOT_RUN; source redistribution and dependency/license notice clearance NOT_GRANTED; data/privacy handling and seller terms NOT_APPROVED; human-timed delivery rehearsal NOT_RUN. Historical qualitative 95% engineering / 77% seller prep not remeasured. **NOT APPROVED FOR SALE.**
+- **Next priority:** Run exact-checkout synthetic ZIP proof for single CSV, JSON, approved mapping, same-schema append and corrupted metadata; execute Windows CMD+localhost+browser once a runner is available; only repair reproduced failures. No merge or force-push.
+
+---
+
+## REA_Web production-path hardening — 2026-10-30 KST
+
+- Feature branch: feature/d27-windows-python-discovery; PR #30 remains draft and unmerged. Code/test checkpoint **cc894dfd459f1dea55c05c6963bb8f4558a71d67**.
+- Actual work, not CI waiting: (1) `rea.delivery.create_delivery` now SHA-pins the customer-owned CSV/flat JSON source before building and rechecks it after archive verification but BEFORE atomic ZIP publication; source mutation must leave no new ZIP. An explicit preflight source SHA mismatch also aborts before build. (2) Shipped stdlib-only `rea.customer_self_check` now caps manifest bytes to 256 KiB, inventory to 100 members and total described file bytes to 25 MiB, validates per-member size and SHA-256 format, and hashes extracted files in 64-KiB chunks instead of unbounded `Path.read_bytes()`.
+- New `tests/test_delivery_publication_guards.py`: 8 test functions / 13 pytest cases covering clean extracted SQLite, chunked checksum, oversized manifest, six malformed metadata variants, changed source before publish, stale approved source before build and no overwrite of existing private ZIP. These tests are COMMITTED; the entire original-repository new test module is **NOT_RUN** here. Do not claim 13/13 passing.
+- Independent isolated Python 3.13 smoke on exact-matching checker source excerpts: synthetic ZIP verification PASS; extracted manifest SHA PASS; read-only SQLite row count 4 PASS; unknown extracted file rejected PASS; oversized manifest rejected PASS; 101 inventory rejected PASS; 70KB chunked SHA PASS. `inspect` and `_member_sha256_bounded` excerpts independently matched connected GitHub on normalized function Adler32: 42be1972 and e584c915. This is focused isolated code/excerpt verification, NOT actual product ZIP/Windows customer E2E or native app launch.
+- GitHub blob IDs: checker c9eb3bf24ba9be8313a926a0879aa2a96132e2e2, exporter 4b281f19c560abfc5aad339ca8f2ce0df2f9af83, test f3751b64eb090c1ca3f398b278adb1b7a6c69ab8. Previous bounded source fingerprint (mvp/guided/two_source) and Windows collision hardening remain.
+- CI rule: pending/queued workflows are NON-BLOCKING; do not wait/poll repeatedly. At later natural checkpoint, use exact HEAD D27 Windows/Linux/full pytest, D3 browser and D31 audit outcomes; investigate only actual job failures.
+- Status: offline Windows ZIP, Vercel N/A. Historical development ~95%, sales prep ~77% qualitative estimates unchanged (not recalibrated); **sale NOT APPROVED**. Six real-world gates (independent Windows operator, source redistribution rights, shipped dependency notices, privacy/handling authorization, seller terms, human-timed delivery rehearsal) require external real evidence; no fake signatures or approval.
+- Next: original full checkout/exact-head test module and Windows CMD + generated ZIP/Chromium E2E, ideally when external CI runners execute. Keep feature branch open; no merge/force push.
+
+---
+
+## LATEST REA_Web continuation — 2026-10-30 KST
+
+1. Goal: customer-authorized CSV/flat JSON → explicit mapping approval → read-only local FastAPI/SQLite Windows ZIP. Optional approved same-schema ROW APPEND. No JOIN, hosting, login, payments, scraping or live sync. Hypothetical 299,000 KRW offer, not approved for sale.
+2. Code: rea/delivery.py now rejects case-insensitive parent-file/nested-file collisions such as app/Foo and app/foo/child.txt using _member_paths_conflict. Standalone rea/customer_self_check.py rejects the same conflict in an extracted manifest. Regression tests in tests/test_delivery_zip_hardening.py. Prior Windows device names, ADS, symlinks, non-object manifest and release-date validation preserved.
+3. Evidence: Code checkpoint e0fb1d89c69ca0143168ef6e04d7b10ffcbe4288. In an isolated Linux Python 3.13 workspace, python -m pytest -q tests/test_sale_gate.py tests/test_delivery_zip_hardening.py: 69 PASS, 0 FAIL. Regression file matched GitHub blob b776228ca47a6290bce23e293784789ab766a2c3; core validator and customer-check function excerpts checked against GitHub. A hand-built synthetic ZIP was verified, extracted, with manifest SHA and 4-row read-only SQLite checks PASS and an unlisted-file refusal PASS. NOT the original full repository checkout, product-generated ZIP, Windows E2E or browser test. The isolated environment reported FAIL_LOCAL_PREREQUISITES, not an application launch.
+4. CI: PR #30 OPEN/DRAFT/UNMERGED; code checkpoint's first-page 28 Actions workflows all QUEUED, including D27 and D31. No current-code whole-suite PASS. Engineering 95% and sale preparation 77% remain old qualitative unrecalculated estimates. No 100% completion claim.
+5. Issue/pivot: ZIP verifier previously ACCEPTED a file/directory prefix alias on case-sensitive Linux, despite Windows extraction conflict. Fixed and regression-covered. Direct git clone failed GitHub DNS; fetched exact source/test through connected GitHub instead. Queued jobs have no failure logs, so do not claim job failure.
+6. Repository: hibi89/REA_Web, branch feature/d27-windows-python-discovery, code SHA e0fb1d89c69ca0143168ef6e04d7b10ffcbe4288, PR https://github.com/hibi89/REA_Web/pull/30 targeting integration/develop. No PR merge/force push; preserve upstream pinned source branches.
+7. Deployment: offline Windows ZIP, not Vercel; Production URL/project N/A. Requires Python 3.11+ and compatible requirements. Exact-source native Windows CMD/localhost/Chromium/restart still NOT_VERIFIED.
+8. Security/original: no real customer material or secrets used; preserve originals, Git commits provide rollback. Shipped SQLite is plaintext. Redistribution rights, dependency notices and real customer privacy approval NOT_GRANTED.
+9. Next: after CI runs, inspect exact code SHA D27 Windows/Linux/Chromium and D31 audit; fix only confirmed problems. Run original-checkout full pytest and actual generated synthetic ZIP + extracted Windows CMD/browser E2E. Human Windows acceptance, source rights, dependency notices, data handling, seller terms, measured human delivery remain six separate gates requiring actual evidence.
+10. Updated 2026-10-30 KST. Confirmation scope: 69 isolated source/test cases, 4 synthetic archive/checker checks, GitHub branch and first-page queued CI. Documentation head after this update must be re-read. Classification PARTIAL / SALE BLOCKED.
+
+---
+
+## REA_Web D27 continuation — 2026-10-30 KST (supersedes prior test snapshot)
+
+- **Product code/test checkpoint:** `55cf80d162f1a725f075867104ced3f6821d1d1e` on `feature/d27-windows-python-discovery`; PR #30 stays OPEN/DRAFT/UNMERGED. Commit `1368a199` hardened exporter Windows device aliases and `eb8b3853` matched shipped offline customer checker, `55cf80d` added a six-case regression. Windows also reserves superscript COM¹/²/³ and LPT¹/²/³ (Microsoft official Naming Files, Paths, and Namespaces guide).
+- **Focus tested:** Linux Python 3.13 `python -m pytest -q tests/test_sale_gate.py tests/test_delivery_zip_hardening.py` yielded **63 passed / 0 failed** in a deliberately isolated fixture workspace. The focused regression source file is verified identical to GitHub blob `4f5936b425c02a95d927b96cae0c8d1b52f0e321`; exact GitHub function checksums matched for `_safe`, `_members`, `verify_delivery`, and `_safe_member`. The helper modules used isolated source excerpts/stubs, **not the original full repository checkout**, native Windows or complete produced-ZIP E2E. The separate Linux environment has no `github.com` DNS for cloning.
+- **CI observation:** On code checkpoint `55cf80d`, first 28 PR-triggered GitHub Actions runs were **QUEUED**, including D27 and D31. This is **not a failed job**, but there is **no latest-code Actions PASS evidence**. Old `c42c4c4` 29/29 SUCCESS cannot be transferred. A new documentation SHA after this update needs fresh head/CI lookup.
+- **Production:** No Vercel project/URL applies; release target is offline local Windows ZIP, not hosted production. User-facing Windows native launch/browser/CRC/restart on exact code checkpoint **NOT_VERIFIED**.
+- **Release gate unchanged:** Independent nondeveloper Windows acceptance NOT_RUN, actual source/dependency commercial redistribution rights NOT_GRANTED, privacy/customer-data handling NOT_APPROVED, seller terms NOT_APPROVED, measured human delivery rehearsal NOT_RUN. The six-field machine ledger alone is **not approval**. Prior engineering 95% and sale preparation 77% are *qualitative unrecalculated estimates*, not measured completion. **NOT APPROVED FOR SALE**.
+- **Next task:** Check D27, D31 CI for this exact code HEAD after runners execute; inspect failing job logs, do minimum code correction; complete original-checkout Python 3.11 pytest plus synthetic Windows ZIP/extract/CMD/Chromium E2E when supported. Do not merge or force-push, and do not generate fake owner/rights sign-off.
+
+---
+
+## [LATEST] REA_Web release-hardening checkpoint — 2026-10-30 KST
+
+1. **Goal/confirmed scope:** KrW 299,000-class customer-owned CSV/flat-JSON → explicit mapping approval → readonly local FastAPI/SQLite → Windows ZIP, optional same-schema two-input ROW APPEND. No different-schema JOIN, hosting, payments or scraping.
+2. **Work completed:** Windows path/device/casefold defenses in delivery ZIP and standalone extracted customer self-check; strict date gate; malformed non-object ZIP manifest now returns bounded validation errors instead of uncontrolled `AttributeError`. Code commit checkpoint **`40144c58fa84c1d5cc67ef239c43810e73f66eae`**. Do not change existing data or upstream imports.
+3. **Tests:** Separate Linux Python 3.13 / no direct GitHub network; `python -m pytest -q tests/test_sale_gate.py tests/test_delivery_zip_hardening.py` returned **57 passed / 0 failed**. All three focused test/source sale-gate files matched exact Git blob SHA; ZIP-check tests used source-function excerpts matched to GitHub, isolated from unrelated application modules. These tests are **focused isolated verification, not entire original checkout, Windows or generated ZIP E2E**. The new eight malformed-manifest cases passed.
+4. **State:** Engineering previously estimated 95% and sale preparation 77% (qualitative, carried; not remeasured). Latest code not yet approved for sale. This code checkpoint GitHub Actions query showed **first 28 PR workflows QUEUED**; full app CI current-head PASS not established.
+5. **Failure/blocker:** Direct clone / remote network in local test container failed DNS (github.com could not be resolved); used connector-fetched exact source/test files plus isolated source excerpts instead. GitHub hosted CI queue pending; do not relabel queue as failure or success. No reason to repeat identical blocked network clones.
+6. **Repository/branch:** `hibi89/REA_Web`, `feature/d27-windows-python-discovery`, code SHA `40144c58fa84c1d5cc67ef239c43810e73f66eae`, Draft PR #30 toward `integration/develop`; no merge, no force push. Main paths: `rea/delivery.py`, `rea/customer_self_check.py`, `scripts/rea_sale_gate.py`, `tests/test_delivery_zip_hardening.py`, `tests/test_sale_gate.py`.
+7. **Deployment:** Windows local ZIP target; Vercel Production **NOT APPLICABLE**. Python 3.11+ and runtime dependencies may be installed by customer; ZIP is not standalone EXE. Exact build/test commands are in D27 workflow and Windows README.
+8. **Original/backup/security:** No actual customer data used. Preserve customer-provided original ZIP and snapshots. Shipping SQLite is plaintext. Distribution/source/dependency licensing and customer privacy authorization are **NOT GRANTED**; never commit tokens or actual private ledgers.
+9. **Next priority / completion gate:** On current exact branch SHA, inspect D27 Linux/Windows tests & browser and D31 dependency audit; if failing diagnose exact job logs. Run original checkout targeted+full pytest and Windows extracted synthetic ZIP if available. Six human/rights/seller gates remain: independent Windows operator, source redistribution rights, dependency notices, privacy/data handling, sale terms, measured human delivery. None is automatically approved by tests.
+10. **Timestamp/evidence:** 2026-10-30 KST handoff; verified code checkpoint `40144c58fa84c1d5cc67ef239c43810e73f66eae`; document commit SHA must be re-read from live branch after this update. CI status is a sampled, time-sensitive observation, not a blanket latest pass. Final state **PARTIAL / SALE BLOCKED**, not 100%.
+
+---
+
+# TO_HAECHONG — REA_Web 개발 인수인계 / 2026-10-30
+
+> **다음 해총 채팅에서 먼저 읽을 문서.** 이 문서는 완료 선언이 아니라 정확한 GitHub 상태와 다음 작업 우선순위를 전달한다. 본문 기록 시점의 브랜치 HEAD는 `2cffe5c6d56e95119f333a6881db62c084f204fd`이다. 재개할 때는 GitHub의 실제 HEAD와 PR/CI를 다시 조회하라.
+
+## 0. 프로젝트와 운영 지시
+
+- 저장소: `hibi89/REA_Web` — **`hibi89/web-rea-studio`와 혼동 금지**.
+- 개발 브랜치: `feature/d27-windows-python-discovery`
+- PR: [#30](https://github.com/hibi89/REA_Web/pull/30), `integration/develop` 대상으로 **OPEN / DRAFT / UNMERGED**.
+- 최종 목표: 크몽에서 299,000원대 소규모 **고객 소유 CSV/flat JSON → 명시적 승인 → 읽기 전용 로컬 FastAPI/SQLite 웹앱 → Windows 납품 ZIP** 서비스 상품화.
+- 선택 기능: **동일 구조 두 파일 각각 승인 후 ROW APPEND만**. 관계형 JOIN/실시간 수집/호스팅/로그인/결제/CRUD는 판매 범위에서 제외.
+- 사용자 목표는 **가능한 기술 작업 100% 마감**. 그러나 검증하지 않은 법적 권리/인수 확인/계약 조건을 사실인 것처럼 100% 처리하지 않는다.
+- 사용자에게 확인이 반드시 필요한 외부 조건을 제외하고 GitHub에서 자율적으로 기능·검증 작업을 이어라. 필수 차단 CI만 확인하고 단순 문서·반복 CI 대기를 개발 병목으로 만들지 말 것. 중간 설명보다 코드·테스트 결과 우선.
+- 코드/테스트/제품 포장 변경은 기능 단위 커밋으로. **force-push, 기존 브랜치 초기화, PR 임의 병합, 고객 실제 자료 사용 금지**.
+
+## 1. 이전 코덱스에서 받은 상태
+
+- 코덱스가 GitHub 브랜치에 `c42c4c4` (`scripts/windows_native_smoke.py` 실패 로그·임시 폴더 보존)와 `ffbc7c8` (상태·핸드오프 문서)를 실제 커밋했다.
+- 그때 `STATUS.md`/ `HANDOFF.md`는 **해당 코드 커밋** 기준 원격 GitHub Actions **29/29 SUCCESS**, D27 Windows **446 passed/1 warning**, Linux **431 passed/5 skipped/1 warning**을 기재했다. 합성 데이터 원격 CI 실증이지 일반 고객 인수검수는 아니다.
+- 로컬 독립 Windows HTTP 점검은 이전 샌드박스의 `WinError 10013` 및 정리 권한 문제로 BLOCKED. 로컬 전체 테스트 INCOMPLETE. 완료한 것으로 둔갑시키지 말 것.
+- 이전 문서의 개발 완성률 **95%**, 판매 준비 **77%**는 객관적 측정값이 아니라 계속 전달된 정성 추정치. 새 커밋으로 자동 상승/100% 처리하지 않는다.
+
+## 2. 이번 해총이 실제 GitHub에 반영한 커밋
+
+1. `5b1e50c` — `scripts/rea_sale_gate.py`: 6개 외부 출시 승인 증거 필드가 모두 기록돼야 'READY_FOR_SELLER_FINAL_REVIEW'를 반환하는 fail-closed **기록 검사 도구**. 법률 검증이나 고객 인증기가 아님. 초기 상태는 BLOCKED.
+2. `cdffa84` — `tests/test_sale_gate.py`: 원장 비어 있음, 잘못된 날짜/증거, 잘못된 SHA, 중복 JSON 키, CLI 초기화/판정을 시험하는 새 테스트.
+3. `7c9c955` — `docs/56_SALE_GATE_CLOSEOUT_20261030.md`: 외부 검증 6개 조건과 원장 실행 방법.
+4. `0b76566` — `rea/delivery.py`: 배송 ZIP 검사에서 Windows 예약명(CON/PRN/AUX/NUL/COM*/LPT*), ':' ADS, 끝 공백/점, ZIP symlink 항목 차단 보강.
+5. `2cffe5c` — `tests/test_delivery_zip_hardening.py`: Windows 특수 경로·악의적 심볼릭 링크 및 일반 파일 통과 회귀 케이스.
+
+**코드와 테스트 파일이 GitHub 원격 브랜치에 실제 존재함을 확인했다.** 단, **이번에 추가한 테스트를 별도로 실행한 증거는 아직 없다.** 이전 채팅의 '로컬 6개 통과'라는 표현은 실행 로그가 없어 검증 완료로 계산하지 말 것. 특히 새 코드 커밋의 CI는 아래와 같이 대기 중이다.
+
+## 3. 마지막 확인한 CI 상태와 재개 순서
+
+- 확인 대상 HEAD: `2cffe5c6d56e95119f333a6881db62c084f204fd`.
+- GitHub PR-trigger workflow 목록의 첫 페이지 **28개 전부 QUEUED / PASS 미확정** (점검 당시). 포함: D7, D25, D27, D31, D3. 일부 추가 workflow나 job은 목록에서 빠졌을 수 있다.
+- 즉, 기존 `c42c4c4`의 29/29 성공을 **새 HEAD에 그대로 적용 금지**.
+- 최우선 P0: **PR #30·브랜치 HEAD·Actions 완료 여부 재조회**. 실패/테스트 오류 있으면 원인과 실제 실패 항목만 수정. 각 패키징 함수/기존 고객 ZIP 불변성이 깨졌는지 확인.
+- P1: `python -m pytest -q tests/test_sale_gate.py tests/test_delivery_zip_hardening.py` 실행 가능한 환경에서 실제 검증. 테스트가 미실행이면 NOT_RUN으로 보고. 필요하다면 `rea/delivery.py` 안전 검사와 `rea/customer_self_check.py` 검사의 정책 일치 여부도 비교.
+- P2: `docs/56_SALE_GATE_CLOSEOUT_20261030.md` 근거로 판매 범위와 공급 코드/고지 대상의 실물 인벤토리, 실제 단순 고객 인수 시나리오 재점검. 권리 확인을 자동 생성하지 말 것.
+- P3: CI 통과 뒤 작업이 실제로 필요할 때만 추가 보안·회복력 개선. 이미 구현된 CSV/JSON/APPEND/UI/ZIP을 중복 작성하지 않는다.
+- P4: 기능 기술적 마감 여부, 미실시 수동 검증, 제품 판매 준비, 테스트 증거를 분리해 `STATUS.md` 또는 이 파일에 업데이트. 코드가 실제로 PASS할 때만 해당 항목을 완료 처리.
+
+## 4. 기술적 범위 및 외부 승인 차단 항목
+
+실증된 기존 기술: CSV/flat JSON 입력과 명시적 매핑 승인, 두 파일 ROW APPEND, SQLite 기반 읽기 전용 앱, 검색/필터/상세, ZIP CRC/해시, Windows CMD Python 3.11+ 찾기·실행/복구 안내, 합성 데이터 CI/Chromium/네이티브 실행.
+
+**실제 판매 승인에 아직 필요한 6개 게이트:**
+
+- **independent_windows_operator:** 비개발자가 실제 Windows에서 합성 ZIP으로 설치·실행·검색·종료/재시작·백업/복구·오류 상황을 확인하고 결과 기록. `docs/52_WINDOWS_CUSTOMER_ACCEPTANCE_PROTOCOL_NOT_RUN.md`
+- **source_redistribution_rights:** 실제 고객 ZIP에 포함되는 REA/생성 코드 상용 재배포 권리 확인. `docs/25_SOURCE_LICENSE_AUDIT.md`
+- **dependency_license_notices:** 실제 배포 의존성 및 LICENSE/NOTICE 의무 검토. 단순 metadata 수집은 승인이 아님. `docs/48_RUNTIME_DISTRIBUTION_REVIEW.md`
+- **privacy_data_operations:** 고객 데이터 권리, 수령/보관/삭제 및 비암호화 SQLite가 ZIP에 들어감을 알리고 운영 결정. `docs/53_DATA_HANDLING_REVIEW_NOT_APPROVED.md`
+- **seller_scope_terms:** 판매자 가격·수수료·납기·수정·지원·환불/취소 약관 명시 및 승인. `docs/07_KMONG_OFFER.md`, `docs/51_KMONG_SALE_GATE_20261030.md`
+- **measured_delivery_rehearsal:** 사람의 실제 견적→생성→검수→납품 시간 측정; CI 시간으로 대체 불가. `docs/30_THREE_CASE_QUOTE_REHEARSAL.md`
+
+외부 인간 판단/권리까지 자동화로 승인할 수 없다. `scripts/rea_sale_gate.py`는 **증거 기재 누락 검사일 뿐**, 기재된 증거의 진실성 또는 법적 효력 검증기가 아니다. 최종 판매 승인 판단은 별도.
+
+## 5. 다음 채팅 시작 지시
+
+> "해총, `hibi89/REA_Web`의 `feature/d27-windows-python-discovery`에서 `TO_HAECHONG.md`를 읽고 바로 이어가라. 현재 원격 HEAD/PR #30/CI부터 재검증하고, 이번에 추가한 ZIP 보안 검사와 릴리스 게이트 테스트를 실행/수정하라. CI 확인이 필수 병목이 아닐 때는 다음 독립 작업으로 진행. 실제 검수와 재배포 권리 없는 100% 판매 승인 선언 금지. 코드 구현/테스트/커밋·푸시를 우선하고 각 작업 종료 시 기능 완성률·판매 준비율은 근거를 구분하여 보고하라."
+
+## 6. 인수인계 문서 링크
+
+- PR: https://github.com/hibi89/REA_Web/pull/30
+- 이번 릴리스 마감 가이드: https://github.com/hibi89/REA_Web/blob/feature/d27-windows-python-discovery/docs/56_SALE_GATE_CLOSEOUT_20261030.md
+- 실제 브랜치: https://github.com/hibi89/REA_Web/tree/feature/d27-windows-python-discovery
+- GitHub Actions: https://github.com/hibi89/REA_Web/actions
