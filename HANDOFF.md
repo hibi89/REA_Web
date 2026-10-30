@@ -1,3 +1,17 @@
+## REA_Web core intake progress — 2026-10-30 KST
+
+- **Product code checkpoint** `0c6f20927009ec19e2bafa95bc9252b4cc115e06` (last test commit); branch `feature/d27-windows-python-discovery`, PR #30 Draft/unmerged. This tranche works on the ACTUAL CSV/flat-JSON build, GUI/guided approvals and approved same-schema two-file ROW APPEND, rather than blocking on GitHub CI queue.
+- `rea/mvp.py`: new `source_sha256` enforces regular .csv/.json, rejects symlinks and >10MiB inputs *before opening*, uses 64KiB SHA256 streaming and fstat regular-file validation; generator replaces three unbounded `source.read_bytes()` fingerprints with bounded SHA and a pinned manifest digest, rejects changed source before publication.
+- `rea/guided.py`: preview checks the source fingerprint before and after parsing; rejects changing file before an approval can be tied to stale rows. Existing explicit APPROVE flow is retained.
+- `rea/two_source.py`: approval, prepare, compose and final ZIP publication source hashes now all share `source_sha256`; avoids full in-memory source reads for paired ROW APPEND. Existing per-file approval, APPEND and total 10MiB/10k-row gates remain.
+- New `tests/test_source_fingerprint.py` has **9 committed test functions**: exact SHA, no read_bytes in generator, overlimit before open, symlink, source-mutated preview, changed source during generation, two-file streaming, combined oversize, stale approved pair. New full-repo test results are **NOT_RUN** (GitHub Actions still queued; repository clone in isolated runtime blocked by DNS).
+- Independent Linux Python 3.13 isolated reproduction of the new exact `source_sha256` implementation: **10 targeted checks PASS** (valid CSV/JSON, empty source, 10MiB edge, oversize, symlink, suffix, absent path, directory, read_bytes guard). This is **function-only validation**, not full repo integration or Windows E2E.
+- GitHub blob verification after commit: `rea/mvp.py` `48ff9197fe738cfc4b4e72f496180d3294b10167`, `rea/guided.py` `e6f2a82364426c88286a05d9761867cc8d842764`, `rea/two_source.py` `34dacd6d2f317db603f884f0d0c8d57d88e93c5c`, `tests/test_source_fingerprint.py` `cb0ddc2c1c0cd2d1972db30ea5dd4952a9273964`.
+- **CI policy:** DO NOT wait for queued workflows or create unnecessary CI-only commits. After runners execute, inspect exact-code D27 Windows+Linux full pytest, D3 Chromium and D31 vulnerability audit. Prior CI evidence predates these code changes. No claimed current-code suite PASS.
+- **Release boundaries:** offline Windows ZIP, no Vercel production. Qualitative prior development ~95%, sales readiness ~77% are unchanged estimates, NOT verified progress percentages. Sales remain **BLOCKED** pending real independent Windows operator, commercial source/dependency redistribution rights, privacy/retention, terms and timed delivery evidence. No merge or force-push.
+
+---
+
 ## LATEST REA_Web continuation — 2026-10-30 KST
 
 1. Goal: customer-authorized CSV/flat JSON → explicit mapping approval → read-only local FastAPI/SQLite Windows ZIP. Optional approved same-schema ROW APPEND. No JOIN, hosting, login, payments, scraping or live sync. Hypothetical 299,000 KRW offer, not approved for sale.
