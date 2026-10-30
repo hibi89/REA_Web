@@ -19,6 +19,11 @@ import sys
 
 
 
+MAX_DELIVERY_BYTES = 25 * 1024 * 1024
+MAX_MANIFEST_BYTES = 256 * 1024
+MAX_DELIVERY_FILES = 100
+
+
 DEPENDENCY_BOUNDS = {
     "fastapi": ((0, 110, 0), (1, 0, 0)),
     "starlette": ((1, 3, 1), (2, 0, 0)),
@@ -65,6 +70,24 @@ def _safe_member(name: str) -> bool:
             for part in parts
         )
     )
+
+def _member_sha256_bounded(path: Path, expected_size: int) -> str:
+    """Hash a bounded extracted member without loading customer rows into RAM."""
+    digest = hashlib.sha256()
+    total = 0
+    with path.open("rb") as handle:
+        while True:
+            chunk = handle.read(64 * 1024)
+            if not chunk:
+                break
+            total += len(chunk)
+            if total > expected_size or total > MAX_DELIVERY_BYTES:
+                raise ValueError("Extracted member changed size during hashing")
+            digest.update(chunk)
+    if total != expected_size:
+        raise ValueError("Extracted member size changed")
+    return digest.hexdigest()
+
 
 def verify_exact_delivery_tree(root: Path, members: set[str]) -> None:
     """Refuse extra files, folders or symlinks inside an extracted delivery.
@@ -117,18 +140,31 @@ def inspect(root: Path) -> dict:
         manifest_path = root / "delivery_manifest.json"
         if manifest_path.is_symlink() or not manifest_path.is_file():
             raise ValueError("Missing safe delivery_manifest.json")
+        if manifest_path.stat().st_size > MAX_MANIFEST_BYTES:
+            raise ValueError("Delivery manifest exceeds 256 KiB")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         if not isinstance(manifest, dict):
             raise ValueError("Invalid delivery_manifest.json")
         records = manifest.get("files")
-        if manifest.get("schema_version") != "rea.delivery.v0.1" or not isinstance(records, list):
-            raise ValueError("Invalid delivery_manifest.json")
+        if (manifest.get("schema_version") != "rea.delivery.v0.1"
+                or not isinstance(records, list) or len(records) > MAX_DELIVERY_FILES):
+            raise ValueError("Invalid or oversized delivery manifest inventory")
+        total_bytes = 0
         seen = set()
         seen_folded = set()
         for record in records:
             if not isinstance(record, dict):
                 raise ValueError("Invalid manifest record")
             rel = record.get("path")
+            length = record.get("bytes")
+            checksum = record.get("sha256")
+            if (type(length) is not int or length < 0 or length > MAX_DELIVERY_BYTES
+                    or not isinstance(checksum, str)
+                    or re.fullmatch(r"[0-9a-f]{64}", checksum) is None):
+                raise ValueError("Invalid or oversized delivery member metadata")
+            total_bytes += length
+            if total_bytes > MAX_DELIVERY_BYTES:
+                raise ValueError("Extracted delivery exceeds 25 MiB")
             if not _safe_member(rel):
                 raise ValueError("Unsafe package path")
             if rel in seen or rel.casefold() in seen_folded:
@@ -139,9 +175,9 @@ def inspect(root: Path) -> dict:
             path = root.joinpath(*pieces)
             if any(item.is_symlink() for item in [path, *path.parents] if item != root.parent):
                 raise ValueError("Symlink in extracted delivery")
-            if not path.is_file() or path.stat().st_size != record.get("bytes"):
+            if not path.is_file() or path.stat().st_size != length:
                 raise ValueError("Missing or wrong-size delivery file")
-            if hashlib.sha256(path.read_bytes()).hexdigest() != record.get("sha256"):
+            if _member_sha256_bounded(path, length) != checksum:
                 raise ValueError("Customer delivery hash mismatch")
         # On Windows, a manifest file cannot also act as a parent directory.
         for name in seen_folded:
