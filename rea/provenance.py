@@ -84,6 +84,28 @@ def _direct_deps(contents: str) -> list[dict]:
     return [result[key] for key in sorted(result)]
 
 
+def _unique_meta_pairs(pairs: list[tuple[str, object]]) -> dict:
+    """Refuse ambiguous signed-archive metadata with duplicate JSON fields."""
+    fields = {}
+    for name, value in pairs:
+        if name in fields:
+            raise AuditError("Duplicate generated metadata JSON key")
+        fields[name] = value
+    return fields
+
+
+def _zip_json_object(zf: zipfile.ZipFile, path: str) -> dict:
+    """Require a UTF-8 JSON object; malformed metadata is a bounded audit error."""
+    try:
+        doc = json.loads(zf.read(path).decode("utf-8"),
+                         object_pairs_hook=_unique_meta_pairs)
+    except (UnicodeError, json.JSONDecodeError) as exc:
+        raise AuditError("Invalid generated metadata JSON: " + path) from exc
+    if not isinstance(doc, dict):
+        raise AuditError("Generated metadata must be a JSON object: " + path)
+    return doc
+
+
 def inspect_delivery(archive: Path) -> dict:
     """Verify every ZIP member and report only bounded, source-free metadata."""
     archive = Path(archive)
@@ -96,38 +118,40 @@ def inspect_delivery(archive: Path) -> dict:
             raise AuditError(
                 f"Delivery allowlist mismatch: {len(missing)} required missing, "
                 f"{len(forbidden)} unexpected paths")
-        app_manifest = json.loads(zf.read("app/manifest.json"))
+        app_manifest = _zip_json_object(zf, "app/manifest.json")
         kind = app_manifest.get("input_kind")
         if kind is None:  # Older D3 CSV snapshots before input_kind was explicit
             kind = "customer_supplied_csv"
-        if kind not in {"customer_supplied_csv", "customer_supplied_json"}:
+        if not isinstance(kind, str) or kind not in {"customer_supplied_csv", "customer_supplied_json"}:
             raise AuditError("Unknown source kind in generated app")
         if app_manifest.get("scope") != "LOCAL_SYNTHETIC_OR_USER_SUPPLIED_DATA_ONLY":
             raise AuditError("Unexpected runtime scope")
         if app_manifest.get("run") != "python -m uvicorn app:app --host 127.0.0.1 --port 8000":
             raise AuditError("Non-loopback runtime command")
-        schema = json.loads(zf.read("app/schema_preview.json"))
+        schema = _zip_json_object(zf, "app/schema_preview.json")
         if schema.get("review_status") != "UNAPPROVED" or schema.get("approved_semantic_bindings") != []:
             raise AuditError("Schema approval gate changed")
         if schema.get("source_kind") != kind:
             raise AuditError("Schema source kind does not match app")
         mapped = "app/mapping_report.json" in names
         if mapped:
-            receipt = json.loads(zf.read("app/mapping_report.json"))
+            receipt = _zip_json_object(zf, "app/mapping_report.json")
             mapped_in_manifest = app_manifest.get("owner_field_mapping")
             if (receipt != mapped_in_manifest
                     or receipt.get("status") != "OWNER_CONFIRMED_FOR_THIS_LOCAL_BUILD"
                     or receipt.get("confirmation_scope") != "ONE_LOCAL_GENERATION_ONLY"
                     or receipt.get("source_sha256") != app_manifest.get("sha256")
                     or receipt.get("fable_inferred_mapping_used") is not False
-                    or set(receipt.get("source_fields", {})) != {"id", "title", "category"}
+                    or not isinstance(receipt.get("source_fields"), dict)
+                    or set(receipt["source_fields"]) != {"id", "title", "category"}
+                    or any(not isinstance(value, str) for value in receipt["source_fields"].values())
                     or len(set(receipt["source_fields"].values())) != 3):
                 raise AuditError("Unapproved or inconsistent owner mapping report")
         elif "owner_field_mapping" in app_manifest:
             raise AuditError("Owner mapping report missing")
         appended = "app/append_report.json" in names
         if appended:
-            receipt = json.loads(zf.read("app/append_report.json"))
+            receipt = _zip_json_object(zf, "app/append_report.json")
             sources = receipt.get("sources")
             if (receipt != app_manifest.get("two_file_append")
                     or receipt.get("schema_version") != "rea.two_file_append.v0.1"
@@ -164,7 +188,7 @@ def inspect_delivery(archive: Path) -> dict:
             raise AuditError("Missing append receipt")
         review_present = "app/review/fable_review.json" in names
         if review_present:
-            doc = json.loads(zf.read("app/review/fable_review.json"))
+            doc = _zip_json_object(zf, "app/review/fable_review.json")
             if (doc.get("status") != "REVIEW_REQUIRED"
                     or doc.get("generation_allowed") is not False
                     or doc.get("approved_semantic_bindings") != []):
