@@ -40,9 +40,10 @@ def test_unsafe_or_ambiguous_manifest_fails_closed(tmp_path, payload, pattern):
         verify_delivery(archive(tmp_path, payload))
 
 
-def test_manifest_depth_is_bounded_to_error_not_crash(tmp_path):
+@pytest.mark.parametrize("depth", [80, 1500])
+def test_manifest_depth_is_bounded_to_error_not_crash(tmp_path, depth):
     payload = (b'{"schema_version":"rea.delivery.v0.1","files":[],"extra":'
-               + b"[" * 1500 + b"1" + b"]" * 1500 + b"}")
+               + b"[" * depth + b"1" + b"]" * depth + b"}")
     with pytest.raises(DeliveryError, match="nesting"):
         verify_delivery(archive(tmp_path, payload))
 

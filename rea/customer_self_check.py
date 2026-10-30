@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+from contextlib import closing
 from importlib import metadata
 import json
 import os
@@ -231,7 +232,7 @@ def inspect(root: Path) -> dict:
         verify_exact_delivery_tree(root, seen)
         result["integrity"] = "MATCHED_DELIVERY_MANIFEST_SHA256"
         db_file = (root / "app/data.sqlite").as_uri()
-        with sqlite3.connect(db_file + "?mode=ro", uri=True) as db:
+        with closing(sqlite3.connect(db_file + "?mode=ro", uri=True)) as db:
             db.execute("PRAGMA query_only=ON")
             # A matching ZIP SHA does not prove the SQLite B-tree is intact.
             # Verify ALL pages/indexes, including tables not used by /api/items.

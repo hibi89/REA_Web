@@ -362,7 +362,11 @@ def verify_delivery(archive: Path) -> dict:
             doc = json.loads(zf.read("delivery_manifest.json").decode("utf-8"),
                              object_pairs_hook=_manifest_object_pairs,
                              parse_constant=_manifest_constant)
-        except (UnicodeError, json.JSONDecodeError, RecursionError) as exc:
+        except RecursionError as exc:
+            # JSON parsers can reject deep nesting before our bounded walk.
+            # Fail closed with the same depth-specific diagnosis on every OS.
+            raise DeliveryError("ZIP manifest nesting exceeds parser limit") from exc
+        except (UnicodeError, json.JSONDecodeError) as exc:
             raise DeliveryError("Malformed ZIP manifest JSON") from exc
         if not isinstance(doc, dict):
             raise DeliveryError("Invalid manifest object")
