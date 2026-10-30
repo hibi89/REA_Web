@@ -27,4 +27,4 @@ Limits: CSV <=10MiB, <=10,000 data rows, <=20 columns and <=2,000 characters per
 python -m pytest -q tests/test_rea_lite_builder.py
 ```
 
-Previous standalone synthetic Node/Chromium tests were performed on the original Lite candidate before integration. Real Windows double-click, same-schema CSV replacement, download-and-reopen and nondeveloper acceptance remain NOT_RUN until exercised. Existing Pro full CI was already green at inherited code SHA; newly integrated Lite branch requires its own code-specific CI result.
+Previous standalone synthetic Node/Chromium tests were performed on the original Lite candidate before integration. Exact-source GitHub CI run 41116194878 has 2/2 SUCCESS: Linux and Windows Chromium actual file:// update/download/reopen (3 tests/OS), real Pro-parser unit tests (5/OS), Node tests (15+7/OS). Real nondeveloper Windows Chrome/Edge double-click and commercial approval remain NOT_RUN. Existing Pro full CI was already green at inherited code SHA; newly integrated Lite branch requires its own code-specific CI result.

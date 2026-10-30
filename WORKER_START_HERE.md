@@ -1,3 +1,7 @@
+## 2026-10-31 04:34 KST — LITE integration update on feature/lite-offline-html-integration
+
+Lite independent code is now committed, and current code/test SHA `91c1d113f81f0b144ba217820e6f0ca4b2350166` passed Windows+Ubuntu real Pro parser and Chromium file:// CI 2/2. Draft PR #31 to Pro development branch, unmerged; customer Windows human NOT_RUN and commercial NOT_APPROVED. Follow branch-local HANDOFF.md/STATUS.md and docs/60_LITE_SALE_GATES_20261031.md. Existing Pro branch and PR #30 remain unchanged.
+
 ## 2026-10-31 KST — CURRENT DISPATCH OVERRIDE (READ FIRST)
 
 This section supersedes historical 2026-10-30 snapshots below. **Actual source/test SHA `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`: all 28/28 GitHub Actions concluded SUCCESS.** D27 Linux 645 pass/5 skip, Windows 656 pass/4 skip, Chromium 8 generated apps + 3 extracted ZIPs PASS. Current verified Windows synthetic pilot artifact [#12997912131](https://github.com/hibi89/REA_Web/actions/runs/41099504224/artifacts/12997912131) (ZIP SHA256 `a8d2076663e3dfb289e158c20653ad1e347208647e42962d30a58dcb464bec35`). Human Windows acceptance NOT_RUN, sale NOT_APPROVED, PR #30 Draft and unmerged, no public deployment. **Next 'ㄱ':** prioritize one independent Windows pilot or separately actionable license/privacy/seller gate; do not re-run 28 CI or generate docs-only commits without a new state change. Read `HANDOFF.md`, `STATUS.md`, `docs/17_NEXT_TASK.md` for latest detail. The product is not a general URL-to-site clone and does not support arbitrary JOIN or non-local hosting.

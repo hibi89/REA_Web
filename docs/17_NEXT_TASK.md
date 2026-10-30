@@ -1,3 +1,10 @@
+## 2026-10-31 Lite next task (priority override; separate integration branch)
+
+- **Verified now:** Lite actual Pro parser and genuine Windows+Ubuntu Chromium file:// CI passed on code SHA `91c1d113f81f0b144ba217820e6f0ca4b2350166`, [run 41116194878](https://github.com/hibi89/REA_Web/actions/runs/41116194878); Draft [PR #31](https://github.com/hibi89/REA_Web/pull/31), DO NOT MERGE. Old Pro branch and PR #30 unchanged.
+- **P0 owner Windows real/browser:** open 3 generated HTML themes by Windows Explorer double-click in Chrome/Edge, no web server or Python on customer machine, choose invalid CSV (old data preserved), choose valid same-schema CSV, save-new HTML, close/reopen saved file, inspect search/filter/detail. Record actual result/time; no sensitive data. CI is not this human trial.
+- **P1 commercial:** own-source/third-party licensing and notices; plain-text customer-data consent, retention/deletion; 3 real timed synthetic builds; agree prices, product scope, revisions, support, refunds and data handoff. Details `docs/60_LITE_SALE_GATES_20261031.md`.
+- **Do not:** repeat all Pro CI, enable LAN/QR, make Lite server-backed, merge PR, submit sale or take customer files before approval.
+
 ## [ACTIVE 2026-10-31 04:24 KST] REA_WEB Lite new approved product direction; source still outside GitHub
 
 - User approved Lite/Pro split: standalone offline browser HTML for customers, seller-side actual rea.mvp CSV/JSON field checks and explicit APPROVE, three themes, CSV File API update and explicit updated-HTML download. Keep old Pro untouched; no LAN QR/0.0.0.0, EXE, cloud or customer file upload. Suggested 129,000 KRW is hypothesis, not verified selling price.
