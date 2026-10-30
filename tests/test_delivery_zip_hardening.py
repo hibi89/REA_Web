@@ -10,7 +10,7 @@ import zipfile
 
 import pytest
 
-from rea.delivery import DeliveryError, _members, _safe, verify_delivery
+from rea.delivery import DeliveryError, _member_paths_conflict, _members, _safe, verify_delivery
 from rea.customer_self_check import _safe_member, inspect
 
 
@@ -159,3 +159,42 @@ def test_windows_superscript_device_names_are_rejected(tmp_path, device):
     _archive(archive, f"app/{device}.txt", link=False)
     with pytest.raises(DeliveryError, match="Unsafe"):
         verify_delivery(archive)
+
+
+@pytest.mark.parametrize("names", [
+    ["app/Foo", "app/foo/child.txt"],
+    ["app/data", "app/data/items.csv"],
+    ["app/a/B", "app/A/b/c.txt"],
+])
+def test_reject_parent_file_conflict_in_zip(tmp_path, names):
+    payload = b"synthetic file-directory conflict"
+    path = tmp_path / "conflicting_paths.zip"
+    rows = [{"path": n, "bytes": len(payload),
+             "sha256": hashlib.sha256(payload).hexdigest()} for n in names]
+    with zipfile.ZipFile(path, "w") as zf:
+        for name in names:
+            zf.writestr(name, payload)
+        zf.writestr("delivery_manifest.json", json.dumps({
+            "schema_version": "rea.delivery.v0.1", "files": rows,
+        }))
+    assert _member_paths_conflict(names)
+    with pytest.raises(DeliveryError, match="Unsafe"):
+        verify_delivery(path)
+
+
+def test_valid_nested_package_paths_remain_accepted():
+    assert not _member_paths_conflict([
+        "app/data.sqlite", "app/static/index.html",
+        "app/static/app.js", "README_WINDOWS.md",
+    ])
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="Windows filesystem prohibits the fixture")
+def test_exporter_refuses_case_insensitive_parent_file_conflict(tmp_path):
+    project = tmp_path / "app"
+    project.mkdir()
+    (project / "Foo").write_bytes(b"synthetic parent")
+    (project / "foo").mkdir()
+    (project / "foo" / "child.txt").write_bytes(b"synthetic child")
+    with pytest.raises(DeliveryError, match="collision"):
+        _members(project)
