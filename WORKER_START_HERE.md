@@ -1,3 +1,7 @@
+## 2026-10-31 KST — latest Lite delivery ZIP file:// proof
+
+Tested source SHA `72f36ed25caf2d3a7b0ee08e53d0291f1bf5a212`, Actions [run 41119834953](https://github.com/hibi89/REA_Web/actions/runs/41119834953): Windows+Ubuntu PASS 2/2 including exact packed synthetic HTML from exported ZIP, real file:// Windows Chromium/Edge, Ubuntu Chromium (3/3 per browser) plus standalone regressions. No product source/Pro change. Draft PR #31 still unmerged. Repo root contains no LICENSE/NOTICE/COPYING in 227-file inventory; evidence draft docs/63 and unapproved Korean guide docs/64. Human Windows double-click G2 / source rights G3 / data handling G4 / manual cost G5 / business terms G6 still blocked. See HANDOFF.md and STATUS.md before doing any further work.
+
 ## 2026-10-31 04:51 KST — LITE latest Windows Edge CI update
 
 Tested code SHA `aae9d517f6c0d04d8f76e235bb4e7e5f7284d369`: Windows+Ubuntu GitHub CI 2/2 SUCCESS including Windows Edge true file:// 3/3, Windows Chromium 3/3, Ubuntu Chromium 3/3, real Pro parser 5/OS, Node 15+7/OS and 3 automated synthetic CLI packages/OS. Human Windows nondeveloper Chrome/Edge G2, rights G3, data consent G4, three human timed deliveries G5 and seller terms G6 remain BLOCKED. Draft PR #31 unmerged. See HANDOFF.md/STATUS.md/docs/62_LITE_EDGE_CI_EVIDENCE_20261031.md.

@@ -1,3 +1,7 @@
+## 2026-10-31 KST — latest actual ZIP member browser coverage, still BLOCKED for sale
+
+At exact code SHA `72f36ed25caf2d3a7b0ee08e53d0291f1bf5a212`, [run 41119834953](https://github.com/hibi89/REA_Web/actions/runs/41119834953) Windows & Ubuntu 2/2 SUCCESS: direct file:// of **actual synthetic packaged ZIP HTML**, Windows Edge 3/3, Windows Chromium 3/3, Ubuntu Chromium 3/3, manifest/CRC/mapping/refresh/saved HTML reopen verified. In addition to existing standalone tests; owner Windows Chrome+Edge Explorer **human NOT_RUN**. Rights evidence `63_LITE_PROVENANCE_PRIVACY_SALE_DRAFT_20261031.md`, Korean customer guide `64_LITE_CUSTOMER_GUIDE_DRAFT_20261031.md` are both UNAPPROVED and do NOT clear G3/G4/G6.
+
 ## 2026-10-31 04:51 KST latest browser automation verification
 
 Windows **Microsoft Edge** installed in GitHub runner passed genuine file:// three themed tests (3/3) plus Windows Chromium 3/3 and Ubuntu Chromium 3/3, [run 41118431117](https://github.com/hibi89/REA_Web/actions/runs/41118431117), exact code SHA `aae9d517f6c0d04d8f76e235bb4e7e5f7284d369`. Human owner Windows Chrome/Edge **NOT_RUN**. This reduces browser compatibility uncertainty; does NOT close G2 or authorize sale. [Evidence](62_LITE_EDGE_CI_EVIDENCE_20261031.md).

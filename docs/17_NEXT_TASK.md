@@ -1,3 +1,9 @@
+## 2026-10-31 KST — Lite next task after exact packaged ZIP CI
+
+- Exact `72f36ed25caf2d3a7b0ee08e53d0291f1bf5a212` [run 41119834953](https://github.com/hibi89/REA_Web/actions/runs/41119834953) Windows+Ubuntu 2/2 SUCCESS; actual ZIP member HTML browser file:// (cafe/inventory/office) Windows Edge and Chromium 3 PASS each and Ubuntu Chromium 3 PASS. Original Pro preserved. Draft PR #31 OPEN/DRAFT/UNMERGED.
+- **Blocked owner-independent tasks now:** G2 real Windows Chrome+Edge direct doubleclick with ZIP files and human time; G3 confirm all code rights and NOTICE requirements (no top-level license found); G4 agree plaintext customer data intake/retention/delete; G5 measure three manual full synthetic deliveries; G6 approve price/refund/support/revisions. Draft docs `63_LITE_PROVENANCE_PRIVACY_SALE_DRAFT_20261031.md` and `64_LITE_CUSTOMER_GUIDE_DRAFT_20261031.md` are evidence/discussion only, NOT_APPROVED.
+- No further artificial CI changes, extra features, release, data or merge until a reproduced issue or explicit owner direction. Use [latest workflow](https://github.com/hibi89/REA_Web/actions/runs/41119834953) to download Windows packaged synthetic pilot, not old standalone example ZIP.
+
 ## 2026-10-31 04:51 KST — Lite next task after verified Windows Edge CI
 
 - Exact tested SHA `aae9d517f6c0d04d8f76e235bb4e7e5f7284d369`, [run 41118431117](https://github.com/hibi89/REA_Web/actions/runs/41118431117) 2/2 SUCCESS: Windows Edge 3/3, Windows Chromium 3/3, Ubuntu Chromium 3/3 file://; real Pro parser/Node/synthetic CLI also PASS. Detailed `docs/62_LITE_EDGE_CI_EVIDENCE_20261031.md`.

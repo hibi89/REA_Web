@@ -36,3 +36,14 @@ python scripts/lite_delivery_rehearsal.py --out-dir NEW_DIR
 ```
 
 Requires a brand-new output directory. It uses only synthetic data, actual `rea.mvp` parser and CLI, builds three separate themed HTMLs, verifies original input hashes/no-overwrite/offline embed, then creates `REA_WEB_Lite_Synthetic_Pilot.zip` and `rehearsal_report.json`. Windows+Ubuntu Actions [run 41117124085](https://github.com/hibi89/REA_Web/actions/runs/41117124085) 2/2 SUCCESS at code SHA `202e4dbab9153c4f3003170e8881576d75c63b0c`; CI artifacts include pilot samples. CLI benchmark times are **not** customer-service estimates. Human Windows Chrome/Edge double-click validation and legal/merchant approvals remain outstanding.
+
+## Packaged ZIP end-to-end checks (2026-10-31)
+
+Automated **actual delivery ZIP** member verification after the synthetic seller CLI creates a fresh `lite_delivery_output` directory:
+
+```bash
+python scripts/lite_delivery_rehearsal.py --out-dir lite_delivery_output
+python -m pytest -q tests/test_lite_packaged_pilot.py
+```
+
+Windows system Edge additionally uses `REA_BROWSER_CHANNEL=msedge` in GitHub Actions; tests require installed Edge. [Verified Windows/Ubuntu GitHub CI run #41119834953](https://github.com/hibi89/REA_Web/actions/runs/41119834953) at code SHA `72f36ed25caf2d3a7b0ee08e53d0291f1bf5a212`: 2/2 SUCCESS. Manifest, ZIP content, real local `file://` and new-HTML persistence tested. This is automated and synthetic, not owner/customer acceptance or sale approval. Unapproved source-rights/data/terms review [docs/63](docs/63_LITE_PROVENANCE_PRIVACY_SALE_DRAFT_20261031.md) and Korean customer guide [docs/64](docs/64_LITE_CUSTOMER_GUIDE_DRAFT_20261031.md).

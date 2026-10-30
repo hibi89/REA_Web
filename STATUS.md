@@ -1,3 +1,11 @@
+## 2026-10-31 KST — REA_WEB Lite actual packaged ZIP runs in Windows Edge/Chromium and Ubuntu: 2/2 SUCCESS
+
+- Code/test SHA `72f36ed25caf2d3a7b0ee08e53d0291f1bf5a212`; [GitHub Actions #41119834953](https://github.com/hibi89/REA_Web/actions/runs/41119834953) **both Windows and Ubuntu completed SUCCESS**. Newly added browser test opens actual ZIP member HTML files via genuine file://; confirms exact 10-member ZIP and 9 hash entries, read-only input, invalid-cafe CSV retains prior 3, valid CSV 5 then saved/reopened new HTML with 5, no external requests.
+- Real runner browser tests: Windows Chromium standalone 3 + packaged 3 PASS; Windows system Microsoft Edge standalone 3 + packaged 3 PASS; Ubuntu Chromium standalone 3 + packaged 3 PASS. Existing Pro Python 5/OS, Node CSV 15/OS, JS VM 7/OS, automated seller CLI deliveries 3/OS also PASS. Synthetic automation only; Chrome Stable user-PC human test NOT_RUN.
+- Source rights component inventory: no root LICENSE/NOTICE/COPYING in current 227-file Git tree; authorship and redistributability **NOT_CLEARED**. Two review drafts created, neither approved: `docs/63_LITE_PROVENANCE_PRIVACY_SALE_DRAFT_20261031.md` (G3/G4/G6) and `docs/64_LITE_CUSTOMER_GUIDE_DRAFT_20261031.md`.
+- Draft [PR #31](https://github.com/hibi89/REA_Web/pull/31) still unmerged; original Pro branch/PR #30/main not modified. Plaintext warning unchanged; no customer data or cloud/production. Commercial release BLOCKED for human Windows trial, actual rights/privacy, 3 human-timed jobs, seller terms.
+- Next: owner Windows synthetic pilot manual Chrome+Edge, full human effort sampling and explicit business/legal approvals. Avoid re-running green CI or new features absent defects. This doc-only [skip ci] update must not be mistaken for tested code SHA.
+
 ## 2026-10-31 04:51 KST — Windows Edge automated real file:// acceptance: 2/2 CI PASS
 
 - `hibi89/REA_Web@feature/lite-offline-html-integration` code SHA `aae9d517f6c0d04d8f76e235bb4e7e5f7284d369`, [GitHub Actions #41118431117](https://github.com/hibi89/REA_Web/actions/runs/41118431117) **Ubuntu SUCCESS + Windows SUCCESS**, completed 04:51:01 KST.
