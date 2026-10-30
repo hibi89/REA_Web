@@ -119,6 +119,7 @@ body[data-theme=cafe] .item-list{grid-template-columns:repeat(2,minmax(0,1fr))}b
  });
  for(const id of ['search','category','sort'])$(id).addEventListener(id==='search'?'input':'change',()=>{page=0;refresh();});
  $('prev').addEventListener('click',()=>{page--;refresh();});$('next').addEventListener('click',()=>{page++;refresh();});
+ $('csv-file').closest('label').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('csv-file').click();}});
  $('export').addEventListener('click',saveHtml);
  updateCategories();refresh();
 })();
