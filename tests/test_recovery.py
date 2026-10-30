@@ -142,3 +142,17 @@ def test_symlink_archive_is_refused(tmp_path):
     with pytest.raises(DeliveryError, match="non-symlink"):
         restore_delivery(alias, tmp_path / "no-restore")
     assert not (tmp_path / "no-restore").exists()
+
+
+def test_recovery_cli_reports_only_local_integrity(tmp_path, capsys):
+    from rea.recovery import main
+
+    archive = tmp_path / "synthetic.zip"
+    create_delivery(ROOT / "samples/qa_cafe.csv", archive)
+    destination = tmp_path / "restored-by-cli"
+    assert main(["--zip", str(archive), "--out", str(destination)]) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["sqlite_row_count"] == 4
+    assert result["commercial_clearance"] == "NOT_GRANTED"
+    assert result["native_windows_launch_accepted"] is False
+    assert destination.is_dir()
