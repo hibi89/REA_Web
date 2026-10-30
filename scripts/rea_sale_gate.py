@@ -82,6 +82,8 @@ def assess(record: dict, expected_sha: str) -> dict:
             issue = "Missing human reviewer"
         elif not isinstance(item["verified_on"], str):
             issue = "Missing review date"
+        elif re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", item["verified_on"]) is None:
+            issue = "Review date must be YYYY-MM-DD"
         else:
             try:
                 reviewed = date.fromisoformat(item["verified_on"])
