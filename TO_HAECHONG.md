@@ -1,3 +1,14 @@
+## REA_Web D27 continuation — 2026-10-30 KST (supersedes prior test snapshot)
+
+- **Product code/test checkpoint:** `55cf80d162f1a725f075867104ced3f6821d1d1e` on `feature/d27-windows-python-discovery`; PR #30 stays OPEN/DRAFT/UNMERGED. Commit `1368a199` hardened exporter Windows device aliases and `eb8b3853` matched shipped offline customer checker, `55cf80d` added a six-case regression. Windows also reserves superscript COM¹/²/³ and LPT¹/²/³ (Microsoft official Naming Files, Paths, and Namespaces guide).
+- **Focus tested:** Linux Python 3.13 `python -m pytest -q tests/test_sale_gate.py tests/test_delivery_zip_hardening.py` yielded **63 passed / 0 failed** in a deliberately isolated fixture workspace. The focused regression source file is verified identical to GitHub blob `4f5936b425c02a95d927b96cae0c8d1b52f0e321`; exact GitHub function checksums matched for `_safe`, `_members`, `verify_delivery`, and `_safe_member`. The helper modules used isolated source excerpts/stubs, **not the original full repository checkout**, native Windows or complete produced-ZIP E2E. The separate Linux environment has no `github.com` DNS for cloning.
+- **CI observation:** On code checkpoint `55cf80d`, first 28 PR-triggered GitHub Actions runs were **QUEUED**, including D27 and D31. This is **not a failed job**, but there is **no latest-code Actions PASS evidence**. Old `c42c4c4` 29/29 SUCCESS cannot be transferred. A new documentation SHA after this update needs fresh head/CI lookup.
+- **Production:** No Vercel project/URL applies; release target is offline local Windows ZIP, not hosted production. User-facing Windows native launch/browser/CRC/restart on exact code checkpoint **NOT_VERIFIED**.
+- **Release gate unchanged:** Independent nondeveloper Windows acceptance NOT_RUN, actual source/dependency commercial redistribution rights NOT_GRANTED, privacy/customer-data handling NOT_APPROVED, seller terms NOT_APPROVED, measured human delivery rehearsal NOT_RUN. The six-field machine ledger alone is **not approval**. Prior engineering 95% and sale preparation 77% are *qualitative unrecalculated estimates*, not measured completion. **NOT APPROVED FOR SALE**.
+- **Next task:** Check D27, D31 CI for this exact code HEAD after runners execute; inspect failing job logs, do minimum code correction; complete original-checkout Python 3.11 pytest plus synthetic Windows ZIP/extract/CMD/Chromium E2E when supported. Do not merge or force-push, and do not generate fake owner/rights sign-off.
+
+---
+
 ## [LATEST] REA_Web release-hardening checkpoint — 2026-10-30 KST
 
 1. **Goal/confirmed scope:** KrW 299,000-class customer-owned CSV/flat-JSON → explicit mapping approval → readonly local FastAPI/SQLite → Windows ZIP, optional same-schema two-input ROW APPEND. No different-schema JOIN, hosting, payments or scraping.
