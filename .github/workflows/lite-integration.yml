@@ -8,6 +8,7 @@ on:
       - "rea/lite_assets/**"
       - "tests/test_rea_lite_builder.py"
       - "tests/test_lite_file_browser.py"
+      - "tests/test_lite_packaged_pilot.py"
       - "tests/test_csv_contract.cjs"
       - "tests/test_vm_interactions.cjs"
       - "scripts/lite_delivery_rehearsal.py"
@@ -56,8 +57,15 @@ jobs:
         run: python -m pytest -q tests/test_rea_lite_builder.py
       - name: On-disk file URL HTML, CSV and download/reopen in Chromium
         run: python -m pytest -q tests/test_lite_file_browser.py
+      - name: Actual packaged ZIP HTML opened via Chromium file URL
+        run: python -m pytest -q tests/test_lite_packaged_pilot.py
       - name: On-disk file URL HTML, CSV and download/reopen in Microsoft Edge (Windows)
         if: matrix.os == 'windows-latest'
         env:
           REA_BROWSER_CHANNEL: msedge
         run: python -m pytest -q tests/test_lite_file_browser.py
+      - name: Actual packaged ZIP HTML opened via Microsoft Edge file URL (Windows)
+        if: matrix.os == 'windows-latest'
+        env:
+          REA_BROWSER_CHANNEL: msedge
+        run: python -m pytest -q tests/test_lite_packaged_pilot.py
