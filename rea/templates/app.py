@@ -37,6 +37,27 @@ def connection():
         db.close()
 
 
+def read_schema():
+    """Bounded generated metadata read; do not leak local filesystem errors."""
+    try:
+        schema_file = ROOT / "schema_preview.json"
+        if schema_file.is_symlink():
+            raise ValueError("Unsafe metadata alias")
+        with schema_file.open("rb") as handle:
+            content = handle.read(256 * 1024 + 1)
+        if len(content) > 256 * 1024:
+            raise ValueError("Oversized generated metadata")
+        value = json.loads(content.decode("utf-8"))
+        if (not isinstance(value, dict)
+                or value.get("review_status") != "UNAPPROVED"
+                or not isinstance(value.get("source_kind"), str)
+                or not isinstance(value.get("fields"), list)):
+            raise ValueError("Invalid generated metadata")
+        return value
+    except (OSError, UnicodeError, ValueError, RecursionError) as exc:
+        raise HTTPException(503, "Local catalog unavailable") from exc
+
+
 def as_item(record):
     value = dict(record)
     value["attributes"] = json.loads(value.pop("attributes_json"))
@@ -54,7 +75,8 @@ def home():
 
 @app.get("/health")
 def health():
-    """Report readiness only when the actual read-only catalog is usable."""
+    """Report readiness only when both catalog and metadata are usable."""
+    read_schema()
     try:
         with connection() as db:
             # Check all table/index pages, including unused user tables. Merely
@@ -79,7 +101,7 @@ def categories():
 @app.get("/api/schema")
 def schema_preview():
     """Read-only unapproved field shape; sample cell data is excluded."""
-    return json.loads((ROOT / "schema_preview.json").read_text(encoding="utf-8"))
+    return read_schema()
 
 
 @app.get("/api/summary")
@@ -93,7 +115,7 @@ def summary():
             "GROUP BY category ORDER BY category LIMIT 100"
         ).fetchall()
     return {
-        "source_kind": json.loads((ROOT / "schema_preview.json").read_text(encoding="utf-8"))["source_kind"] + "_snapshot",
+        "source_kind": read_schema()["source_kind"] + "_snapshot",
         "total_items": total, "total_categories": categories,
         "categories_truncated": categories > 100,
         "category_counts": [{"category": row["category"], "count": row["count"]}

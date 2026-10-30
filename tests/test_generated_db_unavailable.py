@@ -69,3 +69,28 @@ def test_healthy_generated_db_endpoints_keep_original_contract(tmp_path):
         assert client.get("/api/items/missing").status_code == 404
         assert client.get("/api/categories").status_code == 200
         assert client.get("/api/summary").json()["total_items"] == 1
+
+
+def test_missing_schema_metadata_yields_safe_503_without_blocking_data_endpoints(tmp_path):
+    directory, app = _generated(tmp_path)
+    (directory / "schema_preview.json").unlink()
+    with TestClient(app) as client:
+        for path in ("/health", "/api/schema", "/api/summary"):
+            response = client.get(path)
+            assert response.status_code == 503, (path, response.text)
+            assert response.json() == {"detail": "Local catalog unavailable"}
+        assert client.get("/api/items").json()["total"] == 1
+        assert client.get("/api/items/A").status_code == 200
+
+
+def test_invalid_schema_metadata_fails_closed_and_keeps_owner_rows(tmp_path):
+    directory, app = _generated(tmp_path)
+    schema = directory / "schema_preview.json"
+    original = (directory / "data.sqlite").read_bytes()
+    for malformed in (b"not-json", b"{}", b"x" * (256 * 1024 + 1)):
+        schema.write_bytes(malformed)
+        with TestClient(app) as client:
+            assert client.get("/health").status_code == 503
+            assert client.get("/api/schema").status_code == 503
+            assert client.get("/api/summary").status_code == 503
+        assert (directory / "data.sqlite").read_bytes() == original
