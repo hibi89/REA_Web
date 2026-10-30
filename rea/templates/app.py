@@ -9,9 +9,17 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 ROOT = Path(__file__).resolve().parent
 app = FastAPI(title="REA generated app", version="0.1.0", docs_url=None, redoc_url=None)
+# The shipped app is loopback-only. Reject arbitrary Host values as a defense
+# against DNS rebinding through browser requests to an unprotected local API.
+# "testserver" is the fixed default of FastAPI's local TestClient regression suite.
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["127.0.0.1", "localhost", "testserver"],
+)
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 
 
