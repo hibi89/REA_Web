@@ -116,6 +116,8 @@ def inspect(root: Path) -> dict:
         if manifest_path.is_symlink() or not manifest_path.is_file():
             raise ValueError("Missing safe delivery_manifest.json")
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if not isinstance(manifest, dict):
+            raise ValueError("Invalid delivery_manifest.json")
         records = manifest.get("files")
         if manifest.get("schema_version") != "rea.delivery.v0.1" or not isinstance(records, list):
             raise ValueError("Invalid delivery_manifest.json")
