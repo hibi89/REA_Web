@@ -1,3 +1,7 @@
+## 2026-10-31 KST — newest Lite keyboard-only bug fix
+
+At code SHA `9cfc01cc5cccaa9768b26bee63149887f43c60ac`, fixed keyboard Enter/Space not opening native CSV picker while pointer clicked okay, using minimal label keydown handler; new Playwright real disk file:// keyboard test and CI workflow. Local Chromium set_content smoke PASS before/after evidenced; [Windows+Ubuntu Actions run 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) queued at checkpoint, **do not mark PASS unless confirmed**. Prior code 72f36ed full CI PASS remains historical only. Draft PR #31 unmerged. Commercial G2 human Windows G3 source rights G4 consent G5 human delivery timing G6 owner terms blocked. Read HANDOFF.md and docs/65; next check run results first.
+
 ## 2026-10-31 KST — latest Lite delivery ZIP file:// proof
 
 Tested source SHA `72f36ed25caf2d3a7b0ee08e53d0291f1bf5a212`, Actions [run 41119834953](https://github.com/hibi89/REA_Web/actions/runs/41119834953): Windows+Ubuntu PASS 2/2 including exact packed synthetic HTML from exported ZIP, real file:// Windows Chromium/Edge, Ubuntu Chromium (3/3 per browser) plus standalone regressions. No product source/Pro change. Draft PR #31 still unmerged. Repo root contains no LICENSE/NOTICE/COPYING in 227-file inventory; evidence draft docs/63 and unapproved Korean guide docs/64. Human Windows double-click G2 / source rights G3 / data handling G4 / manual cost G5 / business terms G6 still blocked. See HANDOFF.md and STATUS.md before doing any further work.

@@ -1,3 +1,10 @@
+## 2026-10-31 KST — REA_WEB Lite keyboard fix: CI outcome next
+
+- Exact patched source SHA `9cfc01cc5cccaa9768b26bee63149887f43c60ac`. First check [Actions 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) **Windows and Ubuntu conclusions**. At previous checkpoint: queued (not claimed PASS).
+- Local reproduced before keyboard focus Enter+Space NO file chooser; after minimal patch both opened picker, pointer retained. New actual file:// browser tests on Windows Edge/Chromium and Ubuntu Chromium pending. Full evidence `docs/65_LITE_KEYBOARD_ACCESSIBILITY_20261031.md`.
+- After both CI jobs PASS, mark code `9cfc01cc5cccaa9768b26bee63149887f43c60ac` VERIFIED and update HANDOFF/STATUS. If failures, inspect actual logs and correct only genuine issue. No new cosmetic changes.
+- Manual G2 Chrome+Edge Windows nondeveloper, rights G3, customer data G4, three human timed deliveries G5, seller terms G6 still not approved. No sale, merge or production.
+
 ## 2026-10-31 KST — Lite next task after exact packaged ZIP CI
 
 - Exact `72f36ed25caf2d3a7b0ee08e53d0291f1bf5a212` [run 41119834953](https://github.com/hibi89/REA_Web/actions/runs/41119834953) Windows+Ubuntu 2/2 SUCCESS; actual ZIP member HTML browser file:// (cafe/inventory/office) Windows Edge and Chromium 3 PASS each and Ubuntu Chromium 3 PASS. Original Pro preserved. Draft PR #31 OPEN/DRAFT/UNMERGED.

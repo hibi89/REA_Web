@@ -1,3 +1,11 @@
+## 2026-10-31 KST — Lite accessibility defect fixed, updated cross-OS CI QUEUED
+
+- **Actual bug:** keyboard focus on `CSV 파일 변경` label works but Enter and Space never opened chooser; local Chromium BEFORE **2 FAIL**, click PASS; AFTER minimal handler, Enter/Space/click all PASS. No customer/runtime scope expansion.
+- **Exact code SHA:** `9cfc01cc5cccaa9768b26bee63149887f43c60ac` on `feature/lite-offline-html-integration`. [Actions run 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623): at checkpoint status `queued`, conclusion `null`; NOT code-verified on Windows/Ubuntu until run finishes. `tests/test_lite_keyboard_file_picker.py` tests genuine file:// focus+Enter/Space+CSV load on Windows Chromium+Edge and Ubuntu Chromium.
+- **Visual smoke:** six local screenshots (3 themes x 1366px/390px) had no overflow or JS errors via Chromium `page.set_content`, not a Windows customer test. Evidence `docs/65_LITE_KEYBOARD_ACCESSIBILITY_20261031.md`.
+- **Baseline:** previous SHA `72f36ed` Windows+Ubuntu packaged ZIP+Edge and Chromium CI 2/2 SUCCESS; that evidence does not test new keyboard change.
+- Draft PR #31 unmerged; original Pro PR #30, original Pro source, main untouched. G2–G6 manual/legal/seller gates BLOCKED. No Vercel production. Next: check run outcome once, update evidence only if completed; avoid repeated pointless runs.
+
 ## 2026-10-31 KST — REA_WEB Lite actual packaged ZIP runs in Windows Edge/Chromium and Ubuntu: 2/2 SUCCESS
 
 - Code/test SHA `72f36ed25caf2d3a7b0ee08e53d0291f1bf5a212`; [GitHub Actions #41119834953](https://github.com/hibi89/REA_Web/actions/runs/41119834953) **both Windows and Ubuntu completed SUCCESS**. Newly added browser test opens actual ZIP member HTML files via genuine file://; confirms exact 10-member ZIP and 9 hash entries, read-only input, invalid-cafe CSV retains prior 3, valid CSV 5 then saved/reopened new HTML with 5, no external requests.
