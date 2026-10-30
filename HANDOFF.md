@@ -1,11 +1,11 @@
-## Latest exact-head status (2026-10-30; branch HEAD 9171fea40c4ee96c655ed516cd947ba61f29ffe9)
+## Latest exact-head status (2026-10-30; branch HEAD c42c4c49f7e192af5921efe32b26d025a22ed60e)
 
-- PR #30 remains OPEN / DRAFT / UNMERGED. Product runtime code last changed at 97f1ea7 (Windows smoke diagnostics); later commits are evidence/status/offer wording only. No merge or force update.
-- Exact-head GitHub Actions: 28/28 SUCCESS, 0 pending/failures. D27 run 40982146861 passed Linux D1–D27 regression/Chromium and Windows D1–D27/native package; D3 40982146884 passed Windows CMD/loopback and Linux Chromium generated-app checks; D9 40982146683 passed Windows/Linux explicit ROW APPEND regression and extracted CMD/localhost checks; D31 40982147049 passed Ubuntu/Windows generated-runtime audit. Fixtures and generated deliveries are synthetic.
-- Local Python 3.11.9: compileall and pip check PASS; D21/D25/D27/customer-guidance focused regression 51 passed / 2 skipped. A synthetic approved CSV+JSON ROW APPEND ZIP passed delivery/provenance checks and CRC, SQLite quick_check=ok with 5 rows, and unchanged source hashes.
-- Current sandbox native localhost smoke is BLOCKED (WinError 10013); taskkill cleanup was also denied. Full local pytest is INCOMPLETE (153 passed / 4 skipped before D18 readiness timeout). A separate D9 TestClient run stalled and was interrupted; hardlink fixture setup separately hit WinError 5. These do not override the successful remote Windows CI, and remote CI is not human acceptance.
-- Supported offer: CSV/flat JSON, explicit mapping approval, optional same-schema two-file ROW APPEND, read-only local SQLite app and Windows delivery ZIP. Different-schema JOIN, live URL fetch/crawl, hosting, login/payment and CRUD are excluded. Offline Fable JSON review is outside the offer.
-- Human nondeveloper Windows acceptance NOT_RUN; source/vendor/dependency redistribution rights NOT_GRANTED; customer-data/privacy and seller terms NOT_APPROVED. Development 95% / sale preparation 77% remain prior qualitative estimates. NOT_APPROVED_FOR_SALE.
+- PR #30 remains OPEN / DRAFT / UNMERGED. Commit c42c4c4 changes only the Windows smoke QA helper; no merge or force update.
+- Current exact-head GitHub Actions: **29/29 SUCCESS**. D27 Windows run 40984255021: **446 passed / 1 warning**, extracted ZIP/CMD/localhost checks passed; D27 Linux run 40984248440: **431 passed / 5 skipped / 1 warning** and Chromium passed. D3 Windows/Chromium run 40984254836 and D31 Ubuntu/Windows generated-runtime audit 40984254952 passed. All CI data/apps are synthetic, not customer acceptance or commercial clearance.
+- Local Python 3.11.9: compileall and pip check PASS; focused D21/D25/D27/customer guidance **51 passed / 2 skipped**; non-ASGI suite **300 passed / 10 skipped / 1 deselected**. The latter excluded eight TestClient-heavy files and one D18 localhost test after sandbox stalls/denial.
+- Local native Windows smoke prepared the ZIP in workspace QA temp but localhost /health was blocked by sandbox WinError 10013; process cleanup was denied. Full local suite remains INCOMPLETE; do not infer local HTTP success from remote CI.
+- Offer scope remains CSV/flat JSON, owner-approved field mapping, optional same-schema two-file ROW APPEND, read-only local SQLite app and Windows ZIP. No JOIN between different schemas, crawling, hosted service, login/payment or CRUD.
+- Human nondeveloper Windows acceptance NOT_RUN; source/vendor/dependency redistribution rights NOT_GRANTED; customer-data/privacy and seller terms NOT_APPROVED. Development 95% / sale preparation 77% are qualitative carried estimates. **NOT_APPROVED_FOR_SALE.**
 
 ## Exact-head continuation update (2026-10-30; `4ce86ec2472bd350b0009390f8ed49111d29b8ae`)
 
