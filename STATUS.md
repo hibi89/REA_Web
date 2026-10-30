@@ -1,3 +1,18 @@
+## REA_Web checkpoint — strict ZIP manifest + customer checker — 2026-10-30 KST
+
+- **Code checkpoint:** `7fb2e460bf4aa55abcfdb7d84c3ad33f94ab232a` on `feature/d27-windows-python-discovery`; PR #30 OPEN/DRAFT/UNMERGED. Changes are substantive executable code, not documentation-only.
+- `rea/delivery.py`: ZIP `delivery_manifest.json` limited to 256 KiB; duplicate JSON object keys, NaN/Infinity, malformed UTF-8/JSON, invalid integer-size metadata including bool, and JSON nesting beyond 64 levels are rejected with bounded DeliveryError. Existing 100-member/25MiB total limits and SHA checks remain.
+- `rea/provenance.py`: generated internal app/schema/mapping/append/review JSON also rejects nonfinite constants and nesting beyond 64 levels, in addition to prior type/duplicate-key checks. One shared `_json_depth_exceeds` in delivery is imported at runtime; no new dependency.
+- Shipped standalone `rea/customer_self_check.py`: extracted delivery manifest now rejects duplicate keys, nonfinite constants and >64-level nesting; catches RecursionError for safe FAIL_LOCAL_PREREQUISITES rather than traceback. Existing bounded manifest/streaming integrity checks retained.
+- Tests committed: `tests/test_delivery_manifest_strict.py` **17 pytest cases**, expanded `tests/test_provenance_malformed_metadata.py` by **8 cases**, expanded `tests/test_delivery_publication_guards.py` by **5 cases**. These three latest test updates are NOT run as a full, unmocked checkout.
+- **Executed focused isolated Python 3.13:** 17/17 ZIP manifest tests + 13/13 generated JSON parser tests = **30 PASS** (functions independently verified against source checksums). Another isolated focused run covering prior sale/ZIP tests and extracted customer manifest = **75 PASS**. SHA/checksum equality matched 5 main ZIP functions, 3 provenance JSON parser functions, and 4 customer-parser/inspect functions. These are separate isolated test scopes and must NOT be described as full original-repo regression, native Windows E2E or consumer signoff.
+- **Important reproduced failure and fix:** initial depth test saw **1 failure** because this Python runtime accepted 1,500 nested arrays. Replaced implicit parser RecursionError expectation with explicit 64-level cap and re-ran: 17/17 PASS. Do not claim the code was correct before this fix.
+- **CI handling:** Initial exact-head GitHub Actions first-page 28 PR-triggered runs all QUEUED, with no conclusion. Skip CI waiting; inspect only after actual completions. No latest-code CI PASS claim.
+- **Scope and gating:** customer-authorized CSV/flat JSON → approved mapping → local read-only FastAPI/SQLite + offline Windows ZIP, optional same-schema ROW APPEND only. No hosted Vercel URL or customer production deployment. Qualitative old development 95% / sale preparation 77% remain estimates, not remeasured. Independent Windows human acceptance, source/dependency redistribution rights, customer privacy/data handling, seller terms and timed manual delivery remain **NOT_RUN/NOT_GRANTED/NOT_APPROVED**. NOT APPROVED FOR SALE.
+- **Next:** on genuine checkout run new strict JSON tests, existing full regression and generated ZIP Windows CMD+localhost+Chromium; fix actual failures. No merge, force push or artificial approval.
+
+---
+
 ## 2026-10-30 — REA_Web semantic release gating checkpoint
 
 - **Code checkpoint** `323013c2235884537389282045f7ed22437540b5`, feature branch `feature/d27-windows-python-discovery`, PR #30 OPEN/DRAFT/UNMERGED. Previous safety work retained.
