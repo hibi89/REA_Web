@@ -1,3 +1,16 @@
+## 2026-10-31 KST — privacy-updated owner pilot package delivered; CI open
+
+1. **Goal/stack:** package verified current privacy-hardening code for actual nondeveloper Windows manual trial. Local FastAPI+SQLite+HTML/JS generated from synthetic approved same-schema files, Python3.11+.
+2. **Done:** downloaded latest D27 Action artifact `12997912131`; extracted real `rea-d19-owner-pilot.zip` (**35,313 bytes, SHA256 `a8d2076663e3dfb289e158c20653ad1e347208647e42962d30a58dcb464bec35`**), checked all 10 members/9 listed SHA sizes; nested `demo/approved_pair.zip` 25,826 bytes, 16 original members SHA256 matching `3521d25a61ab345284335b100aaa4db0e16b29ed5f1db060a97edf9b61c26f78`, SQLite integrity `ok`, 5 synthetic rows. Confirmed embedded `app/app.py` byte-exact Git blob `63470882a74b5e2bf76858638d6aeb592a7c091a` from **current** `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` source. Delivered downloadable unchanged original pilot copy to current chat sandbox; don't treat temp space as durable.
+3. **Tests:** real stdlib ZIP/SHA/SQLite audit PASSED; new SHA Actions at checkpoint **15 SUCCESS/10 RUNNING/3 QUEUED**, no verified FAIL; D27 Linux 645 PASS/5 SKIP + Chromium 8+3 PASS, Windows entire pytest step SUCCESS, remaining runner finalization pending. No human Windows E2E asserted.
+4. **State:** latest demo ready for owner trial, not commercial; current CI PARTIAL; PR #30 DRAFT/UNMERGED, main untouched, Vercel N/A.
+5. **Errors:** previously-shared pilot artifact #12996213068 embeds **prior** code, so do not reuse it to validate current cache headers. New artifact corrects that gap. No runtime bug reproduced by this work, no patch to product source required.
+6. **Repo/branch/SHA:** `hibi89/REA_Web@feature/d27-windows-python-discovery`, tested code `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`, Actions D27 [41099504224](https://github.com/hibi89/REA_Web/actions/runs/41099504224), new [owner pilot artifact 12997912131](https://github.com/hibi89/REA_Web/actions/runs/41099504224/artifacts/12997912131).
+7. **Env/deployment:** Windows Python 3.11+ for human test, local 127.0.0.1; GitHub Actions synthetic Linux/Windows separate. No production deployment.
+8. **Originals/backups/security:** GitHub Actions original archive preserved, no script execution from downloaded ZIP, no live customer bytes, no author keys. Prior original #12996213068 remains backup historical but not current source evidence.
+9. **NEXT:** complete GitHub exact-source 28 CI readback, fix only observed failure. Owner: new Windows trial uses current artifact; manifest fields do not grant customer consent. Independently settle full source/license notices, privacy/storage/retention, Kmong scope price revisions support refunds, timed delivery; **no sale approval**.
+10. **As of:** 2026-10-31 KST, static package SHA verification and CI partial snapshot; `STATUS.md` contains per-member verification and all exclusions, docs-only `[skip ci]` commit after tested source.
+
 ## 2026-10-31 KST — REA latest privacy HTTP proof, exact-source CI pending
 
 1. Goal: technical closure of REA_Web independent owner CSV/JSON→read-only local FastAPI/SQLite ZIP with four anti-cache/referrer headers, no new features or user data processing.
