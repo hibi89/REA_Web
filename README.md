@@ -8,7 +8,7 @@ python -m rea.recovery --zip .\owner-original.zip --out .\owner-recovered-new
 
 복구 전 ZIP SHA256·의미 승인 감사, 추출 파일 해시, 읽기 전용 SQLite 및 앱 명세 행 수를 확인합니다. 기존 폴더 덮어쓰기 금지·실패시 새 폴더 미게시. 원본 ZIP에 도구가 자동 포함되지는 않습니다. 별도 Windows 실행·Python 패키지·판매/법률 승인은 보장하지 않습니다. 자세한 안내: `docs/57_OFFLINE_ZIP_RECOVERY.md`.
 
-분리 Linux 환경에서 **코드 blob이 일치하는 복구 모듈의 테스트 7/7 PASS** (감사 부분 스텁 사용). 원본 저장소의 `tests/test_recovery.py` 11개 사례와 D11 3건 회귀는 GitHub에 커밋되어 있으나 최신 전체 CI는 미검증입니다.
+분리 Linux 환경에서 **코드 blob이 일치하는 복구 모듈의 테스트 7/7 PASS** (감사 부분 스텁 사용). 원본 저장소의 `tests/test_recovery.py` 10개 사례와 D11 3건 회귀는 GitHub에 커밋되어 있으나 최신 전체 CI는 미검증입니다.
 
 ---
 
