@@ -357,10 +357,11 @@ def create_delivery(csv_file: Path, output_zip: Path, name: str = "REA local app
         raise FileExistsError("Output archive already exists: " + str(output_zip))
     if output_zip.suffix.lower() != ".zip":
         raise DeliveryError("Output must end with .zip")
-    output_zip.parent.mkdir(parents=True, exist_ok=True)
     source_digest = source_sha256(csv_file)
     if expected_source_sha256 is not None and source_digest != expected_source_sha256:
         raise DataError("Owner source changed since approved preview")
+    # Invalid/stale owner inputs must not even create an output parent.
+    output_zip.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix=".rea-export-", dir=output_zip.parent) as temp:
         work = Path(temp)
         project = work / "app"
