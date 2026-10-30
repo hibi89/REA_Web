@@ -150,3 +150,33 @@ def test_existing_archive_not_replaced_when_source_is_valid(tmp_path):
     with pytest.raises(FileExistsError):
         delivery.create_delivery(source, target)
     assert target.read_bytes() == b"owner-private-original"
+
+
+def test_semantic_audit_failure_keeps_zip_unpublished(tmp_path, monkeypatch):
+    from rea import provenance
+
+    source = source_csv(tmp_path)
+    target = tmp_path / "blocked.zip"
+    visited = []
+
+    def reject_semantics(path):
+        visited.append(path)
+        raise provenance.AuditError("Synthetic semantic audit failure")
+
+    monkeypatch.setattr(provenance, "inspect_delivery", reject_semantics)
+    with pytest.raises(provenance.AuditError, match="semantic audit"):
+        delivery.create_delivery(source, target)
+    assert len(visited) == 1
+    assert visited[0].is_file() is False  # Temporary staging removed on failure
+    assert not target.exists()
+
+
+def test_successful_delivery_passes_full_semantic_audit(tmp_path):
+    from rea.provenance import inspect_delivery
+
+    source = source_csv(tmp_path)
+    target = tmp_path / "verified.zip"
+    delivery.create_delivery(source, target)
+    evidence = inspect_delivery(target)
+    assert evidence["delivery_integrity"] == "VERIFIED_SHA256"
+    assert evidence["overall_commercial_clearance"] == "NOT_GRANTED"
