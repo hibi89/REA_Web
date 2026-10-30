@@ -1,11 +1,11 @@
-## Latest exact-head update (2026-10-30; `504c31c5d2e00724af6afa26c37cee4f6f875dcc`)
+## Latest status (2026-10-30; branch HEAD `3c3c15f24732bae05a3775556c1430717507a32d`)
 
-- Branch `feature/d27-windows-python-discovery` and PR #30 were checked at this exact SHA. PR remains OPEN / DRAFT / UNMERGED. The preceding commit contains documentation updates only; no runtime source changed.
-- GitHub Actions at `504c31c`: **28/28 SUCCESS**. D27 Windows full suite **446 passed / 1 warning**; extracted ZIP + CMD launcher + localhost API returned 4 rows, and fresh Windows venv HTTP check returned 5 rows on `127.0.0.1`. D3 Chromium passed 8 synthetic apps with search/filter/detail/reload and zero unexpected network calls, JS errors, or dialogs. D31 Linux and Windows pip-audit: **No known vulnerabilities found** for generated synthetic runtime dependency ranges/current resolution.
-- Fresh local synthetic CSV (5 rows), flat JSON (4), and explicitly approved same-schema ROW APPEND (5) ZIPs passed CRC, Korean-path extraction, actual CMD prerequisite check, SQLite `quick_check`, read-only insert refusal, and no raw CSV/JSON payload inclusion. APPEND inputs retained their original hashes. These artifacts use the verified 4ce runtime tree; commit 504 only adds status documentation.
-- Local loopback HTTP remains **BLOCKED/NOT_RUN** (`WinError 10013`); local full pytest remains **INCOMPLETE** because earlier runs stalled without a final summary. GitHub CI HTTP/browser checks are separate synthetic automation, not local-host or human acceptance.
-- Development **95%** / Kmong preparation **77%** are carried qualitative estimates. Nondeveloper Windows acceptance **NOT_RUN**; source/vendor/runtime redistribution rights **NOT_GRANTED**; customer-data privacy/authorization and seller terms **NOT_APPROVED**. Sale remains **NOT_APPROVED**.
-- Continue independent evidence work. Do not wait on redundant CI to start unrelated tasks; do not close any human or rights gate without external evidence.
+- PR #30 is OPEN / DRAFT / UNMERGED at this same head. No merge or force push was made.
+- Product runtime code was last changed at `97f1ea7d3ce551494ac44e93d1f90bcd27cdc400`; its exact-code GitHub Actions set completed **28/28 SUCCESS** using synthetic fixtures. D27 full regression/native-package, D3 browser/native and D31 audit jobs succeeded.
+- Later commits `c8a4ef7` and `3c3c15f` add evidence and clarify offer wording only. At the latest check, the current documentation-head workflow query returned 12 success, 14 in progress, 2 queued, 0 failures; D27 and D31 were still in progress. Do not wait on these checks before independent tasks.
+- Local Windows Python 3.11.9 checks: compileall PASS; customer guidance + D27 focused tests **21 PASS**; synthetic manual folder backup/restore and extracted CMD preflight PASS. Full local pytest stopped at the D18 real-HTTP test after **153 passed / 4 skipped** because no 127.0.0.1 health response arrived; local HTTP remains BLOCKED/INCOMPLETE, separate from CI.
+- Offer scope: CSV/flat JSON; explicit field approval; optional same-schema two-file ROW APPEND; one-page read-only SQLite local app and Windows ZIP. Different-schema JOIN, live URL fetch/crawl, login/payment, hosted deployment and CRUD are excluded. Offline Fable JSON review is outside this offer and its rights remain uncleared.
+- Human customer Windows acceptance **NOT_RUN**; source/vendor/dependency commercial rights **NOT_GRANTED**; customer data/privacy and seller terms **NOT_APPROVED**. Development 95% / sale preparation 77% remain qualitative estimates. **Not approved for sale.**
 
 ## Exact-head continuation update (2026-10-30; `4ce86ec2472bd350b0009390f8ed49111d29b8ae`)
 
