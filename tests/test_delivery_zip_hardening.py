@@ -11,7 +11,7 @@ import zipfile
 import pytest
 
 from rea.delivery import DeliveryError, _members, _safe, verify_delivery
-from rea.customer_self_check import _safe_member
+from rea.customer_self_check import _safe_member, inspect
 
 
 @pytest.mark.parametrize("bad", [
@@ -127,3 +127,21 @@ def test_exporter_refuses_case_colliding_files_before_zip_publish(tmp_path):
     (project / "items.CSV").write_text("synthetic", encoding="utf-8")
     with pytest.raises(DeliveryError, match="collision"):
         _members(project)
+
+
+@pytest.mark.parametrize("payload", ["[]", "null", '"string"', "123"])
+def test_nonobject_manifest_is_bounded_failure(tmp_path, payload):
+    archive = tmp_path / "malformed_manifest.zip"
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr("delivery_manifest.json", payload)
+    with pytest.raises(DeliveryError, match="Invalid manifest object"):
+        verify_delivery(archive)
+
+
+@pytest.mark.parametrize("payload", ["[]", "null", '"string"', "123"])
+def test_customer_preflight_handles_nonobject_manifest_without_traceback(tmp_path, payload):
+    (tmp_path / "delivery_manifest.json").write_text(payload, encoding="utf-8")
+    report = inspect(tmp_path)
+    assert report["integrity"] == "NOT_VERIFIED"
+    assert report["status"] == "FAIL_LOCAL_PREREQUISITES"
+    assert any("ValueError" in issue for issue in report["issues"])
