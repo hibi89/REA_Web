@@ -87,3 +87,80 @@ def test_source_is_unchanged(tmp_path):
     before = source.read_bytes()
     generate(source, tmp_path / "built")
     assert source.read_bytes() == before
+
+
+def test_generated_readonly_db_connections_are_actually_closed(tmp_path, monkeypatch):
+    """sqlite3 context exit alone would leak each Windows read-only handle."""
+    source = fixture_csv(tmp_path, "id,title,category\nA,Alpha,Food\n")
+    output = tmp_path / "built"
+    generate(source, output)
+    spec = importlib.util.spec_from_file_location("rea_close_handles", output / "app.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    original_connect = sqlite3.connect
+
+    class TrackingConnection(sqlite3.Connection):
+        closes = 0
+
+        def close(self):
+            type(self).closes += 1
+            return super().close()
+
+    def tracked_connect(*args, **kwargs):
+        assert kwargs.get("uri") is True
+        return original_connect(*args, **kwargs, factory=TrackingConnection)
+
+    monkeypatch.setattr(sqlite3, "connect", tracked_connect)
+    with TestClient(module.app) as client:
+        assert client.get("/health").status_code == 200
+        assert client.get("/api/items").json()["total"] == 1
+        assert client.get("/api/items/A").status_code == 200
+        assert client.get("/api/items/missing").status_code == 404
+    assert TrackingConnection.closes == 4
+
+
+def test_generated_health_refuses_missing_catalog_without_creating_it(tmp_path):
+    source = fixture_csv(tmp_path, "id,title,category\nA,Alpha,Food\n")
+    output = tmp_path / "built"
+    generate(source, output)
+    database = output / "data.sqlite"
+    database.unlink()
+    spec = importlib.util.spec_from_file_location("rea_health_missing_catalog", output / "app.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    with TestClient(module.app) as client:
+        response = client.get("/health")
+    assert response.status_code == 503
+    assert response.json() == {"detail": "Local catalog unavailable"}
+    assert not database.exists()
+
+
+def test_generated_health_detects_corrupt_unrelated_sqlite_btree(tmp_path):
+    """An intact items query is insufficient evidence of healthy SQLite."""
+    source = fixture_csv(tmp_path, "id,title,category\nA,Alpha,Food\n")
+    output = tmp_path / "built"
+    generate(source, output)
+    database = output / "data.sqlite"
+    db = sqlite3.connect(database)
+    try:
+        db.execute("CREATE TABLE unrelated (value TEXT)")
+        db.executemany("INSERT INTO unrelated VALUES (?)",
+                       [(f"synthetic-{i}",) for i in range(100)])
+        page = db.execute(
+            "SELECT rootpage FROM sqlite_master WHERE name='unrelated'"
+        ).fetchone()[0]
+        page_size = db.execute("PRAGMA page_size").fetchone()[0]
+        db.commit()
+    finally:
+        db.close()
+    with database.open("r+b") as handle:
+        handle.seek((page - 1) * page_size)
+        handle.write(b"\x00")
+    spec = importlib.util.spec_from_file_location("rea_health_corrupt_btree", output / "app.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    with TestClient(module.app) as client:
+        assert client.get("/api/items").json()["total"] == 1
+        response = client.get("/health")
+    assert response.status_code == 503
+    assert response.json() == {"detail": "Local catalog unavailable"}

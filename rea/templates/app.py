@@ -1,6 +1,7 @@
 """Generated, standalone read-only FastAPI/SQLite application."""
 from __future__ import annotations
 
+from contextlib import contextmanager
 import json
 import sqlite3
 from pathlib import Path
@@ -14,11 +15,20 @@ app = FastAPI(title="REA generated app", version="0.1.0", docs_url=None, redoc_u
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
 
 
+@contextmanager
 def connection():
+    """Every endpoint closes SQLite handles, including on query exceptions.
+
+    sqlite3.Connection.__exit__ commits or rolls back, but does not close it.
+    The generated Windows app must release its read-only file handle.
+    """
     db = sqlite3.connect((ROOT / "data.sqlite").as_uri() + "?mode=ro", uri=True)
-    db.execute("PRAGMA query_only=ON")
-    db.row_factory = sqlite3.Row
-    return db
+    try:
+        db.execute("PRAGMA query_only=ON")
+        db.row_factory = sqlite3.Row
+        yield db
+    finally:
+        db.close()
 
 
 def as_item(record):
@@ -38,6 +48,18 @@ def home():
 
 @app.get("/health")
 def health():
+    """Report readiness only when the actual read-only catalog is usable."""
+    try:
+        with connection() as db:
+            # Check all table/index pages, including unused user tables. Merely
+            # SELECTing from items can succeed when another B-tree is corrupt.
+            integrity = db.execute("PRAGMA quick_check(1)").fetchone()
+            if integrity is None or integrity[0] != "ok":
+                raise sqlite3.DatabaseError("SQLite quick_check failed")
+            db.execute("SELECT 1 FROM items LIMIT 1").fetchone()
+    except (sqlite3.Error, OSError) as exc:
+        # Never disclose the customer's local DB path to the HTTP caller.
+        raise HTTPException(503, "Local catalog unavailable") from exc
     return {"status": "ok", "mode": "local_readonly"}
 
 
