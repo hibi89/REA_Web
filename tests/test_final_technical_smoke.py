@@ -54,3 +54,51 @@ def test_cli_fails_closed_on_existing_owner_output(tmp_path, capsys):
     assert main(["--out", str(target)]) == 2
     assert "FAIL_SYNTHETIC_TECHNICAL" in capsys.readouterr().err
     assert target.exists()
+
+
+def test_205_row_catalog_all_pages_reachable_and_buttons_present(tmp_path):
+    import importlib.util
+
+    from fastapi.testclient import TestClient
+    from rea.delivery import create_delivery
+    from rea.recovery import restore_delivery
+
+    source = tmp_path / "catalog.csv"
+    source.write_text(
+        "id,title,category\n" +
+        "".join(f"S{i:03d},Synthetic {i},Group\n" for i in range(205)),
+        encoding="utf-8",
+    )
+    zip_path = tmp_path / "catalog.zip"
+    create_delivery(source, zip_path, "Synthetic 205 row catalog")
+    recovered = tmp_path / "catalog-app"
+    result = restore_delivery(zip_path, recovered)
+    assert result["sqlite_row_count"] == 205
+
+    app_root = recovered / "app"
+    spec = importlib.util.spec_from_file_location(
+        "rea_final_paginated_catalog", app_root / "app.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    with TestClient(module.app) as client:
+        first = client.get("/api/items", params={"limit": 100, "offset": 0})
+        second = client.get("/api/items", params={"limit": 100, "offset": 100})
+        third = client.get("/api/items", params={"limit": 100, "offset": 200})
+        assert [len(response.json()["items"]) for response in
+                (first, second, third)] == [100, 100, 5]
+        assert all(response.json()["total"] == 205 for response in
+                   (first, second, third))
+        ids = [item["id"] for response in (first, second, third)
+               for item in response.json()["items"]]
+        assert len(ids) == 205 and len(set(ids)) == 205
+        assert client.get("/api/items", params={"limit": 101}).status_code == 422
+        assert client.get("/api/items", params={"offset": -1}).status_code == 422
+        homepage = client.get("/").text
+        js = client.get("/static/app.js").text
+        css = client.get("/static/style.css").text
+        assert 'id="page-prev"' in homepage
+        assert 'id="page-next"' in homepage
+        assert "pageOffset" in js and "offset: String(pageOffset)" in js
+        assert "pageOffset = 0" in js
+        assert ".pagination[hidden]" in css
+        assert "innerHTML" not in js
