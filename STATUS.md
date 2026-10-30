@@ -1,3 +1,14 @@
+## REA_Web hardening continuation (2026-10-30 KST; product/test code checkpoint `1a49bffaccf0136056c0b7500ac895f76772ea79`)
+
+- Source branch: `feature/d27-windows-python-discovery`; PR [#30](https://github.com/hibi89/REA_Web/pull/30) remains DRAFT/OPEN/UNMERGED at last check. No upstream merge/force-push.
+- New verified remote GitHub commits: `79dd289` delivery ZIP rejects additional Windows-illegal filename chars/devices and casefold collisions; `558d2f3` ZIP regression cases; `8810a3d` exported standalone extracted-folder self-check aligns with path policy; `953f816` comparison tests; `1f4cf6c` strict sign-off date grammar; `1a49bff` date regression.
+- The modified source and tests were fetched back from the GitHub feature branch and inspected. **New targeted pytest NOT_RUN in this chat**: this environment cannot fetch/clone the repository to execute the exact source. The GitHub Actions first-page 28 workflows for earlier `953f816` were QUEUED at last query; current product/test checkpoint has no confirmed PASS. Do not transfer earlier c42c4c CI status to new commits.
+- Security scope is bounded Windows ZIP paths and manual sign-off metadata format; Windows operator test, redistribution license rights, privacy/data operations, seller terms and measured human delivery still require genuine outside evidence.
+- Carry existing qualitative estimates **engineering 95% / sale preparation 77%**, not recalculated. Commercial disposition: **NOT APPROVED FOR SALE**.
+- Next: check current exact-head Actions and investigate any failures; run `python -m pytest -q tests/test_sale_gate.py tests/test_delivery_zip_hardening.py` in a real repository checkout, then perform synthetic delivery and extracted-Windows regression before asserting completion. Independent nondeveloper acceptance and commercial rights remain NOT_RUN/NOT_GRANTED.
+
+---
+
 ## Latest exact-head status (2026-10-30; branch HEAD c42c4c49f7e192af5921efe32b26d025a22ed60e)
 
 - PR #30 remains OPEN / DRAFT / UNMERGED. Commit c42c4c4 changes only the Windows smoke QA helper; no merge or force update.
