@@ -208,3 +208,35 @@ def test_extracted_manifest_1500_levels_rejected_bounded(tmp_path):
     assert result["integrity"] == "NOT_VERIFIED"
     assert any("ValueError" in issue or "RecursionError" in issue
                for issue in result["issues"])
+
+
+def test_rehashed_corrupt_unused_sqlite_page_rejected_by_customer(tmp_path):
+    """A correct delivery SHA and SELECT COUNT(*) do not imply SQLite integrity."""
+    root, manifest = synthetic_extracted_kit(tmp_path)
+    database = root / "app/data.sqlite"
+    with sqlite3.connect(database) as db:
+        db.execute("CREATE TABLE unused (value TEXT)")
+        db.executemany("INSERT INTO unused VALUES (?)",
+                       [(f"synthetic-{i}",) for i in range(100)])
+        broken_page = db.execute(
+            "SELECT rootpage FROM sqlite_master WHERE name = 'unused'"
+        ).fetchone()[0]
+        page_size = db.execute("PRAGMA page_size").fetchone()[0]
+    with database.open("r+b") as stream:
+        stream.seek((broken_page - 1) * page_size)
+        stream.write(b"\x00")  # Invalid B-tree page type, unrelated to items.
+    # Recompute archive inventory to prove the file SHA alone is insufficient.
+    payload = database.read_bytes()
+    for item in manifest["files"]:
+        if item["path"] == "app/data.sqlite":
+            item["bytes"] = len(payload)
+            item["sha256"] = hashlib.sha256(payload).hexdigest()
+    (root / "delivery_manifest.json").write_text(
+        json.dumps(manifest), encoding="utf-8"
+    )
+    with sqlite3.connect(f"file:{database.as_posix()}?mode=ro", uri=True) as db:
+        assert db.execute("SELECT COUNT(*) FROM items").fetchone()[0] == 1
+    check = inspect(root)
+    assert check["integrity"] == "MATCHED_DELIVERY_MANIFEST_SHA256"
+    assert check["database"] != "READONLY_OPEN_SUCCESS"
+    assert check["status"] == "FAIL_LOCAL_PREREQUISITES"
