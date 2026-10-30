@@ -1,0 +1,38 @@
+name: REA Lite actual parser and file-browser acceptance
+
+on:
+  pull_request:
+    branches: [feature/d27-windows-python-discovery]
+    paths:
+      - "rea/lite_builder.py"
+      - "rea/lite_assets/**"
+      - "tests/test_rea_lite_builder.py"
+      - "tests/test_lite_file_browser.py"
+      - ".github/workflows/lite-integration.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lite:
+    name: "Lite Python/Chromium (${{ matrix.os }})"
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install test-only requirements
+        run: |
+          python -m pip install "pytest>=8,<10" "playwright>=1.45,<2"
+          python -m playwright install chromium
+      - name: Actual Pro parser integrated unit checks
+        run: python -m pytest -q tests/test_rea_lite_builder.py
+      - name: On-disk file URL HTML, CSV and download/reopen in Chromium
+        run: python -m pytest -q tests/test_lite_file_browser.py
