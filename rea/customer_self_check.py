@@ -50,7 +50,9 @@ def _safe_member(name: str) -> bool:
     parts = name.split("/")
     reserved = {"CON", "PRN", "AUX", "NUL", "CONIN$", "CONOUT$"} | {
         f"COM{i}" for i in range(1, 10)
-    } | {f"LPT{i}" for i in range(1, 10)}
+    } | {f"LPT{i}" for i in range(1, 10)} | {
+        f"{prefix}{digit}" for prefix in ("COM", "LPT") for digit in ("¹", "²", "³")
+    }
     return bool(
         name and len(name) <= 260 and not name.startswith("/")
         and "\\" not in name and ":" not in name
