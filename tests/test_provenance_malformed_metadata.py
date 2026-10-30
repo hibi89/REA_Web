@@ -131,3 +131,27 @@ def test_untampered_synthetic_archive_retains_auditable_status(tmp_path):
     result = inspect_delivery(archive)
     assert result["delivery_integrity"] == "VERIFIED_SHA256"
     assert result["overall_commercial_clearance"] == "NOT_GRANTED"
+
+
+@pytest.mark.parametrize("member", [
+    "app/manifest.json", "app/schema_preview.json",
+])
+@pytest.mark.parametrize("value", [b"NaN", b"Infinity", b"-Infinity"])
+def test_nonfinite_generated_metadata_rejected(tmp_path, member, value):
+    original = base_zip(tmp_path)
+    archive = tmp_path / "nonfinite.zip"
+    repack(original, archive, {member: b'{"unapproved_extra":' + value + b'}'})
+    with pytest.raises(AuditError, match="Non-finite"):
+        inspect_delivery(archive)
+
+
+@pytest.mark.parametrize("member", [
+    "app/manifest.json", "app/schema_preview.json",
+])
+def test_deep_generated_metadata_refused_without_recursion_traceback(tmp_path, member):
+    original = base_zip(tmp_path)
+    archive = tmp_path / "deep.zip"
+    payload = b'{"unapproved_extra":' + b"[" * 1500 + b"0" + b"]" * 1500 + b"}"
+    repack(original, archive, {member: payload})
+    with pytest.raises(AuditError, match="metadata"):
+        inspect_delivery(archive)
