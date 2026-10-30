@@ -132,7 +132,7 @@ def test_stale_owner_approval_rejected_before_zip_build(tmp_path, monkeypatch):
     source = source_csv(tmp_path)
     sha = source_sha256(source)
     source.write_text("id,title,category\nB,Changed,Food\n", encoding="utf-8")
-    target = tmp_path / "unapproved.zip"
+    target = tmp_path / "new-parent" / "unapproved.zip"
 
     def should_not_build(*args, **kwargs):
         raise AssertionError("Stale approved source reached build")
@@ -141,6 +141,7 @@ def test_stale_owner_approval_rejected_before_zip_build(tmp_path, monkeypatch):
     with pytest.raises(DataError, match="changed since approved preview"):
         delivery.create_delivery(source, target, expected_source_sha256=sha)
     assert not target.exists()
+    assert not target.parent.exists()
 
 
 def test_existing_archive_not_replaced_when_source_is_valid(tmp_path):
