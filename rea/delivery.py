@@ -20,6 +20,7 @@ from rea.safe_publish import publish_archive
 SCHEMA = "rea.delivery.v0.1"
 FIXED_DATE = (2026, 1, 1, 0, 0, 0)
 MAX_ARCHIVE_BYTES = 25 * 1024 * 1024
+MAX_MANIFEST_BYTES = 256 * 1024
 # Prefer a usable "python" command; fall back to installed "py -3".
 # Never install Python or infer a user machine's executable path.
 PYTHON_VERSION_PROBE = 'import sys;sys.exit(0 if sys.version_info[:2]>=(3,11) else 1)'
@@ -226,6 +227,20 @@ class DeliveryError(ValueError):
     pass
 
 
+def _manifest_object_pairs(pairs: list[tuple[str, object]]) -> dict:
+    """Reject ambiguous repeated object keys anywhere in the ZIP manifest."""
+    unique = {}
+    for name, value in pairs:
+        if name in unique:
+            raise DeliveryError("Duplicate ZIP manifest JSON key")
+        unique[name] = value
+    return unique
+
+
+def _manifest_constant(value: str):
+    raise DeliveryError("Non-finite ZIP manifest JSON constant")
+
+
 def _zipinfo(name: str) -> zipfile.ZipInfo:
     item = zipfile.ZipInfo(name, FIXED_DATE)
     item.compress_type = zipfile.ZIP_DEFLATED
@@ -325,7 +340,14 @@ def verify_delivery(archive: Path) -> dict:
             raise DeliveryError("Missing manifest")
         if sum(item.file_size for item in info) > MAX_ARCHIVE_BYTES:
             raise DeliveryError("ZIP contents too large")
-        doc = json.loads(zf.read("delivery_manifest.json").decode("utf-8"))
+        if zf.getinfo("delivery_manifest.json").file_size > MAX_MANIFEST_BYTES:
+            raise DeliveryError("ZIP manifest exceeds 256 KiB")
+        try:
+            doc = json.loads(zf.read("delivery_manifest.json").decode("utf-8"),
+                             object_pairs_hook=_manifest_object_pairs,
+                             parse_constant=_manifest_constant)
+        except (UnicodeError, json.JSONDecodeError, RecursionError) as exc:
+            raise DeliveryError("Malformed ZIP manifest JSON") from exc
         if not isinstance(doc, dict):
             raise DeliveryError("Invalid manifest object")
         if doc.get("schema_version") != SCHEMA:
@@ -335,7 +357,13 @@ def verify_delivery(archive: Path) -> dict:
             raise DeliveryError("Manifest file count mismatch")
         expected = {}
         for row in rows:
-            if not isinstance(row, dict) or not isinstance(row.get("path"), str) or row["path"] in expected:
+            if (not isinstance(row, dict)
+                    or not isinstance(row.get("path"), str)
+                    or type(row.get("bytes")) is not int
+                    or row["bytes"] < 0 or row["bytes"] > MAX_ARCHIVE_BYTES
+                    or not isinstance(row.get("sha256"), str)
+                    or len(row["sha256"]) != 64
+                    or row["path"] in expected):
                 raise DeliveryError("Invalid manifest entry")
             expected[row["path"]] = row
         if set(expected) != set(names) - {"delivery_manifest.json"}:
