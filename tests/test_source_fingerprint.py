@@ -99,3 +99,47 @@ def test_generate_refuses_source_changed_during_parse(tmp_path, monkeypatch):
     with pytest.raises(DataError, match="Source changed during generation"):
         generate(source, target)
     assert not target.exists()
+
+
+def test_pair_append_uses_bounded_streaming_sha(tmp_path, monkeypatch):
+    from rea.two_source import _sha256, preflight_pair
+
+    first = make_source(tmp_path)
+    second = tmp_path / "second.csv"
+    second.write_text("id,title,category\nB,Two,Food\n", encoding="utf-8")
+    forbidden = {first, second}
+    original = Path.read_bytes
+
+    def no_full_read(path):
+        if path in forbidden:
+            raise AssertionError("Two-file approval used unbounded read_bytes")
+        return original(path)
+
+    monkeypatch.setattr(Path, "read_bytes", no_full_read)
+    result = preflight_pair(first, second)
+    assert result["combined_rows"] == 2
+    assert result["sources"][0]["sha256"] == _sha256(first)
+    assert result["sources"][1]["sha256"] == _sha256(second)
+
+
+def test_pair_append_oversize_source_is_rejected_early(tmp_path):
+    from rea.two_source import preflight_pair
+
+    first = make_source(tmp_path)
+    huge = tmp_path / "oversize.csv"
+    with huge.open("wb") as handle:
+        handle.seek(MAX_BYTES)
+        handle.write(b"x")
+    with pytest.raises(DataError, match="10 MiB"):
+        preflight_pair(first, huge)
+
+
+def test_pair_append_refuses_changed_source_since_preview(tmp_path):
+    from rea.two_source import _approval
+
+    first = make_source(tmp_path)
+    pinned = source_sha256(first)
+    first.write_text("id,title,category\nB,Changed,Food\n", encoding="utf-8")
+    with pytest.raises(DataError, match="changed after inspection"):
+        _approval(first, {"id": "id", "title": "title", "category": "category"},
+                  pinned, "APPROVE")
