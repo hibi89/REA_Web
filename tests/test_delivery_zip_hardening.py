@@ -69,3 +69,31 @@ def test_normal_regular_entry_keeps_manifest_check(tmp_path):
     _archive(archive, "app/static/normal.txt", link=False)
     result = verify_delivery(archive)
     assert result["files"][0]["path"] == "app/static/normal.txt"
+
+
+@pytest.mark.parametrize("bad", [
+    "app/<invalid>.txt", 'app/"quoted".json', "app/pipe|name",
+    "app/question?.csv", "app/star*.txt", "app/control\\x01name",
+    "app/CONIN$", "app/conout$.txt",
+])
+def test_windows_forbidden_characters_and_additional_devices(bad):
+    assert not _safe(bad)
+
+
+def test_casefold_collision_is_rejected_even_when_hashes_match(tmp_path):
+    archive = tmp_path / "case_collision.zip"
+    names = ["app/data/Items.csv", "app/data/items.CSV"]
+    payload = b"synthetic collision fixture"
+    records = [
+        {"path": name, "bytes": len(payload),
+         "sha256": hashlib.sha256(payload).hexdigest()}
+        for name in names
+    ]
+    with zipfile.ZipFile(archive, "w") as zf:
+        for name in names:
+            zf.writestr(name, payload)
+        zf.writestr("delivery_manifest.json", json.dumps({
+            "schema_version": "rea.delivery.v0.1", "files": records,
+        }))
+    with pytest.raises(DeliveryError, match="duplicate"):
+        verify_delivery(archive)
