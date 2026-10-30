@@ -10,12 +10,11 @@ Commands:
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 from pathlib import Path
 import sys
 
-from rea.mvp import DataError, REQUIRED, map_owner_fields, parse_input, preview_schema
+from rea.mvp import DataError, REQUIRED, map_owner_fields, parse_input, preview_schema, source_sha256
 from rea.orchestrator import build
 from rea.delivery import create_delivery
 
@@ -23,8 +22,11 @@ from rea.delivery import create_delivery
 def preflight(source: Path) -> dict:
     """No record values exported, only field names, counts, shape hints and SHA."""
     source = Path(source)
+    first_digest = source_sha256(source)
     columns, rows = parse_input(source, require_semantics=False)
-    digest = hashlib.sha256(source.read_bytes()).hexdigest()
+    digest = source_sha256(source)
+    if digest != first_digest:
+        raise DataError("Owner source changed during preview; inspect again")
     result = preview_schema(
         columns, rows,
         source_kind=("customer_supplied_json" if source.suffix.lower() == ".json"
