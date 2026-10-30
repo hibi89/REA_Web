@@ -1,3 +1,11 @@
+## 2026-10-31 05:21 KST — END-OF-DAY VERIFIED: keyboard patch CI Windows+Ubuntu 2/2 SUCCESS
+
+- **Exact tested code commit:** `9cfc01cc5cccaa9768b26bee63149887f43c60ac`; [run 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) **COMPLETED SUCCESS 2/2** (Windows and Ubuntu); last job completed 2026-10-31 05:20:59 KST. This resolves prior queued-run checkpoint without another CI rerun.
+- Windows: real Pro Python 5 PASS; Node CSV 15 PASS; synthetic DOM VM 7 PASS; three seller synthetic delivery CLI PASS; Chromium standalone/file:// 3, packaged ZIP/file:// 3, keyboard Enter+Space 2 PASS; system Microsoft Edge standalone 3, packaged 3, keyboard 2 PASS. Ubuntu: same Pro 5/Node15+7/3 deliveries, Chromium standalone 3, packaged 3, keyboard 2 PASS. **No native Windows human test.**
+- One-line Lite label keyboard handler defect resolved; original Pro/main untouched. Draft PR #31 OPEN/UNMERGED, Pro Draft PR #30 OPEN/UNMERGED. No production/Vercel for offline Lite.
+- **Manager estimates (not formal metrics):** technical completion ~95%; commercial gates readiness ~55–60%; overall ~80%. Sale blocked by G2 human Windows pilot, G3 rights, G4 privacy/retention/deletion, G5 three human timed mock jobs, G6 seller price/refunds/support/scope.
+- GitHub next resume read HANDOFF→STATUS→AGENTS→REQUIREMENTS, then `docs/66_LITE_DAY_CLOSEOUT_20261031.md`; do not re-run green CI without a changed source. Docs-only closeout commit [skip ci], **not** an additional tested-code SHA.
+
 ## 2026-10-31 KST — Lite accessibility defect fixed, updated cross-OS CI QUEUED
 
 - **Actual bug:** keyboard focus on `CSV 파일 변경` label works but Enter and Space never opened chooser; local Chromium BEFORE **2 FAIL**, click PASS; AFTER minimal handler, Enter/Space/click all PASS. No customer/runtime scope expansion.

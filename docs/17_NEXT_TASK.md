@@ -1,3 +1,11 @@
+## 2026-10-31 05:21 KST — NEXT CHAT after verified Lite CI (P0)
+
+- **Latest tested source SHA `9cfc01cc5cccaa9768b26bee63149887f43c60ac`, [Windows+Ubuntu Actions 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) 2/2 COMPLETED SUCCESS.** Don't rerun identical green CI. Keyboard-only Enter/Space CSV picker fixed and automation now green. Full checks `docs/66_LITE_DAY_CLOSEOUT_20261031.md`.
+- **Priority 1 (G2, owner-local):** genuine Windows Chrome+Edge synthetic ZIP doubleclick (`file://`), keyboard Enter/Space and pointer CSV select, malformed keep original, valid 5 rows, explicit save-as-new HTML & reopen; capture Windows/browser versions and human time. Cannot be closed by CI. No sensitive data.
+- **Priority 2:** owner source provenance/licensing/NOTICE G3, approved customer data plaintext permission/intake/retention/deletion G4, three human timed full mock deliveries G5, owner price/revisions/refunds/support/license G6. All NOT_CLEARED/NOT_APPROVED; Draft PR #31 unmerged.
+- Estimated technical 95%/commercial readiness 55–60%/combined ~80%, non-formal. Do not mistake subjective percentage for completed sale gates.
+- Finish only after evidence+explicit owner approval; stop unneeded technical scope creep, do not touch original Pro, PR #30 or main.
+
 ## 2026-10-31 KST — REA_WEB Lite keyboard fix: CI outcome next
 
 - Exact patched source SHA `9cfc01cc5cccaa9768b26bee63149887f43c60ac`. First check [Actions 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) **Windows and Ubuntu conclusions**. At previous checkpoint: queued (not claimed PASS).

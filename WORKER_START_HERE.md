@@ -1,3 +1,7 @@
+## 2026-10-31 05:21 KST — end-of-day verified REA WEB Lite checkpoint
+
+Latest tested code SHA `9cfc01cc5cccaa9768b26bee63149887f43c60ac`, exact [CI 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) **Windows+Ubuntu 2/2 SUCCESS** (keyboard Enter/Space genuine file:// 2 tests/browser, existing Pro+Node+Edge+packaged HTML tests PASS). Previous queued status is stale. Technical completion ~95%; commercial 55–60%; combined ~80% (nonformal estimates). Source preserved, Draft PR #31 unmerged and Pro PR #30 unmerged. Blockers G2 owner Windows local human, G3 IP, G4 data privacy/retention, G5 3 human timed deliveries, G6 commercial terms; sale NOT_APPROVED. Read HANDOFF/STATUS/docs/66 first next chat. No unnecessary rerun.
+
 ## 2026-10-31 KST — newest Lite keyboard-only bug fix
 
 At code SHA `9cfc01cc5cccaa9768b26bee63149887f43c60ac`, fixed keyboard Enter/Space not opening native CSV picker while pointer clicked okay, using minimal label keydown handler; new Playwright real disk file:// keyboard test and CI workflow. Local Chromium set_content smoke PASS before/after evidenced; [Windows+Ubuntu Actions run 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) queued at checkpoint, **do not mark PASS unless confirmed**. Prior code 72f36ed full CI PASS remains historical only. Draft PR #31 unmerged. Commercial G2 human Windows G3 source rights G4 consent G5 human delivery timing G6 owner terms blocked. Read HANDOFF.md and docs/65; next check run results first.
