@@ -94,12 +94,17 @@ def _unique_meta_pairs(pairs: list[tuple[str, object]]) -> dict:
     return fields
 
 
+def _reject_nonfinite_metadata(value: str):
+    raise AuditError("Non-finite generated metadata JSON value")
+
+
 def _zip_json_object(zf: zipfile.ZipFile, path: str) -> dict:
     """Require a UTF-8 JSON object; malformed metadata is a bounded audit error."""
     try:
         doc = json.loads(zf.read(path).decode("utf-8"),
-                         object_pairs_hook=_unique_meta_pairs)
-    except (UnicodeError, json.JSONDecodeError) as exc:
+                         object_pairs_hook=_unique_meta_pairs,
+                         parse_constant=_reject_nonfinite_metadata)
+    except (UnicodeError, json.JSONDecodeError, RecursionError) as exc:
         raise AuditError("Invalid generated metadata JSON: " + path) from exc
     if not isinstance(doc, dict):
         raise AuditError("Generated metadata must be a JSON object: " + path)
