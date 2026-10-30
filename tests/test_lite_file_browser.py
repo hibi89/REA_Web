@@ -1,4 +1,5 @@
-"""Genuine on-disk file:// Chromium acceptance for Lite; synthetic data."""
+"""Genuine on-disk file:// Chromium and Windows Edge acceptance; synthetic data."""
+import os
 from pathlib import Path
 import pytest
 from rea.lite_builder import inspect, build
@@ -18,7 +19,10 @@ def test_file_url_update_reopen(tmp_path: Path, theme: str):
     replacement.write_text('group,price,item_name,item_code\nNew,50,"Updated, item",Z99\n', encoding="utf-8")
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(
+            headless=True,
+            **({"channel": "msedge"} if os.environ.get("REA_BROWSER_CHANNEL") == "msedge" else {}),
+        )
         try:
             page = browser.new_page(accept_downloads=True)
             requests, errors = [], []
