@@ -109,15 +109,34 @@ async function loadOverview() {
 }
 
 async function init() {
-  try {
-    const { categories } = await jsonGet("/api/categories");
-    for (const category of categories) {
-      const option = element("option", category);
-      option.value = category;
-      ui.category.add(option);
-    }
-    await Promise.all([loadItems(), loadOverview()]);
-  } catch (error) { showError(error.message); }
+  // Category filter metadata is optional: its failure must not block the
+  // primary catalog list or the independently available schema/summary.
+  const outcomes = await Promise.allSettled([
+    loadItems(),
+    loadOverview(),
+    jsonGet("/api/categories").then(({ categories }) => {
+      for (const category of categories) {
+        const option = element("option", category);
+        option.value = category;
+        ui.category.add(option);
+      }
+    })
+  ]);
+  const notices = [];
+  if (outcomes[1].status === "rejected") {
+    ui.overviewTotal.textContent = "요약 조회 실패";
+    ui.categoriesList.replaceChildren();
+    ui.categoryWarning.hidden = true;
+    ui.schemaFields.replaceChildren();
+    notices.push("요약 정보를 불러오지 못했습니다.");
+  }
+  if (outcomes[2].status === "rejected") {
+    notices.push("카테고리 필터를 불러오지 못했습니다.");
+  }
+  if (notices.length) {
+    const prior = ui.error.hidden ? "" : ui.error.textContent + " / ";
+    showError(prior + notices.join(" / "));
+  }
 }
 let debounce;
 ui.search.addEventListener("input", () => {

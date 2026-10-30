@@ -138,6 +138,18 @@ def run_one(case: dict, work: Path, pw, report_dir: Path) -> dict:
                 page.unroute("**/api/items**")
             page.reload(wait_until="domcontentloaded")
             expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
+            if case["name"] == "inventory":
+                # A failed optional filter endpoint must not blank the
+                # independently available customer data list or summary.
+                page.route("**/api/categories", lambda route: route.abort())
+                page.reload(wait_until="domcontentloaded")
+                expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
+                expect(page.locator(".item")).to_have_count(case["total"])
+                expect(page.locator("#overview-total")).to_have_text(f'{case["total"]}건')
+                expect(page.locator("#error")).to_contain_text("카테고리 필터")
+                page.unroute("**/api/categories")
+                page.reload(wait_until="domcontentloaded")
+                expect(page.locator("#count")).to_have_text(f'{case["total"]}건')
             assert page.request.get(base + "/review/fable_review.json").status == 404
             assert page.request.get(base + "/manifest.json").status == 404
             assert page.request.get(base + "/schema_preview.json").status == 404
