@@ -16,6 +16,7 @@ import tempfile
 import zipfile
 
 from rea.delivery import create_delivery
+from rea.recovery import restore_delivery
 from rea.provenance import inspect_delivery
 from rea.safe_publish import publish_directory
 
@@ -127,6 +128,14 @@ def make(out: Path) -> dict:
                 checked = _run_selfcheck(root)
                 if checked["row_count"] != spec["expected_rows"]:
                     raise ValueError("Extracted package row count mismatch")
+            # Recover the same generated ZIP into a NEW independent directory.
+            # This adds publish/no-overwrite/integrity/SQLite coverage without
+            # claiming that a nondeveloper customer used Windows.
+            with tempfile.TemporaryDirectory(prefix="rea-d11-restore-") as recovery_temp:
+                restored = restore_delivery(archive, Path(recovery_temp) / "fresh")
+                if (restored["sqlite_row_count"] != spec["expected_rows"]
+                        or restored["commercial_clearance"] != "NOT_GRANTED"):
+                    raise ValueError("Synthetic new-folder ZIP recovery mismatch")
             safe_record = {
                 "case_id": spec["case_id"],
                 "synthetic_customer": "FIXTURE_ONLY_NOT_REAL_PERSON",
@@ -154,6 +163,7 @@ def make(out: Path) -> dict:
                     "zip_sha256": audit["delivery_integrity"],
                     "unexpected_delivery_file_count": 0,
                     "extracted_selfcheck": checked,
+                    "verified_new_folder_recovery": restored["status"],
                 },
             }
             safe_record["gates"] = _gate_matrix(spec["case_id"], safe_record["evidence"])
