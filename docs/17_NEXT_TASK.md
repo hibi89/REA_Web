@@ -1,3 +1,44 @@
+## 2026-10-31 05:21 KST — NEXT CHAT after verified Lite CI (P0)
+
+- **Latest tested source SHA `9cfc01cc5cccaa9768b26bee63149887f43c60ac`, [Windows+Ubuntu Actions 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) 2/2 COMPLETED SUCCESS.** Don't rerun identical green CI. Keyboard-only Enter/Space CSV picker fixed and automation now green. Full checks `docs/66_LITE_DAY_CLOSEOUT_20261031.md`.
+- **Priority 1 (G2, owner-local):** genuine Windows Chrome+Edge synthetic ZIP doubleclick (`file://`), keyboard Enter/Space and pointer CSV select, malformed keep original, valid 5 rows, explicit save-as-new HTML & reopen; capture Windows/browser versions and human time. Cannot be closed by CI. No sensitive data.
+- **Priority 2:** owner source provenance/licensing/NOTICE G3, approved customer data plaintext permission/intake/retention/deletion G4, three human timed full mock deliveries G5, owner price/revisions/refunds/support/license G6. All NOT_CLEARED/NOT_APPROVED; Draft PR #31 unmerged.
+- Estimated technical 95%/commercial readiness 55–60%/combined ~80%, non-formal. Do not mistake subjective percentage for completed sale gates.
+- Finish only after evidence+explicit owner approval; stop unneeded technical scope creep, do not touch original Pro, PR #30 or main.
+
+## 2026-10-31 KST — REA_WEB Lite keyboard fix: CI outcome next
+
+- Exact patched source SHA `9cfc01cc5cccaa9768b26bee63149887f43c60ac`. First check [Actions 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) **Windows and Ubuntu conclusions**. At previous checkpoint: queued (not claimed PASS).
+- Local reproduced before keyboard focus Enter+Space NO file chooser; after minimal patch both opened picker, pointer retained. New actual file:// browser tests on Windows Edge/Chromium and Ubuntu Chromium pending. Full evidence `docs/65_LITE_KEYBOARD_ACCESSIBILITY_20261031.md`.
+- After both CI jobs PASS, mark code `9cfc01cc5cccaa9768b26bee63149887f43c60ac` VERIFIED and update HANDOFF/STATUS. If failures, inspect actual logs and correct only genuine issue. No new cosmetic changes.
+- Manual G2 Chrome+Edge Windows nondeveloper, rights G3, customer data G4, three human timed deliveries G5, seller terms G6 still not approved. No sale, merge or production.
+
+## 2026-10-31 KST — Lite next task after exact packaged ZIP CI
+
+- Exact `72f36ed25caf2d3a7b0ee08e53d0291f1bf5a212` [run 41119834953](https://github.com/hibi89/REA_Web/actions/runs/41119834953) Windows+Ubuntu 2/2 SUCCESS; actual ZIP member HTML browser file:// (cafe/inventory/office) Windows Edge and Chromium 3 PASS each and Ubuntu Chromium 3 PASS. Original Pro preserved. Draft PR #31 OPEN/DRAFT/UNMERGED.
+- **Blocked owner-independent tasks now:** G2 real Windows Chrome+Edge direct doubleclick with ZIP files and human time; G3 confirm all code rights and NOTICE requirements (no top-level license found); G4 agree plaintext customer data intake/retention/delete; G5 measure three manual full synthetic deliveries; G6 approve price/refund/support/revisions. Draft docs `63_LITE_PROVENANCE_PRIVACY_SALE_DRAFT_20261031.md` and `64_LITE_CUSTOMER_GUIDE_DRAFT_20261031.md` are evidence/discussion only, NOT_APPROVED.
+- No further artificial CI changes, extra features, release, data or merge until a reproduced issue or explicit owner direction. Use [latest workflow](https://github.com/hibi89/REA_Web/actions/runs/41119834953) to download Windows packaged synthetic pilot, not old standalone example ZIP.
+
+## 2026-10-31 04:51 KST — Lite next task after verified Windows Edge CI
+
+- Exact tested SHA `aae9d517f6c0d04d8f76e235bb4e7e5f7284d369`, [run 41118431117](https://github.com/hibi89/REA_Web/actions/runs/41118431117) 2/2 SUCCESS: Windows Edge 3/3, Windows Chromium 3/3, Ubuntu Chromium 3/3 file://; real Pro parser/Node/synthetic CLI also PASS. Detailed `docs/62_LITE_EDGE_CI_EVIDENCE_20261031.md`.
+- **Human P0 still NOT_RUN:** use latest [Windows synthetic artifact #13007070338](https://github.com/hibi89/REA_Web/actions/runs/41117124085/artifacts/13007070338), double-click actual packaged HTML in installed Windows Chrome/Edge; select invalid duplicate ID CSV (old 3 rows), then valid cafe update (5 rows), save-as-new HTML, close and reopen; record browser/version/time/result outside sample. No customer PII.
+- **G3–G6 owner approvals:** original/third-party rights, privacy/storage/retention/delete, three full human timed synthetic deliveries, sale price & revisions/refunds/support policy. Technical CI does not grant rights or commercial permission. No merge/production. Stop expanding features unless a real defect arises.
+
+## 2026-10-31 04:42 KST — Lite verified automatic delivery closeout
+
+- Exact tested Lite code SHA `202e4dbab9153c4f3003170e8881576d75c63b0c`, [CI run 41117124085](https://github.com/hibi89/REA_Web/actions/runs/41117124085) Windows+Ubuntu 2/2 SUCCESS. Three independent synthetic seller CLI deliveries/OS and sealed pilot ZIPs also PASS. [Windows artifact #13007070338](https://github.com/hibi89/REA_Web/actions/runs/41117124085/artifacts/13007070338). Source/sha/times `docs/61_LITE_CROSS_OS_DELIVERY_EVIDENCE_20261031.md`.
+- **NEXT P0 human:** one Windows Chrome+Edge Explorer doubleclick direct file:// test of CI-generated `cafe_DEMO.html`, `inventory_DEMO.html`, `office_DEMO.html`, invalid CSV must leave original 3 rows, valid update must show 5, save-new-HTML and reopen must keep 5; measure actual human elapsed time. No server/no Python on customer.
+- **NEXT P1 non-automatable:** source/redistribution rights + third-party NOTICE, owner consent/privacy/delete retention handling; three human timed full jobs; owner-approved price/scope/revision/refund/support. Human/sale NOT_RUN / NOT_APPROVED; no basis to merge Draft PR #31 into Pro or ship customer data.
+- Avoid rerunning CI or creating new features absent reproduced defect. Existing Pro source/PR #30/main untouched.
+
+## 2026-10-31 Lite next task (priority override; separate integration branch)
+
+- **Verified now:** Lite actual Pro parser and genuine Windows+Ubuntu Chromium file:// CI passed on code SHA `91c1d113f81f0b144ba217820e6f0ca4b2350166`, [run 41116194878](https://github.com/hibi89/REA_Web/actions/runs/41116194878); Draft [PR #31](https://github.com/hibi89/REA_Web/pull/31), DO NOT MERGE. Old Pro branch and PR #30 unchanged.
+- **P0 owner Windows real/browser:** open 3 generated HTML themes by Windows Explorer double-click in Chrome/Edge, no web server or Python on customer machine, choose invalid CSV (old data preserved), choose valid same-schema CSV, save-new HTML, close/reopen saved file, inspect search/filter/detail. Record actual result/time; no sensitive data. CI is not this human trial.
+- **P1 commercial:** own-source/third-party licensing and notices; plain-text customer-data consent, retention/deletion; 3 real timed synthetic builds; agree prices, product scope, revisions, support, refunds and data handoff. Details `docs/60_LITE_SALE_GATES_20261031.md`.
+- **Do not:** repeat all Pro CI, enable LAN/QR, make Lite server-backed, merge PR, submit sale or take customer files before approval.
+
 ## [ACTIVE 2026-10-31 04:24 KST] REA_WEB Lite new approved product direction; source still outside GitHub
 
 - User approved Lite/Pro split: standalone offline browser HTML for customers, seller-side actual rea.mvp CSV/JSON field checks and explicit APPROVE, three themes, CSV File API update and explicit updated-HTML download. Keep old Pro untouched; no LAN QR/0.0.0.0, EXE, cloud or customer file upload. Suggested 129,000 KRW is hypothesis, not verified selling price.

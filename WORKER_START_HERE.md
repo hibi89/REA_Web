@@ -1,3 +1,27 @@
+## 2026-10-31 05:21 KST — end-of-day verified REA WEB Lite checkpoint
+
+Latest tested code SHA `9cfc01cc5cccaa9768b26bee63149887f43c60ac`, exact [CI 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) **Windows+Ubuntu 2/2 SUCCESS** (keyboard Enter/Space genuine file:// 2 tests/browser, existing Pro+Node+Edge+packaged HTML tests PASS). Previous queued status is stale. Technical completion ~95%; commercial 55–60%; combined ~80% (nonformal estimates). Source preserved, Draft PR #31 unmerged and Pro PR #30 unmerged. Blockers G2 owner Windows local human, G3 IP, G4 data privacy/retention, G5 3 human timed deliveries, G6 commercial terms; sale NOT_APPROVED. Read HANDOFF/STATUS/docs/66 first next chat. No unnecessary rerun.
+
+## 2026-10-31 KST — newest Lite keyboard-only bug fix
+
+At code SHA `9cfc01cc5cccaa9768b26bee63149887f43c60ac`, fixed keyboard Enter/Space not opening native CSV picker while pointer clicked okay, using minimal label keydown handler; new Playwright real disk file:// keyboard test and CI workflow. Local Chromium set_content smoke PASS before/after evidenced; [Windows+Ubuntu Actions run 41121776623](https://github.com/hibi89/REA_Web/actions/runs/41121776623) queued at checkpoint, **do not mark PASS unless confirmed**. Prior code 72f36ed full CI PASS remains historical only. Draft PR #31 unmerged. Commercial G2 human Windows G3 source rights G4 consent G5 human delivery timing G6 owner terms blocked. Read HANDOFF.md and docs/65; next check run results first.
+
+## 2026-10-31 KST — latest Lite delivery ZIP file:// proof
+
+Tested source SHA `72f36ed25caf2d3a7b0ee08e53d0291f1bf5a212`, Actions [run 41119834953](https://github.com/hibi89/REA_Web/actions/runs/41119834953): Windows+Ubuntu PASS 2/2 including exact packed synthetic HTML from exported ZIP, real file:// Windows Chromium/Edge, Ubuntu Chromium (3/3 per browser) plus standalone regressions. No product source/Pro change. Draft PR #31 still unmerged. Repo root contains no LICENSE/NOTICE/COPYING in 227-file inventory; evidence draft docs/63 and unapproved Korean guide docs/64. Human Windows double-click G2 / source rights G3 / data handling G4 / manual cost G5 / business terms G6 still blocked. See HANDOFF.md and STATUS.md before doing any further work.
+
+## 2026-10-31 04:51 KST — LITE latest Windows Edge CI update
+
+Tested code SHA `aae9d517f6c0d04d8f76e235bb4e7e5f7284d369`: Windows+Ubuntu GitHub CI 2/2 SUCCESS including Windows Edge true file:// 3/3, Windows Chromium 3/3, Ubuntu Chromium 3/3, real Pro parser 5/OS, Node 15+7/OS and 3 automated synthetic CLI packages/OS. Human Windows nondeveloper Chrome/Edge G2, rights G3, data consent G4, three human timed deliveries G5 and seller terms G6 remain BLOCKED. Draft PR #31 unmerged. See HANDOFF.md/STATUS.md/docs/62_LITE_EDGE_CI_EVIDENCE_20261031.md.
+
+## 2026-10-31 04:42 KST — Latest Lite synthetic delivery checkpoint
+
+On branch `feature/lite-offline-html-integration`, tested code SHA `202e4dbab9153c4f3003170e8881576d75c63b0c`: GitHub Actions Windows + Ubuntu **2/2 SUCCESS**, with three actual seller CLI synthetic output rehearsals, exact HTML byte-match cross-OS, ZIP+manifest SHA checked. Evidence `docs/61_LITE_CROSS_OS_DELIVERY_EVIDENCE_20261031.md`, artifacts Windows #13007070338 and Ubuntu #13004944630. Original Pro unchanged. Draft PR #31 UNMERGED. Independent human Windows Chrome/Edge, IP/licenses, plaintext privacy, real manual delivery times and seller pricing/refund/support remain BLOCKED/NOT_APPROVED. No Vercel. Handoff in HANDOFF.md.
+
+## 2026-10-31 04:34 KST — LITE integration update on feature/lite-offline-html-integration
+
+Lite independent code is now committed, and current code/test SHA `91c1d113f81f0b144ba217820e6f0ca4b2350166` passed Windows+Ubuntu real Pro parser and Chromium file:// CI 2/2. Draft PR #31 to Pro development branch, unmerged; customer Windows human NOT_RUN and commercial NOT_APPROVED. Follow branch-local HANDOFF.md/STATUS.md and docs/60_LITE_SALE_GATES_20261031.md. Existing Pro branch and PR #30 remain unchanged.
+
 ## 2026-10-31 KST — CURRENT DISPATCH OVERRIDE (READ FIRST)
 
 This section supersedes historical 2026-10-30 snapshots below. **Actual source/test SHA `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`: all 28/28 GitHub Actions concluded SUCCESS.** D27 Linux 645 pass/5 skip, Windows 656 pass/4 skip, Chromium 8 generated apps + 3 extracted ZIPs PASS. Current verified Windows synthetic pilot artifact [#12997912131](https://github.com/hibi89/REA_Web/actions/runs/41099504224/artifacts/12997912131) (ZIP SHA256 `a8d2076663e3dfb289e158c20653ad1e347208647e42962d30a58dcb464bec35`). Human Windows acceptance NOT_RUN, sale NOT_APPROVED, PR #30 Draft and unmerged, no public deployment. **Next 'ㄱ':** prioritize one independent Windows pilot or separately actionable license/privacy/seller gate; do not re-run 28 CI or generate docs-only commits without a new state change. Read `HANDOFF.md`, `STATUS.md`, `docs/17_NEXT_TASK.md` for latest detail. The product is not a general URL-to-site clone and does not support arbitrary JOIN or non-local hosting.
