@@ -14,6 +14,7 @@ import stat
 import zipfile
 
 from rea.orchestrator import build
+from rea.mvp import DataError, source_sha256
 from rea.safe_publish import publish_archive
 
 SCHEMA = "rea.delivery.v0.1"
@@ -357,6 +358,9 @@ def create_delivery(csv_file: Path, output_zip: Path, name: str = "REA local app
     if output_zip.suffix.lower() != ".zip":
         raise DeliveryError("Output must end with .zip")
     output_zip.parent.mkdir(parents=True, exist_ok=True)
+    source_digest = source_sha256(csv_file)
+    if expected_source_sha256 is not None and source_digest != expected_source_sha256:
+        raise DataError("Owner source changed since approved preview")
     with tempfile.TemporaryDirectory(prefix=".rea-export-", dir=output_zip.parent) as temp:
         work = Path(temp)
         project = work / "app"
@@ -375,6 +379,8 @@ def create_delivery(csv_file: Path, output_zip: Path, name: str = "REA local app
                 zf.writestr(_zipinfo(filename), data, compress_type=zipfile.ZIP_DEFLATED,
                             compresslevel=9)
         verify_delivery(stage)
+        if source_sha256(csv_file) != source_digest:
+            raise DataError("Owner source changed before ZIP publication")
         publish_archive(stage, output_zip)
     return manifest
 
