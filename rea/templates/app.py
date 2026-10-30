@@ -7,12 +7,18 @@ import sqlite3
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 ROOT = Path(__file__).resolve().parent
 app = FastAPI(title="REA generated app", version="0.1.0", docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
+
+
+@app.exception_handler(sqlite3.Error)
+async def database_unavailable(_request, _error):
+    """Fail closed without disclosing local database paths or SQL details."""
+    return JSONResponse(status_code=503, content={"detail": "Local catalog unavailable"})
 
 
 @contextmanager
