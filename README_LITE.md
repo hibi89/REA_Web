@@ -1,0 +1,30 @@
+# REA WEB Lite — offline HTML catalog
+
+This is the independent, no-server Lite option; it does not replace the existing Pro FastAPI/SQLite generator.
+
+## Builder (seller only)
+
+Run from the repository root with Python 3.11+:
+
+```bash
+python -m rea.lite_builder inspect --source examples/lite_cafe.csv
+python -m rea.lite_builder build --source examples/lite_cafe.csv --out NEW_catalog.html --id-field item_code --title-field item_name --category-field group --source-sha256 INSPECTED_SHA256 --confirm APPROVE --theme cafe
+```
+
+Provide the exact SHA256 from inspect. Owner must authorize the source and field mapping. The output path must be new. No customer file, current Pro database, or existing HTML is overwritten.
+
+## Customer use
+
+Double-click delivered HTML in Chrome or Edge. Search/filter/sort/detail work without Python, network, or account. Choose a same-schema UTF-8 CSV to update in current tab; use **변경 내용 HTML로 저장** to download a new HTML with new embedded records, then open that new file next time.
+
+There is no QR, sync, hosted service, update-in-place, authentication, encryption, or remote access. Embedded records are plaintext. Do not use secret or personal data without separate approval.
+
+Limits: CSV <=10MiB, <=10,000 data rows, <=20 columns and <=2,000 characters per cell; unique mapped IDs, required fields. This is not commercial clearance.
+
+## Verification
+
+```bash
+python -m pytest -q tests/test_rea_lite_builder.py
+```
+
+Previous standalone synthetic Node/Chromium tests were performed on the original Lite candidate before integration. Real Windows double-click, same-schema CSV replacement, download-and-reopen and nondeveloper acceptance remain NOT_RUN until exercised. Existing Pro full CI was already green at inherited code SHA; newly integrated Lite branch requires its own code-specific CI result.
