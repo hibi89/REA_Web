@@ -43,7 +43,7 @@ def test_unsafe_or_ambiguous_manifest_fails_closed(tmp_path, payload, pattern):
 def test_manifest_depth_is_bounded_to_error_not_crash(tmp_path):
     payload = (b'{"schema_version":"rea.delivery.v0.1","files":[],"extra":'
                + b"[" * 1500 + b"1" + b"]" * 1500 + b"}")
-    with pytest.raises(DeliveryError, match="Malformed"):
+    with pytest.raises(DeliveryError, match="nesting"):
         verify_delivery(archive(tmp_path, payload))
 
 
