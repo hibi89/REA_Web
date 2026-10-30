@@ -1,3 +1,16 @@
+## [2026-10-31 KST] REA_Web privacy cache hardening handoff — exact SHA waiting full CI
+
+1. **Goal/scope/stack:** preserve owner-approved CSV/flat JSON → explicit local mapping/APPEND → SQLite read-only FastAPI/HTML/JS Windows ZIP MVP. No new cloud, scraping, accounts or paid APIs.
+2. **Change:** source `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` adds four response headers in `rea/templates/app.py` to discourage browser disk caching/metadata referrer sharing; new `tests/test_generated_privacy_cache.py` includes 12 parametrized/targeted checks. No customer rows, old source, ZIP, UI, main branch, API contracts or other code overwritten.
+3. **Verification:** standalone isolated mirror of exact 4-header middleware with prior synthetic ZIP payload passed 11 GET route/header checks plus untrusted Host (local Python FastAPI). **Actual repository exact source new test and entire 28-workflow GitHub CI NOT YET COMPLETE**. Previous code `dc277de5` 28/28 SUCCESS, distinct SHA. Source `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` triggered queued/running Actions. Never conflate them.
+4. **State:** P0 code committed/pushed, independent smoke PASSED; exact new SHA CI PENDING, no customer/operator acceptance, no commercial release, PR #30 draft/unmerged.
+5. **Root/caution:** local browsable catalog content previously lacked explicit no-store; this is browser/cache-in-depth, not confidentiality guarantee. Root contract/SQLite/Host validation unchanged; any CI failure must be diagnosed from job logs, no repetitive polled no-op commits.
+6. **Repo/branch/SHA:** `hibi89/REA_Web@feature/d27-windows-python-discovery`; code SHA `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`, old last fully validated source `dc277de57d6d8686b47ff08a49168caf10335ecf`; PR #30 open draft.
+7. **Runtime/deploy:** Python 3.11+, Tk creator → local Uvicorn/FastAPI 127.0.0.1 + SQLite, Windows ZIP; Vercel/Public Production N/A.
+8. **Original/backup/auth:** parent commit `a43316d9c5185d6bd18540f7059c639247e8ef57` for reviewed revert; Fable/Astra unchanged, no credentials, no customer data, no source license grants; previous synthetic Windows pilot artifact #12996213068 remains available.
+9. **Next:** inspect new code SHA's D27 Windows/Linux, D3 Chromium, D7 recovery, D11 delivery, D31 vulnerability audit and all 28 workflow conclusions; fix only actual failure. Then user/nondeveloper Windows pilot + seller/source/license/privacy gates, without bypassing human approval.
+10. **As-of:** 2026-10-31 KST; inspected actual GitHub source change and isolated synthetic mirror headers; **CI pending**, docs-only handoff `[skip ci]` successor does not qualify as source tested.
+
 ## [2026-10-31 KST] Commercialization follow-up after 28/28 CI — exact ZIP inspection completed
 
 1. **Goal:** convert working synthetic REA_WEB MVP into safe owner Windows pilot/conditional first client offer; preserve existing product spec and verified code.

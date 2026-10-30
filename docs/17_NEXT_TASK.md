@@ -1,3 +1,9 @@
+## [ACTIVE 2026-10-31 KST] First inspect cache hardening code SHA CI; original sale gates unchanged
+
+- Source commit `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5`, generated `rea/templates/app.py` privacy response headers + regression tests. Isolated synthetic mirror 11 GET routes and untrusted-host 400 header checks PASS; **exact-source CI still PENDING at this checkpoint**. Prior 28/28 success pertains to `dc277de5`, NOT this new SHA. No customer source or local published app modified.
+- **Next safe developer action:** get `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` 28 Actions conclusions (especially D27 Windows/Linux, D3 Chromium, D7 recovery, D11 3-quote, D31 dependency audit). If failures, logs and minimal source fix with targeted regression. Avoid poll-only turn or repetitive CI reruns. Do not merge PR #30 without explicit user approval.
+- **Then real sale barriers:** nondeveloper Windows `CHECK_PILOT_WINDOWS.cmd` and inner demo `check_windows.cmd`/localhost + restart; independently documented own generator rights and exact runtime legal notices; owner-approved privacy/backup/customer consent and seller price/support/refund/actual hours. **Do not declare sale ready.**
+
 ## [ACTIVE 2026-10-31 KST] D27 P0 fix CI closed; next is human pilot and commercial rights, not another synthetic build
 
 **Code SHA:** `dc277de57d6d8686b47ff08a49168caf10335ecf`; exact-source [Actions D27 #41096230436](https://github.com/hibi89/REA_Web/actions/runs/41096230436) Linux 633 pass/5 skip and Windows 644 pass/4 skip; all **28/28 Actions SUCCESS**, D7/D11/D18/D31 included; native Windows CMD/ZIP/localhost in CI + Linux Chromium 8+3 synthetic PASS. PR #30 still OPEN/DRAFT/UNMERGED. No Production.

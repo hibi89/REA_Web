@@ -1,3 +1,9 @@
+## 2026-10-31 KST — browser-cache privacy mitigation (NOT privacy approval)
+
+- Source SHA `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` adds local HTTP response `Cache-Control: no-store` / `Pragma: no-cache` / `X-Content-Type-Options: nosniff` / `Referrer-Policy: no-referrer` to discourage browser caching/reference URL leakage and content type sniffing. No secret/customer data was used in development. Isolated synthetic mirror HTTP checks PASS; full new-source CI **PENDING** at initial write.
+- These response headers **do not encrypt** the plaintext `app/data.sqlite`, protect ZIP at rest, restrict local user processes, establish authentication, guarantee OS/browser secure deletion, or authorize transfer of real personal information. Existing consent, approved transfer/retention, manual secure handling and sale gates remain **NOT_APPROVED**.
+- The old step list below remains required. Do not replace it with "the browser won't retain anything."
+
 # 고객 데이터 처리·보존 검토 — 승인 전
 
 **상태: NOT_APPROVED / NOT_RUN.** 코드 동작 검토 기록이며 개인정보·보안 승인, 법률 의견, 고객 동의를 의미하지 않는다.
