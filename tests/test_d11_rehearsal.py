@@ -42,6 +42,8 @@ def test_three_independent_real_zip_trials_and_gap_matrix(tmp_path):
         assert entry["gates"]["G0"]["status"] == "PARTIAL"
         assert entry["gates"]["G3"]["status"] == "PASS_SYNTHETIC_SUBCHECK"
         assert entry["gates"]["G4"]["status"] == "PARTIAL_AWAITING_BROWSER"
+        assert entry["evidence"]["verified_new_folder_recovery"] == (
+            "RESTORED_INTEGRITY_AND_READONLY_SQLITE_ONLY")
         assert entry["gates"]["G5"]["status"] == "BLOCKED"
         assert entry["gates"]["G6"]["status"] == "BLOCKED"
         archive = tmp_path / "trial" / entry["output_zip"]
