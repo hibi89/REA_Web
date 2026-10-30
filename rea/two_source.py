@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -16,7 +15,7 @@ import tempfile
 import zipfile
 
 from rea.guided import preflight
-from rea.mvp import DataError, MAX_BYTES, MAX_ROWS, REQUIRED, map_owner_fields, parse_input
+from rea.mvp import DataError, MAX_BYTES, MAX_ROWS, REQUIRED, map_owner_fields, parse_input, source_sha256
 from rea.orchestrator import build
 from rea.safe_publish import publish_archive, publish_directory
 from rea.delivery import (
@@ -28,7 +27,7 @@ MODE = "SAME_SCHEMA_ROW_APPEND_NO_JOIN"
 
 
 def _sha256(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return source_sha256(path)
 
 
 def _approval(source: Path, mapping: dict[str, str], sha: str, typed: str):
