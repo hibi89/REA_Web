@@ -32,6 +32,11 @@
         </div>
         <p id="error" role="alert" hidden></p>
         <div id="results" class="result-list" aria-live="polite"></div>
+        <nav class="pagination" aria-label="데이터 목록 페이지" hidden>
+          <button id="page-prev" type="button" disabled>이전 100건</button>
+          <span id="page-status" role="status" aria-live="polite">0건</span>
+          <button id="page-next" type="button" disabled>다음 100건</button>
+        </nav>
       </section>
       <aside class="panel detail">
         <div class="panel-title"><h2>상세 정보</h2><span class="hint">항목 선택</span></div>
