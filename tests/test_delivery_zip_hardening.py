@@ -198,3 +198,53 @@ def test_exporter_refuses_case_insensitive_parent_file_conflict(tmp_path):
     (project / "foo" / "child.txt").write_bytes(b"synthetic child")
     with pytest.raises(DeliveryError, match="collision"):
         _members(project)
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="Windows itself rejects the colliding file paths")
+def test_customer_preflight_refuses_file_as_parent_directory(tmp_path):
+    import sqlite3
+
+    required = {
+        "app/app.py": b"# synthetic app fixture\n",
+        "app/requirements.txt": b"fastapi>=0.110,<1\n",
+        "app/manifest.json": b"{}",
+        "app/static/index.html": b"<html>synthetic</html>",
+        "app/static/app.js": b"// synthetic",
+        "app/static/style.css": b"/* synthetic */",
+        "launch_windows.cmd": b"@echo off\n",
+        "check_windows.cmd": b"@echo off\n",
+        "self_check.py": b"# synthetic checker fixture\n",
+        "README_WINDOWS.md": b"synthetic fixture",
+        "ACCEPTANCE_CHECKLIST.md": b"synthetic fixture",
+        "app/Foo": b"synthetic parent file",
+        "app/foo/child.txt": b"synthetic child file",
+    }
+    for name, value in required.items():
+        target = tmp_path / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(value)
+    with sqlite3.connect(tmp_path / "app/data.sqlite") as db:
+        db.execute("CREATE TABLE items (id INTEGER PRIMARY KEY, title TEXT)")
+        db.execute("INSERT INTO items (title) VALUES ('synthetic')")
+    def write_manifest(names):
+        records = [{"path": name, "bytes": (tmp_path / name).stat().st_size,
+                    "sha256": hashlib.sha256((tmp_path / name).read_bytes()).hexdigest()}
+                   for name in names]
+        (tmp_path / "delivery_manifest.json").write_text(json.dumps({
+            "schema_version": "rea.delivery.v0.1", "files": records,
+        }), encoding="utf-8")
+
+    names = [*required, "app/data.sqlite"]
+    write_manifest(names)
+    report = inspect(tmp_path)
+    assert report["status"] == "FAIL_LOCAL_PREREQUISITES"
+    assert report["integrity"] == "NOT_VERIFIED"
+
+    (tmp_path / "app/foo/child.txt").unlink()
+    (tmp_path / "app/foo").rmdir()
+    (tmp_path / "app/Foo").unlink()
+    write_manifest([name for name in names if name not in ("app/Foo", "app/foo/child.txt")])
+    restored = inspect(tmp_path)
+    assert restored["integrity"] == "MATCHED_DELIVERY_MANIFEST_SHA256"
+    assert restored["database"] == "READONLY_OPEN_SUCCESS"
+    assert restored["row_count_only"] == 1
