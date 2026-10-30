@@ -74,3 +74,14 @@ def test_future_date_and_invalid_evidence_rejected():
     record = verified()
     record["checks"][gate]["evidence_refs"] = ["   "]
     assert assess(record, SHA)["decision"] == "BLOCKED_NOT_APPROVED_FOR_SALE"
+
+
+def test_reject_noncanonical_iso_date_formats():
+    # date.fromisoformat accepts basic and ISO-week forms; the evidence
+    # contract explicitly requires a calendar YYYY-MM-DD string.
+    for alternate in ("20261030", "2026-W44-5", "2026-1-2", "2026/10/30"):
+        record = verified()
+        record["checks"][next(iter(GATES))]["verified_on"] = alternate
+        report = assess(record, SHA)
+        assert report["decision"] == "BLOCKED_NOT_APPROVED_FOR_SALE"
+        assert any("Review date must be YYYY-MM-DD" in issue for issue in report["issues"])
