@@ -1,3 +1,9 @@
+## [NEXT 2026-10-31 KST] Lite pricing draft complete; owner gates and human pilot next
+
+- Market/policy price draft saved in `docs/REA_LITE_KMONG_PRICING_BENCHMARK_20261031.md`: proposed BASIC 29,000, STANDARD 49,000, PREMIUM 79,000 KRW, **ALL NOT APPROVED**. No extra unimplemented features, no promised delivery time, no assumed take-home, no altered Pro 299,000 plan.
+- **Next actionable only upon actual owner evidence:** One actual Windows Chrome/Edge synthetic kit acceptance, source ownership/redistribution rights, customer data rights and privacy/retention/delete policy, approved price/revisions/lead-time/support/refund and seller revenue calculator. No sale/merges/access changes. No new code defects confirmed.
+- Last tested code `642d9f159b2bb07827659948ba61e89e722bdcac`, [Actions 6/6 SUCCESS #41189241103](https://github.com/hibi89/REA_Web/actions/runs/41189241103), 38 PASS. Pricing update is documentation only [skip ci].
+
 ## [NEXT 2026-10-31 KST] Scoped license/privacy inventory completed
 
 - Read the concrete release-decision pack `docs/REA_LITE_RIGHTS_PRIVACY_RELEASE_GATE_20261031.md`. Actual Lite HTML has no identified third-party runtime asset; seller builder uses repo-internal Python and stdlib, but rights/contributor terms remain **UNVERIFIED**; standard LICENSE/NOTICE files not found. Do **not** invent a LICENSE file or classify missing notice as approval.
