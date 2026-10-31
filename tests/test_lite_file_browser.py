@@ -56,19 +56,42 @@ def test_dom_and_update_export(local_html, tmp_path):
         b.close()
 
 
-def test_file_url_native_only(local_html):
+def test_file_url_native_only(local_html, tmp_path):
+    """Real on-disk file open, invalid CSV rollback, valid update and exported file reopen."""
     from playwright._impl._errors import Error as PlaywrightError
     with sync_playwright() as p:
         b = p.chromium.launch(headless=True, executable_path=os.getenv('REA_CHROME_PATH') or ('/usr/bin/chromium' if Path('/usr/bin/chromium').exists() else None), args=['--no-sandbox'])
-        page = b.new_page()
+        page = b.new_page(accept_downloads=True)
+        errors = []
+        page.on('pageerror', lambda e: errors.append(str(e)))
         try:
             try:
                 page.goto(local_html.as_uri())
             except PlaywrightError as exc:
-                if 'ERR_BLOCKED_BY_ADMINISTRATOR' in str(exc):
+                if 'ERR_BLOCKED_BY_ADMINISTRATOR' in str(exc) and not os.getenv('REA_REQUIRE_NATIVE_FILE'):
                     pytest.skip('Container policy blocks file://; native Windows acceptance unverified')
                 raise
             assert page.locator('#items tr').count() == 60
+            before = page.locator('#summary').inner_text()
+            invalid = tmp_path / 'native-invalid.csv'
+            invalid.write_text('id,title,category,price\n1,Tea,Drink,10\n1,Duplicate,Drink,20\n', encoding='utf-8')
+            page.locator('#csv-file').set_input_files(str(invalid))
+            page.locator('#apply').click()
+            expect(page.locator('#status')).to_contain_text('기존 데이터 유지')
+            assert page.locator('#summary').inner_text() == before
+            updated = tmp_path / 'native-updated.csv'
+            updated.write_text('id,title,category,price\nN1,Native Windows,Office,500\n', encoding='utf-8')
+            page.locator('#csv-file').set_input_files(str(updated))
+            page.locator('#apply').click()
+            expect(page.locator('#status')).to_contain_text('1개 항목 적용')
+            with page.expect_download() as handle:
+                page.locator('#export').click()
+            saved = tmp_path / 'native-export-reopen.html'
+            handle.value.save_as(saved)
+            page.goto(saved.as_uri())
+            assert '1개 항목' in page.locator('#summary').inner_text()
+            assert 'Native Windows' in page.locator('#items').inner_text()
+            assert not errors, errors
         finally:
             b.close()
 
