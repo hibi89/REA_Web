@@ -21,12 +21,26 @@ from rea.mvp import source_sha256
 from rea.safe_publish import publish_directory
 
 _THEMES = ("cafe", "inventory", "office")
-_BASE_CSV = (
-    "id,title,category,price\n"
-    "S01,Cold Brew,Drink,4000\n"
-    "S02,Desk,Office,25000\n"
-    "S03,Notebook,Office,9000\n"
-)
+_BASE_CSV_BY_THEME = {
+    "cafe": (
+        "id,title,category,price\n"
+        "S01,콜드브루,음료,4000\n"
+        "S02,카페라떼,음료,4800\n"
+        "S03,치즈케이크,디저트,6500\n"
+    ),
+    "inventory": (
+        "id,title,category,price\n"
+        "S01,USB-C 케이블,전자제품,12000\n"
+        "S02,무선 마우스,전자제품,23000\n"
+        "S03,노트북 거치대,사무용품,31000\n"
+    ),
+    "office": (
+        "id,title,category,price\n"
+        "S01,주간 업무보고,보고서,0\n"
+        "S02,프로젝트 일정표,일정,0\n"
+        "S03,팀 회의록,회의,0\n"
+    ),
+}
 _VALID_CSV = (
     "id,title,category,price\n"
     "N01,NEW_CHECK_ITEM,Drink,100\n"
@@ -47,7 +61,7 @@ _CHECKLIST = """REA_WEB Lite | Windows 사용자 검수표 (합성 데이터 전
 한 번만 수행하는 실제 검수 절차
 1. ZIP을 새로운 폴더에 압축 해제합니다.
 2. cafe.html을 더블클릭하여 Chrome 또는 Edge로 엽니다.
-   항목 3개, 'Cold Brew' 검색, 상세 보기를 확인합니다.
+   항목 3개, '콜드브루' 검색, 상세 보기를 확인합니다.
 3. duplicate_id.csv를 선택하고 'CSV 검증 후 적용'을 누릅니다.
    중복 ID가 거부되고 원래 항목 3개가 남아야 합니다.
 4. wrong_columns.csv도 같은 방법으로 적용해 거부되는지 확인합니다.
@@ -77,7 +91,7 @@ Windows 버전: ______________________
 _README = """REA_WEB Lite | Windows 오프라인 검수 패키지
 
 CHECKLIST_KO.txt를 읽고 한 번만 실제 검수를 수행하세요.
-- cafe.html / inventory.html / office.html: 오프라인 웹앱 3종
+- cafe.html / inventory.html / office.html: 서로 다른 업종별 합성 데이터와 색상의 오프라인 웹앱 3종
 - duplicate_id.csv: 중복 ID 오류(반드시 거부)
 - wrong_columns.csv: 열 구성 오류(반드시 거부)
 - valid_update.csv: 정상 갱신 파일
@@ -139,8 +153,12 @@ def verify_kit(folder: Path) -> dict:
         data = json.loads(base64.b64decode(m[1], validate=True))
         if data.get("theme") != theme or len(data.get("records", [])) != 3:
             raise ValueError(f"Invalid synthetic data in {theme}")
-        if data["records"][0]["id"] != "S01" or data["records"][0]["title"] != "Cold Brew":
-            raise ValueError(f"Unexpected synthetic fixture in {theme}")
+        first = data["records"][0]
+        expected_first = {"cafe": "콜드브루", "inventory": "USB-C 케이블", "office": "주간 업무보고"}
+        if first["id"] != "S01" or first["title"] != expected_first[theme]:
+            raise ValueError(f"Unexpected theme-specific synthetic fixture in {theme}")
+        if len({row["title"] for row in data["records"]}) != 3:
+            raise ValueError(f"Duplicate synthetic titles in {theme}")
     return {"status": "SYNTHETIC_OWNER_KIT_VERIFIED",
             "files": len(_FILES), "html_themes": len(_THEMES),
             "human_windows_acceptance": "NOT_RUN", "commercial_release": "NOT_APPROVED"}
@@ -154,9 +172,9 @@ def build_kit(destination: Path) -> dict:
     stage = Path(tempfile.mkdtemp(prefix=".rea-lite-owner-kit-", dir=destination.parent))
     try:
         src = stage / "source.csv"
-        src.write_text(_BASE_CSV, encoding="utf-8", newline="")
-        digest = source_sha256(src)
         for theme in _THEMES:
+            src.write_text(_BASE_CSV_BY_THEME[theme], encoding="utf-8", newline="")
+            digest = source_sha256(src)
             build(src, stage / f"{theme}.html", name=f"REA Lite Synthetic {theme}",
                   theme=theme, approval="APPROVE", expected_source_sha256=digest)
         src.rename(stage / "base.csv.tmp")
