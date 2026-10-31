@@ -121,3 +121,42 @@ jobs:
           path: lite-samples/
           if-no-files-found: error
           retention-days: 14
+
+  lite-seller-rehearsal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install independent synthetic test runner
+        run: python -m pip install "pytest>=8,<10"
+      - name: Verify three real-parser seller delivery paths and immutability
+        run: python -m pytest -q tests/test_lite_delivery_rehearsal.py
+      - name: Measure three fresh synthetic builds and seal machine receipt
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p seller-evidence
+          python -m scripts.rea_lite_delivery_rehearsal --receipt seller-evidence/THREE_SYNTHETIC_DELIVERIES.json >/dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('seller-evidence/THREE_SYNTHETIC_DELIVERIES.json').read_text(encoding='utf-8'))
+          assert data['status'] == 'THREE_SYNTHETIC_MACHINE_REHEARSALS_PASS'
+          assert data['case_count'] == 3 and all(entry['status'] == 'PASS' for entry in data['cases'])
+          assert data['human_delivery_time_measured'] is False
+          assert data['human_windows_acceptance'] == 'NOT_RUN'
+          assert data['commercial_approval'] == 'NOT_GRANTED'
+          print('THREE_REAL_PARSER_SYNTHETIC_DELIVERIES_VERIFIED')
+          PY
+      - name: Publish synthetic-only seller receipt (no customer files)
+        uses: actions/upload-artifact@v4
+        with:
+          name: rea-lite-synthetic-seller-receipt
+          path: seller-evidence/THREE_SYNTHETIC_DELIVERIES.json
+          if-no-files-found: error
+          retention-days: 14
