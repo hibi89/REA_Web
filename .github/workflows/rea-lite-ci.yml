@@ -70,21 +70,11 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p lite-samples
-          cat > "$RUNNER_TEMP/rea-lite-synthetic.csv" <<'CSV'
-          id,title,category,price
-          S01,Cold Brew,Drink,4000
-          S02,Desk,Office,25000
-          S03,Notebook,Office,9000
-          CSV
-          DIGEST="$(sha256sum "$RUNNER_TEMP/rea-lite-synthetic.csv" | cut -d' ' -f1)"
+          # Reuse the same real-parser, source-pinned fixtures as the Windows
+          # owner acceptance kit; avoid stale shared CSV data across themes.
+          python -m scripts.rea_lite_owner_acceptance_kit --out "$RUNNER_TEMP/rea-lite-owner-source" >/dev/null
           for theme in cafe inventory office; do
-            python -m rea.lite_builder \
-              --source "$RUNNER_TEMP/rea-lite-synthetic.csv" \
-              --out "lite-samples/rea-lite-${theme}.html" \
-              --name "REA Lite Synthetic ${theme}" \
-              --theme "$theme" \
-              --approval APPROVE \
-              --source-sha256 "$DIGEST"
+            cp "$RUNNER_TEMP/rea-lite-owner-source/${theme}.html" "lite-samples/rea-lite-${theme}.html"
           done
           python - <<'PY'
           import base64
@@ -94,6 +84,7 @@ jobs:
           from pathlib import Path
           folder = Path('lite-samples')
           checksums = []
+          source_hashes = set()
           for theme in ('cafe', 'inventory', 'office'):
               path = folder / f'rea-lite-{theme}.html'
               raw = path.read_bytes()
@@ -103,8 +94,16 @@ jobs:
               assert payload['theme'] == theme
               assert len(payload['records']) == 3
               assert payload['records'][0]['id'] == 'S01'
+              expected = {
+                  'cafe': ['콜드브루', '카페라떼', '치즈케이크'],
+                  'inventory': ['USB-C 케이블', '무선 마우스', '노트북 거치대'],
+                  'office': ['주간 업무보고', '프로젝트 일정표', '팀 회의록'],
+              }
+              assert [record['title'] for record in payload['records']] == expected[theme]
               assert b"connect-src 'none'" in raw
+              source_hashes.add(payload['sourceSha256'])
               checksums.append(f'{hashlib.sha256(raw).hexdigest()}  {path.name}')
+          assert len(source_hashes) == 3, 'Theme-specific source digests must differ'
           (folder / 'SHA256SUMS.txt').write_text('\n'.join(checksums)+'\n', encoding='utf-8')
           (folder / 'README.txt').write_text(
               'REA Lite SYNTHETIC acceptance samples only. No customer data.\n'
