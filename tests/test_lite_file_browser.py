@@ -23,7 +23,7 @@ def local_html(tmp_path):
 
 def test_dom_and_update_export(local_html, tmp_path):
     with sync_playwright() as p:
-        b = p.chromium.launch(headless=True, executable_path=os.getenv('REA_CHROME_PATH') or '/usr/bin/chromium',args=['--no-sandbox'])
+        b = p.chromium.launch(headless=True, executable_path=os.getenv('REA_CHROME_PATH') or ('/usr/bin/chromium' if Path('/usr/bin/chromium').exists() else None),args=['--no-sandbox'])
         page=b.new_page(accept_downloads=True)
         errors=[]; page.on('pageerror',lambda e: errors.append(str(e)))
         page.set_content(local_html.read_text(encoding="utf-8"))
@@ -59,7 +59,7 @@ def test_dom_and_update_export(local_html, tmp_path):
 def test_file_url_native_only(local_html):
     from playwright._impl._errors import Error as PlaywrightError
     with sync_playwright() as p:
-        b = p.chromium.launch(headless=True, executable_path=os.getenv('REA_CHROME_PATH') or '/usr/bin/chromium', args=['--no-sandbox'])
+        b = p.chromium.launch(headless=True, executable_path=os.getenv('REA_CHROME_PATH') or ('/usr/bin/chromium' if Path('/usr/bin/chromium').exists() else None), args=['--no-sandbox'])
         page = b.new_page()
         try:
             try:
