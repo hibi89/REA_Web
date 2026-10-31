@@ -92,3 +92,37 @@ def test_theme_and_extension_refusals(tmp_path):
         build(src, tmp_path / 'bad.html', name='Shop', approval='APPROVE', theme='evil')
     with pytest.raises(DataError):
         build(src, tmp_path / 'bad.txt', name='Shop', approval='APPROVE')
+
+
+def test_atomic_build_does_not_leave_partial_html_on_io_error(tmp_path, monkeypatch):
+    """A disk flush failure must not advertise a corrupt final HTML."""
+    import rea.lite_builder as lite
+    src = fixture(tmp_path)
+    destination = tmp_path / "must-not-exist.html"
+
+    def disk_error(_fd):
+        raise OSError("simulated disk write failure")
+
+    monkeypatch.setattr(lite.os, "fsync", disk_error)
+    with pytest.raises(OSError, match="simulated disk write failure"):
+        lite.build(src, destination, name="Test", approval="APPROVE")
+    assert not destination.exists()
+    assert not list(tmp_path.glob(".rea-lite-staging-*"))
+
+
+def test_atomic_build_never_clobbers_late_competing_output(tmp_path, monkeypatch):
+    """Another file appearing after the initial check must be retained."""
+    import rea.lite_builder as lite
+    src = fixture(tmp_path)
+    destination = tmp_path / "owner-protected.html"
+    real_publish = lite.publish_archive
+
+    def competing_writer(stage, target):
+        target.write_text("owner content", encoding="utf-8")
+        real_publish(stage, target)
+
+    monkeypatch.setattr(lite, "publish_archive", competing_writer)
+    with pytest.raises(FileExistsError):
+        lite.build(src, destination, name="Test", approval="APPROVE")
+    assert destination.read_text(encoding="utf-8") == "owner content"
+    assert not list(tmp_path.glob(".rea-lite-staging-*"))
