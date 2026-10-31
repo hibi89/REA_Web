@@ -1,3 +1,13 @@
+## [ACTIVE 2026-10-31 KST] Lite CSV contract fix and strict Windows native browser gate
+
+- Working branch `feature/rea-lite-20261031`; reviewed tested source at `c395577e04137e5c8306aed1e4554957cdd4c635`; Draft PR #32 remains OPEN/UNMERGED. Original Pro `feature/d27-windows-python-discovery`, Draft PR #30 and main unchanged.
+- Changed `rea/lite_assets/template.html` to accept ignorable blank physical CSV lines and literal unquoted embedded quote characters in the same manner as original Pro `csv.DictReader(strict=True)`. No new product scope/data access.
+- Extended `tests/test_lite_file_browser.py` with quoted-comma/CRLF/multiline/blank-lines/literal-quote CSV parity and updated HTML reopen. Expanded `file://` test to check invalid CSV retention, approved CSV replacement, download and actual reopened file. `REA_REQUIRE_NATIVE_FILE=1` changes blocked file navigation from skip to failure.
+- Added independent `lite-windows-native` GitHub Actions job (Windows Chromium), and Linux Lite unit job now includes Pro `tests/test_mvp.py` regression. Workflow now uses PR #32 base trigger rather than duplicate push jobs.
+- Actually executed isolated Linux `PYTHONDONTWRITEBYTECODE=1 pytest -q -p no:cacheprovider tests/test_lite_file_browser.py`: **2 PASSED / 1 SKIPPED** due local `ERR_BLOCKED_BY_ADMINISTRATOR` on `file://`; `python -m compileall -q rea/lite_builder.py tests` PASS. **True native file open, GitHub PR CI conclusion and real Pro builder integration remain UNVERIFIED** at this checkpoint. The missing Pro module in the standalone temporary folder is NOT evidence of GitHub module breakage; do not claim pass.
+- Rebuilt synthetic demo HTML files and `REA_WEB_Lite_Technical_Preview_20261031.zip` (9 members, ZIP CRC PASS, SHA256 `1ac3e3353e341a1e7efa42644de197f65e2dcda18d72683207158116959712c5`); ephemeral conversation artifact, NOT hosted customer release.
+- NEXT: inspect actual PR #32 Windows/Linux CI conclusions and exact source SHA; fix reproducible failures. Native user Windows Edge/Chrome acceptance, source/licensing notices, customer-data/privacy and seller/refund/support/price approvals remain NOT_RUN/NOT_APPROVED. NO commercial launch or merge.
+
 ## [ACTIVE 2026-10-31 KST] Lite code integrated on isolated GitHub branch
 
 - New confirmed Lite source now **committed** on `feature/rea-lite-20261031`, forked from original Pro branch at `97b6e5cab7b8ffb4e1ee7f5e593021f4dac2598d`. Draft review PR [#32](https://github.com/hibi89/REA_Web/pull/32) targets `feature/d27-windows-python-discovery`; no merge. Original Pro branch and its Draft PR #30 unchanged.
