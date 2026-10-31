@@ -1,3 +1,11 @@
+## [CURRENT 2026-10-31 KST] Korean Windows kit and prelaunch copy verified
+
+- Tested **Lite source SHA** `73ca5cbaec19ede47007425a38c2490856c4471c` ([Actions #41188777358](https://github.com/hibi89/REA_Web/actions/runs/41188777358)): **6/6 CI jobs SUCCESS, 36 pytest PASSED / 0 FAILED** (23 Pro/Lite unit, 3 Linux browser, 3 Windows native file://, 4 Windows owner kit, 3 synthetic seller trials), one existing Starlette deprecation warning. No Pro or Lite runtime logic changed.
+- Actual customer-acceptance defect fixed: `CHECKLIST_KO.txt` and `README_FIRST.txt` in generated synthetic kit were in English despite Korean filename. They are now Korean with UTF-8 BOM so Windows Notepad displays correctly. Tests require Korean instructions and BOM, plus original checksum, reject/retain behavior and no-overwrite.
+- Downloaded current [Actions artifact #13038077966](https://github.com/hibi89/REA_Web/actions/runs/41188777358/artifacts/13038077966) ZIP independently inspected: 21,719 bytes SHA256 `ac5699800243d6ecf5314969b38d1774ca489b73d22c2190255e3f7facebebe1`, 10 files, ZIP CRC PASS, 9/9 inner SHA256 match; Korean text and both BOMs PASS; `human_windows_acceptance=NOT_RUN`, `commercial_release=NOT_APPROVED` preserved.
+- Safe commercial offer copy and unresolved gate inventory drafted in `docs/REA_LITE_KMONG_PRELAUNCH_DRAFT.md`: verified feature scope, CSV/JSON limits, plain-text disclosure, exclusions, price/support/refund/privacy/license and manual Windows check deliberately UNAPPROVED. No live listing, customer data, distribution rights or PR merge.
+- **Release verdict:** technical synthetic verified; **NOT READY FOR PAID SALE** until ownership/notices, actual user Windows acceptance, customer data policy and seller terms are approved. Pro branch, PR #30 and data preserved. Latest changes to STATUS/HANDOFF are docs-only `[skip ci]`, not new runtime tests.
+
 ## [CURRENT 2026-10-31 KST] Owner acceptance package CI verified
 
 - **Latest tested source:** `287103c5f7fff887d316c21a23f6c0ad080ec414` on `feature/rea-lite-20261031`. Pro branch `feature/d27-windows-python-discovery` and PR #30 unchanged. Lite PR #32 remains unmerged. No Vercel (customer output is offline HTML).
