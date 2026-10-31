@@ -1,3 +1,16 @@
+## 2026-10-31 KST — Lite legacy-PR keyboard parity check (10-point handoff)
+
+1. **Goal/requirements/stack:** REA Lite customer receives single offline HTML from real Pro CSV/JSON parser; native visible CSV File API input, explicit apply/download. Original Pro unchanged.
+2. **Completed/why:** Compared older Lite Draft PR #31 against active Draft PR #32. Old template's hidden label CSV picker required a keyboard handler; current template already uses a focusable native file input. Added two parametrized Enter/Space actual-browser chooser tests in `tests/test_lite_file_browser.py`, no production code changed.
+3. **Tests:** Exact source `88c55f86dead1c744c500840073696acf085e126`, [Actions #41194254470](https://github.com/hibi89/REA_Web/actions/runs/41194254470), 6/6 jobs SUCCESS: Linux Chromium 6 PASS, Windows native file:// Chromium 6 PASS, Pro/Lite 25 PASS, Windows kit 4 PASS, seller synthetic 3 PASS = **44 pytest PASS/0 FAIL**. One existing Starlette deprecation warning.
+4. **State:** Accessibility gap checked DONE; technical Lite QA done. Actual human Windows acceptance NOT_RUN; commercial rights, privacy/data handling, price/refunds/support/lead time NOT APPROVED.
+5. **Risk/attempt/pivot:** Prior PR #31's keyboard fault was specific to a hidden custom label; do not transplant its handler into current native input. Both Enter and Space work in new real-browser regression. No repeated legacy patch or forced merge.
+6. **Repo/branch/SHA/paths:** `hibi89/REA_Web`, `feature/rea-lite-20261031`, source `88c55f86dead1c744c500840073696acf085e126`; tests `tests/test_lite_file_browser.py`. PR #31 old Lite and #32 active Lite are OPEN/DRAFT/UNMERGED; PR #30 Pro OPEN/DRAFT/UNMERGED. Pro verified source `bbf2ec26` had 28/28 Actions SUCCESS; current Pro branch last tip `97b6e5ca` was docs-only.
+7. **Production/URL/environment:** N/A Vercel; offline single HTML. Windows GitHub runner tests actual local file://; nondeveloper PC has not been tested. Runner tests run `python -m pytest -q tests/test_lite_file_browser.py` after installing Chromium.
+8. **Originals/backups/credentials:** No production/customer data, secrets, repo access, license, billing, source overwrite or merged branches. Git preserves original reviewed versions.
+9. **Next / owner approvals:** One actual nondeveloper Windows file open/CSV/export/reopen; copyright/redistribution/NOTICE verification, customer data privacy/retention/deletion, human timed delivery, approved Kmong pricing/revisions/support/refunds; do not create unapproved sale/listing. Review old PR #31 separately before any future close/merge.
+10. **KST/checkpoint:** 2026-10-31 KST; tested exact `88c55f86dead1c744c500840073696acf085e126` with 44 pytest PASS, CI 6/6. Human/legal/commercial gates UNVERIFIED. Subsequent docs-only commits [skip ci] should not be mistaken for new code validation.
+
 ## 2026-10-31 KST — Korean theme-specific demos, CI and independent browser verification (10 points)
 
 1. **Goal/stack/confirmed requirements:** REA Lite standalone offline catalog HTML with cafe/inventory/office themes, generated using approved CSV/flat JSON via real internal Pro parser; customer's same-schema CSV local update and explicit new HTML export; no network/server/QR.
