@@ -1,3 +1,9 @@
+## [NEXT 2026-10-31 KST] Windows owner kit generated; external release gates only
+
+- Source `287103c5f7fff887d316c21a23f6c0ad080ec414`, [CI #41188403272](https://github.com/hibi89/REA_Web/actions/runs/41188403272) 6/6 SUCCESS (36 pytest PASS, 0 FAIL), real Pro/Lite linkage and Windows Chromium file URL already verified. Windows owner synthetic kit [artifact #13037343564](https://github.com/hibi89/REA_Web/actions/runs/41188403272/artifacts/13037343564) ZIP checksum `6f63e1e602d3b26db73d7bf92288525b3ec53333ff26100467201933db5cde9b`, 10 exact members verified.
+- No additional synthetic development required without a reproduced defect. For **one nondeveloper manual acceptance** extract kit and follow `CHECKLIST_KO.txt`; do not solicit customer data; pass/fail must be real. Ownership/redistribution licenses, privacy/retention and Kmong price/support/refund policy require explicit owner decisions. No sale/PR merge/permission changes.
+- Current verdict **technical synthetic DONE; paid commercial release BLOCKED**. Documentation updates [skip ci] are not new runtime test evidence.
+
 ## [NEXT 2026-10-31 KST] Lite QA closed; owner-dependent commercial release gates
 
 - **Current tested code** `87386dfc974b33518d05daf15df5db3f084ed09f`: [GitHub Actions run #41187911378](https://github.com/hibi89/REA_Web/actions/runs/41187911378) **5/5 jobs SUCCESS** (Pro+Lite 23, Linux browser 3, native Windows file URL 3, seller rehearsal 3 = 32 pytest PASS; 3 synthetic demo HTML artifact job success). Machine-only receipt [artifact #13037671244](https://github.com/hibi89/REA_Web/actions/runs/41187911378/artifacts/13037671244), 3/3 synthetic cases real Pro parser -> Lite builder -> verified HTML + no overwrite; no actual operator/Windows customer test or customer delivery timing.
