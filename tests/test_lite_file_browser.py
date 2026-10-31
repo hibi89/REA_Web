@@ -71,3 +71,36 @@ def test_file_url_native_only(local_html):
             assert page.locator('#items tr').count() == 60
         finally:
             b.close()
+
+
+def test_csv_matches_pro_parser_for_blank_lines_embedded_quotes_and_escaped_cells(local_html, tmp_path):
+    """CSV accepted by Python csv.DictReader(strict=True) must also work in Lite."""
+    valid=(
+        'id,title,category,price\r\n'
+        '\r\n'
+        'A,"Coffee, Tea",음료,1000\r\n'
+        'B,Plain"Quote,디저트,2000\r\n'
+        'C,"두 줄\r\n내용",음료,3000\r\n'
+        '\r\n'
+    )
+    with sync_playwright() as p:
+        b=p.chromium.launch(headless=True,executable_path=os.getenv('REA_CHROME_PATH') or ('/usr/bin/chromium' if Path('/usr/bin/chromium').exists() else None),args=['--no-sandbox'])
+        page=b.new_page(accept_downloads=True)
+        errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
+        page.set_content(local_html.read_text(encoding='utf-8'))
+        csvfile=tmp_path/'valid.csv';csvfile.write_text(valid,encoding='utf-8')
+        page.locator('#csv-file').set_input_files(str(csvfile));page.locator('#apply').click()
+        expect(page.locator('#status')).to_contain_text('3개 항목 적용')
+        assert '3개 항목' in page.locator('#summary').inner_text()
+        page.locator('#search').fill('Plain"Quote')
+        assert page.locator('#items tr').count()==1
+        page.locator('#search').fill('Coffee, Tea')
+        page.locator('#items tr button').first.click()
+        assert 'Coffee, Tea' in page.locator('#detail-list').inner_text()
+        page.locator('#close-dialog').click()
+        with page.expect_download() as info:page.locator('#export').click()
+        info.value.save_as(tmp_path/'csv-parity-export.html')
+        page.set_content((tmp_path/'csv-parity-export.html').read_text(encoding='utf-8'))
+        assert '3개 항목' in page.locator('#summary').inner_text()
+        assert not errors,errors
+        b.close()
