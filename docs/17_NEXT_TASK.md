@@ -1,3 +1,9 @@
+## [NEXT 2026-10-31 KST] Lite QA closed; owner-dependent commercial release gates
+
+- **Current tested code** `87386dfc974b33518d05daf15df5db3f084ed09f`: [GitHub Actions run #41187911378](https://github.com/hibi89/REA_Web/actions/runs/41187911378) **5/5 jobs SUCCESS** (Pro+Lite 23, Linux browser 3, native Windows file URL 3, seller rehearsal 3 = 32 pytest PASS; 3 synthetic demo HTML artifact job success). Machine-only receipt [artifact #13037671244](https://github.com/hibi89/REA_Web/actions/runs/41187911378/artifacts/13037671244), 3/3 synthetic cases real Pro parser -> Lite builder -> verified HTML + no overwrite; no actual operator/Windows customer test or customer delivery timing.
+- **Next actual work:** 1 end-user Windows native browser acceptance (already CI-covered technically; not repeated synthetic QA), source/third-party redistribution licenses and notices, data/privacy retention and rightsholder permission, real seller workflow duration, supported CSV/JSON scope, price/revision/support/refund terms. Owner approval required for live sale or repo permission/PR merge.
+- Stop duplicate synthetic CI, doc churn, and speculative features. Current project is local offline HTML; Production/Vercel N/A. Documentation [skip ci] follows tested code without runtime changes.
+
 ## [NEXT 2026-10-31 18:07 KST] Lite verified synthetic tech, commercial gates next
 
 - Latest code/CI: `feature/rea-lite-20261031@99baa75da99db6fca8a9e323f1d135d5eb846823`, [run #41187251634](https://github.com/hibi89/REA_Web/actions/runs/41187251634) **4/4 jobs SUCCESS**: real Pro parser + Lite + Pro MVP 23 PASS; Linux Chromium 3 PASS; native Windows Chromium `file://` 3 PASS; three real-Pro-built synthetic HTML themes verified and [artifact #13037152156](https://github.com/hibi89/REA_Web/actions/runs/41187251634/artifacts/13037152156) downloaded/ZIP hash checked. Independent genuine artifact browser interactions 3/3 PASS via Linux DOM, not native file URL.
