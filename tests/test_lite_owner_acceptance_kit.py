@@ -22,8 +22,11 @@ def test_kit_three_themes_and_all_owner_fixtures(tmp_path):
     assert "NEW_CHECK_ITEM" in (destination / "valid_update.csv").read_text(encoding="utf-8")
     assert "D01" in (destination / "duplicate_id.csv").read_text(encoding="utf-8")
     checklist = (destination / "CHECKLIST_KO.txt").read_text(encoding="utf-8")
-    assert "Chrome/Edge file opening: PASS / FAIL / BLOCKED / NOT_RUN" in checklist
-    assert "Total human elapsed minutes: ________ or NOT_MEASURED" in checklist
+    assert "오프라인 HTML 열기: PASS / FAIL / BLOCKED / NOT_RUN" in checklist
+    assert "실제 사용자 소요시간(분): ________ 또는 NOT_MEASURED" in checklist
+    assert (destination / "CHECKLIST_KO.txt").read_bytes().startswith(b"\xef\xbb\xbf")
+    assert (destination / "README_FIRST.txt").read_bytes().startswith(b"\xef\xbb\xbf")
+    assert "검수 절차" in (destination / "CHECKLIST_KO.txt").read_text(encoding="utf-8-sig")
     manifest = json.loads((destination / "MANIFEST.json").read_text(encoding="utf-8"))
     assert manifest["human_windows_acceptance"] == "NOT_RUN"
     assert manifest["commercial_release"] == "NOT_APPROVED"
