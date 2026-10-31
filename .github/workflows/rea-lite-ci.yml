@@ -1,7 +1,7 @@
 name: REA Lite isolated integration
 on:
-  push:
-    branches: [feature/rea-lite-20261031]
+  pull_request:
+    branches: [feature/d27-windows-python-discovery]
   workflow_dispatch:
 
 permissions:
