@@ -1,3 +1,9 @@
+## [NEXT 2026-10-31 KST] Korean acceptance kit technical close — owner gates only
+
+- Current tested source `73ca5cbaec19ede47007425a38c2490856c4471c`, [Actions #41188777358](https://github.com/hibi89/REA_Web/actions/runs/41188777358) 6/6 jobs success / 36 pytest PASS. The localized Windows acceptance artifact [#13038077966](https://github.com/hibi89/REA_Web/actions/runs/41188777358/artifacts/13038077966) was independently inspected for ZIP CRC, 9 file checksums, 2 Korean UTF-8 BOM files, all 10 expected files. No technical fault currently reproduced.
+- Drafted accurate Kmong listing and release-gates at `docs/REA_LITE_KMONG_PRELAUNCH_DRAFT.md`; **not published or approved**. Remaining tasks are owner-controlled: one actual Windows Chrome/Edge operator check and evidence; author/third-party license and notice rights; customer data handling and deletion; price/support/revisions/refunds, actual seller delivery time. No unauthorized sale/PR merge/access changes.
+- Avoid test reruns and feature creep until a real defect is reproduced. Offline HTML means Vercel N/A. Docs-only update uses [skip ci]; verified source SHA remains unchanged.
+
 ## [NEXT 2026-10-31 KST] Windows owner kit generated; external release gates only
 
 - Source `287103c5f7fff887d316c21a23f6c0ad080ec414`, [CI #41188403272](https://github.com/hibi89/REA_Web/actions/runs/41188403272) 6/6 SUCCESS (36 pytest PASS, 0 FAIL), real Pro/Lite linkage and Windows Chromium file URL already verified. Windows owner synthetic kit [artifact #13037343564](https://github.com/hibi89/REA_Web/actions/runs/41188403272/artifacts/13037343564) ZIP checksum `6f63e1e602d3b26db73d7bf92288525b3ec53333ff26100467201933db5cde9b`, 10 exact members verified.
