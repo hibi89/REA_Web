@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer"><title>REA Lite · Offline Catalog</title>
+<style>
+:root{color-scheme:light;--ink:#182629;--muted:#607177;--bg:#f3f5f2;--surface:#fff;--edge:#d8e1dc;--accent:#21695b;--pale:#d8eae3;--dark:#132d29}
+body[data-theme=inventory]{--accent:#3159a3;--pale:#dde8f9;--dark:#182745}
+body[data-theme=office]{--accent:#805137;--pale:#f1e5db;--dark:#382c26}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif}
+header{background:var(--dark);color:white;padding:24px clamp(18px,5vw,72px)}
+header .small{opacity:.72;font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+header h1{font-size:clamp(25px,3vw,39px);letter-spacing:-.05em;margin:8px 0}header p{opacity:.78;margin:0}
+main{max-width:1160px;margin:auto;padding:30px 18px 70px}section{background:var(--surface);border:1px solid var(--edge);border-radius:18px;padding:20px;margin-bottom:17px;box-shadow:0 8px 32px #10291b08}
+.summary{display:flex;justify-content:space-between;gap:16px;align-items:center}.eyebrow{color:var(--accent);font-size:12px;text-transform:uppercase;letter-spacing:.13em;font-weight:700}
+h2{margin:4px 0 14px;font-size:19px;letter-spacing:-.025em}.pill{background:var(--pale);border-radius:50px;padding:7px 13px;color:var(--accent);font-size:12px;font-weight:700}
+.controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}label{font-size:13px;font-weight:600;display:block;margin-bottom:6px}
+input,select,button{font:inherit}input[type=search],select{width:100%;border-radius:10px;border:1px solid var(--edge);background:white;padding:11px;min-height:43px}
+button,.action{padding:10px 16px;border:1px solid var(--edge);border-radius:10px;background:white;cursor:pointer;color:var(--ink)}button.primary,.action.primary{background:var(--accent);color:white;border-color:var(--accent)}button:hover,.action:hover{filter:brightness(.94)}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f1ae55;outline-offset:2px}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0}.muted{color:var(--muted);font-size:13px}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:610px;text-align:left}th,td{padding:13px 12px;border-bottom:1px solid var(--edge);max-width:350px;overflow-wrap:anywhere}th{color:var(--muted);font-size:12px;font-weight:700}tbody tr:hover{background:#f7faf8}.footer-buttons{display:flex;gap:8px;justify-content:flex-end;align-items:center;margin-top:17px}
+.update-grid{display:flex;flex-wrap:wrap;gap:12px;align-items:center}input[type=file]{max-width:100%;font-size:13px}.status{font-size:13px;min-height:24px;margin:9px 0 0}.error{color:#a92828}.success{color:#145d43}
+dialog{border:0;border-radius:15px;padding:24px;max-width:min(540px,92vw);width:100%;box-shadow:0 12px 60px #0004}dialog::backdrop{background:#122c29a8}dl{display:grid;grid-template-columns:140px 1fr;gap:10px;overflow-wrap:anywhere}dt{color:var(--muted)}dd{margin:0;font-weight:600}footer{text-align:center;color:var(--muted);font-size:12px;margin-top:20px}
+@media(max-width:700px){.controls{grid-template-columns:1fr}.summary{align-items:flex-start;flex-direction:column}section{padding:15px}.toolbar{align-items:flex-start;flex-direction:column}header{padding:22px 18px}}
+</style></head>
+<body data-theme="cafe"><header><div class="small">REA WEB / LOCAL EDITION</div><h1 id="brand">오프라인 카탈로그</h1><p>내 컴퓨터에서만 실행되는 데이터 카탈로그 · 서버와 인터넷 연결 불필요</p></header>
+<main><section class="summary"><div><div class="eyebrow">Overview</div><h2>데이터 한눈에 보기</h2><span class="muted" id="summary">항목을 불러오는 중</span></div><span class="pill">OFFLINE · SINGLE HTML</span></section>
+<section><div class="eyebrow">Explore</div><h2>목록 탐색</h2><div class="controls"><div><label for="search">검색</label><input type="search" id="search" placeholder="이름 · 분류 · 상세 항목 검색"></div><div><label for="category">카테고리</label><select id="category"><option value="">전체 카테고리</option></select></div><div><label for="sort">정렬</label><select id="sort"><option value="title">이름순</option><option value="title-desc">이름 역순</option><option value="category">카테고리순</option><option value="id">ID순</option></select></div></div>
+<div class="toolbar"><span class="muted" id="result-count" aria-live="polite"></span><span class="muted">항목 클릭 시 상세 보기</span></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>이름</th><th>카테고리</th><th>상세</th></tr></thead><tbody id="items"></tbody></table></div>
+<div class="footer-buttons"><span class="muted" id="page-label"></span><button id="prev" type="button">이전</button><button id="next" type="button">다음</button></div></section>
+<section><div class="eyebrow">Update locally</div><h2>CSV로 데이터 갱신</h2><p class="muted">같은 열 구성을 가진 UTF-8 CSV 파일을 선택하세요. 검증 실패 시 기존 데이터를 유지합니다. 갱신 결과를 보관하려면 새 HTML을 직접 다운로드하세요.</p><div class="update-grid"><input id="csv-file" type="file" accept=".csv,text/csv" aria-label="CSV 선택"><button id="apply" type="button">CSV 검증 후 적용</button><button class="primary" id="export" type="button">갱신된 HTML 다운로드</button></div><p class="status" id="save-state" role="status" aria-live="polite">현재 파일 기준 · 변경사항 없음</p><p class="status" id="status" role="status" aria-live="polite"></p></section>
+<footer>REA Lite · 데이터는 이 HTML 파일 내부에 보관됩니다. 개인정보와 민감정보 사용 금지.</footer></main>
+<dialog id="details"><h2>항목 상세</h2><dl id="detail-list"></dl><div class="footer-buttons"><button id="close-dialog" type="button">닫기</button></div></dialog>
+<script id="rea-data" type="application/octet-stream">REPLACE_WITH_DATA_BASE64</script>
+<script>
+(()=>{'use strict';
+const MAX_BYTES=10*1024*1024,MAX_ROWS=10000,MAX_COLUMNS=20,PAGE=60,required=['id','title','category'];
+const $=id=>document.getElementById(id);
+const decode=b=>{const binary=atob(b.trim());const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0));return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));};
+const encode=v=>{const b=new TextEncoder().encode(JSON.stringify(v));let s='';for(let i=0;i<b.length;i+=32768)s+=String.fromCharCode(...b.subarray(i,i+32768));return btoa(s);};
+const data=decode($('rea-data').textContent);let current=data.records,page=0,dirty=false;
+if(!data||!Array.isArray(data.headers)||!Array.isArray(current)||!['cafe','inventory','office'].includes(data.theme))throw Error('Invalid build data');
+$('brand').textContent=data.name;document.title=data.name+' · REA Lite';document.body.dataset.theme=data.theme;
+const cell=(tag,text)=>{let e=document.createElement(tag);e.textContent=String(text);return e;};
+function refreshCategories(){let selector=$('category'),keep=selector.value;selector.replaceChildren(new Option('전체 카테고리',''));const cats=[...new Set(current.map(x=>x.category))].sort((a,b)=>a.localeCompare(b,'ko'));cats.forEach(x=>selector.add(new Option(x,x)));selector.value=cats.includes(keep)?keep:'';}
+function render(){let q=$('search').value.trim().toLocaleLowerCase('ko'),cat=$('category').value,sort=$('sort').value;
+let rows=current.filter(x=>(!cat||x.category===cat)&&(!q||data.headers.some(k=>x[k].toLocaleLowerCase('ko').includes(q))));
+let key=sort==='category'?'category':sort==='id'?'id':'title',reverse=sort==='title-desc';rows.sort((a,b)=>{let n=a[key].localeCompare(b[key],'ko',{numeric:true});return reverse?-n:n;});
+page=Math.min(page,Math.max(0,Math.ceil(rows.length/PAGE)-1));$('summary').textContent=current.length.toLocaleString('ko')+'개 항목 · '+new Set(current.map(x=>x.category)).size+'개 카테고리';
+$('result-count').textContent=rows.length.toLocaleString('ko')+'개 검색 결과';let tbody=$('items');tbody.replaceChildren();
+for(const record of rows.slice(page*PAGE,(page+1)*PAGE)){let tr=document.createElement('tr');for(const k of required)tr.append(cell('td',record[k]));const td=document.createElement('td'),button=cell('button','상세 보기');button.type='button';button.addEventListener('click',()=>openDetail(record));td.append(button);tr.append(td);tbody.append(tr);}
+if(!rows.length){const tr=document.createElement('tr'),td=cell('td','결과가 없습니다.');td.colSpan=4;tr.append(td);tbody.append(tr);}
+$('page-label').textContent=(rows.length?page+1:0)+' / '+Math.ceil(rows.length/PAGE)+' 페이지';$('prev').disabled=page===0;$('next').disabled=(page+1)*PAGE>=rows.length;}
+function openDetail(r){const dl=$('detail-list');dl.replaceChildren();for(const k of data.headers){dl.append(cell('dt',k),cell('dd',r[k]));}$('details').showModal();}
+function parseCSV(text){if(text.charCodeAt(0)===0xFEFF)text=text.slice(1);const records=[];let line=[],value='',i=0,quoted=false,closed=false,start=true;
+const add=()=>{line.push(value);value='';closed=false;start=true;};const end=()=>{add();records.push(line);line=[];};
+while(i<text.length){const c=text[i++];if(quoted){if(c==='"'){if(text[i]==='"'){value+='"';i++;}else{quoted=false;closed=true;}}else value+=c;continue;}
+if(c==='"'){if(!start){value+='"';continue;}quoted=true;start=false;continue;}
+if(c===','){add();continue;}
+if(c==='\n'||c==='\r'){if(c==='\r'&&text[i]==='\n')i++;if(!line.length&&!value&&!closed)continue;end();continue;}
+if(closed)throw Error('닫힌 따옴표 뒤 불필요한 문자');value+=c;start=false;if(value.length>2000)throw Error('셀 길이 제한 초과');}
+if(quoted)throw Error('닫히지 않은 따옴표');if(line.length||value||closed)end();if(records.length&&records[records.length-1].length===1&&records[records.length-1][0]==='')records.pop();
+if(records.length<2)throw Error('헤더와 최소 1개 데이터 행이 필요합니다');const headers=records.shift().map(x=>x.trim());
+if(headers.length>MAX_COLUMNS||new Set(headers).size!==headers.length||headers.some(x=>!x||x.length>2000)||headers.join('\u0000')!==data.headers.join('\u0000'))throw Error('열 구성/순서가 원본과 다릅니다');
+if(records.length>MAX_ROWS)throw Error('1만 행 초과');const ids=new Set();return records.map((line,index)=>{if(line.length!==headers.length)throw Error((index+2)+'행의 열 개수가 다릅니다');const r=Object.create(null);for(let j=0;j<headers.length;j++){let v=line[j].trim();if(v.includes('\u0000')||v.length>2000)throw Error('잘못된 셀 값');r[headers[j]]=v;}
+if(required.some(k=>!r[k])||ids.has(r.id))throw Error('필수값 누락 또는 중복 ID ('+(index+2)+'행)');ids.add(r.id);return r;});}
+function status(message,error=false){let e=$('status');e.textContent=message;e.className='status '+(error?'error':'success');}
+function showSaveState(){$('save-state').textContent=dirty?'저장 전 변경사항 있음 · 새 HTML을 다운로드하고 다시 열어 확인하세요.':'현재 파일 기준 · 변경사항 없음';$('save-state').className='status '+(dirty?'error':'success');}
+window.addEventListener('beforeunload',event=>{if(!dirty)return;event.preventDefault();event.returnValue='';});
+$('apply').addEventListener('click',async()=>{const file=$('csv-file').files?.[0];if(!file)return status('CSV를 선택하세요.',true);if(file.size>MAX_BYTES)return status('10MiB를 초과합니다.',true);try{const text=new TextDecoder('utf-8',{fatal:true}).decode(await file.arrayBuffer());const next=parseCSV(text);
+if(data.sourceSha256){data.originalSourceSha256=data.originalSourceSha256||data.sourceSha256;}
+data.sourceSha256=null;data.dataOrigin='BROWSER_CSV_UPDATED_HASH_UNVERIFIED';
+current=next;data.records=next;dirty=true;page=0;refreshCategories();render();showSaveState();status(next.length+'개 항목 적용 완료. 새 HTML을 다운로드해야 변경 내용이 보존됩니다.');}catch(e){status('CSV 갱신 거부: '+e.message+' — 기존 데이터 유지',true);}});
+$('export').addEventListener('click',()=>{try{data.records=current;const clone=document.documentElement.cloneNode(true);const slot=clone.querySelector('#rea-data');slot.textContent=encode(data);const doc='<!doctype html>\n'+clone.outerHTML;const url=URL.createObjectURL(new Blob([doc],{type:'text/html;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='rea-lite-updated.html';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);status('HTML 다운로드 요청 완료. 저장한 새 파일을 다시 열어 데이터가 유지되는지 확인하세요. 다운로드 성공 여부는 이 화면에서 확인할 수 없습니다.');}catch(e){status('내보내기 실패: '+e.message,true);}});
+$('search').addEventListener('input',()=>{page=0;render()});$('category').addEventListener('change',()=>{page=0;render()});$('sort').addEventListener('change',()=>{page=0;render()});$('prev').addEventListener('click',()=>{page--;render()});$('next').addEventListener('click',()=>{page++;render()});$('close-dialog').addEventListener('click',()=>$('details').close());refreshCategories();render();showSaveState();
+})();
+</script></body></html>

@@ -1,3 +1,78 @@
+## [NEXT 2026-10-31 KST] Both Lite artifact paths consistent; release requires owner evidence
+
+- **Verified source:** `0b9ab24fb065376ac037ac554047a15e944fb3bd`, [CI #41196055223](https://github.com/hibi89/REA_Web/actions/runs/41196055223) 6/6 SUCCESS, 44 pytest PASS/0 FAIL. Standalone demo artifact now reuses Korean owner kit data and checks all three title lists and distinct hashes. Independently verified downloadable demo and Windows kit ZIPs CRC, all SHA checks, and 3/3 exact embedded data/digest parity.
+- **Real remaining gates:** One human nondeveloper Windows Chrome/Edge double-click and CSV update/export/reopen acceptance; commercial source/IP redistribution rights and third-party notices; customer data privacy/retention/deletion; owner-approved Kmong price/lead time/revisions/support/refunds. Current sale NOT APPROVED, no PR merged.
+- **Stop synthetic churn:** If no new demonstrated defect or owner evidence, report BLOCKED rather than adding cosmetic code/docs. Pro unchanged and Vercel N/A. Docs-only successors use [skip ci].
+
+## [NEXT 2026-10-31 KST] Korean theme demos verified; owner release gates only
+
+- Source `016433d4e6642404d5fe9197d943100fb359d7e6`, [CI #41193216287](https://github.com/hibi89/REA_Web/actions/runs/41193216287) 6/6 SUCCESS, 40 pytest PASS. Windows owner ZIP [#13039093051](https://github.com/hibi89/REA_Web/actions/runs/41193216287/artifacts/13039093051) has three distinct Korean themed catalogs, exact inventory 10, SHA256SUMS 9/9 and CRC verified. Independent Chromium in-memory 3/3 PASS; direct container file:// policy blocked and is NOT a Windows owner pilot.
+- Remaining: actual nondeveloper Windows Chrome/Edge acceptance; owner commercial copyright/license/NOTICE; permitted customer data handling/deletion; Kmong package price, revisions, refunds, support, real seller delivery time. **Paid sale NOT APPROVED**.
+- Do not create new synthetic scope, duplicate previous QA or make status-only commits unless substantive evidence changes. Pro and Draft PRs preserved; offline HTML no Vercel.
+
+## [NEXT 2026-10-31 KST] Browser provenance fixed, owner-dependent release gates
+
+- **Verified new code:** `9c70dd2ea1c372c1f19e78e40ea1b3186b50e023`, [Actions #41191907477](https://github.com/hibi89/REA_Web/actions/runs/41191907477) **6/6 SUCCESS**, 40 pytest PASS/0 FAIL. Export after browser CSV update now retains initial hash under `originalSourceSha256`, makes current `sourceSha256=null`, records `dataOrigin=BROWSER_CSV_UPDATED_HASH_UNVERIFIED`. Windows/Linux Chromium regression decodes exported HTML and verifies.
+- [Current synthetic Windows owner artifact #13038584953](https://github.com/hibi89/REA_Web/actions/runs/41191907477/artifacts/13038584953) archive CRC, 10 files, 9 hashes, 3 HTMLs verified. No customer data, no production. **Nondeveloper Windows customer manual acceptance NOT_RUN**.
+- Next execution only if owner provides evidence/approval: actual Windows browser check, copyright/distribution rights, customer data privacy/retention policy, price/support/refund/revision/lead time. Draft Lite PR #32 unmerged, original Pro untouched. No premature paid sale, no speculative changes. Docs [skip ci] follow verified code.
+
+## [NEXT 2026-10-31 KST] Unsaved CSV guard CI verified; owner release gates remain
+
+- Verified code `b2b4d0d2dadc9744eefedc50b54e6c339b7a7f00`: [Actions #41190912412](https://github.com/hibi89/REA_Web/actions/runs/41190912412) 6/6 SUCCESS, 40 pytest PASS, 0 FAIL. Browser dirty-state indicator + beforeunload warning requested; browser policy may suppress actual prompt. Download action does not assume disk save. [Owner synthetic ZIP #13038279378](https://github.com/hibi89/REA_Web/actions/runs/41190912412/artifacts/13038279378): 10 files, CRC, 9 SHA, 3 HTML themes, Korean BOM verified.
+- **Only external release gates:** one actual human Windows local Chrome/Edge synthetic acceptance; owner code rights and license notices; data processing/retention/delete authorization; owner-approved pricing/delivery time/revisions/support/refunds. No customer data, sales publication, new CI runs or PR merges until needed and explicitly authorized.
+- `docs/REA_LITE_QUICKSTART.md` now clarifies browser warning limitations and conservatively persistent dirty state. Vercel N/A. After this, documentation-only HEAD [skip ci] has no runtime changes.
+
+## [NEXT 2026-10-31 KST] Lite pricing draft complete; owner gates and human pilot next
+
+- Market/policy price draft saved in `docs/REA_LITE_KMONG_PRICING_BENCHMARK_20261031.md`: proposed BASIC 29,000, STANDARD 49,000, PREMIUM 79,000 KRW, **ALL NOT APPROVED**. No extra unimplemented features, no promised delivery time, no assumed take-home, no altered Pro 299,000 plan.
+- **Next actionable only upon actual owner evidence:** One actual Windows Chrome/Edge synthetic kit acceptance, source ownership/redistribution rights, customer data rights and privacy/retention/delete policy, approved price/revisions/lead-time/support/refund and seller revenue calculator. No sale/merges/access changes. No new code defects confirmed.
+- Last tested code `642d9f159b2bb07827659948ba61e89e722bdcac`, [Actions 6/6 SUCCESS #41189241103](https://github.com/hibi89/REA_Web/actions/runs/41189241103), 38 PASS. Pricing update is documentation only [skip ci].
+
+## [NEXT 2026-10-31 KST] Scoped license/privacy inventory completed
+
+- Read the concrete release-decision pack `docs/REA_LITE_RIGHTS_PRIVACY_RELEASE_GATE_20261031.md`. Actual Lite HTML has no identified third-party runtime asset; seller builder uses repo-internal Python and stdlib, but rights/contributor terms remain **UNVERIFIED**; standard LICENSE/NOTICE files not found. Do **not** invent a LICENSE file or classify missing notice as approval.
+- **Only owner-dependent gates remain** absent a reproduced defect: code-commercialization authority, input data privacy/authorization and retention/deletion terms, one actual user Windows browser test, Kmong price/support/revisions/refund agreement. No customer files/credentials submitted, no publishing/merging/permission changes.
+- Historical tested source `642d9f15`, GitHub [6/6 CI SUCCESS #41189241103](https://github.com/hibi89/REA_Web/actions/runs/41189241103), 38 PASS. Current doc-only report commit `8586e975ce46b3e7a94a012f3a191927f52df3e2`; no new runtime CI necessary.
+
+## [NEXT 2026-10-31 KST] Atomic HTML delivery verified, remaining gates owner-dependent
+
+- Tested source `642d9f159b2bb07827659948ba61e89e722bdcac` [Actions run #41189241103](https://github.com/hibi89/REA_Web/actions/runs/41189241103): **6/6 SUCCESS**, 38 pytest PASS/0 FAIL. Lite builder now stages, fsyncs and atomically publishes HTML without overwriting, fault-injection tested. Current Windows [owner synthetic kit #13037584687](https://github.com/hibi89/REA_Web/actions/runs/41189241103/artifacts/13037584687): downloaded CRC/file10/SHA9/Korean BOM2 verified.
+- **Do next only if evidence permits:** one actual operator Windows Chrome/Edge offline HTML open/search/bad CSV retain/good CSV update/export/reopen; source ownership/third-party license+notices, customer data usage/privacy and disposal policy; Kmong price/support/revisions/refunds/human fulfillment times require owner approval. Existing [sales scope draft](docs/REA_LITE_KMONG_PRELAUNCH_DRAFT.md) is NOT_APPROVED. Do not automatically move to sale, change access, or merge.
+- New runtime defect unproven beyond fixed partial-file issue. Avoid repetitive CI/docs; previous code tested `642d9f159b2bb07827659948ba61e89e722bdcac` still holds after documentation [skip ci] changes. Vercel N/A (offline HTML).
+
+## [NEXT 2026-10-31 KST] Korean acceptance kit technical close — owner gates only
+
+- Current tested source `73ca5cbaec19ede47007425a38c2490856c4471c`, [Actions #41188777358](https://github.com/hibi89/REA_Web/actions/runs/41188777358) 6/6 jobs success / 36 pytest PASS. The localized Windows acceptance artifact [#13038077966](https://github.com/hibi89/REA_Web/actions/runs/41188777358/artifacts/13038077966) was independently inspected for ZIP CRC, 9 file checksums, 2 Korean UTF-8 BOM files, all 10 expected files. No technical fault currently reproduced.
+- Drafted accurate Kmong listing and release-gates at `docs/REA_LITE_KMONG_PRELAUNCH_DRAFT.md`; **not published or approved**. Remaining tasks are owner-controlled: one actual Windows Chrome/Edge operator check and evidence; author/third-party license and notice rights; customer data handling and deletion; price/support/revisions/refunds, actual seller delivery time. No unauthorized sale/PR merge/access changes.
+- Avoid test reruns and feature creep until a real defect is reproduced. Offline HTML means Vercel N/A. Docs-only update uses [skip ci]; verified source SHA remains unchanged.
+
+## [NEXT 2026-10-31 KST] Windows owner kit generated; external release gates only
+
+- Source `287103c5f7fff887d316c21a23f6c0ad080ec414`, [CI #41188403272](https://github.com/hibi89/REA_Web/actions/runs/41188403272) 6/6 SUCCESS (36 pytest PASS, 0 FAIL), real Pro/Lite linkage and Windows Chromium file URL already verified. Windows owner synthetic kit [artifact #13037343564](https://github.com/hibi89/REA_Web/actions/runs/41188403272/artifacts/13037343564) ZIP checksum `6f63e1e602d3b26db73d7bf92288525b3ec53333ff26100467201933db5cde9b`, 10 exact members verified.
+- No additional synthetic development required without a reproduced defect. For **one nondeveloper manual acceptance** extract kit and follow `CHECKLIST_KO.txt`; do not solicit customer data; pass/fail must be real. Ownership/redistribution licenses, privacy/retention and Kmong price/support/refund policy require explicit owner decisions. No sale/PR merge/permission changes.
+- Current verdict **technical synthetic DONE; paid commercial release BLOCKED**. Documentation updates [skip ci] are not new runtime test evidence.
+
+## [NEXT 2026-10-31 KST] Lite QA closed; owner-dependent commercial release gates
+
+- **Current tested code** `87386dfc974b33518d05daf15df5db3f084ed09f`: [GitHub Actions run #41187911378](https://github.com/hibi89/REA_Web/actions/runs/41187911378) **5/5 jobs SUCCESS** (Pro+Lite 23, Linux browser 3, native Windows file URL 3, seller rehearsal 3 = 32 pytest PASS; 3 synthetic demo HTML artifact job success). Machine-only receipt [artifact #13037671244](https://github.com/hibi89/REA_Web/actions/runs/41187911378/artifacts/13037671244), 3/3 synthetic cases real Pro parser -> Lite builder -> verified HTML + no overwrite; no actual operator/Windows customer test or customer delivery timing.
+- **Next actual work:** 1 end-user Windows native browser acceptance (already CI-covered technically; not repeated synthetic QA), source/third-party redistribution licenses and notices, data/privacy retention and rightsholder permission, real seller workflow duration, supported CSV/JSON scope, price/revision/support/refund terms. Owner approval required for live sale or repo permission/PR merge.
+- Stop duplicate synthetic CI, doc churn, and speculative features. Current project is local offline HTML; Production/Vercel N/A. Documentation [skip ci] follows tested code without runtime changes.
+
+## [NEXT 2026-10-31 18:07 KST] Lite verified synthetic tech, commercial gates next
+
+- Latest code/CI: `feature/rea-lite-20261031@99baa75da99db6fca8a9e323f1d135d5eb846823`, [run #41187251634](https://github.com/hibi89/REA_Web/actions/runs/41187251634) **4/4 jobs SUCCESS**: real Pro parser + Lite + Pro MVP 23 PASS; Linux Chromium 3 PASS; native Windows Chromium `file://` 3 PASS; three real-Pro-built synthetic HTML themes verified and [artifact #13037152156](https://github.com/hibi89/REA_Web/actions/runs/41187251634/artifacts/13037152156) downloaded/ZIP hash checked. Independent genuine artifact browser interactions 3/3 PASS via Linux DOM, not native file URL.
+- Stop repeating equivalent synthetic CI. Product runtime Pro/Lite unchanged from validated source. Next: one **actual owner Windows Chrome/Edge** nondeveloper trial of downloaded synthetic artifact for CSV replace/bad CSV rollback/export/reopen; report as NOT_RUN until completed. After that close original generator/third-party redistribution licenses and notices, customer data privacy/retention, and approved pricing/support/refund/three timed delivery trials. **No sale or Draft PR merge without owner approval.**
+- These are documentation-only updates with `[skip ci]`; tested source `99baa75d` remains the evidence baseline. Vercel/production N/A (offline file).
+
+## [ACTIVE 2026-10-31 KST] Lite code integrated on isolated GitHub branch
+
+- New confirmed Lite source now **committed** on `feature/rea-lite-20261031`, forked from original Pro branch at `97b6e5cab7b8ffb4e1ee7f5e593021f4dac2598d`. Draft review PR [#32](https://github.com/hibi89/REA_Web/pull/32) targets `feature/d27-windows-python-discovery`; no merge. Original Pro branch and its Draft PR #30 unchanged.
+- Source: `rea/lite_builder.py` uses real `rea.mvp.parse_input/map_owner_fields/source_sha256` with explicit APPROVE, source hash and no overwrite. `rea/lite_assets/template.html` is standalone HTML/vanilla JS, three themes, search/filter/sort/detail/60-row paging, bounded CSV File API + explicit updated-HTML export. Test sources committed under `tests/test_rea_lite_builder.py` and `tests/test_lite_file_browser.py`; isolated CI workflow added.
+- Container UI test (Chromium `page.set_content`, **NOT native file protocol**): **1 PASS** (covering search, pagination, detail, bad CSV retained, good CSV applied, Blob HTML download/reopen, no JS errors); native `file://` **1 SKIP** due `ERR_BLOCKED_BY_ADMINISTRATOR`. Python compileall PASS. Synthetic demo HTMLs and source preview ZIP created locally, not GitHub product files.
+- **Real Pro parser pytest test exists but has not yet been observed PASS on GitHub CI**; isolated workflow `.github/workflows/rea-lite-ci.yml` committed, its result **UNVERIFIED**. No claims of full Pro regression under this new Lite SHA. Pro's older `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` 28/28 CI PASS applies only to Pro historical code.
+- No real customer/owner Windows Chrome/Edge double-click / HTML export acceptance, no redistribution/license or privacy/sales approval. **LITE TECHNICAL SOURCE INTEGRATED; RELEASE PARTIAL / NOT READY FOR SALE.**
+- **Next:** verify actual source-branch Lite CI; fix reproduced failures only. Perform one native Windows Chrome/Edge file-open CSV/export/reopen pilot. Then permissions/rights/notices/privacy/terms/pricing/timed jobs. Do not re-run blocked container `file://` without environment change.
+
 ## [ACTIVE 2026-10-31 04:24 KST] REA_WEB Lite new approved product direction; source still outside GitHub
 
 - User approved Lite/Pro split: standalone offline browser HTML for customers, seller-side actual rea.mvp CSV/JSON field checks and explicit APPROVE, three themes, CSV File API update and explicit updated-HTML download. Keep old Pro untouched; no LAN QR/0.0.0.0, EXE, cloud or customer file upload. Suggested 129,000 KRW is hypothesis, not verified selling price.
