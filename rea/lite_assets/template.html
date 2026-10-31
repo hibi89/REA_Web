@@ -53,9 +53,9 @@ function openDetail(r){const dl=$('detail-list');dl.replaceChildren();for(const 
 function parseCSV(text){if(text.charCodeAt(0)===0xFEFF)text=text.slice(1);const records=[];let line=[],value='',i=0,quoted=false,closed=false,start=true;
 const add=()=>{line.push(value);value='';closed=false;start=true;};const end=()=>{add();records.push(line);line=[];};
 while(i<text.length){const c=text[i++];if(quoted){if(c==='"'){if(text[i]==='"'){value+='"';i++;}else{quoted=false;closed=true;}}else value+=c;continue;}
-if(c==='"'){if(!start)throw Error('잘못된 따옴표 위치');quoted=true;start=false;continue;}
+if(c==='"'){if(!start){value+='"';continue;}quoted=true;start=false;continue;}
 if(c===','){add();continue;}
-if(c==='\n'||c==='\r'){if(c==='\r'&&text[i]==='\n')i++;end();continue;}
+if(c==='\n'||c==='\r'){if(c==='\r'&&text[i]==='\n')i++;if(!line.length&&!value&&!closed)continue;end();continue;}
 if(closed)throw Error('닫힌 따옴표 뒤 불필요한 문자');value+=c;start=false;if(value.length>2000)throw Error('셀 길이 제한 초과');}
 if(quoted)throw Error('닫히지 않은 따옴표');if(line.length||value||closed)end();if(records.length&&records[records.length-1].length===1&&records[records.length-1][0]==='')records.pop();
 if(records.length<2)throw Error('헤더와 최소 1개 데이터 행이 필요합니다');const headers=records.shift().map(x=>x.trim());
