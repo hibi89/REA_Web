@@ -1,8 +1,8 @@
-## [NEXT 2026-10-31 KST] Active Lite keyboard-chooser regression verified
+## [NEXT 2026-10-31 KST] Both Lite artifact paths consistent; release requires owner evidence
 
-- Current active Lite source `88c55f86dead1c744c500840073696acf085e126` [Actions #41194254470](https://github.com/hibi89/REA_Web/actions/runs/41194254470): **6/6 SUCCESS, 44 pytest PASS, 0 FAIL**. Native visible CSV `input` opened file chooser by Enter/Space in Linux and native Windows Chromium; synthetic CSV was applied. No runtime patch needed.
-- Old PR #31 has a separate custom-label picker and 15 unique commits; active PR #32 has 69 unique commits. Do not merge/copy entire old branch automatically, or close PRs without owner approval.
-- **Release gates remain owner-dependent:** human Windows PC acceptance, code rights/NOTICE, actual customer privacy/data handling, pricing/refund/support/revision/delivery-time approvals. No sale/merge/production; Pro unchanged. If no new reproducible technical defect, avoid further synthetic code churn.
+- **Verified source:** `0b9ab24fb065376ac037ac554047a15e944fb3bd`, [CI #41196055223](https://github.com/hibi89/REA_Web/actions/runs/41196055223) 6/6 SUCCESS, 44 pytest PASS/0 FAIL. Standalone demo artifact now reuses Korean owner kit data and checks all three title lists and distinct hashes. Independently verified downloadable demo and Windows kit ZIPs CRC, all SHA checks, and 3/3 exact embedded data/digest parity.
+- **Real remaining gates:** One human nondeveloper Windows Chrome/Edge double-click and CSV update/export/reopen acceptance; commercial source/IP redistribution rights and third-party notices; customer data privacy/retention/deletion; owner-approved Kmong price/lead time/revisions/support/refunds. Current sale NOT APPROVED, no PR merged.
+- **Stop synthetic churn:** If no new demonstrated defect or owner evidence, report BLOCKED rather than adding cosmetic code/docs. Pro unchanged and Vercel N/A. Docs-only successors use [skip ci].
 
 ## [NEXT 2026-10-31 KST] Korean theme demos verified; owner release gates only
 
