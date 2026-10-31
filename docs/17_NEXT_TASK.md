@@ -1,3 +1,9 @@
+## [NEXT 2026-10-31 KST] Atomic HTML delivery verified, remaining gates owner-dependent
+
+- Tested source `642d9f159b2bb07827659948ba61e89e722bdcac` [Actions run #41189241103](https://github.com/hibi89/REA_Web/actions/runs/41189241103): **6/6 SUCCESS**, 38 pytest PASS/0 FAIL. Lite builder now stages, fsyncs and atomically publishes HTML without overwriting, fault-injection tested. Current Windows [owner synthetic kit #13037584687](https://github.com/hibi89/REA_Web/actions/runs/41189241103/artifacts/13037584687): downloaded CRC/file10/SHA9/Korean BOM2 verified.
+- **Do next only if evidence permits:** one actual operator Windows Chrome/Edge offline HTML open/search/bad CSV retain/good CSV update/export/reopen; source ownership/third-party license+notices, customer data usage/privacy and disposal policy; Kmong price/support/revisions/refunds/human fulfillment times require owner approval. Existing [sales scope draft](docs/REA_LITE_KMONG_PRELAUNCH_DRAFT.md) is NOT_APPROVED. Do not automatically move to sale, change access, or merge.
+- New runtime defect unproven beyond fixed partial-file issue. Avoid repetitive CI/docs; previous code tested `642d9f159b2bb07827659948ba61e89e722bdcac` still holds after documentation [skip ci] changes. Vercel N/A (offline HTML).
+
 ## [NEXT 2026-10-31 KST] Korean acceptance kit technical close — owner gates only
 
 - Current tested source `73ca5cbaec19ede47007425a38c2490856c4471c`, [Actions #41188777358](https://github.com/hibi89/REA_Web/actions/runs/41188777358) 6/6 jobs success / 36 pytest PASS. The localized Windows acceptance artifact [#13038077966](https://github.com/hibi89/REA_Web/actions/runs/41188777358/artifacts/13038077966) was independently inspected for ZIP CRC, 9 file checksums, 2 Korean UTF-8 BOM files, all 10 expected files. No technical fault currently reproduced.
