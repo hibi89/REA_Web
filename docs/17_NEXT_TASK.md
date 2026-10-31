@@ -1,3 +1,9 @@
+## [NEXT 2026-10-31 KST] Korean theme demos verified; owner release gates only
+
+- Source `016433d4e6642404d5fe9197d943100fb359d7e6`, [CI #41193216287](https://github.com/hibi89/REA_Web/actions/runs/41193216287) 6/6 SUCCESS, 40 pytest PASS. Windows owner ZIP [#13039093051](https://github.com/hibi89/REA_Web/actions/runs/41193216287/artifacts/13039093051) has three distinct Korean themed catalogs, exact inventory 10, SHA256SUMS 9/9 and CRC verified. Independent Chromium in-memory 3/3 PASS; direct container file:// policy blocked and is NOT a Windows owner pilot.
+- Remaining: actual nondeveloper Windows Chrome/Edge acceptance; owner commercial copyright/license/NOTICE; permitted customer data handling/deletion; Kmong package price, revisions, refunds, support, real seller delivery time. **Paid sale NOT APPROVED**.
+- Do not create new synthetic scope, duplicate previous QA or make status-only commits unless substantive evidence changes. Pro and Draft PRs preserved; offline HTML no Vercel.
+
 ## [NEXT 2026-10-31 KST] Browser provenance fixed, owner-dependent release gates
 
 - **Verified new code:** `9c70dd2ea1c372c1f19e78e40ea1b3186b50e023`, [Actions #41191907477](https://github.com/hibi89/REA_Web/actions/runs/41191907477) **6/6 SUCCESS**, 40 pytest PASS/0 FAIL. Export after browser CSV update now retains initial hash under `originalSourceSha256`, makes current `sourceSha256=null`, records `dataOrigin=BROWSER_CSV_UPDATED_HASH_UNVERIFIED`. Windows/Linux Chromium regression decodes exported HTML and verifies.
