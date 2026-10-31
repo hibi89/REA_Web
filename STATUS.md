@@ -1,3 +1,12 @@
+## [ACTIVE 2026-10-31 KST] Lite code integrated on isolated GitHub branch
+
+- New confirmed Lite source now **committed** on `feature/rea-lite-20261031`, forked from original Pro branch at `97b6e5cab7b8ffb4e1ee7f5e593021f4dac2598d`. Draft review PR [#32](https://github.com/hibi89/REA_Web/pull/32) targets `feature/d27-windows-python-discovery`; no merge. Original Pro branch and its Draft PR #30 unchanged.
+- Source: `rea/lite_builder.py` uses real `rea.mvp.parse_input/map_owner_fields/source_sha256` with explicit APPROVE, source hash and no overwrite. `rea/lite_assets/template.html` is standalone HTML/vanilla JS, three themes, search/filter/sort/detail/60-row paging, bounded CSV File API + explicit updated-HTML export. Test sources committed under `tests/test_rea_lite_builder.py` and `tests/test_lite_file_browser.py`; isolated CI workflow added.
+- Container UI test (Chromium `page.set_content`, **NOT native file protocol**): **1 PASS** (covering search, pagination, detail, bad CSV retained, good CSV applied, Blob HTML download/reopen, no JS errors); native `file://` **1 SKIP** due `ERR_BLOCKED_BY_ADMINISTRATOR`. Python compileall PASS. Synthetic demo HTMLs and source preview ZIP created locally, not GitHub product files.
+- **Real Pro parser pytest test exists but has not yet been observed PASS on GitHub CI**; isolated workflow `.github/workflows/rea-lite-ci.yml` committed, its result **UNVERIFIED**. No claims of full Pro regression under this new Lite SHA. Pro's older `bbf2ec26923c0c6dc84a1263780f9e8e5b13fdf5` 28/28 CI PASS applies only to Pro historical code.
+- No real customer/owner Windows Chrome/Edge double-click / HTML export acceptance, no redistribution/license or privacy/sales approval. **LITE TECHNICAL SOURCE INTEGRATED; RELEASE PARTIAL / NOT READY FOR SALE.**
+- **Next:** verify actual source-branch Lite CI; fix reproduced failures only. Perform one native Windows Chrome/Edge file-open CSV/export/reopen pilot. Then permissions/rights/notices/privacy/terms/pricing/timed jobs. Do not re-run blocked container `file://` without environment change.
+
 ## 2026-10-31 04:24 KST — REA_WEB Lite new technical candidate checkpoint
 
 - Confirmed Lite/Pro separation: existing Pro FastAPI/SQLite unchanged; Lite separate single offline HTML with three themes (cafe/inventory/office), user CSV choose/validate/update and explicit export of updated HTML; no LAN QR, remote API, automatic persistence, EXE, login or hosting.
