@@ -12,7 +12,7 @@ Before approval, preview the schema with Pro's existing `rea.mvp.parse_input` / 
 
 ## Customer use
 
-Open the delivered HTML in Chrome or Edge **without a server**. Filter/search/sort and inspect details. Choose a UTF-8 CSV with exactly the same ordered columns, click **CSV 검증 후 적용**, then **갱신된 HTML 다운로드**. Reopen the downloaded file to confirm persistence. The original HTML is not overwritten. Malformed CSV refuses changes; the old in-memory catalog remains.
+Open the delivered HTML in Chrome or Edge **without a server**. Filter/search/sort and inspect details. Choose a UTF-8 CSV with exactly the same ordered columns, click **CSV 검증 후 적용**, then **갱신된 HTML 다운로드**. Reopen the downloaded file to confirm persistence. The original HTML is not overwritten. Malformed CSV refuses changes; the old in-memory catalog remains. After a valid CSV update, the screen displays **unsaved changes** and requests a browser warning on page exit. Browser policy may suppress the warning; it is not a substitute for saving. The warning intentionally remains after a download *request*, because JavaScript cannot verify that the file was saved and reopened. Open the new downloaded HTML and confirm the updated records before closing the old tab.
 
 Limits: source max 10MiB, max 10,000 records, 20 fields, 2,000 characters per cell, unique nonblank id. UI shows 60 per page. Browser CSV schema must exactly match, including column order. Browser data is kept in memory until explicit HTML download; it is not auto-saved.
 
