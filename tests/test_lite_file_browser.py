@@ -1,0 +1,73 @@
+"""Native file:// browser test. Run with installed Chromium/Playwright, no remote access."""
+from __future__ import annotations
+import base64
+import json
+import os
+from pathlib import Path
+import pytest
+_playwright = pytest.importorskip("playwright.sync_api")
+sync_playwright = _playwright.sync_playwright
+expect = _playwright.expect
+
+TEMPLATE = Path(__file__).resolve().parents[1] / 'rea' / 'lite_assets' / 'template.html'
+
+@pytest.fixture()
+def local_html(tmp_path):
+    data={'version':1,'name':'Cafe <safe>','theme':'cafe','headers':['id','title','category','price'],
+          'records':[{'id':str(i),'title':('콜드브루' if i==5 else f'Item {i}'),'category':('음료' if i%2 else '디저트'),'price':'5000'} for i in range(1,126)],'sourceSha256':'abc'}
+    encoded=base64.b64encode(json.dumps(data,ensure_ascii=False).encode('utf-8')).decode('ascii')
+    html=TEMPLATE.read_text(encoding='utf-8').replace('REPLACE_WITH_DATA_BASE64',encoded)
+    path=tmp_path/'store.html';path.write_text(html,encoding='utf-8')
+    return path
+
+
+def test_dom_and_update_export(local_html, tmp_path):
+    with sync_playwright() as p:
+        b = p.chromium.launch(headless=True, executable_path=os.getenv('REA_CHROME_PATH') or '/usr/bin/chromium',args=['--no-sandbox'])
+        page=b.new_page(accept_downloads=True)
+        errors=[]; page.on('pageerror',lambda e: errors.append(str(e)))
+        page.set_content(local_html.read_text(encoding="utf-8"))
+        assert page.locator('#summary').inner_text().startswith('125개')
+        assert page.locator('#items tr').count()==60
+        page.locator('#next').click()
+        assert '2 / 3' in page.locator('#page-label').inner_text()
+        page.locator('#search').fill('콜드브루')
+        assert page.locator('#items tr').count()==1
+        page.locator('#items tr button').click()
+        assert page.locator('#details').is_visible()
+        assert '콜드브루' in page.locator('#detail-list').inner_text()
+        page.locator('#close-dialog').click()
+        old_count=page.locator('#summary').inner_text()
+        bad=tmp_path/'bad.csv';bad.write_text('id,title,category,price\n1,Good,음료,1000\n1,Duplicate,음료,1000\n',encoding='utf-8')
+        page.locator('#csv-file').set_input_files(str(bad));page.locator('#apply').click()
+        expect(page.locator('#status')).to_contain_text('기존 데이터 유지')
+        assert page.locator('#summary').inner_text()==old_count
+        good=tmp_path/'good.csv';good.write_text('id,title,category,price\n7,Fresh Coffee,음료,2300\n8,New Cake,디저트,4500\n',encoding='utf-8')
+        page.locator('#csv-file').set_input_files(str(good));page.locator('#apply').click()
+        expect(page.locator('#status')).to_contain_text('2개 항목 적용')
+        with page.expect_download() as info:
+            page.locator('#export').click()
+        download=info.value
+        download.save_as(tmp_path/'updated.html')
+        page.set_content((tmp_path/'updated.html').read_text(encoding="utf-8"))
+        assert '2개 항목' in page.locator('#summary').inner_text()
+        assert 'Fresh Coffee' in page.locator('#items').inner_text()
+        assert not errors, errors
+        b.close()
+
+
+def test_file_url_native_only(local_html):
+    from playwright._impl._errors import Error as PlaywrightError
+    with sync_playwright() as p:
+        b = p.chromium.launch(headless=True, executable_path=os.getenv('REA_CHROME_PATH') or '/usr/bin/chromium', args=['--no-sandbox'])
+        page = b.new_page()
+        try:
+            try:
+                page.goto(local_html.as_uri())
+            except PlaywrightError as exc:
+                if 'ERR_BLOCKED_BY_ADMINISTRATOR' in str(exc):
+                    pytest.skip('Container policy blocks file://; native Windows acceptance unverified')
+                raise
+            assert page.locator('#items tr').count() == 60
+        finally:
+            b.close()
