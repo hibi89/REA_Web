@@ -210,3 +210,41 @@ def test_unsaved_csv_guard_survives_error_and_reopened_html_is_clean(local_html,
             assert not errors, errors
         finally:
             b.close()
+
+
+@pytest.mark.parametrize("key", ["Enter", "Space"])
+def test_native_file_picker_keyboard_access(local_html, tmp_path, key):
+    """Native visible input must open CSV chooser with keyboard, unlike stale PR #31 label."""
+    replacement = tmp_path / "keyboard-replacement.csv"
+    replacement.write_text(
+        "id,title,category,price\nK01,Keyboard Accessible,Office,123\n",
+        encoding="utf-8",
+    )
+    with sync_playwright() as p:
+        browser = p.chromium.launch(
+            headless=True,
+            executable_path=os.getenv("REA_CHROME_PATH") or
+            ("/usr/bin/chromium" if Path("/usr/bin/chromium").exists() else None),
+            args=["--no-sandbox"],
+        )
+        page = browser.new_page(accept_downloads=True)
+        errors = []
+        page.on("pageerror", lambda err: errors.append(str(err)))
+        try:
+            if os.getenv("REA_REQUIRE_NATIVE_FILE"):
+                page.goto(local_html.resolve().as_uri())
+            else:
+                page.set_content(local_html.read_text(encoding="utf-8"))
+            picker = page.locator("#csv-file")
+            expect(picker).to_be_visible()
+            picker.focus()
+            assert picker.evaluate("(el) => document.activeElement === el")
+            with page.expect_file_chooser(timeout=5000) as chooser:
+                picker.press(key)
+            chooser.value.set_files(str(replacement))
+            page.locator("#apply").click()
+            expect(page.locator("#status")).to_contain_text("1개 항목 적용")
+            assert "Keyboard Accessible" in page.locator("#items").inner_text()
+            assert not errors, errors
+        finally:
+            browser.close()
