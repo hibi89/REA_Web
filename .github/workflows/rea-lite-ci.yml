@@ -54,3 +54,70 @@ jobs:
           python -m playwright install chromium
       - name: Windows native file URL open, CSV rollback, export, reopen
         run: python -m pytest -q tests/test_lite_file_browser.py
+
+  lite-synthetic-demo-artifact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build synthetic HTML samples through real Pro parser
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p lite-samples
+          cat > "$RUNNER_TEMP/rea-lite-synthetic.csv" <<'CSV'
+          id,title,category,price
+          S01,Cold Brew,Drink,4000
+          S02,Desk,Office,25000
+          S03,Notebook,Office,9000
+          CSV
+          DIGEST="$(sha256sum "$RUNNER_TEMP/rea-lite-synthetic.csv" | cut -d' ' -f1)"
+          for theme in cafe inventory office; do
+            python -m rea.lite_builder \
+              --source "$RUNNER_TEMP/rea-lite-synthetic.csv" \
+              --out "lite-samples/rea-lite-${theme}.html" \
+              --name "REA Lite Synthetic ${theme}" \
+              --theme "$theme" \
+              --approval APPROVE \
+              --source-sha256 "$DIGEST"
+          done
+          python - <<'PY'
+          import base64
+          import hashlib
+          import json
+          import re
+          from pathlib import Path
+          folder = Path('lite-samples')
+          checksums = []
+          for theme in ('cafe', 'inventory', 'office'):
+              path = folder / f'rea-lite-{theme}.html'
+              raw = path.read_bytes()
+              match = re.search(rb'<script id="rea-data" type="application/octet-stream">([^<]+)</script>', raw)
+              assert match, f'missing offline dataset in {path.name}'
+              payload = json.loads(base64.b64decode(match.group(1)))
+              assert payload['theme'] == theme
+              assert len(payload['records']) == 3
+              assert payload['records'][0]['id'] == 'S01'
+              assert b"connect-src 'none'" in raw
+              checksums.append(f'{hashlib.sha256(raw).hexdigest()}  {path.name}')
+          (folder / 'SHA256SUMS.txt').write_text('\n'.join(checksums)+'\n', encoding='utf-8')
+          (folder / 'README.txt').write_text(
+              'REA Lite SYNTHETIC acceptance samples only. No customer data.\n'
+              'Open an HTML locally, try search/filter, then choose an approved same-schema CSV.\n'
+              'Download the updated HTML explicitly to persist your changes.\n'
+              'Not approved for paid redistribution or customer data use.\n',
+              encoding='utf-8')
+          print('SYNTHETIC_HTML_3_OF_3_VERIFIED')
+          PY
+      - name: Publish three self-contained QA HTML files
+        uses: actions/upload-artifact@v4
+        with:
+          name: rea-lite-synthetic-html
+          path: lite-samples/
+          if-no-files-found: error
+          retention-days: 14
