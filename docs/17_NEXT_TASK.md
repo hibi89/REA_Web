@@ -1,3 +1,9 @@
+## [NEXT 2026-10-31 KST] Unsaved CSV guard CI verified; owner release gates remain
+
+- Verified code `b2b4d0d2dadc9744eefedc50b54e6c339b7a7f00`: [Actions #41190912412](https://github.com/hibi89/REA_Web/actions/runs/41190912412) 6/6 SUCCESS, 40 pytest PASS, 0 FAIL. Browser dirty-state indicator + beforeunload warning requested; browser policy may suppress actual prompt. Download action does not assume disk save. [Owner synthetic ZIP #13038279378](https://github.com/hibi89/REA_Web/actions/runs/41190912412/artifacts/13038279378): 10 files, CRC, 9 SHA, 3 HTML themes, Korean BOM verified.
+- **Only external release gates:** one actual human Windows local Chrome/Edge synthetic acceptance; owner code rights and license notices; data processing/retention/delete authorization; owner-approved pricing/delivery time/revisions/support/refunds. No customer data, sales publication, new CI runs or PR merges until needed and explicitly authorized.
+- `docs/REA_LITE_QUICKSTART.md` now clarifies browser warning limitations and conservatively persistent dirty state. Vercel N/A. After this, documentation-only HEAD [skip ci] has no runtime changes.
+
 ## [NEXT 2026-10-31 KST] Lite pricing draft complete; owner gates and human pilot next
 
 - Market/policy price draft saved in `docs/REA_LITE_KMONG_PRICING_BENCHMARK_20261031.md`: proposed BASIC 29,000, STANDARD 49,000, PREMIUM 79,000 KRW, **ALL NOT APPROVED**. No extra unimplemented features, no promised delivery time, no assumed take-home, no altered Pro 299,000 plan.
