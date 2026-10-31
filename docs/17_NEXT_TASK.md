@@ -1,3 +1,9 @@
+## [NEXT 2026-10-31 KST] Active Lite keyboard-chooser regression verified
+
+- Current active Lite source `88c55f86dead1c744c500840073696acf085e126` [Actions #41194254470](https://github.com/hibi89/REA_Web/actions/runs/41194254470): **6/6 SUCCESS, 44 pytest PASS, 0 FAIL**. Native visible CSV `input` opened file chooser by Enter/Space in Linux and native Windows Chromium; synthetic CSV was applied. No runtime patch needed.
+- Old PR #31 has a separate custom-label picker and 15 unique commits; active PR #32 has 69 unique commits. Do not merge/copy entire old branch automatically, or close PRs without owner approval.
+- **Release gates remain owner-dependent:** human Windows PC acceptance, code rights/NOTICE, actual customer privacy/data handling, pricing/refund/support/revision/delivery-time approvals. No sale/merge/production; Pro unchanged. If no new reproducible technical defect, avoid further synthetic code churn.
+
 ## [NEXT 2026-10-31 KST] Korean theme demos verified; owner release gates only
 
 - Source `016433d4e6642404d5fe9197d943100fb359d7e6`, [CI #41193216287](https://github.com/hibi89/REA_Web/actions/runs/41193216287) 6/6 SUCCESS, 40 pytest PASS. Windows owner ZIP [#13039093051](https://github.com/hibi89/REA_Web/actions/runs/41193216287/artifacts/13039093051) has three distinct Korean themed catalogs, exact inventory 10, SHA256SUMS 9/9 and CRC verified. Independent Chromium in-memory 3/3 PASS; direct container file:// policy blocked and is NOT a Windows owner pilot.
