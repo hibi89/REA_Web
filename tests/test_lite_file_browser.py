@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import json
 import os
+import re
 from pathlib import Path
 import pytest
 _playwright = pytest.importorskip("playwright.sync_api")
@@ -183,6 +184,19 @@ def test_unsaved_csv_guard_survives_error_and_reopened_html_is_clean(local_html,
                 page.locator('#export').click()
             target = tmp_path / 'unsaved-guard-export.html'
             item.value.save_as(target)
+            # The original seller-source SHA must not appear as evidence that
+            # newly imported browser CSV rows match that original source.
+            saved_html = target.read_text(encoding='utf-8')
+            match = re.search(
+                r'<script id="rea-data" type="application/octet-stream">([^<]+)</script>',
+                saved_html,
+            )
+            assert match is not None
+            payload = json.loads(base64.b64decode(match.group(1)))
+            assert payload['sourceSha256'] is None
+            assert payload['originalSourceSha256'] == 'abc'
+            assert payload['dataOrigin'] == 'BROWSER_CSV_UPDATED_HASH_UNVERIFIED'
+            assert [record['id'] for record in payload['records']] == ['N01']
             # The browser cannot verify the OS has actually saved/reopened the
             # file, so download request must not silently clear the warning.
             expect(page.locator('#save-state')).to_contain_text('저장 전 변경사항')
