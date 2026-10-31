@@ -38,56 +38,57 @@ _DUPLICATE_CSV = (
     "D01,Duplicate,Drink,200\n"
 )
 _WRONG_HEADER_CSV = "id,title,category,amount\nN01,Wrong column,Drink,100\n"
-_CHECKLIST = """REA_WEB Lite — Windows owner acceptance (synthetic data ONLY)
+_CHECKLIST = """REA_WEB Lite | Windows 사용자 검수표 (합성 데이터 전용)
 
-IMPORTANT: Test kit only; not approved for commercial resale.
-Do not use client, private, sensitive, or identifiable records.
-No installation, server, payment or network is necessary.
+이 패키지는 판매용이 아닙니다. 고객정보·개인정보·민감정보는 사용 금지입니다.
+인터넷, Python 설치, 서버, 관리자 권한은 필요하지 않습니다.
+원본 ZIP 및 기존 HTML 파일은 수정하지 마세요.
 
-1. Extract this ZIP to a NEW folder. Keep the original ZIP unchanged.
-2. Double-click cafe.html in regular Windows Chrome or Edge (file://).
-   Confirm 3 rows; search for Cold Brew; open the detail panel.
-3. Choose duplicate_id.csv and click 'CSV 검증 후 적용'.
-   Confirm a rejection and that all THREE original records remain.
-4. Choose wrong_columns.csv and click the same action.
-   Confirm a rejection and no data changes.
-5. Choose valid_update.csv and click the same action.
-   Confirm TWO records, including NEW_CHECK_ITEM.
-6. Click '갱신된 HTML 다운로드'. Open the NEW downloaded HTML.
-   Confirm TWO rows and NEW_CHECK_ITEM after reopening.
-7. Optionally double-click inventory.html and office.html and verify
-   their distinct themes. Do not modify the original HTMLs.
-8. Run no command as administrator and do not disable Windows security.
-   If browser policy blocks file://, record BLOCKED; never bypass policy.
+한 번만 수행하는 실제 검수 절차
+1. ZIP을 새로운 폴더에 압축 해제합니다.
+2. cafe.html을 더블클릭하여 Chrome 또는 Edge로 엽니다.
+   항목 3개, 'Cold Brew' 검색, 상세 보기를 확인합니다.
+3. duplicate_id.csv를 선택하고 'CSV 검증 후 적용'을 누릅니다.
+   중복 ID가 거부되고 원래 항목 3개가 남아야 합니다.
+4. wrong_columns.csv도 같은 방법으로 적용해 거부되는지 확인합니다.
+5. valid_update.csv를 적용합니다.
+   항목 2개와 NEW_CHECK_ITEM 표시를 확인합니다.
+6. '갱신된 HTML 다운로드'를 누르고 내려받은 새 HTML을 다시 엽니다.
+   항목 2개와 NEW_CHECK_ITEM이 유지되어야 합니다.
+7. 필요한 경우 inventory.html 및 office.html 테마를 확인합니다.
+8. 보안 정책으로 file:// 열기가 차단되면 BLOCKED로 기록합니다.
+   관리자 권한이나 보안 정책 우회는 하지 않습니다.
 
-RECORD BY THE PERSON WHO ACTUALLY RAN THESE STEPS:
-Date/time KST: ______________________
-Browser and version: ________________
-Windows version: ____________________
-Chrome/Edge file opening: PASS / FAIL / BLOCKED / NOT_RUN
-Search/detail: PASS / FAIL / NOT_RUN
-Invalid CSV retained old data: PASS / FAIL / NOT_RUN
-Valid CSV applied: PASS / FAIL / NOT_RUN
-New HTML download and reopen: PASS / FAIL / NOT_RUN
-Any error (no private paths/data): _______________
-Total human elapsed minutes: ________ or NOT_MEASURED
-Acceptance decision: PASS / FAIL / BLOCKED / NOT_RUN
+직접 실행한 검수자만 아래 결과를 작성하세요.
+검수 일시(KST): ____________________
+Windows 버전: ______________________
+브라우저 및 버전: ___________________
+오프라인 HTML 열기: PASS / FAIL / BLOCKED / NOT_RUN
+검색 및 상세 보기: PASS / FAIL / NOT_RUN
+오류 CSV 거부 및 기존 데이터 보존: PASS / FAIL / NOT_RUN
+정상 CSV 적용: PASS / FAIL / NOT_RUN
+새 HTML 다운로드 후 다시 열기: PASS / FAIL / NOT_RUN
+오류(개인정보/사용자 경로 제외): ___________________________
+실제 사용자 소요시간(분): ________ 또는 NOT_MEASURED
+최종 검수: PASS / FAIL / BLOCKED / NOT_RUN
 
-No field above is automatically populated or considered PASS by the builder.
-This package cannot confer copyright/license/privacy or sales approval.
+미실시 항목을 자동 PASS로 처리하지 마세요. 본 검수와 상용 판매 승인은 별개입니다.
 """
-_README = """REA Lite | Synthetic Windows Acceptance Pack
+_README = """REA_WEB Lite | Windows 오프라인 검수 패키지
 
-Open CHECKLIST_KO.txt for the exact owner-facing steps.
-The three HTML files work offline with no Python or server for the customer.
-These records are synthetic. Never upload private or client data for a test.
-valid_update.csv has the original column order; duplicate_id.csv and
-wrong_columns.csv must be rejected without changing the current records.
-The original HTML must remain unchanged after an update; use Download
-updated HTML to preserve the replacement records in a NEW file.
-The embedded data is base64-encoded PLAINTEXT, not encrypted.
-SHA256SUMS.txt verifies all files except SHA256SUMS.txt itself.
-The human checklist remains entirely unfilled until a real operator runs it.
+CHECKLIST_KO.txt를 읽고 한 번만 실제 검수를 수행하세요.
+- cafe.html / inventory.html / office.html: 오프라인 웹앱 3종
+- duplicate_id.csv: 중복 ID 오류(반드시 거부)
+- wrong_columns.csv: 열 구성 오류(반드시 거부)
+- valid_update.csv: 정상 갱신 파일
+- SHA256SUMS.txt: 이 파일을 제외한 9개 파일 무결성 해시
+- MANIFEST.json: 자동 검증·실사용 및 판매 승인 상태
+
+모두 합성 데이터입니다. 고객정보·민감정보 입력 및 전송을 금지합니다.
+원본 HTML은 갱신 후에도 변경되지 않습니다.
+새 버전 보관은 '갱신된 HTML 다운로드'를 통해 진행하세요.
+내장 데이터는 Base64로 인코딩된 평문이며 암호화되어 있지 않습니다.
+판매·저작권·개인정보 처리 승인 없이 유료 납품하지 마세요.
 """
 _FILES = frozenset({
     "cafe.html", "inventory.html", "office.html",
@@ -167,7 +168,7 @@ def build_kit(destination: Path) -> dict:
             ("README_FIRST.txt", _README),
             ("CHECKLIST_KO.txt", _CHECKLIST),
         ):
-            (stage / filename).write_text(data, encoding="utf-8", newline="\n")
+            (stage / filename).write_text(data, encoding=("utf-8-sig" if filename in {"README_FIRST.txt", "CHECKLIST_KO.txt"} else "utf-8"), newline="\n")
         manifest = {
             "schema": "rea.lite.owner.acceptance.synthetic.v1",
             "synthetic_only": True,
