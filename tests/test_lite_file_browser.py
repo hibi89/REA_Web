@@ -127,3 +127,72 @@ def test_csv_matches_pro_parser_for_blank_lines_embedded_quotes_and_escaped_cell
         assert '3개 항목' in page.locator('#summary').inner_text()
         assert not errors,errors
         b.close()
+
+
+def test_unsaved_csv_guard_survives_error_and_reopened_html_is_clean(local_html, tmp_path):
+    """CSV apply is in-memory until export; warnings must survive later CSV errors."""
+    with sync_playwright() as p:
+        b = p.chromium.launch(
+            headless=True,
+            executable_path=os.getenv('REA_CHROME_PATH') or
+            ('/usr/bin/chromium' if Path('/usr/bin/chromium').exists() else None),
+            args=['--no-sandbox'],
+        )
+        page = b.new_page(accept_downloads=True)
+        errors = []
+        page.on('pageerror', lambda error: errors.append(str(error)))
+        try:
+            page.set_content(local_html.read_text(encoding='utf-8'))
+            assert '변경사항 없음' in page.locator('#save-state').inner_text()
+
+            def blocks_navigation():
+                return page.evaluate("""() => {
+                    const event = new Event('beforeunload', {cancelable: true});
+                    window.dispatchEvent(event);
+                    return event.defaultPrevented;
+                }""")
+
+            assert blocks_navigation() is False
+
+            bad = tmp_path / 'bad-unsaved.csv'
+            bad.write_text(
+                'id,title,category,price\n1,First,Drink,100\n1,Duplicate,Drink,200\n',
+                encoding='utf-8',
+            )
+            page.locator('#csv-file').set_input_files(str(bad))
+            page.locator('#apply').click()
+            expect(page.locator('#status')).to_contain_text('기존 데이터 유지')
+            assert '변경사항 없음' in page.locator('#save-state').inner_text()
+            assert blocks_navigation() is False
+
+            good = tmp_path / 'valid-unsaved.csv'
+            good.write_text('id,title,category,price\nN01,New Item,Office,500\n', encoding='utf-8')
+            page.locator('#csv-file').set_input_files(str(good))
+            page.locator('#apply').click()
+            expect(page.locator('#status')).to_contain_text('1개 항목 적용')
+            expect(page.locator('#save-state')).to_contain_text('저장 전 변경사항')
+            assert blocks_navigation() is True
+
+            page.locator('#csv-file').set_input_files(str(bad))
+            page.locator('#apply').click()
+            expect(page.locator('#status')).to_contain_text('기존 데이터 유지')
+            assert '저장 전 변경사항' in page.locator('#save-state').inner_text()
+            assert blocks_navigation() is True
+
+            with page.expect_download() as item:
+                page.locator('#export').click()
+            target = tmp_path / 'unsaved-guard-export.html'
+            item.value.save_as(target)
+            # The browser cannot verify the OS has actually saved/reopened the
+            # file, so download request must not silently clear the warning.
+            expect(page.locator('#save-state')).to_contain_text('저장 전 변경사항')
+            assert blocks_navigation() is True
+
+            page.set_content(target.read_text(encoding='utf-8'))
+            expect(page.locator('#save-state')).to_contain_text('변경사항 없음')
+            assert page.locator('#summary').inner_text().startswith('1개')
+            assert 'New Item' in page.locator('#items').inner_text()
+            assert blocks_navigation() is False
+            assert not errors, errors
+        finally:
+            b.close()
