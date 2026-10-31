@@ -1,3 +1,9 @@
+## [CURRENT 2026-10-31 KST] Legacy Lite PR keyboard gap audited; native input independently tested
+
+- **Branch comparison:** Older Draft Lite PR #31 (`feature/lite-offline-html-integration`, 15 unique commits) diverges from active Draft Lite PR #32 (`feature/rea-lite-20261031`, 69 unique commits). Legacy PR #31 fixed an inaccessible *hidden label-based CSV chooser*. Current PR #32 already uses a **visible native `<input type=file>`** and does not need that legacy JS handler. Do not merge either PR or copy full legacy template without review.
+- **New proof:** Parametrized keyboard Enter/Space native chooser test in `tests/test_lite_file_browser.py`: focus file input, trigger actual Playwright file chooser, choose synthetic same-schema CSV, click Apply and verify one updated record. Windows CI uses real `file://`, Linux Chromium uses page content. Source commit `88c55f86dead1c744c500840073696acf085e126`, [Actions #41194254470](https://github.com/hibi89/REA_Web/actions/runs/41194254470): **6/6 SUCCESS**, Windows browser 6 PASS, Linux browser 6 PASS, 25 unit PASS (1 existing warning), 4 owner kit PASS, 3 seller PASS, artifacts PASS: **44 pytest PASS / 0 FAIL**.
+- **Scope / release:** Original Pro/main and both Draft PRs unchanged, no buyer runtime modifications, no new license/privacy grants. Manual end-user Windows pilot NOT_RUN; rights, privacy, price/refunds/support approval still BLOCKED. No production deployment (offline HTML).
+
 ## [CURRENT 2026-10-31 KST] Three Korean theme demos now use relevant distinct sample data
 
 - **Implementation:** `scripts/rea_lite_owner_acceptance_kit.py` now feeds separate Korean synthetic CSV data to the real Pro parser/Lite builder: cafe (콜드브루/카페라떼/치즈케이크), inventory (USB-C 케이블/무선 마우스/노트북 거치대), office (주간 업무보고/프로젝트 일정표/팀 회의록). Before this change all three themes displayed the same coffee/desk/notebook mixture. Existing checklist still tests cafe CSV rejection/update/export; builder/runtime/UI/Pro unchanged.
