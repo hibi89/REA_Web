@@ -8,9 +8,11 @@ import argparse
 import base64
 import json
 import os
+import tempfile
 from pathlib import Path
 
 from rea.mvp import DataError, REQUIRED, map_owner_fields, parse_input, source_sha256
+from rea.safe_publish import publish_archive
 
 THEMES = frozenset({'cafe', 'inventory', 'office'})
 _TEMPLATE = Path(__file__).resolve().parent / 'lite_assets' / 'template.html'
@@ -56,9 +58,19 @@ def build(source: Path, output: Path, *, name: str, theme: str = 'cafe',
     if source_sha256(source) != before:
         raise DataError('Source changed during Lite build')
     output.parent.mkdir(parents=True, exist_ok=True)
-    # Exclusive creation prevents accidental clobber even if a new file appears.
-    with output.open('x', encoding='utf-8', newline='\n') as handle:
-        handle.write(html)
+    # Stage fully on the destination filesystem, then publish without overwrite.
+    # The existing Pro publish_archive primitive accepts any completed file:
+    # Windows rename and POSIX hard-link both refuse pre-existing destinations.
+    descriptor, stage_name = tempfile.mkstemp(prefix=".rea-lite-staging-", suffix=".html", dir=output.parent)
+    stage = Path(stage_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="\n") as handle:
+            handle.write(html)
+            handle.flush()
+            os.fsync(handle.fileno())
+        publish_archive(stage, output)
+    finally:
+        stage.unlink(missing_ok=True)
     return {'status': 'CREATED', 'output': str(output), 'rows': len(records),
             'theme': theme, 'sha256': before, 'mappingApproved': mapping is not None}
 
