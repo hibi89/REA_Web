@@ -1,3 +1,9 @@
+## [NEXT 2026-10-31 KST] Browser provenance fixed, owner-dependent release gates
+
+- **Verified new code:** `9c70dd2ea1c372c1f19e78e40ea1b3186b50e023`, [Actions #41191907477](https://github.com/hibi89/REA_Web/actions/runs/41191907477) **6/6 SUCCESS**, 40 pytest PASS/0 FAIL. Export after browser CSV update now retains initial hash under `originalSourceSha256`, makes current `sourceSha256=null`, records `dataOrigin=BROWSER_CSV_UPDATED_HASH_UNVERIFIED`. Windows/Linux Chromium regression decodes exported HTML and verifies.
+- [Current synthetic Windows owner artifact #13038584953](https://github.com/hibi89/REA_Web/actions/runs/41191907477/artifacts/13038584953) archive CRC, 10 files, 9 hashes, 3 HTMLs verified. No customer data, no production. **Nondeveloper Windows customer manual acceptance NOT_RUN**.
+- Next execution only if owner provides evidence/approval: actual Windows browser check, copyright/distribution rights, customer data privacy/retention policy, price/support/refund/revision/lead time. Draft Lite PR #32 unmerged, original Pro untouched. No premature paid sale, no speculative changes. Docs [skip ci] follow verified code.
+
 ## [NEXT 2026-10-31 KST] Unsaved CSV guard CI verified; owner release gates remain
 
 - Verified code `b2b4d0d2dadc9744eefedc50b54e6c339b7a7f00`: [Actions #41190912412](https://github.com/hibi89/REA_Web/actions/runs/41190912412) 6/6 SUCCESS, 40 pytest PASS, 0 FAIL. Browser dirty-state indicator + beforeunload warning requested; browser policy may suppress actual prompt. Download action does not assume disk save. [Owner synthetic ZIP #13038279378](https://github.com/hibi89/REA_Web/actions/runs/41190912412/artifacts/13038279378): 10 files, CRC, 9 SHA, 3 HTML themes, Korean BOM verified.
