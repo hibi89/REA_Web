@@ -160,3 +160,27 @@ jobs:
           path: seller-evidence/THREE_SYNTHETIC_DELIVERIES.json
           if-no-files-found: error
           retention-days: 14
+
+  lite-owner-acceptance-kit:
+    runs-on: windows-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install narrow synthetic test runner
+        run: python -m pip install "pytest>=8,<10"
+      - name: Windows synthetic owner kit and immutable ZIP regression
+        run: python -m pytest -q tests/test_lite_owner_acceptance_kit.py
+      - name: Generate standalone offline acceptance kit with original Pro parser
+        run: python -m scripts.rea_lite_owner_acceptance_kit --out owner-kit
+      - name: Upload synthetic Windows owner kit (10 verified files)
+        uses: actions/upload-artifact@v4
+        with:
+          name: rea-lite-windows-owner-synthetic-kit
+          path: owner-kit/
+          if-no-files-found: error
+          retention-days: 14
