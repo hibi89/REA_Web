@@ -61,11 +61,11 @@ def test_visual_source_controls_generated_original_css(tmp_path):
     assert review["generation_allowed"] is False
     path=tmp_path/"frontend"
     manifest=generate_frontend(review,path,owner_confirmed=True)
-    css=(path/"style.css").read_text()
+    css=(path/"style.css").read_text(encoding='utf-8')
     assert ".sidebar{background-color:#1f345a;}" in css
     assert ".glyph{background-color:#bf4048;}" in css
     assert "reference_visual_hints_not_pixel_replication" in manifest["limitations"]
-    assert "DO_NOT_LEAK" not in "".join(x.read_text() for x in path.iterdir())
+    assert "DO_NOT_LEAK" not in "".join(x.read_text(encoding='utf-8') for x in path.iterdir())
     assert (path/"app.js").is_file() and (path/"index.html").is_file()
 
 
@@ -73,7 +73,7 @@ def test_topbar_layout_hint_changes_original_arrangement(tmp_path):
     visual=sanitize_observation(raw(layout="topbar"))
     review=make_review(FABLE,BACKEND,BINDINGS,visual=visual)
     generate_frontend(review,tmp_path/"app",owner_confirmed=True)
-    assert '.shell{display:block}.sidebar{display:flex;flex-direction:row;' in (tmp_path/"app"/"style.css").read_text()
+    assert '.shell{display:block}.sidebar{display:flex;flex-direction:row;' in (tmp_path/"app"/"style.css").read_text(encoding='utf-8')
 
 
 def test_visual_mismatch_and_tampering_refused(tmp_path):
@@ -134,11 +134,11 @@ article{background:#fff;padding:40px;}button{background:#bb4064;color:#fff}
                     def render_generated(route):
                         url=route.request.url
                         if url.endswith("/dashboard/"):
-                            route.fulfill(body=(path/"index.html").read_text(),content_type="text/html")
+                            route.fulfill(body=(path/"index.html").read_text(encoding='utf-8'),content_type="text/html")
                         elif url.endswith("/dashboard/style.css"):
-                            route.fulfill(body=(path/"style.css").read_text(),content_type="text/css")
+                            route.fulfill(body=(path/"style.css").read_text(encoding='utf-8'),content_type="text/css")
                         elif url.endswith("/dashboard/app.js"):
-                            route.fulfill(body=(path/"app.js").read_text(),content_type="text/javascript")
+                            route.fulfill(body=(path/"app.js").read_text(encoding='utf-8'),content_type="text/javascript")
                         elif url.endswith("/api/jobs"):
                             route.fulfill(json={"items": []})
                         elif url.endswith("/api/metrics"):
@@ -178,4 +178,4 @@ def test_missing_visual_is_neutral_and_does_not_claim_observed(tmp_path):
     assert plan['visual_contract'] is None
     assert plan['reference']['style_source']=='ORIGINAL_REA_NEUTRAL_DEFAULT'
     generate_frontend(plan,tmp_path/'neutral',owner_confirmed=True)
-    assert 'Sanitized reference computed-style hints' not in (tmp_path/'neutral'/'style.css').read_text()
+    assert 'Sanitized reference computed-style hints' not in (tmp_path/'neutral'/'style.css').read_text(encoding='utf-8')
