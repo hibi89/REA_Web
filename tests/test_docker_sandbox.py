@@ -187,9 +187,14 @@ def _run_isolated_probe_on_trusted_host(bundle, *, replacement_source_sha=None):
     script = script.replace("PORT = 8766", "PORT = " + str(_choose_loopback_port()))
     source_sha = hashlib.sha256((folder/"backend"/"app.py").read_bytes()).hexdigest()
     env = {"PATH": os.environ.get("PATH",os.defpath),
-           "SYSTEMROOT":os.environ.get("SYSTEMROOT",""),
            "PYTHONDONTWRITEBYTECODE":"1",
            "REA_TRUSTED_SYNTHETIC_ATTEST_TOKEN":secrets.token_hex(32)}
+    # The parent test process needs the same minimal OS-provided DLL paths
+    # that the previously verified host supervisor preserves on Windows.
+    for key in ("SYSTEMROOT","WINDIR","TEMP","TMP","USERPROFILE",
+                "APPDATA","LOCALAPPDATA"):
+        if key in os.environ:
+            env[key] = os.environ[key]
     result=subprocess.run([sys.executable,"-E","-B","-c",script,
                    replacement_source_sha or source_sha],
                    cwd=folder, env=env, capture_output=True,text=True,timeout=18)

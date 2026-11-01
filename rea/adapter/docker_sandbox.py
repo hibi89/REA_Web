@@ -92,9 +92,16 @@ def check():
     binding = config["bindings"]
     proc = None
     try:
-        env = {"PATH":"/usr/local/bin:/usr/bin:/bin",
+        env = {"PATH":os.environ.get("PATH","/usr/local/bin:/usr/bin:/bin"),
                "PYTHONDONTWRITEBYTECODE":"1",
                "REA_TRUSTED_SYNTHETIC_ATTEST_TOKEN":NONCE}
+        # Windows-hosted synthetic contract test needs system DLL paths.
+        # Actual Docker Linux process has os.name == "posix".
+        if os.name == "nt":
+            for key in ("SYSTEMROOT","WINDIR","TEMP","TMP","USERPROFILE",
+                        "APPDATA","LOCALAPPDATA"):
+                if key in os.environ:
+                    env[key] = os.environ[key]
         proc = subprocess.Popen([sys.executable,"-E","-B",str(ROOT/"runtime_entry.py"),
                                  "--run-trusted-synthetic","--port",str(PORT)],
                                 cwd=str(ROOT),env=env,stdin=subprocess.DEVNULL,
