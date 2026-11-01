@@ -69,8 +69,8 @@ def create(out: Path) -> dict:
             update = SAMPLES / UPDATE_FILES[theme]
             info = inspect(src)
             source_sha[theme] = info["sha256"]
-            columns, _rows = parse_input(src)
-            update_columns, _update_rows = parse_input(update)
+            columns, _rows = parse_input(src, require_semantics=False)
+            update_columns, _update_rows = parse_input(update, require_semantics=False)
             if columns != update_columns:
                 raise ValueError(f"Update sample schema mismatch: {theme}")
             dest = tmpdir / f"{theme}.html"
