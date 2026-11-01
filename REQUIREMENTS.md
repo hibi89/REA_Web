@@ -24,6 +24,10 @@
 - **S3 extended / CI PASS:** review-only bounded FastAPI AST route/request/response hints `rea.backend_schema.v0.1` matched to exact backend ZIP SHA. Explicit owner-selected JSON field names, KPI keys and one detail path variable now drive the generated UI; 99 PASS/2 SKIP on Windows and Linux real trusted FastAPI/Chromium CI. This is static schema and synthetic integration evidence, not arbitrary ZIP runtime validation, inferred owner approval or customer release.
 - **S4 remains partial:** actual original owner ZIP runtime/OpenAPI/schema reconciliation, generalized composite source ZIP and Windows human acceptance remain NOT_DONE. No commercial/public deployment approved.
 
+## S4 supplemental acceptance record (2026-11-01 23:58 KST)
+- Synthetic trusted FastAPI OpenAPI supplied as bounded local JSON and reconciled with ZIP static route/schema artifacts at exact SHA; route/method/path/request/response field/type hints checked with fail-closed discrepancy reports. Functional SHA `538d3126aea0cf873da170bb1bf37ee8533848b9`. Windows+Linux Actions runtime #41318675062 each 43 PASS; frontend/browser #41318674988 each 99 PASS/2 SKIP. **This is declaration correspondence only**, without runtime origin attestation, representative payload/schema consistency, customer ZIP safe execution or owner approval.
+- Next priority: isolated provenance validation, reviewed frontend gate, portable combined ZIP, owner Windows acceptance.
+
 ## Acceptance by stage (NOT all completed)
 - **S1 DONE (2026-11-01):** source ZIP static FastAPI route declaration detection, malicious archive rejection, no code execution, cross-OS tests. `b140c034643b97584239f30691d4bb84c7f10ae0`; Windows+Linux Actions #41311814802 PASS. API signatures/response schemas/runtime not verified.
 - **S2 SYNTHETIC VISUAL CAPTURE PASS (2026-11-01):** Fable origin/provenance review + bounded Chromium-computed layout/palette/component observations, origin-matched `rea.visual_reference.v0.1` and original CSS adaptation, Windows+Linux CI `4b3b658` 79 PASS/2 SKIP per OS. **Actual public URL capture/JS SPA fidelity/pixel similarity NOT VERIFIED**; Fable static JSON alone still contains no visual proof.
