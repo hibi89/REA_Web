@@ -219,20 +219,43 @@ def _local_docker() -> list[str]:
 
 
 def _validate_image(docker: list[str], image: str) -> None:
+    """Read-only daemon/image compatibility gate. NOT a signature or security attestation."""
     if not isinstance(image, str) or not IMAGE.fullmatch(image) or "//" in image:
         raise UnsafeSandbox("explicit trusted immutable image@sha256 required")
     try:
-        result = _run(docker+["image","inspect","--format","{{json .RepoDigests}}",image],timeout=7)
+        server = _run(docker+["version","--format","{{json .Server}}"],timeout=7)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        raise UnsafeSandbox("local Docker engine preflight unavailable") from exc
+    if server.returncode != 0 or len(server.stdout)>4096 or len(server.stderr)>4096:
+        raise UnsafeSandbox("local Docker engine unavailable or untrusted output")
+    try:
+        info = json.loads(server.stdout)
+    except (ValueError,UnicodeError) as exc:
+        raise UnsafeSandbox("invalid local Docker server descriptor") from exc
+    # This is a Linux-container-only sandbox. Windows daemon mode and unknown
+    # architecture are refused rather than relying on Docker's runtime fallback.
+    if (not isinstance(info,dict) or info.get("Os")!="linux"
+            or info.get("Arch") not in ("amd64","arm64")):
+        raise UnsafeSandbox("local Linux Docker engine/architecture required")
+    try:
+        result = _run(docker+["image","inspect","--format",
+              "{{json .RepoDigests}}|{{json .Os}}|{{json .Architecture}}",
+              image],timeout=7)
     except (OSError, subprocess.TimeoutExpired) as exc:
         raise UnsafeSandbox("local pinned image inspection unavailable") from exc
-    if result.returncode != 0 or len(result.stdout)>4096:
+    if result.returncode != 0 or len(result.stdout)>4096 or len(result.stderr)>4096:
         raise UnsafeSandbox("pinned image absent or Docker daemon unavailable")
     try:
-        digests = json.loads(result.stdout)
+        parts = result.stdout.strip().split("|")
+        if len(parts)!=3:
+            raise ValueError("missing image platform fields")
+        digests,os_name,architecture = [json.loads(part) for part in parts]
     except (ValueError, UnicodeError) as exc:
         raise UnsafeSandbox("invalid Docker image inspection") from exc
     if not isinstance(digests,list) or image not in digests:
         raise UnsafeSandbox("local image digest provenance cannot be verified")
+    if os_name!="linux" or architecture!=info["Arch"]:
+        raise UnsafeSandbox("pinned image OS/architecture differs from local Linux engine")
 
 
 @contextmanager

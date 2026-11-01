@@ -26,8 +26,11 @@ def _fake_docker(monkeypatch, receipt=GOOD, *, docker_rc=0, cleanup=True, timeou
     monkeypatch.setattr(sandbox,"_local_docker",lambda:["/trusted/docker","--host","unix:///var/run/docker.sock"])
     def fake_run(argv, *, timeout):
         commands.append(argv)
+        if "version" in argv:
+            return subprocess.CompletedProcess(argv,0,json.dumps({"Os":"linux","Arch":"amd64"}),"")
         if "image" in argv and "inspect" in argv:
-            return subprocess.CompletedProcess(argv,0,json.dumps([IMAGE]),"")
+            return subprocess.CompletedProcess(argv,0,
+                json.dumps([IMAGE])+'|"linux"|"amd64"',"")
         if "run" in argv:
             if timeout_mode:
                 raise subprocess.TimeoutExpired(argv,timeout)
@@ -112,11 +115,14 @@ def test_missing_image_digest_in_local_inspect_refused(tmp_path,monkeypatch):
     monkeypatch.setattr(sandbox,"_local_docker",lambda:["/trusted/docker","--host","unix:///var/run/docker.sock"])
     def response(argv,*,timeout):
         commands.append(argv)
-        return subprocess.CompletedProcess(argv,0,json.dumps(["elsewhere@sha256:"+"b"*64]),"")
+        if "version" in argv:
+            return subprocess.CompletedProcess(argv,0,json.dumps({"Os":"linux","Arch":"amd64"}),"")
+        return subprocess.CompletedProcess(argv,0,
+             json.dumps(["elsewhere@sha256:"+"b"*64])+'|"linux"|"amd64"',"")
     monkeypatch.setattr(sandbox,"_run",response)
     with pytest.raises(UnsafeSandbox,match="digest provenance"):
         call(b)
-    assert len(commands)==1
+    assert len(commands)==2
 
 
 def test_behavior_failure_does_not_become_pass(tmp_path,monkeypatch):
@@ -331,3 +337,55 @@ def test_staged_source_removed_even_on_failure(tmp_path, monkeypatch, simulation
         with pytest.raises(UnsafeSandbox,match="timed out|cleanup unverified"):
             call(bundle,timeout_seconds=4)
     assert len(paths)==1 and not paths[0].exists()
+
+
+@pytest.mark.parametrize("server_os,server_arch,image_os,image_arch,expected", [
+    ("windows","amd64","windows","amd64","Linux Docker engine"),
+    ("linux","386","linux","386","Linux Docker engine"),
+    ("linux","amd64","windows","amd64","OS/architecture"),
+    ("linux","amd64","linux","arm64","OS/architecture"),
+])
+def test_docker_platform_refuses_incompatible_image_before_run(
+        tmp_path,monkeypatch,server_os,server_arch,image_os,image_arch,expected):
+    calls=[]
+    monkeypatch.setattr(sandbox,"_local_docker",
+        lambda:["/trusted/docker","--host","unix:///var/run/docker.sock"])
+    def fake(argv,*,timeout):
+        calls.append(argv)
+        if "version" in argv:
+            return subprocess.CompletedProcess(argv,0,
+                json.dumps({"Os":server_os,"Arch":server_arch}),"")
+        if "image" in argv and "inspect" in argv:
+            return subprocess.CompletedProcess(argv,0,
+                json.dumps([IMAGE])+"|"+json.dumps(image_os)+"|"+
+                json.dumps(image_arch),"")
+        pytest.fail("container executed on incompatible platform")
+    monkeypatch.setattr(sandbox,"_run",fake)
+    with pytest.raises(UnsafeSandbox,match=expected):
+        call(fixture(tmp_path))
+    assert not any("run" in command for command in calls)
+
+
+def test_malformed_image_platform_readonly_preflight_refused(tmp_path,monkeypatch):
+    calls=[]
+    monkeypatch.setattr(sandbox,"_local_docker",
+        lambda:["/trusted/docker","--host","unix:///var/run/docker.sock"])
+    def fake(argv,*,timeout):
+        calls.append(argv)
+        if "version" in argv:
+            return subprocess.CompletedProcess(argv,0,
+                '{"Os":"linux","Arch":"amd64"}',"")
+        return subprocess.CompletedProcess(argv,0,'["bad image"]',"")
+    monkeypatch.setattr(sandbox,"_run",fake)
+    with pytest.raises(UnsafeSandbox,match="image inspection"):
+        call(fixture(tmp_path))
+    assert len(calls)==2 and not any("run" in command for command in calls)
+
+
+def test_readonly_image_gate_queries_local_daemon_before_run(tmp_path,monkeypatch):
+    commands=_fake_docker(monkeypatch)
+    assert call(fixture(tmp_path))["status"]=="ISOLATED_SYNTHETIC_PASS_REVIEW_REQUIRED"
+    assert "version" in commands[0]
+    assert "image" in commands[1] and "inspect" in commands[1]
+    assert "run" in commands[2]
+    assert all("--pull" not in item for cmd in commands[:2] for item in cmd)

@@ -222,3 +222,20 @@ def test_actual_approved_runner_live_http_end_to_end(tmp_path):
         try:process.communicate(timeout=5)
         except subprocess.TimeoutExpired:
             process.kill(); process.communicate(timeout=5)
+
+
+def test_declared_oversized_zip_member_denied_before_crc_inflation(tmp_path,monkeypatch):
+    from rea.adapter.behavior_probe import _archive_and_tree
+    import io
+    archive,clean,_=fixture_bundle(tmp_path)
+    updated=tmp_path/"oversized_fixture.zip"
+    with zipfile.ZipFile(archive) as original, zipfile.ZipFile(
+            updated,"w",compression=zipfile.ZIP_DEFLATED) as output:
+        for name in original.namelist():
+            content=(b"X"*(2*1024*1024+1) if name=="backend/app.py"
+                     else original.read(name))
+            output.writestr(name,content)
+    monkeypatch.setattr(zipfile.ZipFile,"testzip",
+                        lambda self: pytest.fail("CRC decompression before size refusal"))
+    with pytest.raises(UnsafeProbe,match="oversized member"):
+        _archive_and_tree(updated,clean,hashlib.sha256(updated.read_bytes()).hexdigest())

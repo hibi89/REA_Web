@@ -95,18 +95,20 @@ def _archive_and_tree(bundle_zip: Path, extracted: Path, expected_sha: str) -> t
                     or not set(names).issubset(ALLOWED_FILES)
                     or any(m.is_dir() or m.flag_bits & 1 for m in members)):
                 raise UnsafeProbe("unrecognized ZIP member inventory")
-            if archive.testzip() is not None:
-                raise UnsafeProbe("ZIP CRC mismatch")
-            zipped = {}
+            # Before CRC/decompression, reject oversized declared members.
+            # testzip() inflates members and therefore must not precede
+            # bounded-size inventory checks (ZIP bomb denial).
             for m in members:
                 if m.orig_filename != m.filename or m.filename not in ALLOWED_FILES:
                     raise UnsafeProbe("unsafe original member name")
                 mode = (m.external_attr >> 16) & 0xFFFF
                 if stat.S_IFMT(mode) not in (0, stat.S_IFREG):
                     raise UnsafeProbe("special ZIP member denied")
-                if m.file_size > 2 * 1024 * 1024:
+                if m.file_size > 2 * 1024 * 1024 or m.file_size < 0:
                     raise UnsafeProbe("oversized member")
-                zipped[m.filename] = archive.read(m)
+            if archive.testzip() is not None:
+                raise UnsafeProbe("ZIP CRC mismatch")
+            zipped = {m.filename: archive.read(m) for m in members}
     except (zipfile.BadZipFile, zipfile.LargeZipFile, EOFError) as exc:
         raise UnsafeProbe("damaged ZIP") from exc
     contents: dict[str, bytes] = {}
