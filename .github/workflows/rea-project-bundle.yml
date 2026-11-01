@@ -43,4 +43,4 @@ jobs:
       - name: Compile new source and tests
         run: python -m compileall -q rea/adapter/project_bundle.py rea/adapter/behavior_probe.py rea/adapter/runtime_supervisor.py rea/adapter/docker_sandbox.py tests/test_docker_sandbox.py tests/test_project_bundle.py tests/test_behavior_probe.py tests/test_runtime_supervisor.py tests/test_docker_sandbox.py tests/test_project_bundle_browser.py
       - name: Test synthetic project packaging and actual extracted runtime browser E2E
-        run: python -m pytest -q tests/test_project_bundle.py tests/test_behavior_probe.py tests/test_runtime_supervisor.py tests/test_project_bundle_browser.py
+        run: python -m pytest -q tests/test_project_bundle.py tests/test_behavior_probe.py tests/test_runtime_supervisor.py tests/test_docker_sandbox.py tests/test_project_bundle_browser.py
