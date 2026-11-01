@@ -42,3 +42,13 @@ Browser tests require Playwright's Chromium. GitHub Actions `.github/workflows/r
 - Explicit owner GO before any seller listing, public ZIP, user data, merge to release branch or distribution.
 
 Current status: **TECHNICAL INTEGRATION VERIFIED / COMMERCIAL RELEASE HOLD**. Pro original scope and known tested behavior preserved; hosted production N/A.
+
+
+## 2026-11-01 — 미저장 변경 경고 보강 / 검수 ZIP 갱신
+
+- 검증된 기능 SHA: `5ec1d6c290ab2322029d641f2535221883eaa1e5`, [실제 Actions Windows/Linux 2/2 성공](https://github.com/hibi89/REA_Web/actions/runs/41306179899).
+- CSV 정상 반영 이후, 새 HTML을 저장하지 않고 창을 닫거나 새로고침하면 `beforeunload`을 통해 **브라우저에 경고를 요청**합니다. 이 팝업은 브라우저 정책과 사용자 클릭 이력에 따라 나타나지 않을 수 있으므로 저장을 보장하지 않습니다. 실패한 CSV 갱신은 경고를 활성화하지 않습니다. 다운로드를 요청해도 실제 파일 저장 확인 전 경고는 유지됩니다.
+- 로컬/세션 스토리지 자동저장은 의도적으로 없습니다. HTML 자체에 레코드가 평문 포함되므로 외부 공유 및 고객 민감정보 사용 금지.
+- Windows와 Linux 각 환경: Pro 원본 파서 7 PASS, Node CSV/escape 15/15 PASS, 진짜 `file://` Chromium 5 PASS, 패키징 3 PASS. 신규 ZIP `ca9f4f63712a51acf56e261d3c3ad1cb2ad9290866d09bd5c8416c21abfe3a5a` (23,148 B) 무결성 검증.
+- 기존 archive template은 Git blob `70387cfa`; 현재 파일은 이탈 경고가 추가된 **파생 버전** `5ee764ab03a5e4ea818abb3b9cc589214d3cbdbe`입니다. 예전 "복원한 원본 템플릿 바이트 동일"은 당시 기준 사실이며 현재 코드의 동일성 주장에 사용하지 마세요.
+- 현재 최신 키트는 작업 대화 파일 `REA_WEB_Lite_UnsavedGuard_Windows_Pilot_20261101.zip` (세션 임시, 향후 재현은 GitHub에서)입니다. 배포·판매가 아니라 합성 샘플 사용자 수용용입니다. 사람의 Windows Edge 수동 검수·세 번 납품 실측·실제 배포 라이선스/NOTICE·고객 정책/판매 승인은 여전히 필요합니다.
