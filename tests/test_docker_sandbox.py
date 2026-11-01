@@ -389,3 +389,47 @@ def test_readonly_image_gate_queries_local_daemon_before_run(tmp_path,monkeypatc
     assert "image" in commands[1] and "inspect" in commands[1]
     assert "run" in commands[2]
     assert all("--pull" not in item for cmd in commands[:2] for item in cmd)
+
+
+def test_bounded_host_subprocess_preserves_short_synthetic_receipt():
+    import os
+    import sys
+    script = "import sys;print('REA_ISOLATED_RESULT:SAFE');sys.stderr.write('ok')"
+    result = sandbox._bounded_capture([sys.executable,"-B","-c",script],
+                  timeout=5,env=os.environ.copy())
+    assert result.returncode==0
+    assert result.stdout.strip()=="REA_ISOLATED_RESULT:SAFE"
+    assert result.stderr=="ok"
+
+
+@pytest.mark.parametrize("channel",["stdout","stderr"])
+def test_bounded_host_subprocess_kills_synthetic_output_flood(channel):
+    import os
+    import sys
+    script = ("import sys;sys."+channel+".write('S'*50000);sys."+
+              channel+".flush()")
+    with pytest.raises(UnsafeSandbox,match="output exceeded"):
+        sandbox._bounded_capture([sys.executable,"-B","-c",script],
+                     timeout=5,env=os.environ.copy(),max_bytes=8192)
+
+
+def test_bounded_host_subprocess_times_out_without_fallback():
+    import os
+    import sys
+    with pytest.raises(subprocess.TimeoutExpired):
+        sandbox._bounded_capture([sys.executable,"-B","-c",
+                  "import time;time.sleep(3)"],timeout=1,env=os.environ.copy())
+
+
+def test_bounded_subprocess_dispatches_docker_run_not_inspection(monkeypatch):
+    captured=[]
+    def fake(argv,*,timeout,env,max_bytes=8192):
+        captured.append((list(argv),timeout,dict(env),max_bytes))
+        return subprocess.CompletedProcess(argv,0,"READY","")
+    monkeypatch.setattr(sandbox,"_bounded_capture",fake)
+    result=sandbox._run(["/trusted/docker","--host",
+                   "unix:///var/run/docker.sock","run","--rm","local-image"],
+                   timeout=4)
+    assert result.stdout=="READY"
+    assert len(captured)==1 and captured[0][3]==8192
+    assert "DOCKER_HOST" not in captured[0][2]

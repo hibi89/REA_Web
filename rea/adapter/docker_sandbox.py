@@ -20,6 +20,8 @@ import secrets
 import shutil
 import subprocess
 import sys
+import threading
+import time
 import zipfile
 
 from rea.adapter.behavior_probe import (ALLOWED_FILES, MAX_ZIP, UnsafeProbe,
@@ -199,11 +201,80 @@ sys.exit(0 if not issues and
 '''
 
 
+def _bounded_capture(argv: list[str], *, timeout: int, env: dict[str,str],
+                     max_bytes: int=8192) -> subprocess.CompletedProcess:
+    """Hard cap stdout/stderr RAM while a process runs, on Windows and Linux.
+
+    The trusted host may invoke a Docker client which emits unbounded logs.
+    capture_output=True followed by a size check is too late to avoid OOM.
+    Byte limits apply separately; stop the child as soon as either is exceeded.
+    """
+    process = subprocess.Popen(
+        argv, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE, shell=False)
+    output = [bytearray(), bytearray()]
+    overflow = threading.Event()
+    readers = []
+    def collect(pipe, index):
+        try:
+            while True:
+                chunk = pipe.read(4096)
+                if not chunk:
+                    break
+                room = max_bytes-len(output[index])
+                output[index].extend(chunk[:max(0,room)])
+                if len(chunk) > room:
+                    overflow.set()
+                    break
+        except (OSError, ValueError):
+            overflow.set()
+
+    try:
+        for index,pipe in enumerate((process.stdout,process.stderr)):
+            reader = threading.Thread(target=collect,args=(pipe,index),daemon=True)
+            reader.start()
+            readers.append(reader)
+        deadline = time.monotonic()+timeout
+        while True:
+            if overflow.is_set():
+                raise UnsafeSandbox("Docker output exceeded bounded receipt limit")
+            if process.poll() is not None and all(not r.is_alive() for r in readers):
+                break
+            if time.monotonic()>=deadline:
+                raise subprocess.TimeoutExpired(argv,timeout)
+            time.sleep(0.01)
+        if overflow.is_set():
+            raise UnsafeSandbox("Docker output exceeded bounded receipt limit")
+        return subprocess.CompletedProcess(
+            argv,process.returncode,
+            output[0].decode("utf-8",errors="replace"),
+            output[1].decode("utf-8",errors="replace"))
+    finally:
+        if process.poll() is None:
+            process.kill()
+        try:
+            process.wait(timeout=3)
+        except subprocess.TimeoutExpired:
+            # Never block the host indefinitely; caller must also confirm
+            # daemon-side removal of the named container.
+            pass
+        for pipe in (process.stdout,process.stderr):
+            if pipe:
+                try:
+                    pipe.close()
+                except OSError:
+                    pass
+        for reader in readers:
+            reader.join(timeout=0.3)
+
+
 def _run(argv: list[str], *, timeout: int) -> subprocess.CompletedProcess:
     # DOCKER_CONTEXT / DOCKER_HOST / arbitrary client config cannot redirect
     # execution to a remote daemon. No shell or host-user credentials inherited.
     env = {"PATH": os.environ.get("PATH", os.defpath),
            "HOME": os.path.expanduser("~")}
+    if "run" in argv:
+        return _bounded_capture(argv,timeout=timeout,env=env)
     return subprocess.run(argv, env=env, stdin=subprocess.DEVNULL,
                           capture_output=True, text=True, timeout=timeout,
                           shell=False)
