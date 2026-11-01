@@ -32,6 +32,17 @@ def archive(path: Path, files: dict[str, str | bytes]) -> Path:
     with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as z:
         for name, contents in files.items():
             z.writestr(name, contents)
+    # Windows zipfile normalizes backslashes on write. Reinsert malformed raw
+    # entry names in both ZIP headers, keeping a portable reader-side test.
+    for name in files:
+        if "\\" not in name:
+            continue
+        raw = path.read_bytes()
+        unsafe = name.encode("utf-8")
+        safe = name.replace("\\", "/").encode("utf-8")
+        if unsafe not in raw:
+            assert raw.count(safe) == 2
+            path.write_bytes(raw.replace(safe, unsafe))
     return path
 
 
