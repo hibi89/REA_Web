@@ -272,7 +272,7 @@ def _verified_synthetic_mount(bundle_zip: Path, expected_sha256: str):
             raise UnsafeSandbox("staged synthetic mount integrity refused") from exc
         canonical = root.resolve(strict=True)
         if str(canonical) != str(root.absolute()) or any(
-                c in str(canonical) for c in (",", "\\n", "\\r")):
+                c in str(canonical) for c in (",", chr(10), chr(13))):
             raise UnsafeSandbox("unsafe staged Docker bind path")
         yield canonical
 
