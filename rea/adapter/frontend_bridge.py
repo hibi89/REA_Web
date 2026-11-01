@@ -16,6 +16,7 @@ import tempfile
 
 from rea.adapter.backend_zip import SCHEMA as BACKEND_SCHEMA
 from rea.adapter.fable_to_astra import project_fable
+from rea.adapter.visual_reference import VisualError, validate_visual
 from rea.safe_publish import publish_directory
 
 SCHEMA = 'rea.frontend_bridge.v0.1'
@@ -57,7 +58,7 @@ def _valid_bindings(value: object) -> dict:
     return result
 
 
-def make_review(fable: dict, backend: dict, bindings: dict | None = None) -> dict:
+def make_review(fable: dict, backend: dict, bindings: dict | None = None, *, visual: dict | None = None) -> dict:
     """Join independent, untrusted declarations without approving runtime claims."""
     if not isinstance(fable, dict) or not isinstance(backend, dict):
         raise BridgeError('Fable result and backend contract must be JSON objects')
@@ -86,6 +87,12 @@ def make_review(fable: dict, backend: dict, bindings: dict | None = None) -> dic
         if ('GET' in methods and endpoint.get('verification') == 'STATIC_DECLARATION_ONLY'
                 and endpoint.get('mount') in ('app_declaration', 'local_router_mount_declaration')):
             candidates.add(endpoint['path'])
+    observed = None
+    if visual is not None:
+        try:
+            observed = validate_visual(visual, expected_origin=reference['source']['site_origin'], allow_loopback=True)
+        except VisualError as exc:
+            raise BridgeError('visual reference rejected: ' + str(exc)) from exc
     selected = _valid_bindings(bindings) if bindings is not None else None
     if selected is not None:
         for role, binding in selected.items():
@@ -99,15 +106,18 @@ def make_review(fable: dict, backend: dict, bindings: dict | None = None) -> dic
             'origin': reference['source']['site_origin'],
             'source_sha256': reference['source']['sha256'],
             'mode': reference['source']['scan_mode'],
-            'visual_evidence': 'NOT_CAPTURED_BY_FABLE_STATIC_CONTRACT',
-            'style_source': 'ORIGINAL_REA_NEUTRAL_DEFAULT',
+            'visual_evidence': 'BROWSER_COMPUTED_STYLE_OBSERVED' if observed else 'NOT_CAPTURED_BY_FABLE_STATIC_CONTRACT',
+            'style_source': 'REFERENCE_STYLE_GUIDANCE_ORIGINAL_UI' if observed else 'ORIGINAL_REA_NEUTRAL_DEFAULT',
             'layout_similarity_to_reference': 'UNVERIFIED',
+            'visual_sha256': observed['sha256'] if observed else None,
+            'visual_layout_hint': observed['layout'] if observed else 'unknown',
             'technical_counts': reference['technical_finding_counts'],
         },
         'backend': {'sha256': info['sha256'], 'endpoint_declarations': len(candidates),
                     'runtime_verified': False, 'response_schema_verified': False},
         'bindings': selected,
-        'unknowns': ['actual_reference_visual_design', 'backend_runtime_auth',
+        'visual_contract': observed,
+        'unknowns': (['exact_reference_layout_and_assets'] if observed else ['actual_reference_visual_design']) + ['backend_runtime_auth',
                      'backend_response_shape', 'backend_cors_and_hosting'],
     }
 
@@ -181,6 +191,32 @@ $('search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCas
 load();'''
 
 
+def _reference_css(visual: dict | None) -> str:
+    """Author an original stylesheet from bounded observed palette/layout hints."""
+    if visual is None:
+        return ''
+    colors = visual['colors']
+    css = ['/* Sanitized reference computed-style hints; original REA layout. */']
+    rules = {
+        'canvas': 'body', 'surface': '.metrics article,.panel,.top',
+        'ink': 'body,h1', 'navigation': '.sidebar', 'accent': '.glyph',
+    }
+    properties = {
+        'canvas': 'background-color', 'surface': 'background-color',
+        'ink': 'color', 'navigation': 'background-color', 'accent': 'background-color',
+    }
+    for key in ('canvas','surface','ink','navigation','accent'):
+        if colors.get(key):
+            css.append(f'{rules[key]}{{{properties[key]}:{colors[key]};}}')
+    accent = colors.get('accent')
+    if accent:
+        css.append(f'.eyebrow,.tag{{color:{accent};}}')
+        css.append(f'button.link{{color:{accent};}}')
+    if visual['layout'] == 'topbar':
+        css.append('.shell{display:block}.sidebar{display:flex;flex-direction:row;align-items:center;min-height:0;padding:13px 28px;gap:24px}.logo{padding:0;white-space:nowrap}.sidebar nav{display:flex;gap:12px;align-items:center}.sidebar nav a{padding:10px 13px}.sidebar nav span,.sidebar-foot{display:none}@media(max-width:740px){.sidebar{display:flex;flex-wrap:wrap}.sidebar nav{display:flex;overflow-x:auto;width:100%}.sidebar nav a{white-space:nowrap}}')
+    return '\n'.join(css) + '\n'
+
+
 def _js_config(bindings: dict) -> str:
     result = json.dumps(bindings, separators=(',', ':'), ensure_ascii=True)
     # The config is embedded in a separate JS file, never in a SCRIPT tag.
@@ -197,6 +233,20 @@ def generate_frontend(review: dict, destination: Path, *, owner_confirmed: bool 
     # Defense against edited review files: no claim of runtime or actual design proof.
     if review.get('generation_allowed') is not False or review.get('backend', {}).get('runtime_verified') is not False:
         raise BridgeError('untrusted review approval state')
+    visual = review.get('visual_contract')
+    if visual is not None:
+        ref = review.get('reference', {})
+        try:
+            visual = validate_visual(visual, expected_origin=ref.get('origin'), allow_loopback=True)
+        except VisualError as exc:
+            raise BridgeError('invalid stored visual evidence') from exc
+        if (ref.get('visual_sha256') != visual['sha256'] or
+                ref.get('style_source') != 'REFERENCE_STYLE_GUIDANCE_ORIGINAL_UI' or
+                ref.get('visual_evidence') != 'BROWSER_COMPUTED_STYLE_OBSERVED'):
+            raise BridgeError('visual provenance mismatch')
+    else:
+        if review.get('reference', {}).get('style_source') != 'ORIGINAL_REA_NEUTRAL_DEFAULT':
+            raise BridgeError('missing visual evidence')
     destination = Path(destination).absolute()
     if destination.exists() or destination.is_symlink():
         raise FileExistsError('output path exists')
@@ -207,13 +257,14 @@ def generate_frontend(review: dict, destination: Path, *, owner_confirmed: bool 
         'reference': review['reference'], 'backend': review['backend'],
         'bindings': binding, 'frontend_path': '/dashboard/',
         'limitations': ['backend_not_bundled', 'serve_on_same_origin_under_/dashboard',
-                        'response_schema_must_be_runtime_verified', 'design_not_observed_from_reference'],
+                        'response_schema_must_be_runtime_verified',
+                        'reference_visual_hints_not_pixel_replication' if visual else 'design_not_observed_from_reference'],
     }
     with tempfile.TemporaryDirectory(prefix='.rea-bridge-', dir=destination.parent) as temp:
         stage = Path(temp) / 'dashboard'
         stage.mkdir()
         (stage / 'index.html').write_text(HTML+'\n', encoding='utf-8')
-        (stage / 'style.css').write_text(CSS+'\n', encoding='utf-8')
+        (stage / 'style.css').write_text(CSS+'\n'+_reference_css(visual), encoding='utf-8')
         (stage / 'app.js').write_text(JS.replace('__API_JSON__', _js_config(binding))+'\n', encoding='utf-8')
         (stage / 'manifest.json').write_text(json.dumps(manifest, indent=2, ensure_ascii=False)+'\n', encoding='utf-8')
         (stage / 'README_KO.md').write_text(
@@ -236,6 +287,7 @@ def main(argv: list[str] | None = None) -> int:
     parser=argparse.ArgumentParser(description='REA Fable + backend ZIP contract review and approved original frontend')
     parser.add_argument('--fable', required=True, type=Path)
     parser.add_argument('--backend', required=True, type=Path)
+    parser.add_argument('--visual', type=Path, help='separately captured, origin-matched computed-style reference JSON')
     parser.add_argument('--bindings', type=Path, help='explicit owner response-field and GET path mappings')
     parser.add_argument('--out', type=Path, help='NEW frontend source directory')
     parser.add_argument('--owner-confirmed', action='store_true')
@@ -246,7 +298,8 @@ def main(argv: list[str] | None = None) -> int:
         if args.out is not None and not args.owner_confirmed:
             raise BridgeError('preview mode cannot write frontend without owner confirmation')
         plan=make_review(_read_json(args.fable), _read_json(args.backend),
-                         _read_json(args.bindings) if args.bindings is not None else None)
+                         _read_json(args.bindings) if args.bindings is not None else None,
+                         visual=_read_json(args.visual) if args.visual is not None else None)
         if args.out is None:
             print(json.dumps(plan, indent=2, ensure_ascii=False))
         else:
