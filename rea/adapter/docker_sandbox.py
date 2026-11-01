@@ -270,8 +270,14 @@ def _verified_synthetic_mount(bundle_zip: Path, expected_sha256: str):
             _archive_and_tree(bundle_zip, root, expected_sha256)
         except (UnsafeProbe, OSError, ValueError) as exc:
             raise UnsafeSandbox("staged synthetic mount integrity refused") from exc
+        # TemporaryDirectory created this directory with an unpredictable
+        # name; do not string-compare Windows canonical and absolute spellings
+        # (8.3 aliases and case normalization can differ without a symlink).
+        # Reject the actual temporary root being a symlink instead.
+        if root.is_symlink():
+            raise UnsafeSandbox("staged Docker mount root is a symlink")
         canonical = root.resolve(strict=True)
-        if str(canonical) != str(root.absolute()) or any(
+        if not canonical.is_dir() or any(
                 c in str(canonical) for c in (",", chr(10), chr(13))):
             raise UnsafeSandbox("unsafe staged Docker bind path")
         yield canonical
