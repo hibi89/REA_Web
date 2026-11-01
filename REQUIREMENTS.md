@@ -22,7 +22,7 @@
 
 ## Acceptance by stage (NOT all completed)
 - **S1 DONE (2026-11-01):** source ZIP static FastAPI route declaration detection, malicious archive rejection, no code execution, cross-OS tests. `b140c034643b97584239f30691d4bb84c7f10ae0`; Windows+Linux Actions #41311814802 PASS. API signatures/response schemas/runtime not verified.
-- **S2 NOT_DONE:** Fable visual evidence → design token and UI contract, preserving epistemic `unknown` fields.
-- **S3 NOT_DONE:** ZIP API contract + design contract + approved mapping → frontend project source output.
-- **S4 NOT_DONE:** isolated synthetic backend real HTTP plus actual generated frontend browser/network/runtime tests, clean ZIP delivery, Windows operator verification.
+- **S2 PARTIAL (2026-11-01):** Validated Fable report origin/evidence normalization and explicit `unknown` visual evidence; **real screenshot/layout/color design extraction NOT DONE**.
+- **S3 SYNTHETIC BASELINE DONE (2026-11-01):** Exact declared FastAPI routes + explicit 3-GET owner fixture mapping → independent HTML/CSS/JS dashboard source; arbitrary API response schemas and third-party visual reproduction NOT DONE.
+- **S4 PARTIAL DONE (2026-11-01):** Trusted synthetic FastAPI backend real same-origin HTTP and generated frontend Chromium Windows/Linux CI (including failure-state UI) PASS on `f2d54b2`; SHA-verified **synthetic demo** ZIP generated. Arbitrary owner ZIP execution, combined user backend delivery packaging, physical Windows operator acceptance NOT DONE.
 - **S5 HOLD:** rights/security/privacy/commercial approval and deployment where applicable.

@@ -1,5 +1,10 @@
 # REA_WEB Fable reference + owner backend ZIP → original dashboard source (2026-11-01)
 
+## Verified source and exact CI (2026-11-01 22:56 KST)
+- Functional SHA `f2d54b231b8b40c0023d23df0ef3260c1b241e8a`. Windows/Ubuntu [#41313444046](https://github.com/hibi89/REA_Web/actions/runs/41313444046): each 62 passed, 2 skipped optional Astra checks, 1 expected duplicate-entry ZIP warning. Real Chromium→local synthetic FastAPI HTTP same-origin, KPI, filtering, detail, and forced 503 API-error status passed.
+- Existing backend/Fable tests [#41313444122](https://github.com/hibi89/REA_Web/actions/runs/41313444122): Windows+Ubuntu 52 passed / 2 skipped each. No untrusted owner ZIP code was executed.
+- The dashboard's indicator remains neutral until GET success and switches to ERROR on failed fetch; CSP unchanged (no `unsafe-eval`). Physical owner's Windows browser and arbitrary customer ZIP not verified.
+
 ## What this code actually does
 
 `rea/adapter/frontend_bridge.py` joins (1) a Fable 5.1 `result.json` and (2) the **separately scanned** static FastAPI backend ZIP contract `rea.backend_contract.v0.1`. It preserves evidence boundaries: Fable static reports contain no verified original-site layout/palette, so the generated dashboard uses original REA styling, **not a copied website design**. Private reference URLs, query strings and secrets are removed from outputs. No reference website API is called and no untrusted ZIP is imported, extracted, run, deployed or modified.
