@@ -433,3 +433,23 @@ def test_bounded_subprocess_dispatches_docker_run_not_inspection(monkeypatch):
     assert result.stdout=="READY"
     assert len(captured)==1 and captured[0][3]==8192
     assert "DOCKER_HOST" not in captured[0][2]
+
+
+def test_output_flood_refusal_still_cleans_named_container_and_staging(tmp_path,monkeypatch):
+    bundle=fixture(tmp_path)
+    commands=_fake_docker(monkeypatch)
+    previous=sandbox._run
+    staged=[]
+    def simulate_flood(argv,*,timeout):
+        if "run" in argv:
+            mount=next(x for x in argv if x.startswith("--mount=type=bind,"))
+            staged.append(Path(mount.split("source=",1)[1]
+                               .split(",target=/work,readonly",1)[0]))
+            raise UnsafeSandbox("Docker output exceeded bounded receipt limit")
+        return previous(argv,timeout=timeout)
+    monkeypatch.setattr(sandbox,"_run",simulate_flood)
+    with pytest.raises(UnsafeSandbox,match="output exceeded"):
+        call(bundle)
+    assert len(staged)==1 and not staged[0].exists()
+    assert "rm" in commands[-2] and "container" in commands[-1]
+    assert (bundle[1]/"backend"/"app.py").exists()
