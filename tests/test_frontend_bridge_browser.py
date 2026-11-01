@@ -10,7 +10,7 @@ import sys
 import time
 from urllib.request import urlopen
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 from rea.adapter.frontend_bridge import generate_frontend, make_review
 
 FABLE = {
@@ -91,14 +91,14 @@ def test_generated_frontend_real_http_chromium(tmp_path):
                 page.on('response',lambda response:calls.append((response.status,response.url)))
                 response=page.goto(address+'/dashboard/',wait_until='networkidle',timeout=25000)
                 assert response is not None and response.status==200
-                page.wait_for_function("document.querySelector('#kpi-total').textContent==='3'")
+                expect(page.locator('#kpi-total')).to_have_text('3')
                 assert page.locator('#kpi-completed').inner_text()=='2'
                 assert page.locator('#kpi-pending').inner_text()=='1'
                 assert page.locator('#jobs tr').count()==3
                 page.locator('#search').fill('검색')
                 assert page.locator('#jobs tr').count()==1
                 page.locator('button.link').first.click()
-                page.wait_for_function("document.querySelector('#detail').textContent.includes('B-2')")
+                expect(page.locator('#detail')).to_contain_text('B-2')
                 assert len([u for status,u in calls if status==200 and '/api/' in u])>=3
                 assert not errors and not failed, (errors,failed)
                 assert page.locator('#error').is_hidden()
