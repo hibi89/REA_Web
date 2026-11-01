@@ -50,6 +50,9 @@ def _zip_members(archive: zipfile.ZipFile) -> list[zipfile.ZipInfo]:
     total = 0
     seen: set[str] = set()
     for item in infos:
+        # On Windows, zipfile normalizes backslashes while reading ZIP names.
+        # Validate the original (pre-normalized) name as well as parsed name.
+        _safe_name(item.orig_filename)
         name = _safe_name(item.filename)
         if name.casefold() in seen:
             raise UnsafeBackendZip("duplicate archive member")
