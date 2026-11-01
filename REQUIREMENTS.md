@@ -1,0 +1,28 @@
+# REA_WEB — product requirements (owner-confirmed 2026-11-01)
+
+## Core product, replacing the mistaken fixed-template interpretation
+**Input A — a reference URL:** Fable 5.1 observes *public* site frontend appearance and accessible integration evidence; extract original-style design cues/layout/component composition and supported interaction **patterns**, not third-party private backend source, authentication, data, images, or protected UI assets.
+
+**Input B — the owner's backend/logic ZIP:** Contains existing Python or Node API implementation, business logic and configuration the owner is authorized to use. Inspect without executing untrusted code; identify framework, static API declarations, modules, input schemas, runtime requirements, and readiness gaps. Do not assume a ZIP is complete or operational.
+
+**Output:** Independently implemented frontend dashboard matching the high-level **design intent**, connected via documented/adapted interfaces to **the owner's existing backend logic**, not to the referenced website's private APIs. Generated source, verified local preview/HTTP/browser evidence, clear user-approved mappings, and an executable bundled source ZIP.
+
+## Guardrails
+- Never blindly clone copyrighted code, graphics or site branding, nor infer/claim private API schemas from public HTML headers.
+- Original backend remains immutable; generated output and test sandboxes separate. No arbitrary uploaded code execution before authorized isolated verification.
+- ZIP path traversal, symlinks, bombs, secrets, command injection, malicious files, SSRF and unsafe networks need defenses in each respective stage.
+- API mapping and nontrivial inferred functional behaviors require explicit owner review; readonly source detection is never `APPROVED`.
+- Upstream Fable/Astra, existing REA Pro CSV/JSON local app, REA Lite HTML demos are preserved as historical independent features; none is to be represented as the target final REA_WEB product.
+- No external delivery/deployment/public sale or customer asset upload without owner authorization.
+
+## Architecture choices and decision
+- **A — extend existing REA_WEB**: lower cost and risk, uses existing Fable/Astra adapter, Pro FastAPI app generation, safe publish and tests. **Selected**.
+- B — rewrite all components: better blank-slate uniformity but higher cost/time/compatibility risk. Not selected.
+- Pipeline: reference Fable report → bounded sanitized design contract; backend ZIP → static endpoint contract → explicit mapping/review → generated original frontend → isolated runtime integration/browser tests → reproducible runnable ZIP.
+
+## Acceptance by stage (NOT all completed)
+- **S1 DONE (2026-11-01):** source ZIP static FastAPI route declaration detection, malicious archive rejection, no code execution, cross-OS tests. `b140c034643b97584239f30691d4bb84c7f10ae0`; Windows+Linux Actions #41311814802 PASS. API signatures/response schemas/runtime not verified.
+- **S2 NOT_DONE:** Fable visual evidence → design token and UI contract, preserving epistemic `unknown` fields.
+- **S3 NOT_DONE:** ZIP API contract + design contract + approved mapping → frontend project source output.
+- **S4 NOT_DONE:** isolated synthetic backend real HTTP plus actual generated frontend browser/network/runtime tests, clean ZIP delivery, Windows operator verification.
+- **S5 HOLD:** rights/security/privacy/commercial approval and deployment where applicable.
