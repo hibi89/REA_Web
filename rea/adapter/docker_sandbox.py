@@ -302,8 +302,13 @@ def isolate_trusted_synthetic(bundle_zip: Path, extracted: Path, *,
             or set(proof)!={"status","observed_statuses","list_count_observed","issues"}
             or proof.get("status") not in ("PASS_REVIEW_REQUIRED","FAIL")
             or not isinstance(proof["observed_statuses"],dict)
+            or not set(proof["observed_statuses"]).issubset({"list","metrics","detail","missing_detail"})
+            or any(type(value) is not int or not 0 <= value <= 599
+                   for value in proof["observed_statuses"].values())
             or not isinstance(proof["issues"],list)
-            or any(not isinstance(x,str) or len(x)>64 for x in proof["issues"])
+            or len(proof["issues"])>20
+            or any(not isinstance(x,str) or not re.fullmatch(r"[A-Z0-9_]{1,64}",x)
+                   for x in proof["issues"])
             or type(proof["list_count_observed"]) is not int
             or not 0 <= proof["list_count_observed"] <= 200):
         raise UnsafeSandbox("malformed isolated verification receipt")
