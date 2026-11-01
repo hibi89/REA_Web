@@ -108,6 +108,7 @@ import hashlib
 import json
 from pathlib import Path
 import sys
+sys.dont_write_bytecode = True  # Keep a clean extracted artifact for integrity checks.
 
 ROOT = Path(__file__).resolve().parent
 EXPECTED_APP_SHA = "__EXPECTED_APP_SHA__"
