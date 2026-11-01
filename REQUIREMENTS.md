@@ -1,3 +1,7 @@
+## S4 synthetic combined ZIP acceptance (2026-11-02 KST)
+- Reproducible, explicit-developer-authorized **self-authored synthetic FastAPI** source + independently generated frontend ZIP `rea.project_bundle.v0.1` now exists on functional SHA `b6f82d41a6a2200641d8fca7ea3c4e3a2c83600a` and is verified after clean extraction with real localhost HTTP + Windows/Linux Chromium **15 PASS each** [Actions #41321384964](https://github.com/hibi89/REA_Web/actions/runs/41321384964). Output contains SHA256SUMS, manifest and local-only launcher; owner ZIP and frontend review provenance are SHA checked, no unapproved file copying or code execution at build time.
+- Scope remains **trusted synthetic profile only**, not an arbitrary customer backend runtime adapter. External public URL fidelity, real customer ZIP provenance, credentials/auth, native owner Windows acceptance and commercial approval remain NOT_DONE/HOLD.
+
 # REA_WEB — product requirements (owner-confirmed 2026-11-01)
 
 ## Core product, replacing the mistaken fixed-template interpretation
