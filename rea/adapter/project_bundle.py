@@ -102,7 +102,6 @@ def _backend_contents(source: Path) -> tuple[dict[str, bytes], str]:
 
 
 RUNNER = '''"""Only run the self-authored, owner-confirmed synthetic test fixture."""
-from __future__ import annotations
 import argparse
 import hashlib
 import json
@@ -163,6 +162,20 @@ def main(argv=None):
     if not hasattr(app, "mount"):
         raise RuntimeError("trusted fixture has no FastAPI app")
     app.mount("/dashboard", StaticFiles(directory=str(ROOT / "dashboard"), html=True), name="rea-dashboard")
+    # Synthetic managed process challenge: no endpoint in normal manual runs.
+    # This is not a sandbox or defense against a hostile host with same-user access.
+    import os
+    import hmac
+    token = os.environ.get("REA_TRUSTED_SYNTHETIC_ATTEST_TOKEN", "")
+    if token and len(token) == 64 and all(c in "0123456789abcdef" for c in token):
+        from fastapi import Request, HTTPException
+        @app.get("/__rea/provenance", include_in_schema=False)
+        def provenance(request: Request):
+            supplied = request.headers.get("X-REA-Synthetic-Challenge", "")
+            if not hmac.compare_digest(supplied, token):
+                raise HTTPException(status_code=404, detail="Not found")
+            return {"pid": os.getpid(), "source_sha256": EXPECTED_APP_SHA,
+                    "synthetic_process_challenge_verified": True}
     uvicorn.run(app, host="127.0.0.1", port=args.port, log_level="warning")
     return 0
 
