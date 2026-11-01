@@ -169,3 +169,63 @@ def test_cli_refuses_output_overwrite_without_touching_existing(tmp_path,monkeyp
         sandbox.main(args)
     assert exc.value.code==2
     assert out.read_text(encoding="utf-8")=="KEEP"
+
+
+def _run_isolated_probe_on_trusted_host(bundle, *, replacement_source_sha=None):
+    """Exercise the exact embedded container script using self-authored fixture.
+
+    This validates Python/HTTP subprocess logic, NOT container/OS isolation.
+    """
+    import os
+    import secrets
+    import sys
+    from rea.adapter.runtime_supervisor import _choose_loopback_port
+    _, folder, _ = bundle
+    script = sandbox.CONTAINER_PROBE
+    script = script.replace('ROOT = Path("/work")', 'ROOT = Path(' + repr(str(folder)) + ')')
+    script = script.replace("PORT = 8766", "PORT = " + str(_choose_loopback_port()))
+    source_sha = hashlib.sha256((folder/"backend"/"app.py").read_bytes()).hexdigest()
+    env = {"PATH": os.environ.get("PATH",os.defpath),
+           "SYSTEMROOT":os.environ.get("SYSTEMROOT",""),
+           "PYTHONDONTWRITEBYTECODE":"1",
+           "REA_TRUSTED_SYNTHETIC_ATTEST_TOKEN":secrets.token_hex(32)}
+    result=subprocess.run([sys.executable,"-E","-B","-c",script,
+                   replacement_source_sha or source_sha],
+                   cwd=folder, env=env, capture_output=True,text=True,timeout=18)
+    assert len(result.stdout)<8192, "unbounded probe output"
+    lines=[line for line in result.stdout.splitlines() if line.startswith(sandbox.PREFIX)]
+    assert len(lines)==1, (result.returncode,result.stderr[-300:])
+    return result, json.loads(lines[0][len(sandbox.PREFIX):])
+
+
+def test_container_probe_python_compiles_without_docker():
+    compile(sandbox.CONTAINER_PROBE, "<rea-trusted-synthetic-container-probe>", "exec")
+
+
+def test_embedded_container_probe_real_synthetic_http_without_docker(tmp_path):
+    result,receipt=_run_isolated_probe_on_trusted_host(fixture(tmp_path))
+    assert result.returncode==0, result.stderr[-300:]
+    assert receipt==GOOD
+    assert "Synthetic task" not in result.stdout
+    assert "X1" not in result.stdout
+    assert "REA_TRUSTED_SYNTHETIC_ATTEST_TOKEN" not in result.stdout
+
+
+def test_embedded_probe_source_digest_mismatch_is_fail_closed(tmp_path):
+    result,receipt=_run_isolated_probe_on_trusted_host(
+          fixture(tmp_path),replacement_source_sha="0"*64)
+    assert result.returncode==3
+    assert receipt["status"]=="FAIL"
+    assert "SOURCE_CHANGED" in receipt["issues"]
+    assert receipt["observed_statuses"]=={}
+
+
+def test_embedded_probe_wrong_metrics_refused_on_actual_http(tmp_path):
+    from test_project_bundle import SOURCE
+    bad=SOURCE.replace('"total":2,"completed":1,"pending":1',
+                       '"total":"broken","completed":1,"pending":1')
+    assert bad!=SOURCE
+    result,receipt=_run_isolated_probe_on_trusted_host(fixture(tmp_path,source=bad))
+    assert result.returncode==3
+    assert receipt["status"]=="FAIL"
+    assert "INVALID_METRICS" in receipt["issues"]
