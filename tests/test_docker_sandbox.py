@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import stat
 from pathlib import Path
 import subprocess
 import zipfile
@@ -273,3 +275,59 @@ def test_docker_client_environment_does_not_inherit_remote_target_or_secrets(
     assert not any(x in captured["env"] for x in
                    ("DOCKER_HOST","DOCKER_CONTEXT","DOCKER_TLS_VERIFY",
                     "GITHUB_TOKEN"))
+
+
+def test_original_private_directory_is_unchanged_and_docker_uses_clean_staging(
+        tmp_path, monkeypatch):
+    bundle = fixture(tmp_path)
+    extracted = bundle[1]
+    extracted.chmod(0o700)
+    old_mode = stat.S_IMODE(extracted.stat().st_mode)
+    source_before = (extracted / "backend" / "app.py").read_bytes()
+    _fake_docker(monkeypatch)
+    real_run = sandbox._run
+    stage_seen = []
+    def inspect(argv, *, timeout):
+        if "run" in argv:
+            mount = next(x for x in argv if x.startswith("--mount=type=bind,"))
+            staged = Path(mount.split("source=",1)[1].split(",target=/work,readonly",1)[0])
+            stage_seen.append(staged)
+            assert staged != extracted
+            assert staged.is_dir()
+            assert (staged/"backend"/"app.py").read_bytes() == source_before
+            assert set(p.relative_to(staged).as_posix() for p in staged.rglob("*") if p.is_file()) == (
+                set(p.relative_to(extracted).as_posix() for p in extracted.rglob("*") if p.is_file()))
+            if os.name != "nt":
+                assert stat.S_IMODE(staged.stat().st_mode) == 0o755
+                assert stat.S_IMODE((staged/"backend").stat().st_mode) == 0o755
+                assert stat.S_IMODE((staged/"backend"/"app.py").stat().st_mode) == 0o644
+        return real_run(argv, timeout=timeout)
+    monkeypatch.setattr(sandbox, "_run", inspect)
+    assert call(bundle)["status"] == "ISOLATED_SYNTHETIC_PASS_REVIEW_REQUIRED"
+    assert stage_seen and not stage_seen[0].exists()
+    assert stat.S_IMODE(extracted.stat().st_mode) == old_mode
+    assert (extracted/"backend"/"app.py").read_bytes() == source_before
+
+
+@pytest.mark.parametrize("simulation", ["timeout","negative_response","cleanup_failed"])
+def test_staged_source_removed_even_on_failure(tmp_path, monkeypatch, simulation):
+    bundle = fixture(tmp_path)
+    _fake_docker(monkeypatch, timeout=simulation=="timeout",
+                 cleanup=simulation!="cleanup_failed",
+                 receipt=GOOD if simulation!="negative_response" else
+                     dict(GOOD, status="FAIL", issues=["INVALID_METRICS"]),
+                 docker_rc=3 if simulation=="negative_response" else 0)
+    old = sandbox._run
+    paths = []
+    def capture(argv, *, timeout):
+        if "run" in argv:
+            paths.append(Path(next(x for x in argv if x.startswith("--mount=type=bind,"))
+                              .split("source=",1)[1].split(",target=/work,readonly",1)[0]))
+        return old(argv,timeout=timeout)
+    monkeypatch.setattr(sandbox,"_run",capture)
+    if simulation == "negative_response":
+        assert call(bundle)["status"] == "ISOLATED_SYNTHETIC_BEHAVIOR_FAILURE"
+    else:
+        with pytest.raises(UnsafeSandbox,match="timed out|cleanup unverified"):
+            call(bundle,timeout_seconds=4)
+    assert len(paths)==1 and not paths[0].exists()

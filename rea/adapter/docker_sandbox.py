@@ -8,7 +8,10 @@ Docker daemon/host trust and runtime image provenance remain external gates.
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
+import io
 import hashlib
+import tempfile
 import json
 import os
 from pathlib import Path
@@ -17,8 +20,10 @@ import secrets
 import shutil
 import subprocess
 import sys
+import zipfile
 
-from rea.adapter.behavior_probe import UnsafeProbe, _archive_and_tree
+from rea.adapter.behavior_probe import (ALLOWED_FILES, MAX_ZIP, UnsafeProbe,
+                                        _archive_and_tree, _safe_read)
 
 SCHEMA = "rea.docker_synthetic_sandbox.v0.1"
 IMAGE = re.compile(r"^[a-z0-9][a-z0-9._/-]*@sha256:[a-f0-9]{64}$")
@@ -230,6 +235,48 @@ def _validate_image(docker: list[str], image: str) -> None:
         raise UnsafeSandbox("local image digest provenance cannot be verified")
 
 
+@contextmanager
+def _verified_synthetic_mount(bundle_zip: Path, expected_sha256: str):
+    """Create an exact, temporary, non-root-readable copy of the approved fixture.
+
+    Never chmod the original owner extraction. Docker's UID 65534 cannot
+    traverse typical Python TemporaryDirectory 0700 parents on Linux.
+    Synthetic test assets only: the temporary 0755/0644 view is NOT suitable
+    for confidential customer data. Always delete after container cleanup.
+    """
+    try:
+        data = _safe_read(Path(bundle_zip), MAX_ZIP)
+    except UnsafeProbe as exc:
+        raise UnsafeSandbox("source ZIP changed before isolated mount") from exc
+    if hashlib.sha256(data).hexdigest() != expected_sha256:
+        raise UnsafeSandbox("source ZIP digest changed before isolated mount")
+    with tempfile.TemporaryDirectory(prefix="rea-synthetic-mount-") as temporary:
+        root = Path(temporary)
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+            for name in archive.namelist():
+                if name not in ALLOWED_FILES or name.startswith("/") or ".." in Path(name).parts:
+                    raise UnsafeSandbox("unsafe isolated fixture inventory")
+                parts = name.split("/")
+                member = root.joinpath(*parts)
+                member.parent.mkdir(parents=True, exist_ok=True)
+                member.parent.chmod(0o755)
+                with member.open("xb") as out:
+                    out.write(archive.read(name))
+                member.chmod(0o644)
+        root.chmod(0o755)
+        try:
+            # Revalidate all exact bytes, manifest, SHA256SUMS, and approved
+            # frontend/backend relationship in the actual Docker mount tree.
+            _archive_and_tree(bundle_zip, root, expected_sha256)
+        except (UnsafeProbe, OSError, ValueError) as exc:
+            raise UnsafeSandbox("staged synthetic mount integrity refused") from exc
+        canonical = root.resolve(strict=True)
+        if str(canonical) != str(root.absolute()) or any(
+                c in str(canonical) for c in (",", "\\n", "\\r")):
+            raise UnsafeSandbox("unsafe staged Docker bind path")
+        yield canonical
+
+
 def _container_removed(docker: list[str], name: str) -> bool:
     # --rm normally removes the container. Force-remove on every exit path,
     # then confirm an empty daemon-side exact-name query.
@@ -262,14 +309,12 @@ def isolate_trusted_synthetic(bundle_zip: Path, extracted: Path, *,
     if manifest.get("trusted_synthetic_only") is not True:
         raise UnsafeSandbox("customer or non-synthetic source execution forbidden")
     source_sha=hashlib.sha256((folder/"backend"/"app.py").read_bytes()).hexdigest()
-    canonical=folder.resolve(strict=True)
-    if str(canonical)!=str(folder.absolute()) or any(c in str(canonical) for c in (",","\n","\r")):
-        raise UnsafeSandbox("unsafe Docker bind mount source")
     docker = _local_docker()
     _validate_image(docker,image)
     name="rea-synthetic-"+secrets.token_hex(12)
     nonce=secrets.token_hex(32)
-    cmd=docker+[
+    with _verified_synthetic_mount(Path(bundle_zip), expected_bundle_sha256) as canonical:
+        cmd=docker+[
         "run","--rm","--name",name,"--pull=never",
         "--network=none","--read-only","--cap-drop=ALL",
         "--security-opt=no-new-privileges:true",
@@ -283,17 +328,17 @@ def isolate_trusted_synthetic(bundle_zip: Path, extracted: Path, *,
         "--env=REA_TRUSTED_SYNTHETIC_ATTEST_TOKEN="+nonce,
         "--entrypoint=python",image,
         "-E","-B","-c",CONTAINER_PROBE,source_sha]
-    outcome = None
-    failure = None
-    try:
+        outcome = None
+        failure = None
         try:
-            outcome=_run(cmd,timeout=timeout_seconds)
-        except (OSError,subprocess.TimeoutExpired) as exc:
-            failure=UnsafeSandbox("isolated container invocation failed or timed out")
-            failure.__cause__=exc
-    finally:
-        if not _container_removed(docker,name):
-            raise UnsafeSandbox("container cleanup unverified; stop and inspect Docker host")
+            try:
+                outcome=_run(cmd,timeout=timeout_seconds)
+            except (OSError,subprocess.TimeoutExpired) as exc:
+                failure=UnsafeSandbox("isolated container invocation failed or timed out")
+                failure.__cause__=exc
+        finally:
+            if not _container_removed(docker,name):
+                raise UnsafeSandbox("container cleanup unverified; stop and inspect Docker host")
     if failure is not None:
         raise failure
     assert outcome is not None
