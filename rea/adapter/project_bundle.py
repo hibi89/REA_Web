@@ -105,6 +105,7 @@ RUNNER = '''"""Only run the self-authored, owner-confirmed synthetic test fixtur
 from __future__ import annotations
 import argparse
 import hashlib
+import json
 from pathlib import Path
 import sys
 
@@ -121,6 +122,20 @@ def check():
     dashboard = ROOT / "dashboard"
     if not dashboard.is_dir() or not (dashboard / "index.html").is_file():
         raise RuntimeError("dashboard missing")
+    checks = json.loads((ROOT / "SHA256SUMS.json").read_text(encoding="utf-8"))
+    if not isinstance(checks, dict) or not 1 <= len(checks) <= 50:
+        raise RuntimeError("invalid SHA256SUMS")
+    for name, sha in checks.items():
+        part = Path(name)
+        if (not isinstance(name, str) or part.is_absolute()
+                or any(c in (".", "..") for c in part.parts)
+                or not isinstance(sha, str) or len(sha) != 64):
+            raise RuntimeError("unsafe SHA256SUMS")
+        member = ROOT / part
+        if member.is_symlink() or not member.is_file():
+            raise RuntimeError("missing or symbolic-link package member")
+        if hashlib.sha256(member.read_bytes()).hexdigest() != sha:
+            raise RuntimeError("package content changed; execution refused")
     return True
 
 
@@ -241,7 +256,7 @@ def build_synthetic_project(backend_zip: Path, frontend_dir: Path,
         "runtime_declarations_review": RECONCILIATION_SCHEMA,
         "runtime_origin_attested": False,
         "behavior_verified_by_bundle_generator": False,
-        "file_count": len(files),
+        "file_count": len(files) + 2,
         "limitations": ["requires_installed_fastapi_uvicorn", "no_customer_zip_auto_execution",
                         "no_production_deployment", "requires_clean_extract_and_manual_local_run"],
     }

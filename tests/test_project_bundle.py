@@ -82,6 +82,7 @@ def test_bundle_deterministic_and_all_hashes(tmp_path):
         assert manifest['runtime_origin_attested'] is False
         assert manifest['behavior_verified_by_bundle_generator'] is False
         assert manifest['original_backend_zip_sha256']==sha
+        assert manifest['file_count']==len(z.namelist())
         assert all(hashlib.sha256(z.read(name)).hexdigest()==digest for name,digest in hashes.items())
         assert all(not name.startswith('/') and '..' not in name for name in z.namelist())
         assert 'backend/app.py' in z.namelist() and 'dashboard/app.js' in z.namelist()
@@ -171,6 +172,16 @@ def test_clean_extract_and_cli_integrity_guard(tmp_path):
     app=extraction/'backend/app.py'; app.write_text(app.read_text(encoding='utf-8')+'\n#touched',encoding='utf-8')
     checked=subprocess.run([sys.executable,'runtime_entry.py','--check'],cwd=extraction,text=True,capture_output=True)
     assert checked.returncode==2 and 'REFUSED' in checked.stderr
+
+
+def test_tampered_frontend_asset_rejected_by_manual_launcher(tmp_path):
+    out,_=package(tmp_path)
+    extraction=tmp_path/'clean';extraction.mkdir()
+    with zipfile.ZipFile(out) as archive:archive.extractall(extraction)
+    js=extraction/'dashboard/app.js'
+    js.write_bytes(js.read_bytes()+b'\n//broken')
+    checked=subprocess.run([sys.executable,'runtime_entry.py','--check'],cwd=extraction,text=True,capture_output=True)
+    assert checked.returncode==2 and 'package content changed' in checked.stderr
 
 
 def test_cli_no_auto_execution(tmp_path):
