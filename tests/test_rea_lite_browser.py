@@ -98,3 +98,55 @@ def test_bad_csv_preserves_original_and_export_reopens_on_file(tmp_path):
             assert html.read_text(encoding="utf-8") != saved.read_text(encoding="utf-8")
         finally:
             browser.close()
+
+
+def test_unsaved_csv_changes_warn_without_browser_persistence(tmp_path):
+    """No localStorage/cookies/autosave; navigating away must warn only after edit."""
+    from playwright.sync_api import sync_playwright
+    html = make_html(tmp_path, "office")
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        try:
+            page = browser.new_page(accept_downloads=True)
+            errors = []
+            page.on("pageerror", lambda exc: errors.append(str(exc)))
+            page.goto(html.as_uri())
+            def warning_status():
+                return page.evaluate("""() => {
+                    const event = new Event('beforeunload', {cancelable:true});
+                    window.dispatchEvent(event);
+                    return event.defaultPrevented;
+                }""")
+            assert warning_status() is False
+            initial = page.locator("#total").inner_text()
+            bad = tmp_path / "bad.csv"
+            bad.write_text("item_code,item_name,group,price\nX1,가,z,1\nX1,나,z,2\n", encoding="utf-8")
+            page.locator("#csv-file").set_input_files(str(bad))
+            assert "갱신 실패" in page.locator("#status").inner_text()
+            assert warning_status() is False
+            assert page.locator("#total").inner_text() == initial
+            update = tmp_path / "update.csv"
+            update.write_text("item_code,item_name,group,price\nX9,업데이트,분류,777\n", encoding="utf-8")
+            page.locator("#csv-file").set_input_files(str(update))
+            assert page.locator("#total").inner_text() == "1"
+            assert warning_status() is True
+            assert page.evaluate("() => localStorage.length") == 0
+            assert page.evaluate("() => sessionStorage.length") == 0
+            with page.expect_download() as incoming:
+                page.locator("#export").click()
+            saved = tmp_path / "exported.html"
+            incoming.value.save_as(saved)
+            # A requested download does not prove the user retained the file.
+            assert warning_status() is True
+            reopened = browser.new_page()
+            reopened.goto(saved.as_uri())
+            assert reopened.locator("#total").inner_text() == "1"
+            assert reopened.locator(".record").inner_text().find("업데이트") >= 0
+            assert reopened.evaluate("""() => {
+                const event = new Event('beforeunload', {cancelable:true});
+                window.dispatchEvent(event);
+                return event.defaultPrevented;
+            }""") is False
+            assert not errors, errors
+        finally:
+            browser.close()

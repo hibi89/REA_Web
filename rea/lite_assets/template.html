@@ -33,6 +33,14 @@ body[data-theme=cafe] .item-list{grid-template-columns:repeat(2,minmax(0,1fr))}b
  const mapping=Object.freeze({...original.mapping});
  const canonical=Object.freeze([...original.columns]);
  let records=original.records.map(x=>({...x}));
+ // Local in-memory edits are not persistent until a new HTML is saved and reopened.
+ // A download request cannot prove the browser actually wrote the destination file.
+ let unsavedChanges=false;
+ window.addEventListener('beforeunload',event=>{
+   if(!unsavedChanges)return;
+   event.preventDefault();
+   event.returnValue='';
+ });
  let page=0;
  const safe=(tag,value,cls)=>{ const n=document.createElement(tag); if(value!==undefined)n.textContent=String(value);if(cls)n.className=cls;return n; };
  const status=(message,isError=false)=>{ $('status').textContent=message;$('status').className=isError?'status bad':'status'; };
@@ -112,7 +120,7 @@ body[data-theme=cafe] .item-list{grid-template-columns:repeat(2,minmax(0,1fr))}b
      const binary=await file.arrayBuffer();
      const text=new TextDecoder('utf-8',{fatal:true}).decode(binary);
      const data=parseCsv(text);
-     records=data;page=0;$('search').value='';$('category').value='';updateCategories();refresh();
+     records=data;unsavedChanges=true;page=0;$('search').value='';$('category').value='';updateCategories();refresh();
      status('CSV '+data.length+'건 반영됨 · 새로 열어도 유지하려면 변경 내용 HTML로 저장하세요.');
    }catch(e){status('갱신 실패: '+e.message+' · 기존 데이터는 유지됩니다.',true);}
    finally{ev.target.value='';}
