@@ -92,6 +92,7 @@ def test_generated_frontend_real_http_chromium(tmp_path):
                 response=page.goto(address+'/dashboard/',wait_until='networkidle',timeout=25000)
                 assert response is not None and response.status==200
                 expect(page.locator('#kpi-total')).to_have_text('3')
+                expect(page.locator('#connection-text')).to_have_text('CONNECTED')
                 assert page.locator('#kpi-completed').inner_text()=='2'
                 assert page.locator('#kpi-pending').inner_text()=='1'
                 assert page.locator('#jobs tr').count()==3
@@ -102,6 +103,10 @@ def test_generated_frontend_real_http_chromium(tmp_path):
                 assert len([u for status,u in calls if status==200 and '/api/' in u])>=3
                 assert not errors and not failed, (errors,failed)
                 assert page.locator('#error').is_hidden()
+                page.route('**/api/metrics', lambda route: route.fulfill(status=503, content_type='application/json', body='{}'))
+                page.reload(wait_until='networkidle')
+                expect(page.locator('#connection-text')).to_have_text('API ERROR')
+                assert page.locator('#error').is_visible()
             finally:
                 browser.close()
     finally:
