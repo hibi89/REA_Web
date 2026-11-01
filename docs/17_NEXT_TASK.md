@@ -1,3 +1,8 @@
+## [CURRENT 2026-11-01] Lite source incorporated; pilot archive generated, automated checks PASS
+
+- **Completed:** Under `feature/rea-lite-integrated-20261101` source, real Pro parser and explicit owner mapping plus 3-theme deterministic synthetic pilot ZIP (2 OS actions PASS, [#41304839963](https://github.com/hibi89/REA_Web/actions/runs/41304839963)). The GitHub source of truth is `rea/lite_builder.py` and `scripts/rea_lite_owner_pilot.py`; the old candidate ZIP is not the current missing source. Package SHA256 `a0f7ad49362dd9c4d260d1764dfa10e81574b65ce5e3518ddcbd6dbf274e3875` verified after GitHub artifact extraction. No new Pro release/merge or public sale.
+- **NEXT independent gate:** Owner/nondeveloper tests Windows10/11 actual Edge double-click, invalid/valid CSV, exported HTML re-open, Console/Network; legal owner source/runtime notices and redistribution rights; privacy, support/refund and actual timed 3-delivery run. Only make a new code commit to resolve a discovered reproducible defect. All commercial gates HOLD; do not claim full release based solely on Action SUCCESS.
+
 ## [ACTIVE 2026-10-31 04:24 KST] REA_WEB Lite new approved product direction; source still outside GitHub
 
 - User approved Lite/Pro split: standalone offline browser HTML for customers, seller-side actual rea.mvp CSV/JSON field checks and explicit APPROVE, three themes, CSV File API update and explicit updated-HTML download. Keep old Pro untouched; no LAN QR/0.0.0.0, EXE, cloud or customer file upload. Suggested 129,000 KRW is hypothesis, not verified selling price.
