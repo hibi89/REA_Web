@@ -229,3 +229,20 @@ def test_embedded_probe_wrong_metrics_refused_on_actual_http(tmp_path):
     assert result.returncode==3
     assert receipt["status"]=="FAIL"
     assert "INVALID_METRICS" in receipt["issues"]
+
+
+@pytest.mark.parametrize("bad_receipt",[
+    {"status":"FAIL","issues":["OK"],"list_count_observed":0,
+     "observed_statuses":{"secret_auth_token":200}},
+    {"status":"FAIL","issues":["OK"],"list_count_observed":0,
+     "observed_statuses":{"list":True}},
+    {"status":"FAIL","issues":["RAW_SECRET_VALUE=token"],"list_count_observed":0,
+     "observed_statuses":{}},
+    {"status":"FAIL","issues":["ERROR"]*21,"list_count_observed":0,
+     "observed_statuses":{}},
+])
+def test_reject_untrusted_container_receipt_secret_or_unbounded_fields(
+        tmp_path,monkeypatch,bad_receipt):
+    _fake_docker(monkeypatch,bad_receipt,docker_rc=3)
+    with pytest.raises(UnsafeSandbox,match="malformed"):
+        call(fixture(tmp_path))
