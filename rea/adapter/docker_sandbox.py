@@ -307,6 +307,9 @@ def isolate_trusted_synthetic(bundle_zip: Path, extracted: Path, *,
             or type(proof["list_count_observed"]) is not int
             or not 0 <= proof["list_count_observed"] <= 200):
         raise UnsafeSandbox("malformed isolated verification receipt")
+    if (proof["status"]=="PASS_REVIEW_REQUIRED" and (proof["issues"] or proof["observed_statuses"]!=
+          {"list":200,"metrics":200,"detail":200,"missing_detail":404})):
+        raise UnsafeSandbox("inconsistent isolated verification receipt")
     good=(outcome.returncode==0 and proof["status"]=="PASS_REVIEW_REQUIRED"
           and proof["issues"]==[] and proof["observed_statuses"]==
           {"list":200,"metrics":200,"detail":200,"missing_detail":404})
