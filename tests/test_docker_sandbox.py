@@ -43,8 +43,9 @@ def _fake_docker(monkeypatch, receipt=GOOD, *, docker_rc=0, cleanup=True, timeou
 
 def call(bundle, **kwargs):
     zip_path,folder,digest=bundle
-    return isolate_trusted_synthetic(zip_path,folder,expected_bundle_sha256=digest,
-          image=IMAGE,developer_authorized_synthetic=True,**kwargs)
+    options={"image":IMAGE,"developer_authorized_synthetic":True}
+    options.update(kwargs)
+    return isolate_trusted_synthetic(zip_path,folder,expected_bundle_sha256=digest,**options)
 
 
 def test_policy_argv_exact_constraints_and_clean_receipt(tmp_path,monkeypatch):
