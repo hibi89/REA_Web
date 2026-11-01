@@ -61,6 +61,7 @@ def test_policy_argv_exact_constraints_and_clean_receipt(tmp_path,monkeypatch):
     argv=next(c for c in commands if "run" in c)
     for must in ("--rm","--pull=never","--network=none","--read-only",
                  "--cap-drop=ALL","--security-opt=no-new-privileges:true",
+                 "--security-opt=seccomp=builtin",
                  "--user=65534:65534","--pids-limit=32","--memory=256m",
                  "--memory-swap=256m","--cpus=1","--ipc=none",
                  "--ulimit=nofile=256:256"):
@@ -246,3 +247,24 @@ def test_reject_untrusted_container_receipt_secret_or_unbounded_fields(
     _fake_docker(monkeypatch,bad_receipt,docker_rc=3)
     with pytest.raises(UnsafeSandbox,match="malformed"):
         call(fixture(tmp_path))
+
+
+def test_docker_client_environment_does_not_inherit_remote_target_or_secrets(
+        monkeypatch):
+    monkeypatch.setenv("DOCKER_HOST","tcp://unapproved.example:2375")
+    monkeypatch.setenv("DOCKER_CONTEXT","unauthorized")
+    monkeypatch.setenv("DOCKER_TLS_VERIFY","1")
+    monkeypatch.setenv("GITHUB_TOKEN","SECRET_VALUE")
+    captured={}
+    def intercept(argv, **kwargs):
+        captured.update(kwargs)
+        return subprocess.CompletedProcess(argv,0,"","")
+    monkeypatch.setattr(sandbox.subprocess,"run",intercept)
+    sandbox._run(["/fixed/docker","version"],timeout=3)
+    assert captured["shell"] is False
+    assert captured["timeout"]==3
+    assert captured["stdin"]==subprocess.DEVNULL
+    assert captured["env"].keys() <= {"PATH","HOME"}
+    assert not any(x in captured["env"] for x in
+                   ("DOCKER_HOST","DOCKER_CONTEXT","DOCKER_TLS_VERIFY",
+                    "GITHUB_TOKEN"))

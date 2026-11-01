@@ -8,6 +8,7 @@ C. Dedicated disposable VM: stronger boundary for genuinely untrusted code, but 
 New module: rea/adapter/docker_sandbox.py. It uses the original exact ZIP/extracted tree approval routine before launching an isolated self-authored synthetic FastAPI fixture. Existing Pro/Lite and upstream Fable/Astra are untouched. Customer ZIP and externally authored backend code are explicitly NOT authorized.
 
 ## Enforced Docker invocation
+Docker built-in default seccomp policy is explicitly requested even if the daemon default is unconfined. This does not attest actual kernel policy behavior.
 - Local Docker Engine socket only; remote DOCKER_HOST/DOCKER_CONTEXT are not inherited.
 - Require an exact separately reviewed image@sha256 digest already present locally; compare local RepoDigests. No automatic pull, package install, privileged run or daemon configuration.
 - --network=none, no published ports, GET-only HTTP to container-internal 127.0.0.1.
