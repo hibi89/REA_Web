@@ -43,3 +43,16 @@ jobs:
         run: node tests/test_rea_lite_csv.cjs
       - name: Real Chromium file navigation and export/reopen
         run: python -m pytest -q tests/test_rea_lite_browser.py
+      - name: Verify deterministic three-theme owner pilot package
+        run: python -m pytest -q tests/test_rea_lite_owner_pilot.py
+      - name: Build three-theme synthetic pilot (Linux only)
+        if: runner.os == 'Linux'
+        run: python -m scripts.rea_lite_owner_pilot --out REA_Lite_3Theme_OWNER_SYNTHETIC_NOT_FOR_SALE.zip
+      - name: Upload synthetic owner pilot (not public commercial release)
+        if: runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: rea-lite-owner-synthetic-pilot
+          path: REA_Lite_3Theme_OWNER_SYNTHETIC_NOT_FOR_SALE.zip
+          if-no-files-found: error
+          retention-days: 7
