@@ -15,6 +15,7 @@ import sys
 import tempfile
 
 from rea.adapter.backend_zip import SCHEMA as BACKEND_SCHEMA
+from rea.adapter.backend_schema import SCHEMA as API_SCHEMA
 from rea.adapter.fable_to_astra import project_fable
 from rea.adapter.visual_reference import VisualError, validate_visual
 from rea.safe_publish import publish_directory
@@ -41,24 +42,104 @@ def _valid_field(name: object) -> bool:
 
 def _valid_bindings(value: object) -> dict:
     """Field names and response shapes are EXPLICIT owner input, never inferred."""
-    if not isinstance(value, dict) or set(value) != set(BINDING_NAMES):
-        raise BridgeError('binding roles must be list, metrics and detail')
+    if not isinstance(value, dict) or set(value) not in (set(BINDING_NAMES), {*BINDING_NAMES, 'presentation'}):
+        raise BridgeError('binding roles must be list, metrics, detail and optional presentation')
     result = {}
     for role in BINDING_NAMES:
         entry = value[role]
-        if not isinstance(entry, dict) or set(entry) != {'path', 'field'}:
-            raise BridgeError(f'{role}: require path and response field')
+        allowed = ({'path','field'}, {'path','field','path_param'}) if role == 'detail' else ({'path','field'},)
+        if not isinstance(entry, dict) or set(entry) not in allowed:
+            raise BridgeError(f'{role}: require path, field and optional detail path_param')
         if not _safe_api(entry['path']) or not _valid_field(entry['field']):
             raise BridgeError(f'{role}: invalid path or response field')
         result[role] = {'path': entry['path'], 'field': entry['field']}
     if '{' in result['list']['path'] or '{' in result['metrics']['path']:
         raise BridgeError('list/metrics paths must be parameter-free')
-    if result['detail']['path'].count('{job_id}') != 1 or result['detail']['path'].count('{') != 1:
-        raise BridgeError('detail path requires exactly one {job_id}')
+    detail = value['detail']
+    param = detail.get('path_param', 'job_id')
+    if (not _valid_field(param) or param in ('__proto__','constructor','prototype')
+            or result['detail']['path'].count('{' + param + '}') != 1
+            or result['detail']['path'].count('{') != 1
+            or result['detail']['path'].count('}') != 1):
+        raise BridgeError('detail path requires exactly one explicit path parameter')
+    if 'path_param' in detail:
+        result['detail']['path_param'] = param
+    if 'presentation' in value:
+        result['presentation'] = _valid_presentation(value['presentation'])
     return result
 
 
-def make_review(fable: dict, backend: dict, bindings: dict | None = None, *, visual: dict | None = None) -> dict:
+def _valid_presentation(value: object) -> dict:
+    """Owner-declared display fields only. No arbitrary JS/templates/expressions."""
+    if not isinstance(value, dict) or set(value) != {'item', 'metrics', 'detail_fields'}:
+        raise BridgeError('presentation requires item, metrics, detail_fields')
+    expected = {'item': {'id','name','category','status'},
+                'metrics': {'total','completed','pending'}}
+    result = {}
+    for group, keys in expected.items():
+        fields = value[group]
+        if not isinstance(fields, dict) or set(fields) != keys:
+            raise BridgeError('invalid presentation field mapping')
+        if any(not _valid_field(v) or v in ('__proto__','constructor','prototype') for v in fields.values()):
+            raise BridgeError('unsafe presentation field')
+        result[group] = {k:fields[k] for k in sorted(keys)}
+    fields = value['detail_fields']
+    if (not isinstance(fields, list) or not 1 <= len(fields) <= 12
+            or len(set(x for x in fields if isinstance(x,str))) != len(fields)
+            or any(not _valid_field(v) or v in ('__proto__','constructor','prototype') for v in fields)):
+        raise BridgeError('invalid detail presentation fields')
+    result['detail_fields'] = list(fields)
+    return result
+
+
+def _static_schema_review(schema: dict, backend: dict) -> dict:
+    """Accept only reviewed static schema hints for the SAME owner ZIP.
+
+    Hints are provenance metadata, not proof of endpoint availability or JSON
+    response shapes, and cannot autoapprove an API binding.
+    """
+    if (not isinstance(schema, dict) or schema.get('schema_version') != API_SCHEMA
+            or schema.get('status') != 'REVIEW_REQUIRED'
+            or schema.get('generation_allowed') is not False
+            or schema.get('execution_performed') is not False
+            or schema.get('backend_sha256') != backend['input']['sha256']):
+        raise BridgeError('schema review mismatch: backend SHA/status')
+    routes = schema.get('routes')
+    if not isinstance(routes, list) or len(routes) > 500:
+        raise BridgeError('invalid static schema routes')
+    declared = set()
+    for entry in backend['api']['endpoints']:
+        methods = entry.get('methods')
+        if (not isinstance(methods, list) or len(methods) > 8
+                or any(not isinstance(m,str) or len(m) > 12 for m in methods)
+                or not isinstance(entry.get('source'), str)
+                or type(entry.get('line')) is not int):
+            raise BridgeError('backend endpoint declaration lacks source proof')
+        declared.add((entry['path'], tuple(methods), entry['source'], entry['line']))
+    models = 0
+    for route in routes:
+        if not isinstance(route, dict):
+            raise BridgeError('invalid schema route')
+        methods = route.get('methods')
+        if (not isinstance(methods,list) or len(methods)>8
+                or any(not isinstance(m,str) or len(m)>12 for m in methods)
+                or not isinstance(route.get('source'),str)
+                or type(route.get('line')) is not int
+                or (route.get('path'),tuple(methods),route['source'],route['line']) not in declared
+                or route.get('verification') != 'STATIC_AST_HINT_ONLY'
+                or not isinstance(route.get('response'),dict)):
+            raise BridgeError('schema route does not match backend declaration')
+        response_models = route['response'].get('models',[])
+        if not isinstance(response_models,list) or len(response_models)>64:
+            raise BridgeError('invalid schema response models')
+        models += int(bool(route.get('request_body'))) + len(response_models)
+    return {'status':'STATIC_AST_HINT_ONLY_NOT_RUNTIME_VERIFIED',
+            'route_hints':len(routes),'model_hints':models,
+            'backend_sha256':schema['backend_sha256'],'bindings_autoapproved':False}
+
+
+def make_review(fable: dict, backend: dict, bindings: dict | None = None, *,
+                visual: dict | None = None, schema: dict | None = None) -> dict:
     """Join independent, untrusted declarations without approving runtime claims."""
     if not isinstance(fable, dict) or not isinstance(backend, dict):
         raise BridgeError('Fable result and backend contract must be JSON objects')
@@ -87,6 +168,7 @@ def make_review(fable: dict, backend: dict, bindings: dict | None = None, *, vis
         if ('GET' in methods and endpoint.get('verification') == 'STATIC_DECLARATION_ONLY'
                 and endpoint.get('mount') in ('app_declaration', 'local_router_mount_declaration')):
             candidates.add(endpoint['path'])
+    schema_summary = _static_schema_review(schema, backend) if schema is not None else None
     observed = None
     if visual is not None:
         try:
@@ -95,7 +177,8 @@ def make_review(fable: dict, backend: dict, bindings: dict | None = None, *, vis
             raise BridgeError('visual reference rejected: ' + str(exc)) from exc
     selected = _valid_bindings(bindings) if bindings is not None else None
     if selected is not None:
-        for role, binding in selected.items():
+        for role in BINDING_NAMES:
+            binding = selected[role]
             if binding['path'] not in candidates:
                 raise BridgeError(f'{role}: GET declaration not found or router mount unverified')
     return {
@@ -117,6 +200,7 @@ def make_review(fable: dict, backend: dict, bindings: dict | None = None, *, vis
                     'runtime_verified': False, 'response_schema_verified': False},
         'bindings': selected,
         'visual_contract': observed,
+        'schema_review': schema_summary,
         'unknowns': (['exact_reference_layout_and_assets'] if observed else ['actual_reference_visual_design']) + ['backend_runtime_auth',
                      'backend_response_shape', 'backend_cors_and_hosting'],
     }
@@ -137,6 +221,11 @@ CSS = '''*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color
 
 JS = '''"use strict";
 const API = __API_JSON__;
+const VIEW = API.presentation || {
+  item: {id:'id',name:'name',category:'category',status:'status'},
+  metrics: {total:'total',completed:'completed',pending:'pending'},
+  detail_fields: ['id','name','category','status','duration_ms']
+};
 const $ = id => document.getElementById(id);
 const safe = value => value == null ? '' : String(value);
 const field = (item, name) => Object.prototype.hasOwnProperty.call(item, name) ? item[name] : '';
@@ -153,23 +242,23 @@ function render(items) {
   $('count').textContent=items.length+' entries'; $('empty').hidden=items.length!==0;
   for(const item of items){
     const tr=document.createElement('tr');
-    tr.append(node('td',field(item,'name')||field(item,'id')));
-    tr.append(node('td',field(item,'category')));
-    const status=document.createElement('td');const badge=node('span',field(item,'status'));
-    badge.className='status'+(field(item,'status')==='done'?' done':'');status.append(badge);tr.append(status);
+    tr.append(node('td',field(item,VIEW.item.name)||field(item,VIEW.item.id)));
+    tr.append(node('td',field(item,VIEW.item.category)));
+    const status=document.createElement('td');const badge=node('span',field(item,VIEW.item.status));
+    badge.className='status'+(field(item,VIEW.item.status)==='done'?' done':'');status.append(badge);tr.append(status);
     const cell=document.createElement('td');const button=node('button','상세');button.type='button';button.className='link';
-    button.addEventListener('click',()=>showDetail(safe(field(item,'id'))));cell.append(button);tr.append(cell);target.append(tr);
+    button.addEventListener('click',()=>showDetail(safe(field(item,VIEW.item.id))));cell.append(button);tr.append(cell);target.append(tr);
   }
 }
 async function showDetail(id) {
   if(!id || id.length>200){fail(new Error('유효하지 않은 작업 ID'));return;}
-  const path=API.detail.path.replace('{job_id}',encodeURIComponent(id));
+  const path=API.detail.path.replace('{'+(API.detail.path_param||'job_id')+'}',encodeURIComponent(id));
   try {
     const response=await fetchJson(path);
     const obj=API.detail.field==='__root__'?response:response[API.detail.field];
     if(!obj || typeof obj!=='object' || Array.isArray(obj)) throw new Error('상세 응답 스키마 불일치');
     const box=$('detail');box.replaceChildren();
-    for(const key of ['id','name','category','status','duration_ms']){
+    for(const key of VIEW.detail_fields){
       const row=document.createElement('div');row.className='detail-row';row.append(node('span',key));row.append(node('b',field(obj,key)));box.append(row);
     }
   } catch(error) {fail(error);}
@@ -182,12 +271,12 @@ async function load(){
     if(!Array.isArray(arr) || arr.length>10000 || arr.some(x=>!x||typeof x!=='object'||Array.isArray(x))) throw new Error('목록 응답 스키마 불일치');
     if(!stat || typeof stat!=='object'||Array.isArray(stat)) throw new Error('지표 응답 스키마 불일치');
     cached=arr;
-    for(const key of ['total','completed','pending']) $('kpi-'+key).textContent=safe(field(stat,key));
+    for(const key of ['total','completed','pending']) $('kpi-'+key).textContent=safe(field(stat,VIEW.metrics[key]));
     render(cached);
     $('connection').classList.add('ready'); $('connection-text').textContent='CONNECTED';
   } catch(error){fail(error);}
 }
-$('search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase().trim();render(cached.filter(x=>['id','name','category'].some(k=>safe(field(x,k)).toLocaleLowerCase().includes(q))));});
+$('search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase().trim();render(cached.filter(x=>['id','name','category'].some(k=>safe(field(x,VIEW.item[k])).toLocaleLowerCase().includes(q))));});
 load();'''
 
 
@@ -255,7 +344,7 @@ def generate_frontend(review: dict, destination: Path, *, owner_confirmed: bool 
         'schema_version': SCHEMA, 'status': 'FRONTEND_SOURCE_GENERATED_NOT_RUNTIME_VERIFIED',
         'owner_bindings_confirmed': True, 'backend_modified': False,
         'reference': review['reference'], 'backend': review['backend'],
-        'bindings': binding, 'frontend_path': '/dashboard/',
+        'bindings': binding, 'schema_review': review.get('schema_review'), 'frontend_path': '/dashboard/',
         'limitations': ['backend_not_bundled', 'serve_on_same_origin_under_/dashboard',
                         'response_schema_must_be_runtime_verified',
                         'reference_visual_hints_not_pixel_replication' if visual else 'design_not_observed_from_reference'],
@@ -288,6 +377,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument('--fable', required=True, type=Path)
     parser.add_argument('--backend', required=True, type=Path)
     parser.add_argument('--visual', type=Path, help='separately captured, origin-matched computed-style reference JSON')
+    parser.add_argument('--schema', type=Path, help='read-only FastAPI AST model/route hints for same backend SHA')
     parser.add_argument('--bindings', type=Path, help='explicit owner response-field and GET path mappings')
     parser.add_argument('--out', type=Path, help='NEW frontend source directory')
     parser.add_argument('--owner-confirmed', action='store_true')
@@ -299,7 +389,8 @@ def main(argv: list[str] | None = None) -> int:
             raise BridgeError('preview mode cannot write frontend without owner confirmation')
         plan=make_review(_read_json(args.fable), _read_json(args.backend),
                          _read_json(args.bindings) if args.bindings is not None else None,
-                         visual=_read_json(args.visual) if args.visual is not None else None)
+                         visual=_read_json(args.visual) if args.visual is not None else None,
+                         schema=_read_json(args.schema) if args.schema is not None else None)
         if args.out is None:
             print(json.dumps(plan, indent=2, ensure_ascii=False))
         else:
