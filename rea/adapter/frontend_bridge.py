@@ -377,6 +377,7 @@ def generate_frontend(review: dict, destination: Path, *, owner_confirmed: bool 
         'owner_bindings_confirmed': True, 'backend_modified': False,
         'reference': review['reference'], 'backend': review['backend'],
         'bindings': binding, 'schema_review': review.get('schema_review'), 'frontend_path': '/dashboard/',
+        'visual_contract': visual,  # Sanitized, hash-validated capture needed to verify emitted CSS later.
         'limitations': ['backend_not_bundled', 'serve_on_same_origin_under_/dashboard',
                         'response_schema_must_be_runtime_verified',
                         'reference_visual_hints_not_pixel_replication' if visual else 'design_not_observed_from_reference'],
