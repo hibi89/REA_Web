@@ -269,19 +269,20 @@ def test_docker_client_environment_does_not_inherit_remote_target_or_secrets(
     monkeypatch.setenv("DOCKER_TLS_VERIFY","1")
     monkeypatch.setenv("GITHUB_TOKEN","SECRET_VALUE")
     captured={}
-    def intercept(argv, **kwargs):
-        captured.update(kwargs)
+    def intercept(argv, *, timeout, env, max_bytes=8192):
+        captured.update({"argv":argv,"timeout":timeout,"env":env,
+                         "max_bytes":max_bytes})
         return subprocess.CompletedProcess(argv,0,"","")
-    monkeypatch.setattr(sandbox.subprocess,"run",intercept)
+    monkeypatch.setattr(sandbox,"_bounded_capture",intercept)
+    monkeypatch.setattr(sandbox.subprocess,"run",lambda *a,**k:
+                        pytest.fail("unbounded legacy subprocess.run forbidden"))
     sandbox._run(["/fixed/docker","version"],timeout=3)
-    assert captured["shell"] is False
     assert captured["timeout"]==3
-    assert captured["stdin"]==subprocess.DEVNULL
+    assert captured["max_bytes"]==4096
     assert captured["env"].keys() <= {"PATH","HOME"}
     assert not any(x in captured["env"] for x in
                    ("DOCKER_HOST","DOCKER_CONTEXT","DOCKER_TLS_VERIFY",
                     "GITHUB_TOKEN"))
-
 
 def test_original_private_directory_is_unchanged_and_docker_uses_clean_staging(
         tmp_path, monkeypatch):
@@ -453,3 +454,56 @@ def test_output_flood_refusal_still_cleans_named_container_and_staging(tmp_path,
     assert len(staged)==1 and not staged[0].exists()
     assert "rm" in commands[-2] and "container" in commands[-1]
     assert (bundle[1]/"backend"/"app.py").exists()
+
+@pytest.mark.parametrize("operation,limit",[
+    (["version","--format","json"],4096),
+    (["image","inspect","fixture"],4096),
+    (["rm","-f","rea-synthetic-test"],4096),
+    (["container","ls","-aq"],4096),
+    (["run","--rm","fixture"],8192),
+])
+def test_all_docker_cli_operations_use_live_capture(monkeypatch,operation,limit):
+    captured=[]
+    def intercept(argv, *, timeout, env, max_bytes=8192):
+        captured.append((argv,timeout,max_bytes))
+        return subprocess.CompletedProcess(argv,0,"","")
+    monkeypatch.setattr(sandbox,"_bounded_capture",intercept)
+    monkeypatch.setattr(sandbox.subprocess,"run",lambda *a,**k:
+                        pytest.fail("unbounded Docker output capture forbidden"))
+    sandbox._run(["/safe/docker"]+operation,timeout=3)
+    assert captured==[(["/safe/docker"]+operation,3,limit)]
+
+
+@pytest.mark.parametrize("channel",["stdout","stderr"])
+def test_preflight_real_trusted_process_flood_refused_before_exit(channel):
+    import sys
+    command = "import sys;sys."+channel+".write('F'*50000);sys."+channel+".flush()"
+    with pytest.raises(UnsafeSandbox,match="output exceeded"):
+        sandbox._bounded_capture([sys.executable,"-B","-c",command],
+                        timeout=5,env=os.environ.copy(),max_bytes=4096)
+
+
+def test_docker_cleanup_output_flood_refuses_cleanup_attestation(monkeypatch):
+    commands=[]
+    def flooded(argv,*,timeout):
+        commands.append(argv)
+        if "rm" in argv:
+            raise UnsafeSandbox("Docker output exceeded bounded receipt limit")
+        pytest.fail("cleanup status must not be trusted after rm flood")
+    monkeypatch.setattr(sandbox,"_run",flooded)
+    assert sandbox._container_removed(["/safe/docker"],"rea-synthetic-test") is False
+    assert len(commands)==1 and "rm" in commands[0]
+
+
+def test_image_metadata_flood_fails_before_any_container_run(tmp_path,monkeypatch):
+    commands=[]
+    monkeypatch.setattr(sandbox,"_local_docker",
+                        lambda:["/trusted/docker","--host","unix:///var/run/docker.sock"])
+    def flooded(argv,*,timeout):
+        commands.append(argv)
+        raise UnsafeSandbox("Docker output exceeded bounded receipt limit")
+    monkeypatch.setattr(sandbox,"_run",flooded)
+    with pytest.raises(UnsafeSandbox,match="output exceeded"):
+        call(fixture(tmp_path))
+    assert len(commands)==1 and "version" in commands[0]
+    assert not any("run" in item for cmd in commands for item in cmd)
