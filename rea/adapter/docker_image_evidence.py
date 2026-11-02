@@ -38,8 +38,23 @@ def _bytes(path: Path) -> bytes:
 
 
 def _json(data: bytes) -> object:
+    # The manifest digest binds bytes, not their interpretation. Duplicate keys
+    # or non-JSON constants can be interpreted differently by review tools.
+    # Refuse ambiguous JSON at every nesting depth before trusting any fields.
+    def unique_object(pairs: list[tuple[str, object]]) -> dict:
+        obj = {}
+        for key, value in pairs:
+            if key in obj:
+                raise ValueError("duplicate JSON object key")
+            obj[key] = value
+        return obj
+
+    def no_nonfinite(value: str) -> object:
+        raise ValueError("nonstandard JSON numeric constant")
+
     try:
-        return json.loads(data.decode("utf-8"))
+        return json.loads(data.decode("utf-8"), object_pairs_hook=unique_object,
+                          parse_constant=no_nonfinite)
     except (UnicodeError, ValueError, RecursionError) as exc:
         raise UnsafeEvidence("invalid UTF-8 evidence JSON") from exc
 
