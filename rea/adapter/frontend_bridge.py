@@ -214,13 +214,15 @@ HTML = '''<!doctype html>
 <main><header class="top"><div class="breadcrumb">Workspace <span>/</span> Overview</div><div class="connection" id="connection" role="status"><span class="dot"></span><span id="connection-text">CHECKING API</span></div></header><div class="content"><section class="heading"><div><p class="eyebrow">REAL BACKEND · ORIGINAL FRONTEND</p><h1>Operations overview</h1><p class="sub">백엔드 ZIP에서 추출한 API 계약으로 연결하는 독립 제작 대시보드</p></div><span class="chip">Explicit API mapping</span></section>
 <section id="metrics" class="metrics" aria-label="주요 지표"><article><label>전체 작업</label><strong id="kpi-total">—</strong><span>All workloads</span></article><article><label>완료 작업</label><strong id="kpi-completed">—</strong><span>Completed jobs</span></article><article><label>대기 작업</label><strong id="kpi-pending">—</strong><span>Pending jobs</span></article></section>
 <section class="grid"><section id="records" class="panel records"><div class="panel-title"><div><h2>Activity feed</h2><p>원본 백엔드의 작업 목록을 실시간 조회합니다.</p></div><span id="count" class="tag">0 entries</span></div><label class="search-label">검색 <input id="search" type="search" placeholder="작업명, 번호, 분류 검색" aria-label="작업 검색" autocomplete="off"></label><div class="table-wrap"><table><thead><tr><th>작업</th><th>분류</th><th>상태</th><th>상세</th></tr></thead><tbody id="jobs"></tbody></table></div><p id="empty" class="empty" hidden>검색 결과가 없습니다.</p></section><aside class="panel detail"><div class="panel-title"><div><h2>Job inspector</h2><p>조회할 작업을 선택하십시오.</p></div></div><div id="detail" class="detail-content">왼쪽에서 작업을 선택하면 실제 API 상세 응답을 표시합니다.</div></aside></section>
-<p id="error" role="alert" class="error" hidden></p><footer>REA WEB · Independent interface · No reference-site scripts or assets copied · Same-origin read-only GET API</footer>
+<p id="error" role="alert" class="error" hidden></p><button id="retry" type="button" class="link" hidden>API 다시 연결</button><footer>REA WEB · Independent interface · No reference-site scripts or assets copied · Same-origin read-only GET API</footer>
 </div></main></div></body></html>'''
 
 CSS = '''*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:#162333;background:#f5f7fb;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif}.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}.sidebar{background:#101d31;color:#e6ebf5;display:flex;flex-direction:column;padding:29px 17px}.logo{display:flex;align-items:center;gap:11px;padding:0 15px 42px;font-size:17px;letter-spacing:.05em;font-weight:850}.logo small{display:block;margin-top:5px;color:#8b9fb9;font-size:9px;letter-spacing:.18em}.glyph{width:34px;height:34px;background:#3678ff;display:grid;place-items:center;border-radius:10px;font-size:20px}.sidebar nav{display:grid;gap:5px}.sidebar nav span{font-size:10px;letter-spacing:.18em;color:#8090ac;margin:25px 15px 11px;font-weight:750}.sidebar nav a{display:block;text-decoration:none;padding:13px 14px;border-radius:10px;color:#b0bfd5;font-size:13px;font-weight:650}.sidebar nav a.active,.sidebar nav a:hover{background:#233753;color:#fff}.sidebar-foot{margin-top:auto;border-top:1px solid #2b405b;padding:23px 13px 5px;color:#89a0be;font-size:10px;letter-spacing:.1em;line-height:2}.sidebar-foot strong{color:#dce5f3;font-size:11px;font-weight:500;letter-spacing:0}main{min-width:0}.top{height:70px;background:#fff;border-bottom:1px solid #e7ebf1;display:flex;align-items:center;justify-content:space-between;padding:0 43px}.breadcrumb{font-size:12px;color:#6f7e93}.breadcrumb span{padding:0 12px;color:#c0ccda}.connection{font-size:11px;font-weight:750;color:#75849b;letter-spacing:.07em}.connection .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#a5b2c3;margin-right:8px}.connection.ready{color:#1f805e}.connection.ready .dot{background:#22a177}.connection.failed{color:#b53b4d}.connection.failed .dot{background:#d94f66}.content{max-width:1510px;margin:auto;padding:39px 43px 32px}.heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:30px}.eyebrow{color:#326cf1;font-size:10px;font-weight:850;letter-spacing:.22em;margin:0 0 10px}h1{font-size:35px;letter-spacing:-.055em;margin:0 0 9px;color:#122035}.sub{font-size:13px;color:#718098;margin:0}.chip{border:1px solid #d8e4fb;background:#eff5ff;color:#3166d9;font-size:11px;padding:9px 13px;border-radius:99px;white-space:nowrap}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:17px;margin-bottom:20px}.metrics article,.panel{background:#fff;border:1px solid #e7ecf3;border-radius:15px;box-shadow:0 8px 30px #24375108}.metrics article{padding:24px 27px;min-height:143px}.metrics label{display:block;color:#65748a;font-size:12px;font-weight:650}.metrics strong{display:block;font-size:36px;letter-spacing:-.06em;margin:12px 0 4px;font-weight:800}.metrics span{font-size:11px;color:#8b97a7}.grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr);gap:20px}.panel{padding:25px}.panel-title{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:22px}.panel-title h2{font-size:17px;letter-spacing:-.025em;margin:0 0 5px}.panel-title p{font-size:12px;color:#8693a5;margin:0}.tag{font-size:10px;color:#326ce9;padding:7px 10px;border-radius:6px;background:#eef3ff;white-space:nowrap}.search-label{display:block;font-size:11px;font-weight:700;color:#6d7d91}.search-label input{display:block;width:100%;margin:8px 0 17px;border:1px solid #dce4f0;border-radius:9px;padding:13px 15px;color:#1b2b40;font:inherit;font-size:12px}.search-label input:focus-visible,button:focus-visible{outline:3px solid #8bb6ff}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px}thead{background:#f8fafd;color:#7e8ba1;text-align:left}th,td{padding:15px 10px;border-bottom:1px solid #edf0f5;text-align:left}th{font-size:10px;letter-spacing:.04em}td:first-child{font-weight:700;color:#243753}.status{display:inline-block;border-radius:20px;padding:5px 8px;background:#fff4d7;color:#a36b13;font-size:10px;font-weight:700}.status.done{background:#dcf7e9;color:#138456}button.link{border:0;background:#ecf2ff;color:#285bd7;border-radius:7px;padding:7px 11px;cursor:pointer;font:inherit;font-size:11px;font-weight:700}.detail-content{font-size:13px;color:#6c7b91;line-height:1.9}.detail-row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #edf0f5;padding:10px 0}.detail-row b{color:#1d2f4a;font-size:12px;text-align:right;overflow-wrap:anywhere}.empty,.error{color:#9a4366;font-size:12px}.error{padding:15px;border:1px solid #efc6d1;background:#fff3f6;border-radius:8px;margin-top:18px}footer{margin-top:26px;font-size:11px;color:#99a5b5}@media(max-width:1100px){.grid{grid-template-columns:1fr}.sidebar{width:210px}.shell{grid-template-columns:210px 1fr}}@media(max-width:740px){.shell{display:block}.sidebar{min-height:auto;padding:12px 16px}.logo{padding:0}.sidebar nav,.sidebar-foot{display:none}.top{height:54px;padding:0 20px}.content{padding:26px 17px}.heading{align-items:flex-start}h1{font-size:29px}.metrics{gap:9px}.metrics article{padding:16px 11px;min-height:120px}.metrics strong{font-size:28px}.metrics label{font-size:11px}.panel{padding:17px}}'''
 
 JS = '''"use strict";
 const API = __API_JSON__;
+const API_LIMIT = 1024 * 1024;
+const API_TIMEOUT_MS = 10000;
 const VIEW = API.presentation || {
   item: {id:'id',name:'name',category:'category',status:'status'},
   metrics: {total:'total',completed:'completed',pending:'pending'},
@@ -231,11 +233,38 @@ const safe = value => value == null ? '' : String(value);
 const field = (item, name) => Object.prototype.hasOwnProperty.call(item, name) ? item[name] : '';
 const node = (tag, value) => {const n=document.createElement(tag); n.textContent=safe(value); return n;};
 let cached=[];
-function fail(error) {const n=$('error'); n.hidden=false; n.textContent='백엔드 API 연결 실패: '+safe(error.message||error); $('connection').classList.remove('ready'); $('connection').classList.add('failed'); $('connection-text').textContent='API ERROR';}
+function fail(error) {const n=$('error'); n.hidden=false; n.textContent='백엔드 API 연결 실패: '+safe(error.message||error); $('retry').hidden=false; $('connection').classList.remove('ready'); $('connection').classList.add('failed'); $('connection-text').textContent='API ERROR';}
 async function fetchJson(path) {
-  const response = await fetch(path, {credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'}});
-  if (!response.ok) throw new Error('HTTP '+response.status+' / '+path);
-  return response.json();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+  let reader;
+  try {
+    const response = await fetch(path, {credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'},signal:controller.signal});
+    if (!response.ok) throw new Error('HTTP '+response.status+' / '+path);
+    const type = (response.headers.get('content-type') || '').toLowerCase();
+    if (!/^(application\\/json|application\\/[a-z0-9.+-]+\\+json)(?:\\s*;|$)/.test(type)) throw new Error('API 응답이 JSON이 아닙니다');
+    const advertised = response.headers.get('content-length');
+    if (advertised !== null && /^\\d+$/.test(advertised) && Number(advertised)>API_LIMIT) throw new Error('API 응답 크기 초과');
+    if (!response.body) throw new Error('API 응답 본문 누락');
+    reader = response.body.getReader();
+    const chunks=[];let size=0;
+    while (true) {
+      const {done,value} = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size>API_LIMIT) throw new Error('API 응답 크기 초과');
+      chunks.push(value);
+    }
+    const bytes = new Uint8Array(size);let offset=0;
+    for (const chunk of chunks) {bytes.set(chunk,offset);offset+=chunk.byteLength;}
+    return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));
+  } catch (error) {
+    if (error.name==='AbortError') throw new Error('API 응답 시간 초과');
+    throw error;
+  } finally {
+    clearTimeout(timer);
+    if (reader) {try {await reader.cancel();} catch (_) {}}
+  }
 }
 function render(items) {
   const target=$('jobs'); target.replaceChildren();
@@ -273,10 +302,12 @@ async function load(){
     cached=arr;
     for(const key of ['total','completed','pending']) $('kpi-'+key).textContent=safe(field(stat,VIEW.metrics[key]));
     render(cached);
-    $('connection').classList.add('ready'); $('connection-text').textContent='CONNECTED';
+    $('error').hidden=true; $('error').textContent=''; $('retry').hidden=true;
+    $('connection').classList.remove('failed'); $('connection').classList.add('ready'); $('connection-text').textContent='CONNECTED';
   } catch(error){fail(error);}
 }
 $('search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase().trim();render(cached.filter(x=>['id','name','category'].some(k=>safe(field(x,VIEW.item[k])).toLocaleLowerCase().includes(q))));});
+$('retry').addEventListener('click',load);
 load();'''
 
 
