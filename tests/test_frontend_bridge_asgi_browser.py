@@ -90,11 +90,16 @@ window.fetch=async (path, options) => {
             page.locator('button.link').click()
             expect(page.locator('#detail')).to_contain_text('B-2')
             assert ('/api/jobs/B-2', 200) in traffic
-            # Real 404 detail and 503 metrics failures must surface, then recover.
+            # Real 404 detail is local: healthy list+metrics stay CONNECTED.
             page.evaluate("showDetail('missing')")
-            expect(page.locator('#error')).to_contain_text('HTTP 404')
-            page.locator('#retry').click()
+            expect(page.locator('#detail')).to_contain_text('HTTP 404')
             expect(page.locator('#connection-text')).to_have_text('CONNECTED')
+            assert page.locator('#error').is_hidden()
+            assert page.locator('#retry').is_hidden()
+            # A subsequent successful detail GET clears the local error.
+            page.evaluate("showDetail('B-2')")
+            expect(page.locator('#detail')).to_contain_text('B-2')
+            # A real 503 metrics error still surfaces globally, then recovers.
             state['fail_metrics'] = True
             page.evaluate('load()')
             expect(page.locator('#connection-text')).to_have_text('API ERROR')
@@ -104,7 +109,8 @@ window.fetch=async (path, options) => {
             page.locator('#retry').click()
             expect(page.locator('#connection-text')).to_have_text('CONNECTED')
             assert page.locator('#error').is_hidden()
-            assert page.locator('#jobs tr').count() == 2
+            assert page.locator('#search').input_value() == '검색'
+            assert page.locator('#jobs tr').count() == 1
             assert not browser_errors, browser_errors
             assert all(path.startswith('/api/') for path, _ in traffic)
         finally:
