@@ -233,7 +233,6 @@ def test_duplicate_json_object_key_refused_even_with_matching_all_hashes(tmp_pat
     with pytest.raises(ev.UnsafeEvidence, match="invalid|duplicate|ambiguous"):
         inspect(tmp_path, path, sha)
 
-
 @pytest.mark.parametrize("constant", ["NaN", "Infinity", "-Infinity"])
 def test_nonstandard_json_constants_refused_even_with_sha_match(tmp_path, constant):
     path, _, manifest = fixture(tmp_path)
