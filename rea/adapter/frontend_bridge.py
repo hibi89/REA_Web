@@ -308,12 +308,13 @@ async function load(){
     if(!stat || typeof stat!=='object'||Array.isArray(stat)) throw new Error('지표 응답 스키마 불일치');
     cached=arr;
     for(const key of ['total','completed','pending']) $('kpi-'+key).textContent=safe(field(stat,VIEW.metrics[key]));
-    render(cached);
+    applySearch();
     $('error').hidden=true; $('error').textContent=''; $('retry').hidden=true;
     $('connection').classList.remove('failed'); $('connection').classList.add('ready'); $('connection-text').textContent='CONNECTED';
   } catch(error){if(generation===loadGeneration) fail(error);}
 }
-$('search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase().trim();render(cached.filter(x=>['id','name','category'].some(k=>safe(field(x,VIEW.item[k])).toLocaleLowerCase().includes(q))));});
+function applySearch() {const q=$('search').value.toLocaleLowerCase().trim();render(cached.filter(x=>['id','name','category'].some(k=>safe(field(x,VIEW.item[k])).toLocaleLowerCase().includes(q))));}
+$('search').addEventListener('input',applySearch);
 $('retry').addEventListener('click',load);
 load();'''
 
