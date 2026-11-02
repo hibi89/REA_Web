@@ -1,3 +1,7 @@
+## Actual Chromium local offline replay acceptance — 2026-11-03 KST
+- A deterministic synthetic `fetch` browser test must import the **actual generated frontend JS** constant, execute it in real Chromium, and verify KPI/list, search/detail, HTTP-error retry, 1MiB header and streaming refusal, HTML MIME refusal, malformed JSON, 10-second timeout and read-only GET+AbortSignal. It must clearly declare mocked HTTP: do not equate `page.set_content` or `fetch` interception with networked FastAPI/E2E/production tests.
+- `tests/test_frontend_bridge_offline_browser.py` source Git blob `95023596948609a225ba37c0ea01fc4d49ab3d9c` locally Python3.13/Chromium **1 PASS, 9 functional groups**, zero page JS errors, original frontend JS byte-length/hash parity verified. Separate real Chromium localhost navigation is administrator-blocked; corresponding cross-OS CI latest SHA is not verified. No change to authorization gates, Docker/customer ZIP execution or Pro/Lite.
+
 ## Dashboard read-only GET resilience — 2026-11-03 KST
 - All generated dashboard API JSON GETs must reject non-JSON MIME, abort after 10 seconds, enforce a **1 MiB limit while streaming** (not after whole-response buffering) and refuse oversized Content-Length before body reads.
 - A visible `API 다시 연결` retry must be available after API errors without full reload. On success, stale error text/failed badge must be cleared and KPIs/list restored. Owner-approved API paths, same-origin CSP, GET-only behavior and backend provenance controls remain unchanged.
