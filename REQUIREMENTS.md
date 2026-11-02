@@ -1,3 +1,8 @@
+## Search consistency across successful dashboard refreshes — 2026-11-03 KST
+- The dashboard list filter must remain consistent with the currently visible `#search` input after the newest `load()` GET resolves. Existing query text must not be cleared or ignored; filter refreshed rows by confirmed owner-mapped id/name/category; global KPI metrics still represent returned backend summary.
+- A real Chromium regression should start from 2 synthetic jobs, filter to one with query `beta`, refresh to 3 jobs with two matches, then assert 2 visible rows, matching text, unchanged input, and KPI total 3. This test is in-memory GET mock only and cannot claim network, CSP or customer backend verification.
+- Prior browser regression failed (3 visible instead of 2). Source fix `01741048b618d72b70fe7ba315468ff69482b830`, new test blob `e270ffa392fe912a42b853020d7003c9b49bd919`; local reconstructed Linux Chromium 23 PASS, exact GitHub push CI and production not verified. Customer source execution, Docker and commercial release remain gated.
+
 ## 최신 사용자 선택 상세조회 우선 적용 — 2026-11-03 KST
 - 생성된 REA 대시보드의 상세 패널은 동시에 진행되는 여러 읽기 전용 GET의 실제 완료 순서와 관계없이 **가장 최근에 선택된 작업 ID**의 성공 또는 실패 결과만 표시한다. 먼저 선택한 작업의 늦은 응답은 상세 내용을 덮어쓰거나 기존 연결 정상 상태를 `API ERROR`로 바꾸지 않아야 한다.
 - 단조 증가 `detailGeneration`을 요청 시작 시 부여하고, 성공 화면 반영 직전 및 예외 화면 반영 전 모두 최신 선택 여부를 확인한다. 기존 리스트/API `loadGeneration`, JSON 제한, 접근 정책·정적 생성·참조 디자인과 분리 보존한다.
