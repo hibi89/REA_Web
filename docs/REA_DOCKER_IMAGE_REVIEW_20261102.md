@@ -1,3 +1,21 @@
+## New offline evidence review tool — 2026-11-02 KST
+
+Added `rea/adapter/docker_image_evidence.py` and 10 tests in `tests/test_docker_image_evidence.py`. This is a read-only, local artifact inventory; it cannot contact Docker, run an image, install packages, access a registry or inspect a customer ZIP.
+
+Manifest format: JSON object with exactly `schema` (`rea.docker_image_evidence.v0.1`), `image_ref` (immutable repository@sha256 digest), `platform` (`linux/amd64` or `linux/arm64`), and `artifacts`. The `artifacts` object needs exactly `dockerfile`, `wheel_lock`, `spdx_sbom`, `signature_receipt`, `vulnerability_report`, and `license_review`. Each has `file` (basename in a single local evidence directory) and `sha256` (64 lower-case hex). An independently supplied SHA256 of the complete manifest is mandatory.
+
+Wheel lock JSON is `{"wheels":[{"name":"fastapi","version":"EXACT_PIN","sha256":"EXACT_WHEEL_SHA"}, {"name":"uvicorn","version":"EXACT_PIN","sha256":"EXACT_WHEEL_SHA"}]}` with other transitive wheels as needed. SPDX JSON must use `spdxVersion: SPDX-2.3` and package entries containing `name`, `versionInfo`, `licenseConcluded`; locked Python versions are cross-matched with SPDX packages. These strings are format examples, NOT known-good versions/hashes/licenses.
+
+Command, after acquiring the actual independently sourced evidence:
+```bash
+python -m rea.adapter.docker_image_evidence --evidence-dir APPROVED_REVIEW_FOLDER --manifest APPROVED_REVIEW_FOLDER/manifest.json --expected-manifest-sha256 EXACT_INDEPENDENT_MANIFEST_SHA256 --out NEW_REPORT.json
+```
+
+Checks: every artifact+manifest SHA256, 2 MiB file cap, exact allowlisted artifacts, no duplicate names/traversal/symlinks, required pinned FastAPI/Uvicorn packages and wheel-to-SPDX name/version consistency. No overwriting output.
+
+Even structurally consistent evidence produces `EVIDENCE_INVENTORY_REVIEW_REQUIRED`, **not approval**. Signature cryptographic verification, complete dependency closure, license grants, independent CVE verification, Linux daemon isolation and any image/customer ZIP execution authorization are all explicitly `false`. A self-supplied signature receipt/SBOM is not trusted cryptographic proof. Owner authorization and genuine independently verified image/daemon evidence remain separate prerequisites.
+
+Local Python3.13: `python -m pytest -q tests/test_docker_image_evidence.py` → **10 PASS / 0 FAIL**. Exact code/test Git blob SHA matches remote GitHub file SHA. New Windows/Ubuntu CI and real Docker **UNVERIFIED**; RELEASE HOLD. No actual image provenance artifact was supplied.
 # REA_WEB: Docker image supply-chain decision and synthetic isolation approval gate
 
 Updated: 2026-11-02 KST. Status: **NOT APPROVED / NO IMAGE EXECUTED / RELEASE HOLD**.
