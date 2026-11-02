@@ -280,21 +280,26 @@ function render(items) {
     button.addEventListener('click',()=>showDetail(safe(field(item,VIEW.item.id))));cell.append(button);tr.append(cell);target.append(tr);
   }
 }
+function detailFailure(error) {
+  const box=$('detail');box.replaceChildren();
+  box.textContent='상세 조회 실패: '+safe(error.message||error);
+  box.setAttribute('role','alert');
+}
 let detailGeneration=0;
 async function showDetail(id) {
   const generation=++detailGeneration;
-  if(!id || id.length>200){fail(new Error('유효하지 않은 작업 ID'));return;}
+  if(!id || id.length>200){detailFailure(new Error('유효하지 않은 작업 ID'));return;}
   const path=API.detail.path.replace('{'+(API.detail.path_param||'job_id')+'}',encodeURIComponent(id));
   try {
     const response=await fetchJson(path);
     if(generation!==detailGeneration) return;
     const obj=API.detail.field==='__root__'?response:response[API.detail.field];
     if(!obj || typeof obj!=='object' || Array.isArray(obj)) throw new Error('상세 응답 스키마 불일치');
-    const box=$('detail');box.replaceChildren();
+    const box=$('detail');box.replaceChildren();box.removeAttribute('role');
     for(const key of VIEW.detail_fields){
       const row=document.createElement('div');row.className='detail-row';row.append(node('span',key));row.append(node('b',field(obj,key)));box.append(row);
     }
-  } catch(error) {if(generation===detailGeneration) fail(error);}
+  } catch(error) {if(generation===detailGeneration) detailFailure(error);}
 }
 let loadGeneration=0;
 async function load(){
