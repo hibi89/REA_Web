@@ -1,3 +1,8 @@
+## Dashboard read-only GET resilience — 2026-11-03 KST
+- All generated dashboard API JSON GETs must reject non-JSON MIME, abort after 10 seconds, enforce a **1 MiB limit while streaming** (not after whole-response buffering) and refuse oversized Content-Length before body reads.
+- A visible `API 다시 연결` retry must be available after API errors without full reload. On success, stale error text/failed badge must be cleared and KPIs/list restored. Owner-approved API paths, same-origin CSP, GET-only behavior and backend provenance controls remain unchanged.
+- Functional SHA `d5b432277a0961d6c6d3e645230b9d748afb787e`, E2E test-definition SHA `b365e0e8ef35480fd8958ff8aaca708636237248`; local Node guard 6 PASS and extracted GitHub generated JS mock-DOM 5 PASS, but updated Chromium/Windows/Linux CI **NOT VERIFIED**. No production/sale or owner ZIP authorization.
+
 ## Bounded browser GET responses + same-page retry — 2026-11-03 KST
 - Independently generated same-origin REA dashboard must require a JSON MIME response, cap each JSON payload at **1 MiB while reading** (including Content-Length preflight), and abort stalled fetches after **10 seconds**. HTTP/API errors, malformed JSON and oversized content must fail into an explicit UI error.
 - Display a user-operated in-page retry after an error. A successful retry must clear the error, hide the retry control, remove failed connection styling, and restore the live KPIs/list. No auto-POST, cross-origin API, source ZIP execution, customer upload or implicit owner approval.
