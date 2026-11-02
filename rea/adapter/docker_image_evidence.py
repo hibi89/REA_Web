@@ -13,11 +13,14 @@ import re
 
 SCHEMA = "rea.docker_image_evidence.v0.1"
 IMAGE = re.compile(r"^[a-z0-9][a-z0-9._/-]*@sha256:[a-f0-9]{64}$")
+IMAGE_SEGMENT = re.compile(r"^[a-z0-9]+(?:(?:[._]|__|-+)[a-z0-9]+)*$")
 HEX = re.compile(r"^[a-f0-9]{64}$")
 NAME = re.compile(r"^[a-z0-9][a-z0-9._-]{0,99}$")
 REQUIRED = ("dockerfile", "wheel_lock", "spdx_sbom", "signature_receipt",
             "vulnerability_report", "license_review")
 MAX_FILE = 2 * 1024 * 1024
+MAX_WHEELS = 512
+MAX_SPDX_PACKAGES = 4096
 
 
 class UnsafeEvidence(ValueError):
@@ -37,7 +40,7 @@ def _bytes(path: Path) -> bytes:
 def _json(data: bytes) -> object:
     try:
         return json.loads(data.decode("utf-8"))
-    except (UnicodeError, ValueError) as exc:
+    except (UnicodeError, ValueError, RecursionError) as exc:
         raise UnsafeEvidence("invalid UTF-8 evidence JSON") from exc
 
 
@@ -47,7 +50,7 @@ def _normal(name: str) -> str:
 
 def _lock(data: bytes) -> dict[str, str]:
     obj = _json(data)
-    if not isinstance(obj, dict) or set(obj) != {"wheels"} or not isinstance(obj["wheels"], list):
+    if not isinstance(obj, dict) or set(obj) != {"wheels"} or not isinstance(obj["wheels"], list) or len(obj["wheels"]) > MAX_WHEELS:
         raise UnsafeEvidence("invalid pinned wheel lock format")
     wheels = {}
     for entry in obj["wheels"]:
@@ -68,7 +71,8 @@ def _lock(data: bytes) -> dict[str, str]:
 def _sbom(data: bytes) -> dict[str, str]:
     obj = _json(data)
     if (not isinstance(obj, dict) or obj.get("spdxVersion") != "SPDX-2.3"
-            or not isinstance(obj.get("packages"), list) or not obj["packages"]):
+            or not isinstance(obj.get("packages"), list) or not obj["packages"]
+            or len(obj["packages"]) > MAX_SPDX_PACKAGES):
         raise UnsafeEvidence("invalid SPDX package inventory")
     found = {}
     for entry in obj["packages"]:
@@ -83,10 +87,17 @@ def _sbom(data: bytes) -> dict[str, str]:
             raise UnsafeEvidence("invalid SPDX package name")
         # SPDX can include OS and Python packages; a repeated name with
         # conflicting versions is ambiguous and must be manually resolved.
-        if normalized in found and found[normalized] != version:
-            raise UnsafeEvidence("ambiguous SPDX package version")
+        if normalized in found:
+            raise UnsafeEvidence("duplicate or ambiguous SPDX package")
         found[normalized] = version
     return found
+
+
+def _valid_image_ref(image: str) -> bool:
+    if not isinstance(image, str) or len(image) > 256 or not IMAGE.fullmatch(image):
+        return False
+    repository = image.split("@sha256:", 1)[0]
+    return all(IMAGE_SEGMENT.fullmatch(part) for part in repository.split("/"))
 
 
 def inspect_local_evidence(evidence_dir: Path, manifest: Path, *,
@@ -106,8 +117,7 @@ def inspect_local_evidence(evidence_dir: Path, manifest: Path, *,
         raise UnsafeEvidence("manifest digest mismatch")
     obj = _json(manifest_bytes)
     if (not isinstance(obj, dict) or set(obj) != {"schema", "image_ref", "platform", "artifacts"}
-            or obj["schema"] != SCHEMA or not isinstance(obj["image_ref"], str)
-            or not IMAGE.fullmatch(obj["image_ref"]) or "//" in obj["image_ref"]
+            or obj["schema"] != SCHEMA or not _valid_image_ref(obj["image_ref"])
             or obj["platform"] not in ("linux/amd64", "linux/arm64")
             or not isinstance(obj["artifacts"], dict)
             or set(obj["artifacts"]) != set(REQUIRED)):
