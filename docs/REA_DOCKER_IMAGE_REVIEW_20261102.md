@@ -1,3 +1,11 @@
+## 2026-11-02 KST — Fail-closed offline evidence parsing regression (18/18 local PASS)
+
+The same source and test files as GitHub were mirrored locally; pre-change Git Blob SHA values matched the originals. Hardened `rea/adapter/docker_image_evidence.py` to reject noncanonical Docker repository name segments (including `../`, repeated separators and hidden path elements), cap wheel-lock entries at 512 and SPDX package entries at 4,096, reject duplicate normalized SPDX package identities, and translate deeply nested JSON parser `RecursionError` into the typed `UnsafeEvidence` refusal. No schema or user-approval semantics were loosened.
+
+New tests: five malformed image references, deeply nested JSON, SPDX duplicate package and oversized SPDX package inventory. Local command `python -m pytest -q tests/test_docker_image_evidence.py` on Linux Python 3.13: **18 passed / 0 failed / 0 skipped**. `python -m compileall -q rea/adapter/docker_image_evidence.py`: PASS. Functional source commit `ff1d1c07ea497a5f87e52d335e5f3feb12e6c189`, tests commit `7a3d2c590d147c5e0c31cb6127263b19dce538e4`. Exact local/GitHub Git Blob matches: source `27990aaaec3012d64d04d997ae2dc312810eeff2`, tests `5ca892e55e95f246fff3164dca2d16ea1784b5dd`.
+
+Boundaries: this is a fail-closed *offline human review aid*, not a certificate of Docker image authenticity, SPDX completeness, independent signature proof, lawful redistribution, CVE audit, kernel isolation or execution approval. No image pull/build/run, no remote data transmission, no customer ZIP execution. Windows/Ubuntu CI for these exact changes **NOT VERIFIED**; prior CI 100 PASS per OS is historical. Pro/Lite intact; **RELEASE HOLD** remains.
+
 ## New offline evidence review tool — 2026-11-02 KST
 
 Added `rea/adapter/docker_image_evidence.py` and 10 tests in `tests/test_docker_image_evidence.py`. This is a read-only, local artifact inventory; it cannot contact Docker, run an image, install packages, access a registry or inspect a customer ZIP.
