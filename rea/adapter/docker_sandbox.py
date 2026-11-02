@@ -273,11 +273,11 @@ def _run(argv: list[str], *, timeout: int) -> subprocess.CompletedProcess:
     # execution to a remote daemon. No shell or host-user credentials inherited.
     env = {"PATH": os.environ.get("PATH", os.defpath),
            "HOME": os.path.expanduser("~")}
-    if "run" in argv:
-        return _bounded_capture(argv,timeout=timeout,env=env)
-    return subprocess.run(argv, env=env, stdin=subprocess.DEVNULL,
-                          capture_output=True, text=True, timeout=timeout,
-                          shell=False)
+    # Bound output while executing EVERY Docker CLI command. Read-only
+    # preflights and cleanup can also flood stdout/stderr before exiting.
+    # Keep receipts at 8 KiB/stream and metadata/cleanup at 4 KiB/stream.
+    return _bounded_capture(argv, timeout=timeout, env=env,
+                            max_bytes=8192 if "run" in argv else 4096)
 
 
 def _local_docker() -> list[str]:
@@ -384,7 +384,7 @@ def _container_removed(docker: list[str], name: str) -> bool:
         _run(docker+["rm","-f",name],timeout=6)
         found = _run(docker+["container","ls","-aq","--filter","name=^/"+name+"$"],timeout=6)
         return found.returncode==0 and not found.stdout.strip()
-    except (OSError,subprocess.TimeoutExpired):
+    except (OSError, subprocess.TimeoutExpired, UnsafeSandbox):
         return False
 
 
