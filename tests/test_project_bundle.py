@@ -153,6 +153,39 @@ def test_refuse_tampered_frontend_manifest(tmp_path):
         build_synthetic_project(z,front,r,tmp_path/'new.zip',expected_backend_sha256=sha,developer_authorized_synthetic=True)
 
 
+
+@pytest.mark.parametrize('filename,extra,error', [
+    ('app.js', b'\\n// unexpected executable change\\n', 'JavaScript'),
+    ('index.html', b'\\n<!-- injected page content -->\\n', 'HTML'),
+    ('style.css', b'\\n@import url(https://untrusted.example/);\\n', 'neutral frontend CSS'),
+])
+def test_reject_mutated_generated_frontend_source_before_packaging(tmp_path, filename, extra, error):
+    """Generated assets are trust inputs, not authorized by editable manifest flags."""
+    z, front, review, sha = trusted_bundle_input(tmp_path)
+    changed = front / filename
+    changed.write_bytes(changed.read_bytes() + extra)
+    output = tmp_path / 'refused.zip'
+    with pytest.raises(UnsafeProjectBundle, match=error):
+        build_synthetic_project(z, front, review, output,
+                                expected_backend_sha256=sha,
+                                developer_authorized_synthetic=True)
+    assert not output.exists()
+
+
+def test_reject_manifest_only_binding_remap_without_regenerated_javascript(tmp_path):
+    z, front, review, sha = trusted_bundle_input(tmp_path)
+    path = front / 'manifest.json'
+    data = json.loads(path.read_text(encoding='utf-8'))
+    data['bindings']['list']['path'] = '/api/metrics'
+    path.write_text(json.dumps(data), encoding='utf-8')
+    output = tmp_path / 'refused.zip'
+    with pytest.raises(UnsafeProjectBundle, match='JavaScript'):
+        build_synthetic_project(z, front, review, output,
+                                expected_backend_sha256=sha,
+                                developer_authorized_synthetic=True)
+    assert not output.exists()
+
+
 def test_no_overwrite(tmp_path):
     z,front,r,sha=trusted_bundle_input(tmp_path)
     out=tmp_path/'new.zip'; out.write_bytes(b'KEEP')
