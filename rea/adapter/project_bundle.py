@@ -19,6 +19,9 @@ import tempfile
 import zipfile
 
 from rea.adapter.backend_zip import _zip_members, inspect_backend_zip
+from rea.adapter.frontend_bridge import (HTML as GENERATED_HTML, JS as GENERATED_JS,
+                                         CSS as GENERATED_CSS, BridgeError,
+                                         _valid_bindings, _js_config)
 from rea.safe_publish import publish_archive
 
 SCHEMA = "rea.project_bundle.v0.1"
@@ -76,6 +79,29 @@ def _check_frontend(folder: Path, backend_sha: str) -> tuple[dict[str, bytes], d
         for k in ("list", "metrics", "detail")
     ):
         raise UnsafeProjectBundle("frontend bindings unavailable")
+    # A manifest can be rewritten alongside a modified app.js. The packaging
+    # boundary must independently verify the published frontend sources, not
+    # merely the names, SHA of the backend, or owner confirmation metadata.
+    try:
+        reviewed = _valid_bindings(bindings)
+    except BridgeError as exc:
+        raise UnsafeProjectBundle("invalid frontend mapping") from exc
+    if reviewed != bindings:
+        raise UnsafeProjectBundle("frontend mapping not canonical")
+    expected_js = (GENERATED_JS.replace("__API_JSON__", _js_config(reviewed)) + "\n").encode("utf-8")
+    if contents["dashboard/app.js"] != expected_js:
+        raise UnsafeProjectBundle("frontend JavaScript differs from approved generator")
+    if contents["dashboard/index.html"] != (GENERATED_HTML + "\n").encode("utf-8"):
+        raise UnsafeProjectBundle("frontend HTML differs from approved generator")
+    # For neutral dashboards, the stylesheet is also deterministic. A visually
+    # observed palette/layout has legitimate additional CSS; it is not treated
+    # as signed proof and requires a separate visual evidence review.
+    reference = data.get("reference")
+    if not isinstance(reference, dict):
+        raise UnsafeProjectBundle("frontend reference metadata absent")
+    if reference.get("visual_sha256") is None:
+        if contents["dashboard/style.css"] != (GENERATED_CSS + "\n").encode("utf-8"):
+            raise UnsafeProjectBundle("neutral frontend CSS differs from approved generator")
     return contents, data
 
 
