@@ -107,6 +107,38 @@ def test_generated_frontend_real_http_chromium(tmp_path):
                 page.reload(wait_until='networkidle')
                 expect(page.locator('#connection-text')).to_have_text('API ERROR')
                 assert page.locator('#error').is_visible()
+                # Recover in the same document without a reload, preserving UI state.
+                page.unroute('**/api/metrics')
+                assert page.locator('#retry').is_visible()
+                page.locator('#retry').click()
+                expect(page.locator('#connection-text')).to_have_text('CONNECTED')
+                assert page.locator('#error').is_hidden()
+                assert page.locator('#retry').is_hidden()
+                expect(page.locator('#kpi-total')).to_have_text('3')
+
+                # A malicious or misconfigured API response cannot make the UI
+                # buffer an unbounded JSON payload. The UI must offer recovery.
+                huge = json.dumps({'items': [{'id':'X', 'name':'A' * (1024 * 1024)}]})
+                page.route('**/api/jobs',
+                           lambda route: route.fulfill(status=200, content_type='application/json',
+                                                       body=huge))
+                page.reload(wait_until='networkidle')
+                expect(page.locator('#connection-text')).to_have_text('API ERROR')
+                expect(page.locator('#error')).to_contain_text('API 응답 크기 초과')
+                page.unroute('**/api/jobs')
+                page.locator('#retry').click()
+                expect(page.locator('#connection-text')).to_have_text('CONNECTED')
+                assert page.locator('#error').is_hidden()
+                assert page.locator('#jobs tr').count()==3
+
+                page.route('**/api/jobs',
+                           lambda route: route.fulfill(status=200, content_type='text/html',
+                                                       body='<html>not JSON</html>'))
+                page.reload(wait_until='networkidle')
+                expect(page.locator('#error')).to_contain_text('JSON이 아닙니다')
+                page.unroute('**/api/jobs')
+                page.locator('#retry').click()
+                expect(page.locator('#connection-text')).to_have_text('CONNECTED')
             finally:
                 browser.close()
     finally:
