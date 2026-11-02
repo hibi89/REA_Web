@@ -1,3 +1,8 @@
+## Bounded browser GET responses + same-page retry — 2026-11-03 KST
+- Independently generated same-origin REA dashboard must require a JSON MIME response, cap each JSON payload at **1 MiB while reading** (including Content-Length preflight), and abort stalled fetches after **10 seconds**. HTTP/API errors, malformed JSON and oversized content must fail into an explicit UI error.
+- Display a user-operated in-page retry after an error. A successful retry must clear the error, hide the retry control, remove failed connection styling, and restore the live KPIs/list. No auto-POST, cross-origin API, source ZIP execution, customer upload or implicit owner approval.
+- Source functional SHA `d5b432277a0961d6c6d3e645230b9d748afb787e`, Chromium regression definition SHA `b365e0e8ef35480fd8958ff8aaca708636237248`. Local 6 Node fetch-guard synthetic cases PASS + 5 exact-GitHub-JS mock DOM integration states PASS; full FastAPI/Chromium CI at exact new SHA **NOT VERIFIED**. Existing Pro/Lite untouched; commercial RELEASE HOLD.
+
 ## Strict image evidence JSON parsing — 2026-11-03 KST
 - The offline Docker image evidence verifier MUST reject duplicate JSON object keys at all nesting levels and nonstandard numeric tokens `NaN`, `Infinity`, `-Infinity` in manifest, artifact descriptors, wheel lock, and SPDX content, even if all independent SHA-256 values match. File integrity is not equivalent to unambiguous JSON semantics.
 - Preserve existing strict caps, signature/image nonauthorization, read-only behavior, no-overwrite and Pro/Lite separation. No format-breaking canonicalization or external runtime introduced.
