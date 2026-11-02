@@ -293,9 +293,12 @@ async function showDetail(id) {
     }
   } catch(error) {fail(error);}
 }
+let loadGeneration=0;
 async function load(){
+  const generation=++loadGeneration;
   try {
     const [jobs,metrics]=await Promise.all([fetchJson(API.list.path),fetchJson(API.metrics.path)]);
+    if(generation!==loadGeneration) return;
     const arr=API.list.field==='__root__'?jobs:jobs[API.list.field];
     const stat=API.metrics.field==='__root__'?metrics:metrics[API.metrics.field];
     if(!Array.isArray(arr) || arr.length>10000 || arr.some(x=>!x||typeof x!=='object'||Array.isArray(x))) throw new Error('목록 응답 스키마 불일치');
@@ -305,7 +308,7 @@ async function load(){
     render(cached);
     $('error').hidden=true; $('error').textContent=''; $('retry').hidden=true;
     $('connection').classList.remove('failed'); $('connection').classList.add('ready'); $('connection-text').textContent='CONNECTED';
-  } catch(error){fail(error);}
+  } catch(error){if(generation===loadGeneration) fail(error);}
 }
 $('search').addEventListener('input',e=>{const q=e.target.value.toLocaleLowerCase().trim();render(cached.filter(x=>['id','name','category'].some(k=>safe(field(x,VIEW.item[k])).toLocaleLowerCase().includes(q))));});
 $('retry').addEventListener('click',load);
