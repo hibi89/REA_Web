@@ -182,6 +182,34 @@ def check():
             raise RuntimeError("missing or symbolic-link package member")
         if hashlib.sha256(member.read_bytes()).hexdigest() != sha:
             raise RuntimeError("package content changed; execution refused")
+    # Reject source-tree additions that were absent from the approved ZIP.
+    # Hashing only listed files does not detect an injected Python module.
+    required = {
+        "backend/app.py", "backend/__init__.py", "runtime_entry.py",
+        "START_WINDOWS.cmd", "README_FIRST.md", "dashboard/index.html",
+        "dashboard/app.js", "dashboard/style.css", "dashboard/manifest.json",
+        "dashboard/README_KO.md",
+    }
+    optional = {"backend/requirements.txt", "backend/README_KO.md"}
+    if not required.issubset(checks) or not set(checks).issubset(required | optional):
+        raise RuntimeError("unexpected tracked package member")
+    # A forged digest table must not turn the package initializer into code.
+    if (ROOT / "backend" / "__init__.py").read_bytes() != b"# Trusted synthetic backend package.\\n":
+        raise RuntimeError("trusted backend package initializer changed")
+    observed = set()
+    for entry in ROOT.rglob("*"):
+        relative = entry.relative_to(ROOT).as_posix()
+        if entry.is_symlink():
+            raise RuntimeError("symbolic link in extracted package")
+        if entry.is_dir():
+            if relative not in ("backend", "dashboard"):
+                raise RuntimeError("unexpected package directory")
+        elif entry.is_file():
+            observed.add(relative)
+        else:
+            raise RuntimeError("unsupported package member")
+    if observed != set(checks) | {"MANIFEST.json", "SHA256SUMS.json"}:
+        raise RuntimeError("untracked or missing package member")
     return True
 
 
