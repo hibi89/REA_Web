@@ -1,3 +1,8 @@
+## 최신 사용자 선택 상세조회 우선 적용 — 2026-11-03 KST
+- 생성된 REA 대시보드의 상세 패널은 동시에 진행되는 여러 읽기 전용 GET의 실제 완료 순서와 관계없이 **가장 최근에 선택된 작업 ID**의 성공 또는 실패 결과만 표시한다. 먼저 선택한 작업의 늦은 응답은 상세 내용을 덮어쓰거나 기존 연결 정상 상태를 `API ERROR`로 바꾸지 않아야 한다.
+- 단조 증가 `detailGeneration`을 요청 시작 시 부여하고, 성공 화면 반영 직전 및 예외 화면 반영 전 모두 최신 선택 여부를 확인한다. 기존 리스트/API `loadGeneration`, JSON 제한, 접근 정책·정적 생성·참조 디자인과 분리 보존한다.
+- 검증은 실제 Chromium의 지연된 A 성공→B 최신 성공, 지연된 B HTTP404 실패→A 최신 성공 두 역순 응답 시나리오를 포함한다. 수정 전 1 FAIL 재현, 수정 후 실험/재구성 회귀 22/22 PASS. 소스 Git blob `352654d0c19365ceb12f1dd4b362bae354c0a349`, 테스트 Git blob `9086239d15ec5aec7bbb415ce666e27d9e39d598`. 정확한 GitHub Windows/Linux 및 실제 HTTP/배포는 미검증, RELEASE HOLD.
+
 ## Latest-request-wins dashboard reload under overlapping GETs — 2026-11-03 KST
 - Generated REA same-origin dashboard must never let an obsolete earlier `load()` success or error overwrite the state belonging to a later reload. Use a local monotonically increasing generation token to guard both render/cache/KPI updates and API failure badge/retry changes after asynchronous API calls settle, preserving existing 1 MiB JSON stream bound, 10-second timeout, owner-defined GET bindings, escaping, original styling and retry.
 - Verify in real Chromium with a deliberate stalled API response and a newer quick success, then with stalled success and newer quick HTTP503 failure. The deterministic browser test must await settlement of the stale request before final assertions, not rely on arbitrary sleeps.
