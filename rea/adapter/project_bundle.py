@@ -21,7 +21,8 @@ import zipfile
 from rea.adapter.backend_zip import _zip_members, inspect_backend_zip
 from rea.adapter.frontend_bridge import (HTML as GENERATED_HTML, JS as GENERATED_JS,
                                          CSS as GENERATED_CSS, BridgeError,
-                                         _valid_bindings, _js_config)
+                                         _valid_bindings, _js_config, _reference_css)
+from rea.adapter.visual_reference import VisualError, validate_visual
 from rea.safe_publish import publish_archive
 
 SCHEMA = "rea.project_bundle.v0.1"
@@ -93,15 +94,34 @@ def _check_frontend(folder: Path, backend_sha: str) -> tuple[dict[str, bytes], d
         raise UnsafeProjectBundle("frontend JavaScript differs from approved generator")
     if contents["dashboard/index.html"] != (GENERATED_HTML + "\n").encode("utf-8"):
         raise UnsafeProjectBundle("frontend HTML differs from approved generator")
-    # For neutral dashboards, the stylesheet is also deterministic. A visually
-    # observed palette/layout has legitimate additional CSS; it is not treated
-    # as signed proof and requires a separate visual evidence review.
+    # A styled dashboard was derived from a small, sanitized, hashed DOM
+    # observation. The saved manifest's hash alone cannot regenerate CSS.
+    # Require the exact recorded observation and independently validate it.
     reference = data.get("reference")
     if not isinstance(reference, dict):
         raise UnsafeProjectBundle("frontend reference metadata absent")
+    visual = data.get("visual_contract")
     if reference.get("visual_sha256") is None:
-        if contents["dashboard/style.css"] != (GENERATED_CSS + "\n").encode("utf-8"):
-            raise UnsafeProjectBundle("neutral frontend CSS differs from approved generator")
+        if visual is not None:
+            raise UnsafeProjectBundle("unexpected visual contract on neutral frontend")
+        if reference.get("style_source") != "ORIGINAL_REA_NEUTRAL_DEFAULT":
+            raise UnsafeProjectBundle("neutral frontend style provenance mismatch")
+        expected_css = GENERATED_CSS + "\n"
+    else:
+        if not isinstance(visual, dict):
+            raise UnsafeProjectBundle("styled frontend requires saved visual contract")
+        try:
+            observed = validate_visual(
+                visual, expected_origin=reference.get("origin"), allow_loopback=True)
+        except VisualError as exc:
+            raise UnsafeProjectBundle("invalid frontend visual provenance") from exc
+        if (observed["sha256"] != reference["visual_sha256"]
+                or reference.get("visual_evidence") != "BROWSER_COMPUTED_STYLE_OBSERVED"
+                or reference.get("style_source") != "REFERENCE_STYLE_GUIDANCE_ORIGINAL_UI"):
+            raise UnsafeProjectBundle("styled frontend visual provenance mismatch")
+        expected_css = GENERATED_CSS + "\n" + _reference_css(observed)
+    if contents["dashboard/style.css"] != expected_css.encode("utf-8"):
+        raise UnsafeProjectBundle("frontend CSS differs from approved generator")
     return contents, data
 
 
