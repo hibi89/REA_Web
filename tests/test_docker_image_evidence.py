@@ -198,3 +198,52 @@ def test_oversized_spdx_inventory_refused_before_processing(tmp_path):
     sha = hashlib.sha256(_write(path, manifest)).hexdigest()
     with pytest.raises(ev.UnsafeEvidence, match="invalid SPDX"):
         inspect(tmp_path, path, sha)
+
+@pytest.mark.parametrize("case", ["manifest", "descriptor", "wheel_lock", "spdx_sbom"])
+def test_duplicate_json_object_key_refused_even_with_matching_all_hashes(tmp_path, case):
+    path, _, manifest = fixture(tmp_path)
+    if case == "manifest":
+        body = path.read_bytes().replace(
+            b'"platform": "linux/amd64"',
+            b'"platform": "linux/arm64", "platform": "linux/amd64"', 1)
+        assert body != path.read_bytes()
+        path.write_bytes(body)
+    elif case == "descriptor":
+        body = path.read_bytes().replace(
+            b'"file": "dockerfile.txt"',
+            b'"file": "other.txt", "file": "dockerfile.txt"', 1)
+        assert body != path.read_bytes()
+        path.write_bytes(body)
+    else:
+        detail = manifest["artifacts"][case]
+        file = tmp_path / detail["file"]
+        if case == "wheel_lock":
+            body = file.read_bytes().replace(
+                b'"name": "fastapi"',
+                b'"name": "evildoer", "name": "fastapi"', 1)
+        else:
+            body = file.read_bytes().replace(
+                b'"licenseConcluded": "MIT"',
+                b'"licenseConcluded": "NOASSERTION", "licenseConcluded": "MIT"', 1)
+        assert body != file.read_bytes()
+        file.write_bytes(body)
+        detail["sha256"] = hashlib.sha256(body).hexdigest()
+        _write(path, manifest)
+    sha = hashlib.sha256(path.read_bytes()).hexdigest()
+    with pytest.raises(ev.UnsafeEvidence, match="invalid|duplicate|ambiguous"):
+        inspect(tmp_path, path, sha)
+
+
+@pytest.mark.parametrize("constant", ["NaN", "Infinity", "-Infinity"])
+def test_nonstandard_json_constants_refused_even_with_sha_match(tmp_path, constant):
+    path, _, manifest = fixture(tmp_path)
+    detail = manifest["artifacts"]["spdx_sbom"]
+    file = tmp_path / detail["file"]
+    body = file.read_bytes().replace(b'"spdxVersion": "SPDX-2.3"',
+           b'"unreviewedEvidence": ' + constant.encode() + b', "spdxVersion": "SPDX-2.3"', 1)
+    assert body != file.read_bytes()
+    file.write_bytes(body)
+    detail["sha256"] = hashlib.sha256(body).hexdigest()
+    sha = hashlib.sha256(_write(path, manifest)).hexdigest()
+    with pytest.raises(ev.UnsafeEvidence, match="invalid|nonstandard"):
+        inspect(tmp_path, path, sha)
