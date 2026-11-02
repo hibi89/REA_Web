@@ -149,3 +149,52 @@ def test_valid_cli_produces_review_only_no_runtime(tmp_path):
     obj=json.loads(out.read_text())
     assert obj["image_execution_authorized"] is False
     assert obj["status"] == "EVIDENCE_INVENTORY_REVIEW_REQUIRED"
+
+@pytest.mark.parametrize("bad", [
+    "example.invalid/../other@sha256:"+"c"*64,
+    "example.invalid/.hidden@sha256:"+"c"*64,
+    "example.invalid/another..part@sha256:"+"c"*64,
+    "example.invalid/a//b@sha256:"+"c"*64,
+    "example.invalid/a/@sha256:"+"c"*64,
+])
+def test_noncanonical_repository_refused_even_with_matching_manifest_hash(tmp_path, bad):
+    path, _, manifest = fixture(tmp_path)
+    manifest["image_ref"] = bad
+    sha = hashlib.sha256(_write(path, manifest)).hexdigest()
+    with pytest.raises(ev.UnsafeEvidence, match="invalid immutable"):
+        inspect(tmp_path, path, sha)
+
+
+def test_too_deep_json_refused_as_evidence_error(tmp_path):
+    path, _, manifest = fixture(tmp_path)
+    detail = manifest["artifacts"]["spdx_sbom"]
+    nested = b"["*10000 + b"0" + b"]"*10000
+    detail["sha256"] = hashlib.sha256(_write(tmp_path/detail["file"], nested)).hexdigest()
+    sha = hashlib.sha256(_write(path, manifest)).hexdigest()
+    with pytest.raises(ev.UnsafeEvidence, match="invalid UTF-8"):
+        inspect(tmp_path, path, sha)
+
+
+def test_duplicate_spdx_package_refused_even_if_same_version(tmp_path):
+    path, _, manifest = fixture(tmp_path)
+    detail = manifest["artifacts"]["spdx_sbom"]
+    file = tmp_path / detail["file"]
+    doc = json.loads(file.read_text())
+    doc["packages"].append({"name":"FastAPI", "versionInfo":"1.2.3",
+                            "licenseConcluded":"NOASSERTION"})
+    detail["sha256"] = hashlib.sha256(_write(file,doc)).hexdigest()
+    sha = hashlib.sha256(_write(path, manifest)).hexdigest()
+    with pytest.raises(ev.UnsafeEvidence, match="duplicate or ambiguous"):
+        inspect(tmp_path, path, sha)
+
+
+def test_oversized_spdx_inventory_refused_before_processing(tmp_path):
+    path, _, manifest = fixture(tmp_path)
+    detail = manifest["artifacts"]["spdx_sbom"]
+    file = tmp_path / detail["file"]
+    doc = json.loads(file.read_text())
+    doc["packages"] = doc["packages"] * 2100
+    detail["sha256"] = hashlib.sha256(_write(file,doc)).hexdigest()
+    sha = hashlib.sha256(_write(path, manifest)).hexdigest()
+    with pytest.raises(ev.UnsafeEvidence, match="invalid SPDX"):
+        inspect(tmp_path, path, sha)
