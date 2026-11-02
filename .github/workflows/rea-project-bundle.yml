@@ -4,6 +4,8 @@ on:
     branches: [feature/rea-backend-zip-contract-20261101]
     paths:
       - 'rea/adapter/project_bundle.py'
+      - 'rea/adapter/frontend_bridge.py'
+      - 'rea/adapter/visual_reference.py'
       - 'rea/adapter/behavior_probe.py'
       - 'rea/adapter/runtime_supervisor.py'
       - 'rea/adapter/docker_sandbox.py'
