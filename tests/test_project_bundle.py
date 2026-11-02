@@ -14,6 +14,7 @@ import pytest
 from rea.adapter.backend_zip import inspect_backend_zip
 from rea.adapter.backend_schema import inspect_backend_schema
 from rea.adapter.frontend_bridge import make_review, generate_frontend
+from rea.adapter.visual_reference import sanitize_observation
 from rea.adapter.project_bundle import build_synthetic_project, UnsafeProjectBundle
 from rea.adapter.runtime_contract import reconcile
 from tests_static_fixture import FABLE, BINDINGS
@@ -184,6 +185,90 @@ def test_reject_manifest_only_binding_remap_without_regenerated_javascript(tmp_p
                                 expected_backend_sha256=sha,
                                 developer_authorized_synthetic=True)
     assert not output.exists()
+
+
+
+def styled_bundle_input(tmp_path):
+    backend_zip, _, reconciliation, sha = trusted_bundle_input(tmp_path)
+    backend = inspect_backend_zip(backend_zip)
+    origin = make_review(FABLE, backend, BINDINGS)['reference']['origin']
+    visual = sanitize_observation({
+        'origin': origin, 'layout': 'sidebar',
+        'viewport': {'width': 1365, 'height': 900},
+        'colors': {
+            'canvas': '#fafafa', 'surface': '#ffffff', 'ink': '#111111',
+            'navigation': '#223355', 'accent': '#5566aa'
+        },
+        'components': {
+            'navigation': 1, 'buttons': 2, 'tables': 1,
+            'forms': 0, 'inputs': 1, 'card_like': 3
+        },
+        'evidence': {
+            'navigation_visible': True, 'panel_visible': True,
+            'button_visible': True
+        }
+    }, allow_loopback=True)
+    review = make_review(FABLE, backend, BINDINGS, visual=visual)
+    frontend = tmp_path / 'styled_frontend'
+    generate_frontend(review, frontend, owner_confirmed=True)
+    return backend_zip, frontend, reconciliation, sha
+
+
+def test_original_styled_frontend_is_packageable(tmp_path):
+    backend, styled, reconciliation, sha = styled_bundle_input(tmp_path)
+    result = build_synthetic_project(
+        backend, styled, reconciliation, tmp_path / 'styled.zip',
+        expected_backend_sha256=sha, developer_authorized_synthetic=True)
+    assert result['status'] == 'TRUSTED_SYNTHETIC_PROJECT_SOURCE_NOT_CUSTOMER_RELEASE'
+    with zipfile.ZipFile(tmp_path / 'styled.zip') as archive:
+        assert '#223355' in archive.read('dashboard/style.css').decode('utf-8')
+        assert json.loads(archive.read('dashboard/manifest.json'))['visual_contract']['sha256']
+
+
+def test_reject_styled_css_mutation_before_zip(tmp_path):
+    backend, styled, reconciliation, sha = styled_bundle_input(tmp_path)
+    css = styled / 'style.css'
+    css.write_bytes(css.read_bytes() + b'\n@import url(https://untrusted.invalid/style.css);\n')
+    destination = tmp_path / 'no.zip'
+    with pytest.raises(UnsafeProjectBundle, match='CSS'):
+        build_synthetic_project(
+            backend, styled, reconciliation, destination,
+            expected_backend_sha256=sha, developer_authorized_synthetic=True)
+    assert not destination.exists()
+
+
+@pytest.mark.parametrize('edit', [
+    lambda data: data.pop('visual_contract'),
+    lambda data: data['visual_contract']['colors'].update(accent='#cc0011'),
+    lambda data: data['reference'].update(visual_sha256='0'*64),
+])
+def test_reject_unverifiable_styled_visual_manifest(tmp_path, edit):
+    backend, styled, reconciliation, sha = styled_bundle_input(tmp_path)
+    manifest = styled / 'manifest.json'
+    data = json.loads(manifest.read_text(encoding='utf-8'))
+    edit(data)
+    manifest.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+    destination = tmp_path / 'no.zip'
+    with pytest.raises(UnsafeProjectBundle, match='visual|styled'):
+        build_synthetic_project(
+            backend, styled, reconciliation, destination,
+            expected_backend_sha256=sha, developer_authorized_synthetic=True)
+    assert not destination.exists()
+
+
+def test_reject_neutral_manifest_claiming_visual_capture(tmp_path):
+    backend, frontend, reconciliation, sha = trusted_bundle_input(tmp_path)
+    manifest = frontend / 'manifest.json'
+    data = json.loads(manifest.read_text(encoding='utf-8'))
+    data['reference']['style_source'] = 'REFERENCE_STYLE_GUIDANCE_ORIGINAL_UI'
+    manifest.write_text(json.dumps(data), encoding='utf-8')
+    destination = tmp_path / 'no.zip'
+    with pytest.raises(UnsafeProjectBundle, match='provenance'):
+        build_synthetic_project(
+            backend, frontend, reconciliation, destination,
+            expected_backend_sha256=sha, developer_authorized_synthetic=True)
+    assert not destination.exists()
+
 
 
 def test_no_overwrite(tmp_path):
