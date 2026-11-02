@@ -242,9 +242,10 @@ async function fetchJson(path) {
     const response = await fetch(path, {credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'},signal:controller.signal});
     if (!response.ok) throw new Error('HTTP '+response.status+' / '+path);
     const type = (response.headers.get('content-type') || '').toLowerCase();
-    if (!/^(application\\/json|application\\/[a-z0-9.+-]+\\+json)(?:\\s*;|$)/.test(type)) throw new Error('API 응답이 JSON이 아닙니다');
+    const mime = type.split(';',1)[0].trim();
+    if (mime !== 'application/json' && !(mime.startsWith('application/') && mime.endsWith('+json'))) throw new Error('API 응답이 JSON이 아닙니다');
     const advertised = response.headers.get('content-length');
-    if (advertised !== null && /^\\d+$/.test(advertised) && Number(advertised)>API_LIMIT) throw new Error('API 응답 크기 초과');
+    if (advertised !== null && (!Number.isSafeInteger(Number(advertised)) || Number(advertised)<0 || Number(advertised)>API_LIMIT)) throw new Error('API 응답 크기 초과');
     if (!response.body) throw new Error('API 응답 본문 누락');
     reader = response.body.getReader();
     const chunks=[];let size=0;
