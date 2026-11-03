@@ -1,3 +1,5 @@
+> **2026-11-03 KST verified SHA 280b1676:** ZIP pack/verify tests PASS Windows/Ubuntu Actions 41653360352, each OS 159 PASS/2 SKIP, source static 41653360320 each 167 PASS/2 SKIP. Real CI owns synthetic 130-row data and tests identical ZIP hashes, extracted local SELF_CHECK, native Windows CMD --check, corruption rejection. Initial Windows LF/CRLF failure at 2af167e1 corrected. ZIP contains plaintext SQLite data; no commercial release authorization.
+
 # REA first-party local app ZIP — Technical preview (RELEASE HOLD)
 
 The exporter accepts ONLY an integrity-checked REA-owned generated local app;
