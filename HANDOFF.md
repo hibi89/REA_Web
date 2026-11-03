@@ -1,3 +1,16 @@
+## 2026-11-03 17:16 KST — P0: authenticated synthetic dashboard stale-data clearing
+
+1. **목표·확정 요구·기술:** REA_WEB 승인된 GET 계약에서 독립 대시보드를 생성한다. Python 3.11, Playwright Chromium, GitHub Actions Windows 2022/Ubuntu 22.04. 실제 고객 ZIP 실행 없이 합성 API 인증 오류 경계만 검증한다.
+2. **완료·결정 근거:** A안(401/403 오류 표시만 하고 과거 작업 정보 유지)은 사용자가 바뀐 뒤 자료 노출 가능성이 있어 배제. B안(목록/지표 401·403 또는 상세 401 시 캐시·행·KPI·상세를 비우고 지연된 요청 무효화)을 적용. 개별 상세 403은 전체 세션 실패가 아닌 국소 오류로 처리한다. 기존 GET-only/CSP/Pro/Lite 불변.
+3. **검증:** 코드 SHA `d904ea3b411debcac353681db159647bd99ed32d`, 회귀 테스트 SHA `5cb3ba4cc8ebf5d80e429b40a2636b9acd7b2088`. 실제 push Actions `41601634713` Windows/Ubuntu 각각 **130 PASS·2 SKIP**, 정적 `41601634799` 각각 **52 PASS·2 SKIP**, ZIP/HTTP/Chromium/CSP `41601566485` 코드 SHA 기준 각각 **135 PASS·0 FAIL**. 2 SKIP는 설치되지 않은 선택적 Astra 계약 테스트로 미검증. 작업은 합성 FastAPI 응답만 사용.
+4. **진행 상태:** 브라우저 401·403 처리와 기존 정상 기능 회귀 완료. 실제 고객 소유권·응답 스키마·인증·Docker 격리·실물 Windows·라이선스·Production은 대기/미검증. 예상 80% 완료·20% 잔여, 상용 RELEASE HOLD.
+5. **원인·시도·금지:** 이전 공통 실패 화면은 캐시·행·상세를 보존했고 비동기 응답이 다시 내용을 표시할 위험이 있었다. 보호 상태 지우기와 generation 토큰 무효화로 최소 수정했다. 네트워크·Docker 우회 실행과 기존 해결된 구문/CRLF/CSS/Docker 테스트 오류 재작업 금지.
+6. **저장소·브랜치·경로:** `hibi89/REA_Web` / `feature/rea-backend-zip-contract-20261101`; 기존 인수인계 기준 HEAD `93a27e77862587888eeb130f31b9acd9572c15fb`. 기능 `rea/adapter/frontend_bridge.py`, 테스트 `tests/test_frontend_bridge_browser.py`; 기존 `.github/workflows/rea-frontend-bridge.yml`, `rea-project-bundle.yml`.
+7. **Production·환경:** Production/Vercel 해당 없음(N/A). GitHub 호스팅 Windows/Linux Python3.11 + localhost 합성 FastAPI/Chromium만 수행, 실제 고객 인증 및 배포 없음.
+8. **원본·백업·보안:** Git parent로 복구 가능. 고객 ZIP·Fable/Astra 외부 자산·Pro/Lite 원본 미수정, 비밀정보·.env·권한 변경·외부 업로드 없음.
+9. **다음 우선순위·승인:** 소유자가 명시한 GET 목록/지표/상세 필드 매핑과 정수 KPI·401/403 원칙을 자체 합성 JSON으로 검증하는 정적 인수 게이트 구현. 고객 실제 ZIP 처리·실행, Docker, 외부 전송, Production에는 대상과 범위를 명시한 별도 승인 필요. 상용 완성 조건에는 실제 고객 계약/격리·Windows 및 라이선스 인수 검증 포함.
+10. **갱신·근거:** 2026-11-03 17:16 KST. 위 결과는 해당 기능·테스트 SHA와 실제 Actions 로그로 검증했다. 문서만 변경된 후속 SHA에 대한 별도 런타임 테스트 성공을 의미하지 않는다.
+
 ## 2026-11-03 KST — Verified CSP cross-OS acceptance; next customer backend gate
 
 1. **Goal / stack:** REA_WEB creates independent FastAPI-linked HTML/CSS/JS from reviewed Fable/Astra hints and static backend ZIP declarations. Python3.11, Playwright Chromium, Ubuntu22.04/Windows2022 GitHub Actions. Pro/Lite/customer sources preserved.
