@@ -1,3 +1,5 @@
+> **Windows local launch verified (2026-11-03 KST):** Generated folder now includes RUN_LOCAL_WINDOWS.cmd. From the generated folder execute RUN_LOCAL_WINDOWS.cmd --check to verify installed Python3.11+/FastAPI/Uvicorn without network/install or server startup, then RUN_LOCAL_WINDOWS.cmd to launch fixed 127.0.0.1:8000. The --check does NOT verify database integrity or actual user acceptance. Native Windows+Ubuntu Actions at code SHA 0b62485155b2c93cd73d02a44afc8b42dfffe940: static each OS 167 PASS/2 SKIP, real browser each OS 155 PASS/2 SKIP, all jobs SUCCESS. Product and customer rights remain RELEASE HOLD.
+
 # REA_WEB — 로컬 완성형 앱 생성 (REA 직접 생성 백엔드만)
 
 **현재 단계:** 별도 고객 ZIP 실행 없이 자체 REA 템플릿으로 SQLite+FastAPI+독립 대시보드를 한 폴더에 생성합니다. 원본 데이터·Fable 사용 권한 및 명시적 매핑 승인이 필요합니다. 상용 RELEASE HOLD.
