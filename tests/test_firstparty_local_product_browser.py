@@ -79,6 +79,12 @@ def test_full_local_runnable_app_with_native_backend_and_real_chromium(tmp_path)
         "README_KO.md","manifest.json","index.html","style.css","app.js"}
     assert (out/"data.sqlite").is_file()
     assert (out/"README.md").is_file()
+    assert (out/"RUN_LOCAL_WINDOWS.cmd").read_bytes().endswith(b"\r\n")
+    if sys.platform=="win32":
+        check = subprocess.run(["cmd", "/d", "/c", str(out/"RUN_LOCAL_WINDOWS.cmd"), "--check"],
+                               cwd=out, capture_output=True,text=True,timeout=20)
+        assert check.returncode==0,check.stderr
+        assert "NOT checked" in check.stdout
     assert not (out/"owned_test.csv").exists()
     assert not (out/"fable.json").exists()
 

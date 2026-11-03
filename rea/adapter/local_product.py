@@ -27,6 +27,41 @@ from rea.safe_publish import publish_directory
 
 SCHEMA = "rea.firstparty_local_app.v0.1"
 
+# Preflight and start ONLY the REA-owned local generated app.
+# No pip install, no URL open, no hostname override, no public binding.
+WINDOWS_CMD = "\r\n".join([
+    "@echo off",
+    "setlocal EnableExtensions DisableDelayedExpansion",
+    "chcp 65001 >nul",
+    'cd /d "%~dp0" || exit /b 2',
+    'call python -c "import sys,fastapi,uvicorn;sys.exit(0 if sys.version_info[:2]>=(3,11) else 1)" >nul 2>nul',
+    "if not errorlevel 1 goto use_python",
+    'call py -3 -c "import sys,fastapi,uvicorn;sys.exit(0 if sys.version_info[:2]>=(3,11) else 1)" >nul 2>nul',
+    "if not errorlevel 1 goto use_py",
+    "echo [REA] Python 3.11+, FastAPI and Uvicorn required. See README.md. Nothing installed.",
+    "exit /b 10",
+    ":use_python",
+    'if /I "%~1"=="--check" goto ok_check',
+    'if not "%~1"=="" goto bad_arg',
+    "echo [REA] Local only: http://127.0.0.1:8000/dashboard/",
+    "call python -m uvicorn app:app --host 127.0.0.1 --port 8000",
+    "exit /b %ERRORLEVEL%",
+    ":use_py",
+    'if /I "%~1"=="--check" goto ok_check',
+    'if not "%~1"=="" goto bad_arg',
+    "echo [REA] Local only: http://127.0.0.1:8000/dashboard/",
+    "call py -3 -m uvicorn app:app --host 127.0.0.1 --port 8000",
+    "exit /b %ERRORLEVEL%",
+    ":ok_check",
+    "echo [REA] Python, FastAPI, Uvicorn present. App/data integrity NOT checked.",
+    "exit /b 0",
+    ":bad_arg",
+    "echo [REA] Usage: RUN_LOCAL_WINDOWS.cmd [--check]",
+    "exit /b 2",
+    "",
+]).encode("utf-8")
+
+
 # Added ONLY to a new generated copy; never modifies repo-owned template
 # or imports/extracts/executes any customer-provided backend ZIP.
 MOUNT = b'\n# REA-owned local dashboard, served on the same origin as the read-only API.\n' \
@@ -97,6 +132,9 @@ def build(data: Path, fable: Path, bindings: Path, destination: Path, *,
             + "    python -m uvicorn app:app --host 127.0.0.1 --port 8000\n\n"
             + "Open http://127.0.0.1:8000/dashboard/ for the reviewed dashboard; "
               "http://127.0.0.1:8000/ retains the previous app.\n"
+            + "On Windows, RUN_LOCAL_WINDOWS.cmd --check validates installed Python/FastAPI/Uvicorn; "
+              "double-click RUN_LOCAL_WINDOWS.cmd to launch localhost only. "
+              "The check does not validate app data or replace live HTTP acceptance.\n"
             + "No internet exposure or customer authentication is provided. "
               "All CSV/JSON values are stored in local data.sqlite; "
               "keep this folder private. This package is NOT commercially approved.\n",
@@ -121,6 +159,7 @@ def build(data: Path, fable: Path, bindings: Path, destination: Path, *,
             "backend_modified_in_repository": False,
             "run": "python -m uvicorn app:app --host 127.0.0.1 --port 8000",
         }
+        (folder / "RUN_LOCAL_WINDOWS.cmd").write_bytes(WINDOWS_CMD)
         (folder / "REA_INTEGRATION_RECEIPT.json").write_text(
             json.dumps(receipt, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
             encoding="utf-8",
