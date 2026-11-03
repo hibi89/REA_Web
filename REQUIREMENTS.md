@@ -1,3 +1,8 @@
+## 2026-11-03 KST — ZIP 전체 구성원 무결성 선행 검증
+- `inspect_backend_zip`는 제한된 로컬 ZIP의 모든 비디렉터리 항목에 대해 압축 해제 및 CRC 오류를 확인한 뒤에만 `REVIEW_REQUIRED` 정적 계약을 반환해야 한다. Python `.py` 항목만 AST로 파싱하며 그 외 파일은 메모리 스트리밍·폐기한다. 고객 ZIP 코드 실행, 파일 추출, 네트워크 호출 또는 자동 승인을 추가하지 않는다. 기존 25 MiB ZIP/20 MiB 비압축 총량/압축비/파일 수 제한 유지.
+- 자체 제작 ZIP에서 Python 파일은 정상이고 `NOTICE.txt` 페이로드만 CRC 손상된 경우, 스캐너는 `UnsafeBackendZip`으로 거부하고 `--out` 파일을 생성하지 않는다. 실제 GitHub Actions `41618863173` SHA `a83929c2`, Windows/Ubuntu 각각 166 PASS/2 SKIP/0 FAIL. 프론트엔드 `41618863046` 양 OS SUCCESS.
+- CRC는 전송·저장 무결성에 관한 신호이며 악의적 소스의 진정성·법적 권리·안전성을 인증하지 않는다. Pro/Lite 원본 유지, 실제 고객 ZIP/Docker/Production 별도 승인, RELEASE HOLD.
+
 ## 2026-11-03 KST — Reproducible synthetic-only v0.2 end-to-end example
 - Implement a local, deterministic, self-authored example generator using `frontend_bridge.make_review` over fabricated Fable/backend declarations, matching owner-provided three GET mappings and two fabricated records. Output exactly `review.json` and `synthetic_samples.json` with v0.2 review_sha256/review_schema_version/backend_sha256 populated from exact canonical review bytes. Use `safe_publish.publish_directory` for atomic no-replace creation; never write/replace an existing target, never execute customer ZIP or fetch remote URL.
 - `python -m rea.adapter.synthetic_example --out NEW_DIR` must return safe non-approval metadata. `python -m rea.adapter.response_preflight --review NEW_DIR/review.json --samples NEW_DIR/synthetic_samples.json --synthetic-only --out NEW_REPORT.json` checks complete fabricated list, metrics, detail, matching hashes. No app/backend/HTML/JS files generated and all approvals remain false. Document exact Windows/Linux commands in `docs/19_SYNTHETIC_PREFLIGHT_EXAMPLE.md`.

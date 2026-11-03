@@ -1,3 +1,16 @@
+## 2026-11-03 KST — P0 ZIP 모든 파일 CRC 검증 완료 (기존 Pro/Lite 유지)
+
+1. **목표·기술·요구:** 승인된 로컬 백엔드 ZIP 정적 AST 점검 시 Python이 아닌 구성원도 압축 해제 및 CRC를 확인해, 손상된 전체 ZIP을 정상 검토로 오판하지 않도록 함. Python3.11, GitHub Actions Windows2022/Ubuntu22.04. 고객 ZIP 처리 금지 유지.
+2. **완료 기능·설계 비교:** A: 기존 .py 파일만 읽음(속도 빠르나 README/NOTICE/자산의 손상 CRC를 놓침). B: 이미 제한된 20 MiB 비압축 상한 내 모든 일반 파일을 스트리밍해서 CRC 검사 후 Python만 AST 파싱(추가 네트워크/API 비용 0, 보안·정확성 우위). B 적용. `rea/adapter/backend_zip.py` 외 기존 앱/Pro/Lite 불변. 디렉터리는 기존 정책대로 검사하고 내용 읽지 않음.
+3. **검증:** `python -m pytest -q tests/test_backend_zip.py tests/test_adapter.py tests/test_rea_lite_integration.py tests/test_response_contract.py tests/test_response_preflight.py tests/test_synthetic_example.py`. 코드 SHA `ab01e3e277b81345971121a46de2eca6416014f5`; 테스트 보강 `956c0c1fceec2624020f993e318cb03acd1aedf3`; 테스트 리터럴 수정 `a83929c2d4c4c65ff64ca27b8f742e37fb483f02`. 실제 CI `41618863173`: Windows/Ubuntu 각각 **166 PASS / 2 SKIP / 0 FAIL**, 중복 ZIP 이름 경고 1. 기존 프론트엔드/Chromium `41618863046`: 두 OS SUCCESS. 합성 ZIP 손상 회귀만 새로 추가, 고객 자료 없음.
+4. **상태:** 전체 ZIP 비Python 구성원 CRC 무검사 결함 DONE. 실제 고객 권리·데이터·API 인증 및 응답, Docker/VM 실제 격리, 독립 실물 Windows, 상용 라이선스/배포 PENDING. 엔지니어링 ~80% 정성 추정, 상용 RELEASE HOLD.
+5. **실패·원인·재발 방지:** 첫 새 회귀 Actions `41618738460`은 ZIP 헤더 바이트 검사 기대값 `b"PK\\x03\\x04"` 리터럴을 잘못 이스케이프한 **테스트 버그**로 각 OS 165 PASS/1 FAIL/2 SKIP. 제품 CRC 로직 실패 근거가 아님. `a83929c2`에서 바이트 튜플로 변경 후 정확 SHA의 양 OS 검증 PASS. 변경 없는 재시도 금지.
+6. **저장소·브랜치·SHA:** `hibi89/REA_Web` / `feature/rea-backend-zip-contract-20261101`; 검증 HEAD `a83929c2d4c4c65ff64ca27b8f742e37fb483f02`; 코드 `rea/adapter/backend_zip.py`, 테스트 `tests/test_backend_zip.py`. 본 인수인계 문서 업데이트 후 HEAD는 별도 docs-only 커밋으로 확인.
+7. **Production/Vercel/환경:** Adapter Production URL/Vercel 미적용. 실제 GitHub-hosted Windows2022/Ubuntu22.04 Python3.11에서 실행. ZIP 검사기는 압축 해제 내용을 메모리에서만 읽으며 파일 추출·import·실행·HTTP 없음.
+8. **원본·백업·인증:** Git parent history로 복원 가능. Pro/Lite, 고객 원본, Fable/Astra import, 비밀·토큰·환경변수·도메인 불변. 손상 ZIP 검증은 실제 사용 권리, 전체 보안 또는 배포 허가를 의미하지 않음.
+9. **다음 작업·승인:** 중복 합성 검증 대신 실제 고객 권리·정적 라우트/응답/인증 계약과 Windows/라이선스 인수검수를 우선. 고객 ZIP/API/Docker 실제 실행 및 외부 전송/배포는 명시적 별도 승인 필요. 준비되지 않은 데이터/권리는 UNVERIFIED, RELEASE HOLD.
+10. **갱신 시점·근거:** 2026-11-03 KST, 기능 코드 테스트 SHA `a83929c2`; 실행 워크플로 `41618863173` 및 `41618863046` 모두 OS별 SUCCESS. 본 문서 최종 기준 커밋 SHA는 생성 후 따로 확인.
+
 ## 2026-11-03 KST — v0.2 self-authored offline CLI example and native acceptance
 
 1. **목표·기술·요구:** REA_Web adapter generates independent read-only frontend from owner-reviewed static backend and Fable hints. Current unit supplies a fully self-authored, reproducible v0.2 offline synthetic response preflight example. Python3.11, GitHub Actions Windows2022/Ubuntu22.04; no customer ZIP or production environment.
