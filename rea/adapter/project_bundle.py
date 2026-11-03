@@ -121,7 +121,8 @@ def _check_frontend(folder: Path, backend_sha: str) -> tuple[dict[str, bytes], d
             raise UnsafeProjectBundle("styled frontend visual provenance mismatch")
         expected_css = GENERATED_CSS + "\n" + _reference_css(observed)
     if contents["dashboard/style.css"] != expected_css.encode("utf-8"):
-        raise UnsafeProjectBundle("frontend CSS differs from approved generator")
+        css_kind = "neutral" if reference.get("visual_sha256") is None else "styled"
+        raise UnsafeProjectBundle(f"{css_kind} frontend CSS differs from approved generator")
     return contents, data
 
 
