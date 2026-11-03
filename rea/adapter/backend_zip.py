@@ -190,7 +190,10 @@ def inspect_backend_zip(source: Path) -> dict:
             raise UnsafeBackendZip("archive must be 1..25 MiB")
         digest = hashlib.sha256()
         flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
-        with os.fdopen(os.open(source, flags), "rb") as stream:
+        # A BufferedReader can replay stale bytes after another handle rewrites
+        # the same-size ZIP (observed on Windows CI). Use raw FileIO for both
+        # archive inspection and pre/post SHA checks.
+        with os.fdopen(os.open(source, flags), "rb", buffering=0) as stream:
             opened = os.fstat(stream.fileno())
             if not stat.S_ISREG(opened.st_mode):
                 raise UnsafeBackendZip("archive must be regular")
