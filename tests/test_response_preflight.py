@@ -23,7 +23,10 @@ from test_response_contract import BINDINGS, sample
 
 def fixture_files(tmp_path):
     # Real source of this review: the existing, independent Fable/backend bridge.
-    review = make_review(FABLE, BACKEND, copy.deepcopy(BINDINGS))
+    backend = copy.deepcopy(BACKEND)
+    # The declared synthetic endpoint must match the explicitly mapped token.
+    backend["api"]["endpoints"][2]["path"] = "/api/jobs/{ticket_id}"
+    review = make_review(FABLE, backend, copy.deepcopy(BINDINGS))
     fixture = {
         "schema_version": INPUT_SCHEMA,
         "synthetic_only": True,
