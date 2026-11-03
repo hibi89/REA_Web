@@ -5,6 +5,7 @@ The ZIP includes the owner's actual local SQLite rows; treat as private.
 """
 from __future__ import annotations
 import argparse
+from contextlib import closing
 import hashlib
 import io
 import json
@@ -187,7 +188,10 @@ def _folder(source: Path) -> dict[str, bytes]:
     _check(members)
     try:
         db_file = source / "data.sqlite"
-        with sqlite3.connect(db_file.as_uri() + "?mode=ro", uri=True) as db:
+        # sqlite3.Connection.__exit__ commits/rolls back but does NOT close.
+        # On Windows that leaves data.sqlite locked and prevents atomic rename.
+        with closing(sqlite3.connect(db_file.as_uri() + "?mode=ro", uri=True)) as db:
+            db.execute("PRAGMA query_only=ON")
             status = db.execute("PRAGMA quick_check(1)").fetchone()
             row_count = db.execute("SELECT COUNT(*) FROM items").fetchone()[0]
         receipt = _json(members["REA_INTEGRATION_RECEIPT.json"])
