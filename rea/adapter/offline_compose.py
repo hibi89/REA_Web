@@ -21,7 +21,8 @@ from rea.adapter.frontend_bridge import (
 def compose(backend_zip: Path, fable_report: Path, *, bindings: Path | None = None,
             visual: Path | None = None, destination: Path | None = None,
             source_authorized: bool = False,
-            owner_confirmed: bool = False) -> dict:
+            owner_confirmed: bool = False,
+            expected_backend_sha256: str | None = None) -> dict:
     """Offline static inspection and optional source-only frontend publication.
 
     Passing source_authorized means the invoker has separate permission to
@@ -40,6 +41,8 @@ def compose(backend_zip: Path, fable_report: Path, *, bindings: Path | None = No
     # Schema scan independently verifies the same ZIP hash as the initial
     # declaration scan; a changed archive is rejected before publication.
     backend = inspect_backend_zip(backend_zip)
+    if expected_backend_sha256 is not None and backend['input']['sha256'] != expected_backend_sha256:
+        raise BridgeError('backend ZIP SHA changed since reviewed preview')
     schema = inspect_backend_schema(backend_zip)
     review = make_review(
         _read_json(fable_report),
