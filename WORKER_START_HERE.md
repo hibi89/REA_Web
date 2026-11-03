@@ -16,13 +16,12 @@ The exact sentence above is a **standing instruction to immediately inspect this
 4. Implement the **single latest READY task** on its designated branch, run available real checks, commit/push using GitHub, record results in `STATUS.md`, `HANDOFF.md`, and `docs/17_NEXT_TASK.md` (on main; merge/rebase only if conflict-safe). Include the commit SHA and NOT_RUN/blocked facts. If blocked, record concrete cause, switch to next independent safe item.
 5. Respond only with actual completed changes, exact tests, verified URLs/SHAs, blockers, and next step. No questions already answered in these files.
 
-## Current highest priority — ACTIVE at 2026-10-25 KST
-**REA-MVP-D2-01: Fable 5.1 -> Astra evidence/functional-spec adapter**
-- Write new integration adapter and deterministic tests on `feature/evidence-adapter` (currently only initial docs, HEAD before fast-forward `a4098bb15e3348250c8e6f255acbca6f0eb18fc2`).
-- Input: redacted **Fable 5.1** result JSON: website technical evidence, observed UI/recorded interaction facts, `api.endpoints`, chart/API association hypotheses. Preserve exact observed/inferred/unknown distinction.
-- Output: validated **Astra P4** ObservationBundle / FunctionalSpecDraft or explicitly **REVIEW_REQUIRED**, with evidence links, no fabricated confirmed UI behavior, unapproved data bindings and production generation blocked.
-- Deliver: real Python implementation, positive/negative tests, a redacted synthetic example and a CLI/demo invocation. Use source schemas of `engines/fable51/` on `import/fable51-bbe72c0` and `engines/astra_p4/astra_contracts/` on `import/astra-p4-b3166b6`; imported code remains on separate, unmerged source branches. A redacted example may be built from the checked-in Fable test fixtures if earlier user-provided ZIP is unavailable in the new conversation.
-- Next: REA-MVP-D2-02 optional Fable analysis report to CSV→app builder; REA-MVP-D3-01 3 examples, Windows guide, browser E2E, packaging and design-gap comparison.
+## Current highest priority — ACTIVE at 2026-10-25 22:55 KST
+**REA-MVP-D2-02: optional Fable report → CSV MVP orchestration**.
+- **D2-01 is done**, not READY. Feature `feature/evidence-adapter` SHA `fda96076de33ebf4f4b6118972a5033a3f703ba9`, [Draft PR #4](https://github.com/hibi89/REA_Web/pull/4). CI [CI run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969) passed **28 pytest with actual Astra contract checkout**; inferred-only review gate and CLI verified.
+- **Next target branch: `feature/orchestrator`**. Inspect latest branch and `docs/17_NEXT_TASK.md`; read D1 `feature/csv-local-mvp` and D2 `feature/evidence-adapter` source; avoid overwriting unique branches.
+- Implement real optional-report + **customer CSV** → independent local FastAPI/SQLite webapp flow, with CSV-only capability, no website scan required. Never automatically approve semantic mapping or Fable inferred UI behavior.
+- Use synthetic data only; run tests/CI, create Draft PR, update main handoff docs. D3 adds three example domains, real browser, Windows and packaging.
 
 ## Last verified working result — do not lose
 - Standalone CSV→SQLite→FastAPI+HTML/CSS/JS generator exists on `feature/csv-local-mvp` **`5515a7286d63211e32d2c577f93f77d61f37ce08`**; Draft **PR #3** to integration/develop (NOT merged).
