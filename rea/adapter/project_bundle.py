@@ -157,6 +157,7 @@ sys.dont_write_bytecode = True  # Keep a clean extracted artifact for integrity 
 
 ROOT = Path(__file__).resolve().parent
 EXPECTED_APP_SHA = "__EXPECTED_APP_SHA__"
+EXPECTED_FRONTEND_HASHES = __EXPECTED_FRONTEND_HASHES__
 
 
 def check():
@@ -182,6 +183,16 @@ def check():
             raise RuntimeError("missing or symbolic-link package member")
         if hashlib.sha256(member.read_bytes()).hexdigest() != sha:
             raise RuntimeError("package content changed; execution refused")
+    # Independently pin the self-authored frontend. SHA256SUMS.json is
+    # editable by the person who can change a dashboard asset, so it alone
+    # cannot authenticate the original JS/CSS/HTML after extraction.
+    expected_names = {
+        "dashboard/index.html", "dashboard/app.js", "dashboard/style.css",
+        "dashboard/manifest.json", "dashboard/README_KO.md",
+    }
+    if (set(EXPECTED_FRONTEND_HASHES) != expected_names
+            or any(checks.get(name) != sha for name, sha in EXPECTED_FRONTEND_HASHES.items())):
+        raise RuntimeError("frontend differs from approved synthetic bundle")
     # Reject source-tree additions that were absent from the approved ZIP.
     # Hashing only listed files does not detect an injected Python module.
     required = {
@@ -331,7 +342,11 @@ def build_synthetic_project(backend_zip: Path, frontend_dir: Path,
             raise UnsafeProjectBundle("frontend binding not in reviewed GET routes")
     files = {**backend, **frontend}
     files["backend/__init__.py"] = b"# Trusted synthetic backend package.\n"
-    files["runtime_entry.py"] = RUNNER.replace("__EXPECTED_APP_SHA__", _hash(backend["backend/app.py"])).encode("utf-8")
+    pinned_frontend_hashes = {name: _hash(data) for name, data in sorted(frontend.items())}
+    files["runtime_entry.py"] = (RUNNER.replace("__EXPECTED_APP_SHA__", _hash(backend["backend/app.py"]))
+                                 .replace("__EXPECTED_FRONTEND_HASHES__",
+                                          json.dumps(pinned_frontend_hashes, sort_keys=True, separators=(",", ":")))
+                                 .encode("utf-8")
     files["START_WINDOWS.cmd"] = WINDOWS_CMD
     files["README_FIRST.md"] = README
     digest_table = {name: _hash(data) for name, data in sorted(files.items())}
