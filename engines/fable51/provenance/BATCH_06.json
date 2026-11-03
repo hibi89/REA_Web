@@ -1,0 +1,18 @@
+{
+  "source_commit": "bbe72c0acd3a3e355062d6bd0d866af33e5274b0",
+  "batch": 6,
+  "upstream_github_git_blob_sha": {
+    "tests/browser_mapping_check.py": "7758567356ec8071de3efa2b7be3b623e7727101",
+    "tests/browser_record_check.py": "dffa35e08bcb46f4bae8d9ca26cfbbd153bbc8b8",
+    "tests/browser_runtime_check.py": "f87a574953c54e6770a872799117e7977a55deb8",
+    "tests/dashboard_accuracy_smoke.py": "9e88de3f5a5ee7c6c431cd1201e9845c4134f4bc",
+    "tests/fixture_server.py": "e4f5e523f7ea283455b540dc39a0315a11e2eb37",
+    "tests/public_runtime_smoke.py": "aa6a747b48b6a6849f0ae3c9887bb761c1e9e53c",
+    "tests/test_batch.py": "852c9bd2da99a8e618e3fe84dd800aaa2c0b5397",
+    "tests/test_bundle_scan.py": "4e38086eced7c5207030a70ed583b3dd1c4b1514",
+    "tests/test_cdp_decoded_size.py": "db1016e4bfba48df8f4cd409427dd7d223ada1c3",
+    "tests/test_chart_mapping.py": "765d570efb36f768fdd88edb45a7766dc977d8de",
+    "tests/test_compare.py": "3fc034f3ff4b593d831b9ac64b44dd912f8f51c4",
+    "tests/test_connections.py": "d1268240e6edfb75060a4a0dc80a3a86fa996eef"
+  }
+}

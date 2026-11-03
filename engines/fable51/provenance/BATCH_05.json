@@ -1,0 +1,18 @@
+{
+  "source_commit": "bbe72c0acd3a3e355062d6bd0d866af33e5274b0",
+  "batch": 5,
+  "upstream_github_git_blob_sha": {
+    "scanner/models.py": "0e865e70e636504ed3a3e8e409e66a09240ca016",
+    "scanner/network.py": "fcec188918a797fb41127670e8ec0e9b63d0101e",
+    "scanner/record_scan.py": "e8c41db93779c188c168c0c47a15c69cc4eb2ded",
+    "scanner/report.py": "60961c0b1a44feab633393d07ef9dc2e16975fde",
+    "scanner/runtime_detect.py": "7d4a43fac633e709f6b0793c0e38f6d71ec95588",
+    "scanner/runtime_scan.py": "53a365f825dbfdd895c5e6c6685b6de66eea655f",
+    "scanner/sanitize.py": "cd390857e297d12ced317ef9fd76d0741a2b2a30",
+    "scanner/static_scan.py": "1e534b07fbde3211b23a9dfc466374346893b3cb",
+    "scanner/step5_common.py": "6416b7a6bbd0140c61bdc5ecb58e0ded59550844",
+    "tests/__init__.py": "1ce0f8b65889fd672fbfcd7b47afe86ab7b68fdb",
+    "tests/browser_bundle_check.py": "703542646bda3b422f0d707d163c807945602687",
+    "tests/browser_final_check.py": "06ecac9a80969aa11d4cc2f7d7ae2ffc9f961073"
+  }
+}
