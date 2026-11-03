@@ -7,6 +7,8 @@ Never imports/runs a backend, contacts a URL, or reflects input values/errors.
 from __future__ import annotations
 
 import argparse
+import hashlib
+import hmac
 import json
 import os
 from pathlib import Path
@@ -20,8 +22,8 @@ from rea.adapter.response_contract import (
     validate_synthetic_response_contract,
 )
 
-SCHEMA = "rea.synthetic_response_preflight.v0.1"
-INPUT_SCHEMA = "rea.synthetic_response_samples.v0.1"
+SCHEMA = "rea.synthetic_response_preflight.v0.2"
+INPUT_SCHEMA = "rea.synthetic_response_samples.v0.2"
 REVIEW_MAX_BYTES = 2 * 1024 * 1024
 SAMPLES_MAX_BYTES = 4 * 1024 * 1024
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
@@ -31,7 +33,7 @@ class UnsafeSyntheticPreflight(ValueError):
     """An input, policy declaration, or sample was refused (no user data echoed)."""
 
 
-def _read_json_file(path: Path, limit: int) -> dict:
+def _read_json_file(path: Path, limit: int) -> tuple[dict, str]:
     """Read one bounded local regular file, never a ZIP/source or directory."""
     if path.is_symlink():
         raise UnsafeSyntheticPreflight("invalid local input")
@@ -56,7 +58,7 @@ def _read_json_file(path: Path, limit: int) -> dict:
         raise UnsafeSyntheticPreflight("invalid local JSON") from exc
     if not isinstance(value, dict):
         raise UnsafeSyntheticPreflight("JSON root must be object")
-    return value
+    return value, hashlib.sha256(data).hexdigest()
 
 
 def _reviewed_bindings(review: dict) -> dict:
@@ -88,7 +90,7 @@ def _reviewed_bindings(review: dict) -> dict:
     return bindings
 
 
-def review_synthetic_samples(review: dict, envelope: dict) -> dict:
+def review_synthetic_samples(review: dict, envelope: dict, *, review_sha256: str) -> dict:
     """Connect the existing make_review() result to bounded example validation.
 
     The returned object is a non-authorization summary with zero input values,
@@ -99,10 +101,22 @@ def review_synthetic_samples(review: dict, envelope: dict) -> dict:
     bindings = _reviewed_bindings(review)
     if (set(envelope) != {"schema_version", "synthetic_only", "selected_id",
                           "completed_statuses", "pending_statuses",
-                          "list_coverage", "samples"}
+                          "list_coverage", "samples", "review_sha256",
+                          "review_schema_version", "backend_sha256"}
             or envelope.get("schema_version") != INPUT_SCHEMA
             or envelope.get("synthetic_only") is not True):
-        raise UnsafeSyntheticPreflight("explicit synthetic-only sample schema required")
+        raise UnsafeSyntheticPreflight("explicit versioned synthetic-only sample schema required")
+    # Bind to the exact review FILE bytes used by this invocation, not a
+    # separately re-read path or an approximation from the selected API fields.
+    # A digest detects accidental replacement; it is not a signature or proof
+    # that this reviewer or customer owned the source.
+    supplied = envelope.get("review_sha256")
+    if (not isinstance(review_sha256, str) or SHA256.fullmatch(review_sha256) is None
+            or not isinstance(supplied, str) or SHA256.fullmatch(supplied) is None
+            or not hmac.compare_digest(supplied, review_sha256)
+            or envelope.get("review_schema_version") != REVIEW_SCHEMA
+            or envelope.get("backend_sha256") != review["backend"]["sha256"]):
+        raise UnsafeSyntheticPreflight("synthetic source review identity or version mismatch")
     try:
         accepted = validate_synthetic_response_contract(
             bindings, envelope["samples"], selected_id=envelope["selected_id"],
@@ -163,9 +177,10 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if not args.synthetic_only or args.review == args.samples:
             raise UnsafeSyntheticPreflight("explicit separate synthetic input files required")
+        reviewed, review_digest = _read_json_file(args.review, REVIEW_MAX_BYTES)
+        samples, _ = _read_json_file(args.samples, SAMPLES_MAX_BYTES)
         report = review_synthetic_samples(
-            _read_json_file(args.review, REVIEW_MAX_BYTES),
-            _read_json_file(args.samples, SAMPLES_MAX_BYTES),
+            reviewed, samples, review_sha256=review_digest,
         )
         if args.out is not None:
             _write_new_report(args.out, report)
