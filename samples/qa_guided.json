@@ -1,0 +1,20 @@
+[
+  {
+    "item_code": "J01",
+    "label": "블루 글리터",
+    "region": "KR",
+    "engagement": "120"
+  },
+  {
+    "item_code": "J02",
+    "label": "실버",
+    "region": "JP",
+    "engagement": "95"
+  },
+  {
+    "item_code": "J03",
+    "label": "핑크",
+    "region": "JP",
+    "engagement": "104"
+  }
+]
