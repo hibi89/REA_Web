@@ -1,0 +1,44 @@
+{
+  "list": {
+    "path": "/api/items",
+    "field": "items",
+    "pagination": {
+      "total_field": "total",
+      "limit_param": "limit",
+      "offset_param": "offset",
+      "page_size": 100
+    }
+  },
+  "metrics": {
+    "path": "/api/summary",
+    "field": "__root__"
+  },
+  "detail": {
+    "path": "/api/items/{item_id}",
+    "field": "__root__",
+    "path_param": "item_id"
+  },
+  "presentation": {
+    "item": {
+      "id": "id",
+      "name": "title",
+      "category": "category",
+      "status": null
+    },
+    "metrics": {
+      "total": "total_items",
+      "completed": "total_categories",
+      "pending": null
+    },
+    "metric_labels": {
+      "total": "전체 항목",
+      "completed": "분류 수",
+      "pending": null
+    },
+    "detail_fields": [
+      "id",
+      "title",
+      "category"
+    ]
+  }
+}

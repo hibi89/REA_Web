@@ -1,0 +1,23 @@
+{
+  "item": {
+    "id": "id",
+    "name": "title",
+    "category": "category",
+    "status": null
+  },
+  "metrics": {
+    "total": "total_items",
+    "completed": "total_categories",
+    "pending": null
+  },
+  "metric_labels": {
+    "total": "전체 항목",
+    "completed": "분류 수",
+    "pending": null
+  },
+  "detail_fields": [
+    "id",
+    "title",
+    "category"
+  ]
+}

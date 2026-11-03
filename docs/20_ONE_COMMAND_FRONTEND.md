@@ -1,3 +1,13 @@
+## 2026-11-03 — 실제 REA 원본 API 기반 페이지 조회 예제
+
+원본 `rea/templates/app.py`의 `/api/items`는 기본 100건 제한이 있어 `--paginated-list` 옵션을 사용합니다. 이때 `total`·`limit`·`offset`·`100`을 직접 입력하며, `--presentation samples/rea_firstparty_presentation.json`으로 `total_items`/`total_categories`를 각각 '전체 항목'/'분류 수'로 표시합니다. 없는 완료/대기 수치는 표시하지 않습니다.
+
+    python -m rea.adapter.offline_wizard --backend-zip OWNED_FIRSTPARTY.zip --fable fable.json --presentation samples/rea_firstparty_presentation.json --out NEW_FRONTEND --owner-authorized-source --paginated-list
+
+GET 목록 `/api/items`·지표 `/api/summary`·상세 `/api/items/{item_id}`는 실제 원본 코드에 존재하지만, 사용자가 직접 경로와 필드를 승인해야 합니다. 다른 백엔드에 동일한 바인딩을 자동 적용하지 마십시오. 구체적인 예제는 `docs/22_FIRSTPARTY_BACKEND_COMPATIBILITY.md` 참조.
+
+GitHub Actions 기능 SHA `d36afec3`: Windows/Ubuntu 정적 각 167 PASS/2 SKIP, Chromium 각 153 PASS/2 SKIP. 테스트 데이터만 사용했으며 실제 고객 권리·인증·운영 환경은 미검증, RELEASE HOLD.
+
 ## 2026-11-03 — 별도 안내형 CLI (수동 bindings.json 파일 없이 진행)
 
 기존 one-command CLI는 유지하며, 새 안내형 도구는 정적 GET 경로를 번호로 선택하고 정확한 JSON 필드 이름을 직접 입력하게 한다. ZIP 소유/사용 권한을 확인한 경우에만:
