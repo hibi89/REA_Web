@@ -1,0 +1,125 @@
+name: REA D12 offline dependency NOTICE metadata evidence
+on:
+  push:
+    branches: [feature/dependency-notice-evidence]
+  pull_request:
+    branches: [integration/develop]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux-d1-d12-and-chromium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Pinned Fable 88 source files
+        uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: 7e6f273b359b207fad8f92016226e3058cbcb839
+          path: .vendor/fable
+          persist-credentials: false
+      - name: Pinned Astra 103 PARTIAL source files
+        uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: f044b66e799289a5a353fdb9cbfdb324e683ffa3
+          path: .vendor/astra
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install developer tests only
+        run: python -m pip install "fastapi>=0.110,<1" "uvicorn>=0.27,<1" "httpx>=0.27,<1" "pytest>=8,<10" "pydantic>=2.6,<3" "playwright>=1.50,<2" "packaging>=23,<27"
+      - name: Full D1-D12 pytest regression
+        env:
+          PYTHONPATH: ".vendor/astra/engines/astra_p4:."
+        run: python -m pytest -q tests
+      - name: Provenance pinned blobs, not rights
+        run: |
+          python -m rea.provenance verify-vendor --vendor fable51 --root .vendor/fable
+          python -m rea.provenance verify-vendor --vendor astra_p4 --root .vendor/astra
+      - run: python -m compileall -q rea scripts
+      - name: 8 Chromium synthetic webapps
+        env:
+          PYTHONPATH: ".vendor/astra/engines/astra_p4:."
+        run: |
+          python -m playwright install --with-deps chromium
+          python scripts/d3_browser_acceptance.py --report-dir /tmp/rea-d12-browser
+      - name: 3 EXTRACTED customer-like ZIPs in Chromium
+        run: |
+          python -m scripts.d11_rehearsal --out /tmp/rea-d12-quotes
+          python scripts/d11_browser_rehearsal.py --rehearsal /tmp/rea-d12-quotes --report-dir /tmp/rea-d12-zip-browser
+      - name: Offline dependency NOTICE metadata audit OUTSIDE ZIP
+        run: python -m rea.dependency_evidence --out ./d12-linux-evidence.json
+      - name: Upload developer-only audit (NOT license grant)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rea-d12-linux-dependency-evidence
+          path: d12-linux-evidence.json
+          if-no-files-found: warn
+
+  windows-d1-d12-and-native-package:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Disable CRLF conversion for exact vendor Git blobs
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.safecrlf false
+      - name: Pinned Fable 88 source files
+        uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: 7e6f273b359b207fad8f92016226e3058cbcb839
+          path: .vendor/fable
+          persist-credentials: false
+      - name: Pinned Astra 103 PARTIAL source files
+        uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: f044b66e799289a5a353fdb9cbfdb324e683ffa3
+          path: .vendor/astra
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install developer tests only
+        run: python -m pip install "fastapi>=0.110,<1" "uvicorn>=0.27,<1" "httpx>=0.27,<1" "pytest>=8,<10" "pydantic>=2.6,<3" "packaging>=23,<27"
+      - name: Full D1-D12 Windows pytest regression
+        shell: pwsh
+        run: |
+          $env:PYTHONPATH = ".vendor/astra/engines/astra_p4;."
+          python -m pytest -q tests
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Windows pinned Fable and Astra provenance
+        shell: pwsh
+        run: |
+          python -m rea.provenance verify-vendor --vendor fable51 --root .vendor/fable
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m rea.provenance verify-vendor --vendor astra_p4 --root .vendor/astra
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Windows extracted CMD and localhost HTTP
+        shell: pwsh
+        run: |
+          python -m scripts.d11_rehearsal --out $env:RUNNER_TEMP/rea-d12-win-quotes
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/windows_native_smoke.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Offline dependency NOTICE metadata audit OUTSIDE ZIP
+        run: python -m rea.dependency_evidence --out ./d12-windows-evidence.json
+      - name: Upload developer-only audit (NOT license grant)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rea-d12-windows-dependency-evidence
+          path: d12-windows-evidence.json
+          if-no-files-found: warn
