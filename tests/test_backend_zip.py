@@ -165,7 +165,7 @@ def test_corrupted_non_python_crc_rejected_without_output(tmp_path):
     with zipfile.ZipFile(z) as reader:
         info = reader.getinfo("NOTICE.txt")
         start = info.header_offset
-        assert payload[start:start + 4] == b"PK\\x03\\x04"
+        assert payload[start:start + 4] == bytes((80, 75, 3, 4))
         filename_size = int.from_bytes(payload[start + 26:start + 28], "little")
         extra_size = int.from_bytes(payload[start + 28:start + 30], "little")
         byte_index = start + 30 + filename_size + extra_size
