@@ -139,6 +139,57 @@ def test_generated_frontend_real_http_chromium(tmp_path):
                 page.unroute('**/api/jobs')
                 page.locator('#retry').click()
                 expect(page.locator('#connection-text')).to_have_text('CONNECTED')
+
+                # Only test-owned fixture responses: detail 403 is scoped to
+                # its inspector and does not falsely revoke a healthy list.
+                page.route('**/api/jobs/A-1',
+                           lambda route: route.fulfill(status=403, content_type='application/json',
+                                                       body='{}'))
+                page.evaluate("showDetail('A-1')")
+                expect(page.locator('#detail')).to_contain_text('HTTP 403')
+                expect(page.locator('#connection-text')).to_have_text('CONNECTED')
+                expect(page.locator('#jobs tr')).to_have_count(3)
+                assert page.locator('#retry').is_hidden()
+                page.unroute('**/api/jobs/A-1')
+
+                # A 401 during detail fetch revokes the current session:
+                # previously visible data and KPI values must be removed.
+                page.evaluate("showDetail('A-1')")
+                expect(page.locator('#detail')).to_contain_text('A-1')
+                page.route('**/api/jobs/A-1',
+                           lambda route: route.fulfill(status=401, content_type='application/json',
+                                                       body='{}'))
+                page.evaluate("showDetail('A-1')")
+                expect(page.locator('#connection-text')).to_have_text('API ERROR')
+                expect(page.locator('#jobs tr')).to_have_count(0)
+                expect(page.locator('#kpi-total')).to_have_text('—')
+                expect(page.locator('#kpi-completed')).to_have_text('—')
+                expect(page.locator('#kpi-pending')).to_have_text('—')
+                expect(page.locator('#detail')).not_to_contain_text('A-1')
+                assert page.locator('#retry').is_visible()
+                page.unroute('**/api/jobs/A-1')
+                page.locator('#retry').click()
+                expect(page.locator('#connection-text')).to_have_text('CONNECTED')
+                expect(page.locator('#jobs tr')).to_have_count(3)
+
+                # A forbidden list/metrics read likewise cannot retain
+                # previously rendered records or details of another account.
+                page.evaluate("showDetail('A-1')")
+                expect(page.locator('#detail')).to_contain_text('A-1')
+                page.route('**/api/metrics',
+                           lambda route: route.fulfill(status=403, content_type='application/json',
+                                                       body='{}'))
+                page.evaluate('load()')
+                expect(page.locator('#connection-text')).to_have_text('API ERROR')
+                expect(page.locator('#jobs tr')).to_have_count(0)
+                expect(page.locator('#kpi-total')).to_have_text('—')
+                expect(page.locator('#detail')).not_to_contain_text('A-1')
+                assert page.locator('#retry').is_visible()
+                page.unroute('**/api/metrics')
+                page.locator('#retry').click()
+                expect(page.locator('#connection-text')).to_have_text('CONNECTED')
+                expect(page.locator('#jobs tr')).to_have_count(3)
+                assert not errors, errors
             finally:
                 browser.close()
     finally:
