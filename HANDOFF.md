@@ -1,3 +1,16 @@
+## 2026-11-03 KST — REA synthetic JSON CLI P0 handoff
+
+1. **목표·기술:** Existing `frontend_bridge.make_review` static JSON + self-authored synthetic response examples, Python3.11, no customer ZIP or live API.
+2. **완료·설계:** Separate `rea/adapter/response_preflight.py` rather than mixing with frontend generation approval; read bounded local review+sample JSON, validate using `response_contract`, produce only non-secret review-required report. No automatic generation/release.
+3. **실제 검증:** Corrected functional/test SHA `6eeaae9152f4eb2144854338471162f14fc90288`; GitHub Actions `41607661031` Windows/Ubuntu **140 PASS/2 SKIP/0 FAIL**; existing frontend/Chromium `41607661017` both SUCCESS. Command `python -m pytest -q tests/test_backend_zip.py tests/test_adapter.py tests/test_rea_lite_integration.py tests/test_response_contract.py tests/test_response_preflight.py`.
+4. **진행·대기:** Synthetic preflight DONE; actual customer ZIP/rights/auth, Docker, physical Windows, licensing, Production UNVERIFIED and approval-gated. ~80% engineering estimate, commercial RELEASE HOLD.
+5. **실패·원인·재시도:** Initial run `41607556140` failed 33 tests: test fixture static route `{job_id}` conflicted with mapped `{ticket_id}`. Corrected only test fixture in `6eeaae91`; never relax reviewed route matching or repeat prior syntax/CRLF/CSS/Docker fixes.
+6. **레포·브랜치·SHA·경로:** `hibi89/REA_Web` / `feature/rea-backend-zip-contract-20261101`; former HEAD `64ba085e`; new preflight source `rea/adapter/response_preflight.py`, tests `tests/test_response_preflight.py`, workflow `.github/workflows/rea-backend-zip.yml`.
+7. **Production·환경:** Production/Vercel N/A. GitHub-hosted Windows2022 and Ubuntu22.04 Python3.11 synthetic only; offline CLI `python -m rea.adapter.response_preflight --review REVIEW.json --samples SYNTHETIC.json --synthetic-only --out NEW_REPORT.json`.
+8. **원본·백업:** Pro/Lite/customer archives and pinned Fable/Astra unchanged. Git parent rollback; no credentials, external uploads, Docker or deployment operations.
+9. **다음 작업·승인:** Review/sample identity pairing or safe synthetic example; only with separately scoped permission may real customer ZIP/auth, sandbox Docker, upload or deployment proceed. No release before real Windows, licensing and security acceptance.
+10. **갱신·검증 범위:** 2026-11-03 KST; exact code/test Actions results as above; two optional Astra SKIPs unverified; final docs-only HEAD/CI must be rechecked.
+
 ## 2026-11-03 KST — P0 synthetic owner-mapped JSON response-shape preflight
 
 1. **목표·확정 요구·기술:** REA_Web adapter independently builds same-origin read-only FastAPI dashboard from owner-reviewed routes. Python 3.11/GitHub Actions Windows2022+Ubuntu22.04. This unit provides offline synthetic JSON response-shape validation only; no runtime customer backend, ZIP import/execute or HTTP.
