@@ -233,14 +233,31 @@ const safe = value => value == null ? '' : String(value);
 const field = (item, name) => Object.prototype.hasOwnProperty.call(item, name) ? item[name] : '';
 const node = (tag, value) => {const n=document.createElement(tag); n.textContent=safe(value); return n;};
 let cached=[];
-function fail(error) {const n=$('error'); n.hidden=false; n.textContent='백엔드 API 연결 실패: '+safe(error.message||error); $('retry').hidden=false; $('connection').classList.remove('ready'); $('connection').classList.add('failed'); $('connection-text').textContent='API ERROR';}
+function invalidateProtectedView() {
+  // A revoked login or forbidden list must not leave prior account data onscreen.
+  // Invalidate both request generations so late pre-revocation results cannot restore it.
+  ++loadGeneration; ++detailGeneration; cached=[]; render([]);
+  for (const key of ['total','completed','pending']) $('kpi-'+key).textContent='—';
+  const detail=$('detail'); detail.replaceChildren(); detail.removeAttribute('role');
+  detail.textContent='인증 또는 접근 권한을 다시 확인하십시오.';
+}
+function fail(error) {
+  if (error.status===401 || error.status===403) invalidateProtectedView();
+  const n=$('error'); n.hidden=false; n.textContent='백엔드 API 연결 실패: '+safe(error.message||error);
+  $('retry').hidden=false; $('connection').classList.remove('ready');
+  $('connection').classList.add('failed'); $('connection-text').textContent='API ERROR';
+}
 async function fetchJson(path) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS);
   let reader;
   try {
     const response = await fetch(path, {credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'},signal:controller.signal});
-    if (!response.ok) throw new Error('HTTP '+response.status+' / '+path);
+    if (!response.ok) {
+      const error = new Error('HTTP '+response.status+' / '+path);
+      error.status = response.status;
+      throw error;
+    }
     const type = (response.headers.get('content-type') || '').toLowerCase();
     const mime = type.split(';',1)[0].trim();
     if (mime !== 'application/json' && !(mime.startsWith('application/') && mime.endsWith('+json'))) throw new Error('API 응답이 JSON이 아닙니다');
@@ -299,7 +316,7 @@ async function showDetail(id) {
     for(const key of VIEW.detail_fields){
       const row=document.createElement('div');row.className='detail-row';row.append(node('span',key));row.append(node('b',field(obj,key)));box.append(row);
     }
-  } catch(error) {if(generation===detailGeneration) detailFailure(error);}
+  } catch(error) {if(generation===detailGeneration) {if(error.status===401) fail(error); else detailFailure(error);}}
 }
 let loadGeneration=0;
 async function load(){
