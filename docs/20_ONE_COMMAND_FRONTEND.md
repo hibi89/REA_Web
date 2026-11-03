@@ -1,3 +1,5 @@
+> **2026-11-03 세션 전환 보호 검증:** 목록/지표를 새로 불러오면 이전 상세 요청의 늦은 200/401 응답은 무시하며, 새 목록 성공 시 상세 패널을 초기화합니다. Windows/Ubuntu Chromium 검증 기능 SHA `d477a9dc`, Actions `41631264392` 각 140 PASS/2 SKIP. 실제 고객 로그인·권한 검증은 별도로 필요하며 상용 RELEASE HOLD입니다.
+
 ## 2026-11-03 KST — 전체 브라우저 실행 검증 (자체 제작 백엔드)
 
 단일 명령의 실제 생성 결과를 GitHub Actions Windows 2022 및 Ubuntu 22.04 각각에서 localhost FastAPI + Chromium으로 검증했다. 정확한 기능 SHA `d21540e528fcad0ea09ff210a3514237cea5e3af`; `41630317015` 양 OS 각각 **139 PASS/2 SKIP/0 FAIL**, 정적 ZIP `41630317051` 양 OS 각각 **167 PASS/2 SKIP/0 FAIL**. `tests/test_offline_compose_browser.py`가 실행 명령→5개 프론트엔드 파일 생성→테스트 개발자가 별도로 작성한 동등한 FastAPI 소스 실행→실제 브라우저 목록/KPI/검색/상세/401 데이터 초기화/재연결을 검증한다.
