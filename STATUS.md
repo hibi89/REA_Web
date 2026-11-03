@@ -1,6 +1,14 @@
 # STATUS — REA_Web / 2026-10-25 KST
 
-**CURRENT PHASE:** Day1 runnable MVP verified; Day2 Fable→Astra adapter READY. Do not claim the full integrated product is complete.
+**CURRENT PHASE:** Day1 runnable CSV MVP verified; Day2 D2-01 Fable→Astra review-only adapter DONE; D2-02 optional analysis→CSV MVP flow READY. No end-to-end combined product or commercial readiness yet.
+
+## Latest verified D2-01 checkpoint (2026-10-25 22:55 KST)
+- Target branch `feature/evidence-adapter` SHA `fda96076de33ebf4f4b6118972a5033a3f703ba9`, [Draft PR #4](https://github.com/hibi89/REA_Web/pull/4) to `integration/develop`, unmerged.
+- Implemented `rea/adapter/fable_to_astra.py`, synthetic Fable record fixture, negative/unit tests, CLI, offline docs, workflow with **actual immutable Astra P4 contract checkout**.
+- GitHub Actions push [CI run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969) completed **SUCCESS**; **28 pytest PASSED**, Ubuntu Python 3.11; real `ObservationBundle` + `FunctionalSpecDraft` model validation, CLI approval-block checks and compileall completed successfully. PR CI run [40199766677](https://github.com/hibi89/REA_Web/actions/runs/40199766677) also SUCCESS.
+- Synthetic Fable record event markers only -> `inferred` feature hypotheses, never observed UI behavior. Static/runtime only -> no fabricated UI bundle/spec; ALL output `REVIEW_REQUIRED`, no semantic binding, no generation, no DB approval.
+- External customer reference, true user feature/effect, source rights, Windows, and whole Fable→Astra→CSV app workflow remain **NOT_RUN/NOT_DONE**. Node20 deprecation warning on GitHub Actions runner is non-blocking.
+- Separate offline local development before commit: 24 PASS / 2 SKIP (Astra source unavailable locally); exact pinned source validated on GitHub Actions, 28 PASS. Do not conflate them.
 
 ## DONE with verified evidence
 1. Repo architecture / branch structure / safety / roadmap documented; GitHub hibi89/REA_Web.
@@ -11,11 +19,9 @@
 6. Draft PR #1 Fable, #2 Astra, #3 MVP exist; none has been merged to main/develop in this verified checkpoint.
 7. Source QA helper branches `qa/vendor-fable`, `qa/vendor-astra` configured with SHA checker/workflow; any actual all-file Actions PASS remains separately unverified.
 
-## NEXT READY: REA-MVP-D2-01
-Branch: `feature/evidence-adapter`.
-Implement code (not another plan) to bridge actual Fable result.json to Astra ObservationBundle/FunctionalSpecDraft **review-only** proposal. Include redacted synthetic fixture, >=15 positive/negative tests if feasible, CLI, and actual test evidence. Preserve uncertainty and approval gate. Feature branch was baseline-only at prior checkpoint; inspect fresh HEAD.
-
-Then D2-02 optional bridge + CSV builder and D3 gap matrix/3 synthetic domain examples/Windows smoke/packaging. See `docs/17_NEXT_TASK.md`.
+## NEXT READY: REA-MVP-D2-02
+Branch: `feature/orchestrator` (verify latest remote HEAD first); preserve `feature/csv-local-mvp` and `feature/evidence-adapter` as reviewed inputs, do not force merge or overwrite.
+Implement **optional** Fable analysis report/review gate alongside the existing CSV→webapp builder, without making a URL/third-party scan mandatory. Build a deterministic synthetic end-to-end command/fixture, tests, and Draft PR to `integration/develop`. Do not promote inferred signals into features. Follow `docs/17_NEXT_TASK.md`.
 
 ## NOT DONE / blockers
 - No new REA end-to-end Fable→Astra→generated-app run; no arbitrary URL clone; no customer/live DB credentials, HTTPS hosting, complex auth/payment or deployment.
