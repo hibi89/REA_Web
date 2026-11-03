@@ -154,6 +154,33 @@ def test_bad_zip_rejected(tmp_path):
     with pytest.raises(UnsafeBackendZip): inspect_backend_zip(z)
 
 
+def test_corrupted_non_python_crc_rejected_without_output(tmp_path):
+    # A damaged LICENSE/asset must not pass simply because its bytes are
+    # not Python AST inputs. Stored payload makes the corruption portable.
+    z = tmp_path / "backend.zip"
+    with zipfile.ZipFile(z, "w", compression=zipfile.ZIP_STORED) as writer:
+        writer.writestr("app.py", FIXTURE)
+        writer.writestr("NOTICE.txt", b"self-authored static fixture")
+    payload = bytearray(z.read_bytes())
+    with zipfile.ZipFile(z) as reader:
+        info = reader.getinfo("NOTICE.txt")
+        start = info.header_offset
+        assert payload[start:start + 4] == b"PK\\x03\\x04"
+        filename_size = int.from_bytes(payload[start + 26:start + 28], "little")
+        extra_size = int.from_bytes(payload[start + 28:start + 30], "little")
+        byte_index = start + 30 + filename_size + extra_size
+        assert payload[byte_index] == ord("s")
+    payload[byte_index] ^= 1
+    z.write_bytes(payload)
+    with pytest.raises(UnsafeBackendZip, match="invalid ZIP structure or CRC"):
+        inspect_backend_zip(z)
+    output = tmp_path / "MUST_NOT_EXIST.json"
+    cmd = [sys.executable, "-m", "rea.adapter.backend_zip", str(z), "--out", str(output)]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    assert result.returncode == 2 and not output.exists()
+    assert "REFUSED" in result.stderr
+
+
 def test_cli_json_and_no_overwrite(tmp_path):
     z = archive(tmp_path / "backend.zip", {"app.py": FIXTURE})
     out = tmp_path / "contract.json"
