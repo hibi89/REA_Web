@@ -197,8 +197,19 @@ def make_review(fable: dict, backend: dict, bindings: dict | None = None, *,
         raise BridgeError('invalid endpoint declarations')
     candidates = set()
     for endpoint in api['endpoints']:
-        if not isinstance(endpoint, dict) or not _safe_api(endpoint.get('path')):
+        if not isinstance(endpoint, dict):
+            raise BridgeError('unsafe endpoint declaration')
+        path = endpoint.get('path')
+        # Real FastAPI apps commonly expose /, /health and /static besides
+        # /api/* endpoints. Non-API routes are not selectable bindings.
+        # Reject malformed path declarations; ignore valid unrelated routes.
+        if (not isinstance(path,str) or not path.startswith('/') or len(path)>200
+                or '..' in path or any(ord(ch)<32 or ch in '?#\\' for ch in path)):
             raise BridgeError('unsafe endpoint path')
+        if not path.startswith('/api/'):
+            continue
+        if not _safe_api(path):
+            raise BridgeError('unsafe API path')
         methods = endpoint.get('methods')
         if not isinstance(methods, list) or len(methods) > 8:
             raise BridgeError('invalid HTTP verbs')
