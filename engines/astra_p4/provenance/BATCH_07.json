@@ -1,0 +1,18 @@
+{
+  "source_commit": "b3166b67604381a9d2afd41667b65f9a9b103b37",
+  "batch": 7,
+  "upstream_github_git_blob_sha": {
+    "tests/test_observation_contract.py": "66dab524a2d78dc0e91deba7462bc8c14b9e8892",
+    "tests/test_functional_spec.py": "2871c475cd8d9fa7db3feee20e79755581886006",
+    "tests/test_data_mapping.py": "a52c53a0ef36876e6c8e5103d394e2c7bc72fd4c",
+    "tests/test_generation_contract.py": "3eba19cdef4a9b2cd0bb70a31511498d169ad844",
+    "tests/test_synthetic_generator.py": "49634f9691cc61a282d645518e9cbe238f75ceaf",
+    "tests/test_synthetic_bridge.py": "19c8953a1892952460b423925b799a89c968848c",
+    "tests/test_synthetic_acceptance.py": "bf1d958e7183d237cf8c4343b7cd67674e0687ae",
+    "tests/test_synthetic_sqlite_dashboard.py": "493d252b9efcd4061d3278ca4e4121c0a67968c1",
+    "tests/test_synthetic_owner_isolation.py": "30ce5906cbf1da272f21ff64cf9e6108b2d57edf",
+    "tests/test_synthetic_chart_table_preview.py": "3e5779215ef834fdcbe6d76dbe8ea378732d3bd1",
+    "tests/test_chart_table_transition_skill.py": "11e9531be524a5f24b6358f724a1dc43b9daeeb5",
+    "tests/test_chart_table_synthetic_bridge.py": "c8235ddd27041366fc0b49d17adf32968fd0e41b"
+  }
+}

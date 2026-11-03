@@ -1,0 +1,18 @@
+{
+  "source_commit": "b3166b67604381a9d2afd41667b65f9a9b103b37",
+  "batch": 6,
+  "upstream_github_git_blob_sha": {
+    "fixtures/observation_brand_filter.json": "2eca8ff87a4d489c2dbbbad15ea1a68e9cda4041",
+    "fixtures/jp_nail_brand_filter_observation_20261018.json": "050adfdebef3a7daeec7539cbf287a1a04f1f423",
+    "fixtures/jp_nail_functional_spec_draft_20261018.json": "c570b2398fa98a8cf5c65b7cda6c9bb1946055df",
+    "fixtures/synthetic_owned_schema_mapping_20261018.json": "2858299e369882937c84fc84230e83b6cb372e2d",
+    "fixtures/synthetic_mapping_report_20261018.json": "c288112d0e802f8614646a206f131aa226a7b5ea",
+    "fixtures/synthetic_review_packet_20261018.json": "b6102530e881f9a343a6976d7e41c68ee1c187be",
+    "fixtures/synthetic_feature_acceptance_plan_20261019.json": "eb6ef86876afc393bc4fbc2aa07f830db055d140",
+    "fixtures/synthetic_transition_pair_observation_20261019.json": "f21ceb010fb12b156a7e597116ca9c76d6bc4af4",
+    "fixtures/synthetic_transition_pair_plan_20261019.json": "60d6742eba781ac3a478655527b44a761acbf7e5",
+    "fixtures/synthetic_transition_pair_intake_request_20261019.json": "b102ab43cbff3848b581043ae3417eb7e2e76c38",
+    "fixtures/synthetic_capture_intake_request_20261018.json": "f72dbc9f51a34b3d558473157b4ba7067c33113f",
+    "fixtures/synthetic_capture_observation_20261018.json": "a7acf98652cebbf6cd23e982714d9f6d0fd2c732"
+  }
+}

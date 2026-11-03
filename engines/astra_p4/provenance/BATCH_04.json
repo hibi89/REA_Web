@@ -1,0 +1,17 @@
+{
+  "source_commit": "b3166b67604381a9d2afd41667b65f9a9b103b37",
+  "batch": 4,
+  "upstream_github_git_blob_sha": {
+    "astra_contracts/synthetic_generator.py": "e5c8ece8c6e5ed6d7d896a16af4538fd2a622a53",
+    "astra_contracts/synthetic_owner_isolation.py": "0d6df62070f242df591dbe4dd5904ced090ccfe2",
+    "astra_contracts/synthetic_sqlite_dashboard.py": "14d48e46ff46b05aa995842438b97f8bccb4c86f",
+    "astra_contracts/synthetic_timeseries_review.py": "5e7cd3fc90d85aa1c28e4965ab323a7569239886",
+    "astra_contracts/transition_review_ui.py": "639b7f7fb202ff26dfee067449ef137131139946",
+    "examples/p4_chart_table_synthetic_rows.json": "6f1c69e39cf4e2a05101d3b3cdca6c19d71978eb",
+    "examples/p4_chart_table_synthetic_schema.json": "6332f6a0765210e95b28cca2fb830db737b07615",
+    "examples/p4_owner_demo_rows.json": "0fc8629b51afc26d320e8d1fe6cf56b0d97fa3c1",
+    "examples/p4_owner_demo_schema.json": "e38c02e9fdb3f3accef359c1e1d8a03e4618f45a",
+    "requirements.txt": "49e2dfbe27e9d542b7b6e48a1dda670f32568e0a",
+    "README.md": "27452bb9c7ed16bbe3837c5db8eda0f193274f6a"
+  }
+}

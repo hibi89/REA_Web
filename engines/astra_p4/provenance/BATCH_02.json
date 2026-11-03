@@ -1,0 +1,18 @@
+{
+  "source_commit": "b3166b67604381a9d2afd41667b65f9a9b103b37",
+  "batch": 2,
+  "upstream_github_git_blob_sha": {
+    "astra_contracts/manual_trace_pipeline.py": "22668393ed5692fa78bbeed22887f737fe09d13e",
+    "astra_contracts/mapping_review_ui.py": "6f5d9f23e0bbf6009f4254c73079c708f5a6b3f1",
+    "astra_contracts/mechanism_contract_review.py": "966c1253dbf2b126321689b57a465fccd27570ce",
+    "astra_contracts/observation.py": "6b38b4b8a73757d841760a3919bea2699d67743f",
+    "astra_contracts/observed_ui_mapping.py": "2d7b3445f372326f3a6a135250c9eef00ce9e307",
+    "astra_contracts/owned_migration_schema.py": "b2cc785ff4593112721642922979fc35ca297d27",
+    "astra_contracts/public_checkbox_analogue.py": "ecf1239dc5c2b7c2966ba03fe8793164d89ae5a7",
+    "astra_contracts/public_form_analogue.py": "82670b1e797d2473fe7c3262f8e28b282afd13c5",
+    "astra_contracts/public_reference_probe.py": "8dc2d5e9911226a2e74bb216b28545e9d2efcb44",
+    "astra_contracts/review_transfer.py": "bcffe4b459a17f3ea6a2a74619476af647026a39",
+    "astra_contracts/review_ui.css": "2e1286e4de93b30fde83962b80ec02efe08679d9",
+    "astra_contracts/review_ui.html": "4140dba6baff4231dca2aef45815e9e4bb5baf2b"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "source_commit": "b3166b67604381a9d2afd41667b65f9a9b103b37",
+  "batch": 5,
+  "upstream_github_git_blob_sha": {
+    "scripts/build_public_form_analogue.py": "2bb9601a864e6e4e0124c2b16619a4d99bea2585",
+    "scripts/p4_multi_browser_smoke.py": "2507394d81583e564fef11be9a75f166c525d390",
+    "scripts/p4_owner_isolation_browser_smoke.py": "11be69837aaa59b671eb92a816b8e1e48653e2fd",
+    "scripts/p4_synthetic_preview_browser_smoke.py": "3713fe3016e994147107d746c643e3f5d450d977",
+    "scripts/p4_synthetic_sqlite_browser_smoke.py": "3fa57b62c95c16a743b5367d7230596e7f0cd5d3",
+    "scripts/public_capture_live_check.py": "3142fced1a2eddd5ba58268b387fe2e39d30a59a",
+    "scripts/public_owid_dashboard_probe.py": "c195e2a7e91a3f73a3965e476c3ea1303f277e52",
+    "scripts/public_selenium_capture.py": "7c157cec07fcec6443a73b2ac585307aa216a2bd",
+    "scripts/selenium_public_form_capture.py": "af8940f138537c3aa9ec4bcc56502fee0ae2da67",
+    "fixtures/synthetic_demo_catalog_20261018.json": "d546a4de9162d84cd8fd9f89ba374355d31ff92e",
+    "fixtures/synthetic_generation_request_20261018.json": "a72113a8588d6d8747deaca6d91a7406a4c01b45",
+    "fixtures/synthetic_generation_contract_20261018.json": "35eeb0894e237229270ed33d37e9f5fab1166a01"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "source_commit": "b3166b67604381a9d2afd41667b65f9a9b103b37",
+  "batch": 3,
+  "upstream_github_git_blob_sha": {
+    "astra_contracts/review_ui.js": "1d6f67c1f56642487435c5afbc36eee1b0aeb853",
+    "astra_contracts/review_ui.py": "e4e52d0717a7873f049fe7328337522d896cfea6",
+    "astra_contracts/reviewer_decisions.py": "bb4b0c7d05cd231e523cf3e84a35122c149aa672",
+    "astra_contracts/schema_crud_embed.py": "e973c0bf3e0d18c0d29412965c0a4fad322dc33e",
+    "astra_contracts/schema_query_embed.py": "470849942ecae1297543965665f77a9c64bf073e",
+    "astra_contracts/schema_query_extension.py": "b29dda80b63c6d2a8fc1dbfe9d07c79c56f5f914",
+    "astra_contracts/schema_query_ui.py": "14c4e1cb937925ecfecf25290279145b344e9864",
+    "astra_contracts/schema_reuse_adapter.py": "03d49917fee6ad0c05857b9fc8d5a8741b0128a9",
+    "astra_contracts/synthetic_acceptance.py": "d5894eab612805b2d9d1f400270c85dc6c977b43",
+    "astra_contracts/synthetic_bridge.py": "beba730eaa575cf5d241ab8091c7e4e517a2e78b",
+    "astra_contracts/synthetic_chart_table_preview.py": "b2d58e32f31001ae606c1dc5e870bb5e73f72a79",
+    "astra_contracts/synthetic_crud.py": "93c8182117e6192603f93af69407ff4f23a99289"
+  }
+}
