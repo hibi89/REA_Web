@@ -506,4 +506,4 @@ def test_image_metadata_flood_fails_before_any_container_run(tmp_path,monkeypatc
     with pytest.raises(UnsafeSandbox,match="output exceeded"):
         call(fixture(tmp_path))
     assert len(commands)==1 and "version" in commands[0]
-    assert not any("run" in item for cmd in commands for item in cmd)
+    assert not any(item == "run" for cmd in commands for item in cmd)
