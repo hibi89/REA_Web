@@ -5,6 +5,7 @@ Only self-authored synthetic examples. No customer ZIP, network, Docker or secre
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -13,7 +14,7 @@ import sys
 
 import pytest
 
-from rea.adapter.frontend_bridge import make_review
+from rea.adapter.frontend_bridge import SCHEMA as REVIEW_SCHEMA, make_review
 from rea.adapter.response_preflight import (
     INPUT_SCHEMA, SCHEMA, UnsafeSyntheticPreflight, review_synthetic_samples,
 )
@@ -30,6 +31,8 @@ def fixture_files(tmp_path):
     fixture = {
         "schema_version": INPUT_SCHEMA,
         "synthetic_only": True,
+        "review_schema_version": REVIEW_SCHEMA,
+        "backend_sha256": review["backend"]["sha256"],
         "selected_id": "A-1",
         "completed_statuses": ["done"],
         "pending_statuses": ["pending"],
@@ -41,6 +44,7 @@ def fixture_files(tmp_path):
     }
     review_path, sample_path = tmp_path / "review.json", tmp_path / "synthetic.json"
     review_path.write_text(json.dumps(review), encoding="utf-8")
+    fixture["review_sha256"] = hashlib.sha256(review_path.read_bytes()).hexdigest()
     sample_path.write_text(json.dumps(fixture), encoding="utf-8")
     return review, fixture, review_path, sample_path
 
@@ -71,7 +75,8 @@ def test_real_make_review_output_connects_to_synthetic_preflight_cli(tmp_path):
     assert result.returncode == 0, result.stderr
     summary = json.loads(result.stdout)
     assert summary == json.loads(report_path.read_text(encoding="utf-8"))
-    assert summary == review_synthetic_samples(review, fixture)
+    assert summary == review_synthetic_samples(
+        review, fixture, review_sha256=hashlib.sha256(rp.read_bytes()).hexdigest())
     assert summary["schema_version"] == SCHEMA
     assert summary["status"] == "SYNTHETIC_PREFLIGHT_REVIEW_REQUIRED"
     assert summary["review_status"] == "OWNER_REVIEW_REQUIRED"
@@ -83,6 +88,7 @@ def test_real_make_review_output_connects_to_synthetic_preflight_cli(tmp_path):
         assert summary[flag] is False
     assert (rp.read_bytes(), sp.read_bytes()) == previous
     assert "A-1" not in result.stdout
+    assert fixture["review_sha256"] not in result.stdout
     assert "Synthetic" not in result.stdout
     assert "example.org" not in result.stdout
     assert "tickets" not in result.stdout
@@ -158,9 +164,11 @@ def test_bad_synthetic_example_rejected_without_file_output(tmp_path, mutate):
     lambda x: x.update(schema_review={"status": "APPROVED"}),
 ])
 def test_forged_static_review_not_treated_as_approval(tmp_path, mutate):
-    review, _, rp, sp = fixture_files(tmp_path)
+    review, fixture, rp, sp = fixture_files(tmp_path)
     mutate(review)
     rp.write_text(json.dumps(review), encoding="utf-8")
+    fixture["review_sha256"] = hashlib.sha256(rp.read_bytes()).hexdigest()
+    sp.write_text(json.dumps(fixture), encoding="utf-8")
     assert_refused(invoke(rp, sp))
 
 
@@ -202,7 +210,8 @@ def test_review_plan_is_never_mutated_on_rejected_sample(tmp_path):
     fixture["samples"]["metrics"]["status"] = 403
     before = copy.deepcopy(review)
     with pytest.raises(UnsafeSyntheticPreflight):
-        review_synthetic_samples(review, fixture)
+        review_synthetic_samples(
+            review, fixture, review_sha256=hashlib.sha256(rp.read_bytes()).hexdigest())
     assert review == before
 
 
@@ -213,3 +222,69 @@ def test_synthetic_api_error_values_never_echoed_to_cli_result(tmp_path):
     output = invoke(rp, sp)
     assert_refused(output)
     assert "TOP_SECRET_SHOULD_NOT_APPEAR" not in output.stdout + output.stderr
+
+
+@pytest.mark.parametrize("tamper", [
+    lambda b: b + b" ",
+    lambda b: b.replace(b"OWNER_REVIEW_REQUIRED", b"OWNER_REVIEW_REQUIREX"),
+    lambda b: b.replace(b'"generation_allowed": false', b'"generation_allowed": true'),
+])
+def test_changed_review_bytes_refused_even_if_semantically_equivalent(tmp_path, tamper):
+    _, _, rp, sp = fixture_files(tmp_path)
+    rp.write_bytes(tamper(rp.read_bytes()))
+    assert_refused(invoke(rp, sp))
+
+
+@pytest.mark.parametrize("tamper", [
+    lambda x: x.update(review_sha256="0" * 64),
+    lambda x: x.update(review_sha256=x["review_sha256"].upper()),
+    lambda x: x.update(review_sha256="not-a-sha256"),
+    lambda x: x.pop("review_sha256"),
+    lambda x: x.update(review_schema_version="rea.frontend_bridge.v0.0"),
+    lambda x: x.update(backend_sha256="0" * 64),
+    lambda x: x.pop("backend_sha256"),
+    lambda x: x.pop("review_schema_version"),
+    lambda x: x.update(schema_version="rea.synthetic_response_samples.v0.1"),
+])
+def test_wrong_review_identity_version_or_legacy_envelope_refused(tmp_path, tamper):
+    _, fixture, rp, sp = fixture_files(tmp_path)
+    tamper(fixture)
+    sp.write_text(json.dumps(fixture), encoding="utf-8")
+    assert_refused(invoke(rp, sp))
+
+
+def test_other_valid_review_with_same_roles_is_not_interchangeable(tmp_path):
+    _, fixture, rp, sp = fixture_files(tmp_path)
+    original = rp.read_bytes()
+    changed = json.loads(original)
+    changed["backend"]["sha256"] = "a" * 64
+    rp.write_text(json.dumps(changed), encoding="utf-8")
+    assert_refused(invoke(rp, sp))
+    # Updating only the file fingerprint does not override the binding to the
+    # exact reviewed backend SHA.
+    fixture["review_sha256"] = hashlib.sha256(rp.read_bytes()).hexdigest()
+    sp.write_text(json.dumps(fixture), encoding="utf-8")
+    assert_refused(invoke(rp, sp))
+
+
+def test_review_digest_matches_exact_file_not_reparsed_canonical_object(tmp_path):
+    _, fixture, rp, sp = fixture_files(tmp_path)
+    # Whitespace is part of the exact source artifact.
+    rp.write_text(json.dumps(json.loads(rp.read_text()), indent=2), encoding="utf-8")
+    assert_refused(invoke(rp, sp))
+    fixture["review_sha256"] = hashlib.sha256(rp.read_bytes()).hexdigest()
+    sp.write_text(json.dumps(fixture), encoding="utf-8")
+    assert invoke(rp, sp).returncode == 0
+
+
+def test_review_and_sample_source_are_read_only_when_digest_check_fails(tmp_path):
+    _, fixture, rp, sp = fixture_files(tmp_path)
+    original = rp.read_bytes()
+    fixture["review_sha256"] = "f" * 64
+    sp.write_text(json.dumps(fixture), encoding="utf-8")
+    before = (rp.read_bytes(), sp.read_bytes())
+    report = tmp_path / "never_write_report.json"
+    assert_refused(invoke(rp, sp, "--out", report))
+    assert (rp.read_bytes(), sp.read_bytes()) == before
+    assert rp.read_bytes() == original
+    assert not report.exists()
