@@ -15,6 +15,7 @@ import re
 import stat
 import sys
 import zipfile
+import zlib
 
 SCHEMA = "rea.backend_contract.v0.1"
 MAX_ARCHIVE_BYTES = 25 * 1024 * 1024
@@ -200,11 +201,22 @@ def inspect_backend_zip(source: Path) -> dict:
                 python_count = 0
                 framework_seen = False
                 for item in infos:
-                    if item.is_dir() or not item.filename.lower().endswith(".py"):
+                    if item.is_dir():
+                        continue
+                    is_python = item.filename.lower().endswith(".py")
+                    # All members contribute to the reviewed ZIP SHA. Validate
+                    # every payload's CRC/decompression before reporting it as
+                    # a readable archive, not just the Python AST inputs.
+                    with archive.open(item) as member:
+                        if is_python:
+                            raw = member.read()
+                        else:
+                            for _ in iter(lambda: member.read(65536), b""):
+                                pass
+                    if not is_python:
                         continue
                     python_count += 1
-                    # The archive has already passed size/ratio limits.
-                    raw = archive.read(item)
+                    # The archive has already passed file/total size limits.
                     found, skipped, fastapi = _analysis_python(raw, item.filename)
                     unreadable += int(skipped > 0 and not found and not fastapi)
                     unresolved += skipped
@@ -219,7 +231,8 @@ def inspect_backend_zip(source: Path) -> dict:
                 raise UnsafeBackendZip("archive changed during scan")
         if source.is_symlink() or source.stat().st_size != st.st_size:
             raise UnsafeBackendZip("archive changed during scan")
-    except (zipfile.BadZipFile, zipfile.LargeZipFile, EOFError) as exc:
+    except (zipfile.BadZipFile, zipfile.LargeZipFile, EOFError,
+            NotImplementedError, RuntimeError, zlib.error) as exc:
         raise UnsafeBackendZip("invalid ZIP structure or CRC") from exc
     except OSError as exc:
         raise UnsafeBackendZip("could not safely read archive") from exc
