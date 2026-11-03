@@ -1,3 +1,13 @@
+## 2026-11-03 KST — 전체 브라우저 실행 검증 (자체 제작 백엔드)
+
+단일 명령의 실제 생성 결과를 GitHub Actions Windows 2022 및 Ubuntu 22.04 각각에서 localhost FastAPI + Chromium으로 검증했다. 정확한 기능 SHA `d21540e528fcad0ea09ff210a3514237cea5e3af`; `41630317015` 양 OS 각각 **139 PASS/2 SKIP/0 FAIL**, 정적 ZIP `41630317051` 양 OS 각각 **167 PASS/2 SKIP/0 FAIL**. `tests/test_offline_compose_browser.py`가 실행 명령→5개 프론트엔드 파일 생성→테스트 개발자가 별도로 작성한 동등한 FastAPI 소스 실행→실제 브라우저 목록/KPI/검색/상세/401 데이터 초기화/재연결을 검증한다.
+
+```powershell
+python -m pytest -q tests/test_offline_compose.py tests/test_offline_compose_browser.py
+```
+
+테스트에서 FastAPI를 실행하는 것은 **테스트가 직접 제작한 코드**에만 한정된다. 단일 명령은 여전히 백엔드 ZIP을 import/추출/실행하지 않으며, 고객 원본·인증·라이선스·실제 Windows 사용자 환경 검증을 대체하지 않는다. 독립 설치용 `playwright`, `fastapi`, `uvicorn` 패키지 및 Chromium 설치가 필요하다. 상용 RELEASE HOLD.
+
 # REA_WEB — 오프라인 백엔드 ZIP → 독립 대시보드 한 번에 생성
 
 현재 단계: **검토용 / 동일 출처 GET / 고객 실환경 미검증 / RELEASE HOLD**.
