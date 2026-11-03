@@ -1,0 +1,6 @@
+id,title,category,stock,unit_price,notes
+I01,SSD 1TB,저장장치,3,50000,내장
+I02,NAS HDD,저장장치,5,90000,<script>alert(1)</script>
+I03,RAM 16GB,메모리,8,60000,호환
+I04,USB 허브,주변기기,6,17000,외장
+I05,키보드,주변기기,2,30000,일반
