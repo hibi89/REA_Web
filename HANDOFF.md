@@ -1,5 +1,8 @@
 # HANDOFF — REA_Web / 2026-10-25 KST
 
+## Latest D2 checkpoint (2026-10-25 22:55 KST)
+**REA-MVP-D2-01 DONE on feature only**. Feature SHA `fda96076de33ebf4f4b6118972a5033a3f703ba9`; Draft PR [#4](https://github.com/hibi89/REA_Web/pull/4), unmerged. Real GitHub Actions [CI run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969) SUCCESS: **28/28 pytest**, pinned Astra validation and CLI approval-block check PASS on Ubuntu Python 3.11. PR CI run 40199766677 SUCCESS. `rea/adapter/fable_to_astra.py` adds read-only Fable schema v1.0 → review-only Astra candidate mapping, synthetic demo and tests; do **not** state functional UI, real backend, API ownership or chart lineage as observed. Windows, real customer data, cross-branch E2E, full vendor license audit, production service all NOT_RUN. No Vercel deployment for this unit (not applicable).
+
 ## Instructions for the next assistant
 When owner writes **[REA_Web 깃헙 레포지토리 보고 작업이어가셈]**, inspect real GitHub and **perform the next READY development work immediately** without asking for context or another 'ㄱ'. Read `WORKER_START_HERE.md`, `STATUS.md`, `docs/17_NEXT_TASK.md`, `docs/SESSION_RESTART_PROTOCOL.md`; these are the canonical handoff. Future new chat will not contain our current code discussion, so this repository is the source of truth.
 
@@ -15,9 +18,9 @@ REA_Web is the **Fable 5.1 website technical/evidence analyzer + Astra Web Catch
 - Branches: integration/develop, feature/evidence-adapter (D2 next), feature/csv-local-mvp (D1), feature/orchestrator, qa/cross-platform, qa/vendor-fable, qa/vendor-astra; don't force-update feature work or mutate upstream imports.
 
 ## Single task to execute next
-`REA-MVP-D2-01` on `feature/evidence-adapter`: read pinned Fable source `scanner/models.py`, `scanner/report.py` plus Astra `astra_contracts/observation.py`, `functional_spec.py`; build adapter `rea/adapter/fable_to_astra.py` from real Fable result format to ASTRA **unapproved** observation/spec draft. If no direct evidence, mark inferred/unknown or REVIEW_REQUIRED, never claim true backend/db/formula inference. Add >=15 focused test cases and an example, run real tests/CI, commit, Draft PR, then report. Fable ZIP need not be re-requested: 88 copied files exist on source import branch; redacted fixtures can be generated from source test files.
+**REA-MVP-D2-02** `READY`, start automatically on exact trigger or `ㄱ`. Prefer `feature/orchestrator` after checking latest branch HEAD and the previous two feature branches. Use Fable report as **optional** analysis input to existing CSV→local app flow; leave website URL optional, require customer-provided CSV, retain `REVIEW_REQUIRED` and no automatic semantic mapping. Implement/test true synthetic demo, create Draft PR, and update main docs with exact proof. Only one unit per turn; next D3 three-example/browser/Windows/packaging/design-gap checks.
 
-After that, D2-02 optional report→CSV app flow, D3 3-case Windows/browser/packaging/design-gap checks.
+Do **not** repeat D2-01. Earlier section was historical. Source import branches remain pinned, partial Astra subset unchanged.
 
 ## Way of working
 MVP-first target is 3 days (not a guarantee). Prioritize working result rather than huge theoretical scaffolding. Keep minimum non-deferable no overwrite/bounded CSV/SQL/DOM/localhost/authorization. Defer deeper security hardening until after functional proof, but not past customer delivery. Keep statuses PASS/NOT_RUN/BLOCKED accurate and always record commit SHA and work done in main STATUS/HANDOFF/NEXT_TASK.

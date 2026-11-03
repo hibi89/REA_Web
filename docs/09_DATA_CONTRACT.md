@@ -1,4 +1,4 @@
-# 09 — Interface contracts (DRAFT v0.1, not implemented)
+# 09 — Interface contracts (DRAFT v0.1; D2-01 review-only adapter implemented)
 
 Fable analysis output is untrusted data. REA adapter creates a reviewable observation draft. ASTRA cannot treat unverified site schema as customer-owned data. This schema is a proposal awaiting tests and versioning.
 
@@ -31,3 +31,6 @@ SYNTHETIC_PREVIEW → OWNER_APPROVED_GENERATION only after source rights, local 
 
 ### Constraints
 No code generation from unvalidated arbitrary prompt. No private service calls, write API or schema alterations in draft mode. Enforce predictable file outputs and no existing-folder overwrites.
+
+## Implemented narrow bridge (2026-10-25)
+D2-01 `fda96076de33ebf4f4b6118972a5033a3f703ba9` implements Fable 1.0 → optional Astra `ObservationBundle` / `FunctionalSpecDraft` via actual pinned Astra validators. See `docs/19_FABLE_ASTRA_ADAPTER.md` on the feature branch; pending Draft PR #4. Static/runtime findings only emit redacted counts, not fabricated UI observations. Record user-action markers emit **inferred** hypotheses with unresolved effects, never `observed`. If no eligible UI markers, the ASTRA bundle and spec are null. Only Astra-validated mode emits a spec; local preview marks validation NOT_RUN. All paths remain review gated; full target envelope/schema and mapping state machine are not implemented.
