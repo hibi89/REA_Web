@@ -158,6 +158,7 @@ sys.dont_write_bytecode = True  # Keep a clean extracted artifact for integrity 
 ROOT = Path(__file__).resolve().parent
 EXPECTED_APP_SHA = "__EXPECTED_APP_SHA__"
 EXPECTED_FRONTEND_HASHES = __EXPECTED_FRONTEND_HASHES__
+EXPECTED_MANIFEST_SHA = "__EXPECTED_MANIFEST_SHA__"
 
 
 def check():
@@ -183,6 +184,12 @@ def check():
             raise RuntimeError("missing or symbolic-link package member")
         if hashlib.sha256(member.read_bytes()).hexdigest() != sha:
             raise RuntimeError("package content changed; execution refused")
+    # MANIFEST.json is excluded from SHA256SUMS to avoid checksum-table
+    # self-reference, so independently pin the exact generated metadata.
+    manifest = ROOT / "MANIFEST.json"
+    if (manifest.is_symlink() or not manifest.is_file()
+            or hashlib.sha256(manifest.read_bytes()).hexdigest() != EXPECTED_MANIFEST_SHA):
+        raise RuntimeError("synthetic project manifest differs from approved bundle")
     # Independently pin the self-authored frontend. SHA256SUMS.json is
     # editable by the person who can change a dashboard asset, so it alone
     # cannot authenticate the original JS/CSS/HTML after extraction.
@@ -349,7 +356,6 @@ def build_synthetic_project(backend_zip: Path, frontend_dir: Path,
                                  .encode("utf-8")
     files["START_WINDOWS.cmd"] = WINDOWS_CMD
     files["README_FIRST.md"] = README
-    digest_table = {name: _hash(data) for name, data in sorted(files.items())}
     manifest = {
         "schema_version": SCHEMA,
         "status": "TRUSTED_SYNTHETIC_PROJECT_SOURCE_NOT_CUSTOMER_RELEASE",
@@ -364,6 +370,10 @@ def build_synthetic_project(backend_zip: Path, frontend_dir: Path,
                         "no_production_deployment", "requires_clean_extract_and_manual_local_run"],
     }
     files["MANIFEST.json"] = _json(manifest)
+    files["runtime_entry.py"] = files["runtime_entry.py"].replace(
+        b"__EXPECTED_MANIFEST_SHA__", _hash(files["MANIFEST.json"]).encode("ascii"))
+    digest_table = {name: _hash(data) for name, data in sorted(files.items())
+                    if name != "MANIFEST.json"}
     files["SHA256SUMS.json"] = _json(digest_table)
     output = Path(destination).absolute()
     if output.exists() or output.is_symlink():
