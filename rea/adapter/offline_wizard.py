@@ -38,7 +38,7 @@ def _field(role: str) -> str:
 
 def run(backend_zip: Path, fable: Path, destination: Path, *,
         visual: Path | None = None, presentation: Path | None = None,
-        source_authorized: bool = False) -> dict:
+        source_authorized: bool = False, paginated_list: bool = False) -> dict:
     if not source_authorized:
         raise BridgeError('--owner-authorized-source required before ZIP read')
     destination = Path(destination).absolute()
@@ -61,6 +61,18 @@ def run(backend_zip: Path, fable: Path, destination: Path, *,
         'list': {'path': _choose('list', plain), 'field': _field('list')},
         'metrics': {'path': _choose('metrics', plain), 'field': _field('metrics')},
     }
+    if paginated_list:
+        print('Owner-approved pagination parameters (NOT inferred from source):')
+        total_field = _field('total count')
+        limit_param = _field('limit query parameter')
+        offset_param = _field('offset query parameter')
+        page_size_text = input('page size, 1..100: ').strip()
+        if not page_size_text.isascii() or not page_size_text.isdecimal():
+            raise BridgeError('page size must be integer 1..100')
+        bindings['list']['pagination'] = {
+            'total_field': total_field, 'limit_param': limit_param,
+            'offset_param': offset_param, 'page_size': int(page_size_text),
+        }
     detail_path = _choose('detail', detail_routes)
     parameter = re.findall(r'\{([A-Za-z_][A-Za-z0-9_]*)\}', detail_path)[0]
     bindings['detail'] = {'path': detail_path, 'field': _field('detail'),
@@ -92,6 +104,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument('--fable', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--visual', type=Path)
+    parser.add_argument('--paginated-list', action='store_true',
+                        help='prompt for explicit total/limit/offset/page_size mapping')
     parser.add_argument('--presentation', type=Path,
                         help='optional owner-provided display field map JSON')
     parser.add_argument('--owner-authorized-source', action='store_true')
@@ -99,7 +113,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         result = run(args.backend_zip, args.fable, args.out, visual=args.visual,
                      presentation=args.presentation,
-                     source_authorized=args.owner_authorized_source)
+                     source_authorized=args.owner_authorized_source,
+                     paginated_list=args.paginated_list)
         print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=2))
         return 0
     except (BridgeError, UnsafeBackendZip, UnsafeSchema, OSError,

@@ -110,3 +110,25 @@ def test_optional_owner_presentation_map(tmp_path):
     assert response.returncode == 0,response.stderr
     manifest = json.loads((dest/"manifest.json").read_text(encoding="utf-8"))
     assert manifest["bindings"]["presentation"]["item"]["id"] == "code"
+
+
+def test_paginated_wizard_accepts_explicit_query_and_total_mapping(tmp_path):
+    archive, fable = files(tmp_path)
+    dest = tmp_path / 'paged'
+    choices = '1\nitems\n2\n__root__\ntotal\nlimit\noffset\n100\n1\n__root__\nAPPROVE\n'
+    outcome = invoke(archive, fable, dest, choices, '--owner-authorized-source', '--paginated-list')
+    assert outcome.returncode == 0, outcome.stderr
+    manifest = json.loads((dest / 'manifest.json').read_text(encoding='utf-8'))
+    assert manifest['bindings']['list']['pagination'] == {
+        'total_field':'total','limit_param':'limit',
+        'offset_param':'offset','page_size':100}
+
+
+@pytest.mark.parametrize('size', ['0', '101', 'not-a-number'])
+def test_bad_pagination_size_fails_without_output(tmp_path,size):
+    archive,fable=files(tmp_path)
+    dest=tmp_path/'no_output'
+    choices='1\nitems\n2\n__root__\ntotal\nlimit\noffset\n'+size+'\n1\n__root__\nAPPROVE\n'
+    outcome=invoke(archive,fable,dest,choices,'--owner-authorized-source','--paginated-list')
+    assert outcome.returncode == 2
+    assert not dest.exists()
