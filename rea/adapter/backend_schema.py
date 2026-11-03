@@ -16,9 +16,10 @@ import re
 import stat
 import sys
 import zipfile
+import zlib
 
 from rea.adapter.backend_zip import (
-    _zip_members, inspect_backend_zip, UnsafeBackendZip,
+    _zip_members, inspect_backend_zip, UnsafeBackendZip, MAX_ARCHIVE_BYTES,
 )
 
 SCHEMA = "rea.backend_schema.v0.1"
@@ -167,10 +168,20 @@ def inspect_backend_schema(source: Path) -> dict:
     baseline = inspect_backend_zip(source)
     try:
         flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
-        with os.fdopen(os.open(source, flags), "rb") as stream:
-            if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
-                raise UnsafeSchema("backend source changed")
+        if source.is_symlink():
+            raise UnsafeSchema("backend source changed")
+        # BufferedReader can replay old bytes after a same-size rewrite on
+        # Windows; read the raw descriptor for both SHA passes and ZIP content.
+        with os.fdopen(os.open(source, flags), "rb", buffering=0) as stream:
             initial = os.fstat(stream.fileno())
+            if not stat.S_ISREG(initial.st_mode) or not 0 < initial.st_size <= MAX_ARCHIVE_BYTES:
+                raise UnsafeSchema("backend source changed")
+            start_digest = hashlib.sha256()
+            for chunk in iter(lambda: stream.read(65536), b""):
+                start_digest.update(chunk)
+            if start_digest.hexdigest() != baseline["input"]["sha256"]:
+                raise UnsafeSchema("ZIP changed before schema scan")
+            stream.seek(0)
             with zipfile.ZipFile(stream) as archive:
                 infos = _zip_members(archive)
                 files: dict[str, tuple[ast.Module, dict[str, dict]]] = {}
@@ -186,11 +197,18 @@ def inspect_backend_schema(source: Path) -> dict:
             digest = hashlib.sha256()
             for chunk in iter(lambda: stream.read(65536), b""):
                 digest.update(chunk)
-            if digest.hexdigest() != baseline["input"]["sha256"]:
+            final = os.fstat(stream.fileno())
+            if (digest.digest() != start_digest.digest()
+                    or (final.st_dev, final.st_ino, final.st_size, final.st_mtime_ns, final.st_ctime_ns)
+                    != (initial.st_dev, initial.st_ino, initial.st_size, initial.st_mtime_ns, initial.st_ctime_ns)):
                 raise UnsafeSchema("ZIP changed during schema scan")
-            if os.fstat(stream.fileno()).st_size != initial.st_size:
-                raise UnsafeSchema("ZIP changed during schema scan")
-    except (OSError, zipfile.BadZipFile, EOFError) as exc:
+        after = source.stat()
+        if (source.is_symlink() or
+                (after.st_dev, after.st_ino, after.st_size) !=
+                (initial.st_dev, initial.st_ino, initial.st_size)):
+            raise UnsafeSchema("ZIP changed during schema scan")
+    except (OSError, zipfile.BadZipFile, zipfile.LargeZipFile, EOFError,
+            NotImplementedError, RuntimeError, zlib.error) as exc:
         raise UnsafeSchema("schema scan could not verify source") from exc
     routes = []
     for endpoint in baseline["api"]["endpoints"]:

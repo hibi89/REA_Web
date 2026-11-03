@@ -133,6 +133,63 @@ app.include_router(r,prefix='/v2')
     assert route(result,'/v2/api/metrics')['response']['models'][0]['fields'][0]['name']=='total'
 
 
+def test_same_size_zip_rewrite_during_schema_ast_rejected(tmp_path, monkeypatch):
+    # A stable ZIP fingerprint must not describe AST hints read from different
+    # bytes, even when another handle rewrites the same-length file in place.
+    from rea.adapter import backend_schema as schema
+    original = tmp_path / "backend.zip"
+    replacement = tmp_path / "replacement.zip"
+    a = SOURCE
+    b = SOURCE.replace("name: str", "kind: str")
+    assert len(a) == len(b) and a != b
+    for path, body in ((original, a), (replacement, b)):
+        with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_STORED) as writer:
+            writer.writestr("app.py", body)
+    before, after = original.read_bytes(), replacement.read_bytes()
+    assert len(before) == len(after)
+    assert hashlib.sha256(before).digest() != hashlib.sha256(after).digest()
+
+    real_models = schema._models
+    changed = []
+
+    def mutate_after_ast_read(tree):
+        if not changed:
+            changed.append(True)
+            with original.open("r+b") as handle:
+                handle.write(after)
+                handle.flush()
+        return real_models(tree)
+
+    monkeypatch.setattr(schema, "_models", mutate_after_ast_read)
+    with pytest.raises(UnsafeSchema, match="ZIP changed during schema scan"):
+        schema.inspect_backend_schema(original)
+    assert changed and original.read_bytes() == after
+
+
+def test_changed_zip_between_route_and_schema_rejected_before_parse(tmp_path, monkeypatch):
+    from rea.adapter import backend_schema as schema
+    original = make_zip(tmp_path / "backend.zip", SOURCE)
+    replacement = make_zip(tmp_path / "replacement.zip", SOURCE.replace("name: str", "kind: str"))
+    real_inspect = schema.inspect_backend_zip
+    parsed = []
+    real_models = schema._models
+
+    def change_after_route_scan(path):
+        result = real_inspect(path)
+        original.write_bytes(replacement.read_bytes())
+        return result
+
+    def observe_models(tree):
+        parsed.append(True)
+        return real_models(tree)
+
+    monkeypatch.setattr(schema, "inspect_backend_zip", change_after_route_scan)
+    monkeypatch.setattr(schema, "_models", observe_models)
+    with pytest.raises(UnsafeSchema, match="ZIP changed before schema scan"):
+        schema.inspect_backend_schema(original)
+    assert parsed == []
+
+
 def test_cli_write_only_new(tmp_path):
     source = make_zip(tmp_path/'fixture.zip')
     target = tmp_path/'new.json'
