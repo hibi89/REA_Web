@@ -23,3 +23,7 @@ Owner approved a fast 3-day *working MVP first* experiment. First generate a use
 - feature/csv-local-mvp @ 5515a7286d63211e32d2c577f93f77d61f37ce08 (not merged).
 - GitHub Actions: https://github.com/hibi89/REA_Web/actions/runs/40198326369 (job 121183903206): **SUCCESS**, 9 pytest PASS / 1 warning; real Chromium loopback browser: 5 rows, category filter 2, search 1, detail view, reload passed; 0 JS errors and 0 external network requests.
 - Demo uses synthetic Korean cafe data; not a real customer/owner site; not Fable→Astra integrated yet; no Windows verification.
+
+## Day 2 evidence-adapter verified checkpoint (2026-10-25 22:55 KST)
+- Feature `feature/evidence-adapter` @ `fda96076de33ebf4f4b6118972a5033a3f703ba9`; Draft PR #4, unmerged. [CI run 40199741969](https://github.com/hibi89/REA_Web/actions/runs/40199741969): **28 pytest PASS** on Ubuntu Python 3.11, actual pinned Astra contract validation and CLI anti-approval PASS.
+- No verified whole-product Fable→Astra→CSV end-to-end run yet; D2-02 orchestrator remains READY. Windows and 3-case browser/packaging remain D3.
