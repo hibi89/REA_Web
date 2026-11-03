@@ -181,6 +181,42 @@ def test_corrupted_non_python_crc_rejected_without_output(tmp_path):
     assert "REFUSED" in result.stderr
 
 
+def test_same_size_zip_rewrite_during_ast_read_rejected(tmp_path, monkeypatch):
+    # Before the pre/post digest gate the scanner could parse ZIP A, then
+    # fingerprint same-size ZIP B and incorrectly bind A's routes to B's hash.
+    from rea.adapter import backend_zip as scanner
+
+    original = tmp_path / "backend.zip"
+    replacement = tmp_path / "replacement.zip"
+    body_a = FIXTURE.replace("/api/jobs", "/api/task")
+    body_b = FIXTURE.replace("/api/jobs", "/api/work")
+    assert len(body_a) == len(body_b)
+    for path, body in ((original, body_a), (replacement, body_b)):
+        with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_STORED) as writer:
+            writer.writestr("app.py", body)
+    new_bytes = replacement.read_bytes()
+    old_bytes = original.read_bytes()
+    assert len(new_bytes) == len(old_bytes)
+    assert hashlib.sha256(new_bytes).digest() != hashlib.sha256(old_bytes).digest()
+
+    real_analyze = scanner._analysis_python
+    changed = []
+
+    def replace_after_member_read(content, filename):
+        if not changed:
+            changed.append(True)
+            # Self-authored temporary ZIP only; same path and byte count.
+            with original.open("r+b") as handle:
+                handle.write(new_bytes)
+                handle.flush()
+        return real_analyze(content, filename)
+
+    monkeypatch.setattr(scanner, "_analysis_python", replace_after_member_read)
+    with pytest.raises(UnsafeBackendZip, match="archive changed during scan"):
+        scanner.inspect_backend_zip(original)
+    assert changed and original.read_bytes() == new_bytes
+
+
 def test_cli_json_and_no_overwrite(tmp_path):
     z = archive(tmp_path / "backend.zip", {"app.py": FIXTURE})
     out = tmp_path / "contract.json"
