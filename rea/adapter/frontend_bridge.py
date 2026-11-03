@@ -40,6 +40,20 @@ def _valid_field(name: object) -> bool:
     return isinstance(name, str) and bool(FIELD_RE.fullmatch(name))
 
 
+def _valid_pagination(value: object, list_field: str) -> dict:
+    if list_field == '__root__' or not isinstance(value, dict) or set(value) != {
+            'total_field', 'limit_param', 'offset_param', 'page_size'}:
+        raise BridgeError('pagination requires a list envelope and exact field/parameter mapping')
+    names = (value['total_field'], value['limit_param'], value['offset_param'])
+    if any(not _valid_field(x) or x in ('__proto__','constructor','prototype') for x in names):
+        raise BridgeError('invalid pagination field or parameter')
+    if value['limit_param'] == value['offset_param']:
+        raise BridgeError('pagination limit and offset parameters must differ')
+    if type(value['page_size']) is not int or not 1 <= value['page_size'] <= 100:
+        raise BridgeError('pagination page_size must be 1..100')
+    return {k: value[k] for k in ('total_field','limit_param','offset_param','page_size')}
+
+
 def _valid_bindings(value: object) -> dict:
     """Field names and response shapes are EXPLICIT owner input, never inferred."""
     if not isinstance(value, dict) or set(value) not in (set(BINDING_NAMES), {*BINDING_NAMES, 'presentation'}):
@@ -47,12 +61,16 @@ def _valid_bindings(value: object) -> dict:
     result = {}
     for role in BINDING_NAMES:
         entry = value[role]
-        allowed = ({'path','field'}, {'path','field','path_param'}) if role == 'detail' else ({'path','field'},)
+        allowed = ({'path','field'}, {'path','field','path_param'}) if role == 'detail' else (
+            ({'path','field'}, {'path','field','pagination'}) if role == 'list'
+            else ({'path','field'},))
         if not isinstance(entry, dict) or set(entry) not in allowed:
             raise BridgeError(f'{role}: require path, field and optional detail path_param')
         if not _safe_api(entry['path']) or not _valid_field(entry['field']):
             raise BridgeError(f'{role}: invalid path or response field')
         result[role] = {'path': entry['path'], 'field': entry['field']}
+        if role == 'list' and 'pagination' in entry:
+            result[role]['pagination'] = _valid_pagination(entry['pagination'], entry['field'])
     if '{' in result['list']['path'] or '{' in result['metrics']['path']:
         raise BridgeError('list/metrics paths must be parameter-free')
     detail = value['detail']
@@ -70,27 +88,46 @@ def _valid_bindings(value: object) -> dict:
 
 
 def _valid_presentation(value: object) -> dict:
-    """Owner-declared display fields only. No arbitrary JS/templates/expressions."""
-    if not isinstance(value, dict) or set(value) != {'item', 'metrics', 'detail_fields'}:
-        raise BridgeError('presentation requires item, metrics, detail_fields')
-    expected = {'item': {'id','name','category','status'},
-                'metrics': {'total','completed','pending'}}
-    result = {}
-    for group, keys in expected.items():
-        fields = value[group]
-        if not isinstance(fields, dict) or set(fields) != keys:
-            raise BridgeError('invalid presentation field mapping')
-        if any(not _valid_field(v) or v in ('__proto__','constructor','prototype') for v in fields.values()):
-            raise BridgeError('unsafe presentation field')
-        result[group] = {k:fields[k] for k in sorted(keys)}
+    """Owner-declared fields/labels; optional two-metric mode never invents KPI semantics."""
+    if not isinstance(value, dict) or set(value) not in (
+            {'item','metrics','detail_fields'},
+            {'item','metrics','detail_fields','metric_labels'}):
+        raise BridgeError('presentation requires item, metrics, detail_fields and optional metric_labels')
+    item = value['item']
+    metrics = value['metrics']
+    if not isinstance(item, dict) or set(item) != {'id','name','category','status'}:
+        raise BridgeError('invalid item presentation fields')
+    if not isinstance(metrics, dict) or set(metrics) != {'total','completed','pending'}:
+        raise BridgeError('invalid metrics presentation fields')
+    safe_field = lambda x: _valid_field(x) and x not in ('__proto__','constructor','prototype')
+    if any(not safe_field(item[k]) for k in ('id','name','category')):
+        raise BridgeError('invalid required item field')
+    if item['status'] is not None and not safe_field(item['status']):
+        raise BridgeError('invalid optional status field')
+    if not safe_field(metrics['total']) or any(
+            metrics[k] is not None and not safe_field(metrics[k])
+            for k in ('completed','pending')):
+        raise BridgeError('invalid optional metric field')
     fields = value['detail_fields']
     if (not isinstance(fields, list) or not 1 <= len(fields) <= 12
             or len(set(x for x in fields if isinstance(x,str))) != len(fields)
-            or any(not _valid_field(v) or v in ('__proto__','constructor','prototype') for v in fields)):
+            or any(not safe_field(x) for x in fields)):
         raise BridgeError('invalid detail presentation fields')
-    result['detail_fields'] = list(fields)
+    result = {'item':{k:item[k] for k in sorted(item)},
+              'metrics':{k:metrics[k] for k in sorted(metrics)},
+              'detail_fields':list(fields)}
+    if 'metric_labels' in value:
+        labels = value['metric_labels']
+        if not isinstance(labels, dict) or set(labels) != {'total','completed','pending'}:
+            raise BridgeError('metric labels require total/completed/pending')
+        for k in ('total','completed','pending'):
+            name=labels[k]
+            if (name is None and metrics[k] is not None) or (
+                name is not None and (not isinstance(name,str) or not 1 <= len(name) <= 40
+                                      or any(ord(c)<32 for c in name))):
+                raise BridgeError('invalid metric label')
+        result['metric_labels'] = {k:labels[k] for k in sorted(labels)}
     return result
-
 
 def _static_schema_review(schema: dict, backend: dict) -> dict:
     """Accept only reviewed static schema hints for the SAME owner ZIP.
@@ -212,12 +249,12 @@ HTML = '''<!doctype html>
 <title>REA WEB | Operations Overview</title><link href="/dashboard/style.css" rel="stylesheet"><script defer src="/dashboard/app.js"></script></head>
 <body><div class="shell"><aside class="sidebar"><div class="logo"><span class="glyph">R</span><span>REA WEB<small>OPERATIONS STUDIO</small></span></div><nav aria-label="주 메뉴"><a class="active" href="/dashboard/">● &nbsp; Overview</a><span>WORKSPACE</span><a href="#records">↗ &nbsp; Activity</a><a href="#metrics">▥ &nbsp; Metrics</a></nav><div class="sidebar-foot">LOCAL INTEGRATION<br><strong>Read-only · Same-origin API</strong></div></aside>
 <main><header class="top"><div class="breadcrumb">Workspace <span>/</span> Overview</div><div class="connection" id="connection" role="status"><span class="dot"></span><span id="connection-text">CHECKING API</span></div></header><div class="content"><section class="heading"><div><p class="eyebrow">REAL BACKEND · ORIGINAL FRONTEND</p><h1>Operations overview</h1><p class="sub">백엔드 ZIP에서 추출한 API 계약으로 연결하는 독립 제작 대시보드</p></div><span class="chip">Explicit API mapping</span></section>
-<section id="metrics" class="metrics" aria-label="주요 지표"><article><label>전체 작업</label><strong id="kpi-total">—</strong><span>All workloads</span></article><article><label>완료 작업</label><strong id="kpi-completed">—</strong><span>Completed jobs</span></article><article><label>대기 작업</label><strong id="kpi-pending">—</strong><span>Pending jobs</span></article></section>
+<section id="metrics" class="metrics" aria-label="주요 지표"><article><label id="kpi-label-total">전체 작업</label><strong id="kpi-total">—</strong><span>All workloads</span></article><article><label id="kpi-label-completed">완료 작업</label><strong id="kpi-completed">—</strong><span>Completed jobs</span></article><article><label id="kpi-label-pending">대기 작업</label><strong id="kpi-pending">—</strong><span>Pending jobs</span></article></section>
 <section class="grid"><section id="records" class="panel records"><div class="panel-title"><div><h2>Activity feed</h2><p>원본 백엔드의 작업 목록을 실시간 조회합니다.</p></div><span id="count" class="tag">0 entries</span></div><label class="search-label">검색 <input id="search" type="search" placeholder="작업명, 번호, 분류 검색" aria-label="작업 검색" autocomplete="off"></label><div class="table-wrap"><table><thead><tr><th>작업</th><th>분류</th><th>상태</th><th>상세</th></tr></thead><tbody id="jobs"></tbody></table></div><p id="empty" class="empty" hidden>검색 결과가 없습니다.</p></section><aside class="panel detail"><div class="panel-title"><div><h2>Job inspector</h2><p>조회할 작업을 선택하십시오.</p></div></div><div id="detail" class="detail-content">왼쪽에서 작업을 선택하면 실제 API 상세 응답을 표시합니다.</div></aside></section>
 <p id="error" role="alert" class="error" hidden></p><button id="retry" type="button" class="link" hidden>API 다시 연결</button><footer>REA WEB · Independent interface · No reference-site scripts or assets copied · Same-origin read-only GET API</footer>
 </div></main></div></body></html>'''
 
-CSS = '''*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:#162333;background:#f5f7fb;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif}.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}.sidebar{background:#101d31;color:#e6ebf5;display:flex;flex-direction:column;padding:29px 17px}.logo{display:flex;align-items:center;gap:11px;padding:0 15px 42px;font-size:17px;letter-spacing:.05em;font-weight:850}.logo small{display:block;margin-top:5px;color:#8b9fb9;font-size:9px;letter-spacing:.18em}.glyph{width:34px;height:34px;background:#3678ff;display:grid;place-items:center;border-radius:10px;font-size:20px}.sidebar nav{display:grid;gap:5px}.sidebar nav span{font-size:10px;letter-spacing:.18em;color:#8090ac;margin:25px 15px 11px;font-weight:750}.sidebar nav a{display:block;text-decoration:none;padding:13px 14px;border-radius:10px;color:#b0bfd5;font-size:13px;font-weight:650}.sidebar nav a.active,.sidebar nav a:hover{background:#233753;color:#fff}.sidebar-foot{margin-top:auto;border-top:1px solid #2b405b;padding:23px 13px 5px;color:#89a0be;font-size:10px;letter-spacing:.1em;line-height:2}.sidebar-foot strong{color:#dce5f3;font-size:11px;font-weight:500;letter-spacing:0}main{min-width:0}.top{height:70px;background:#fff;border-bottom:1px solid #e7ebf1;display:flex;align-items:center;justify-content:space-between;padding:0 43px}.breadcrumb{font-size:12px;color:#6f7e93}.breadcrumb span{padding:0 12px;color:#c0ccda}.connection{font-size:11px;font-weight:750;color:#75849b;letter-spacing:.07em}.connection .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#a5b2c3;margin-right:8px}.connection.ready{color:#1f805e}.connection.ready .dot{background:#22a177}.connection.failed{color:#b53b4d}.connection.failed .dot{background:#d94f66}.content{max-width:1510px;margin:auto;padding:39px 43px 32px}.heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:30px}.eyebrow{color:#326cf1;font-size:10px;font-weight:850;letter-spacing:.22em;margin:0 0 10px}h1{font-size:35px;letter-spacing:-.055em;margin:0 0 9px;color:#122035}.sub{font-size:13px;color:#718098;margin:0}.chip{border:1px solid #d8e4fb;background:#eff5ff;color:#3166d9;font-size:11px;padding:9px 13px;border-radius:99px;white-space:nowrap}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:17px;margin-bottom:20px}.metrics article,.panel{background:#fff;border:1px solid #e7ecf3;border-radius:15px;box-shadow:0 8px 30px #24375108}.metrics article{padding:24px 27px;min-height:143px}.metrics label{display:block;color:#65748a;font-size:12px;font-weight:650}.metrics strong{display:block;font-size:36px;letter-spacing:-.06em;margin:12px 0 4px;font-weight:800}.metrics span{font-size:11px;color:#8b97a7}.grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr);gap:20px}.panel{padding:25px}.panel-title{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:22px}.panel-title h2{font-size:17px;letter-spacing:-.025em;margin:0 0 5px}.panel-title p{font-size:12px;color:#8693a5;margin:0}.tag{font-size:10px;color:#326ce9;padding:7px 10px;border-radius:6px;background:#eef3ff;white-space:nowrap}.search-label{display:block;font-size:11px;font-weight:700;color:#6d7d91}.search-label input{display:block;width:100%;margin:8px 0 17px;border:1px solid #dce4f0;border-radius:9px;padding:13px 15px;color:#1b2b40;font:inherit;font-size:12px}.search-label input:focus-visible,button:focus-visible{outline:3px solid #8bb6ff}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px}thead{background:#f8fafd;color:#7e8ba1;text-align:left}th,td{padding:15px 10px;border-bottom:1px solid #edf0f5;text-align:left}th{font-size:10px;letter-spacing:.04em}td:first-child{font-weight:700;color:#243753}.status{display:inline-block;border-radius:20px;padding:5px 8px;background:#fff4d7;color:#a36b13;font-size:10px;font-weight:700}.status.done{background:#dcf7e9;color:#138456}button.link{border:0;background:#ecf2ff;color:#285bd7;border-radius:7px;padding:7px 11px;cursor:pointer;font:inherit;font-size:11px;font-weight:700}.detail-content{font-size:13px;color:#6c7b91;line-height:1.9}.detail-row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #edf0f5;padding:10px 0}.detail-row b{color:#1d2f4a;font-size:12px;text-align:right;overflow-wrap:anywhere}.empty,.error{color:#9a4366;font-size:12px}.error{padding:15px;border:1px solid #efc6d1;background:#fff3f6;border-radius:8px;margin-top:18px}footer{margin-top:26px;font-size:11px;color:#99a5b5}@media(max-width:1100px){.grid{grid-template-columns:1fr}.sidebar{width:210px}.shell{grid-template-columns:210px 1fr}}@media(max-width:740px){.shell{display:block}.sidebar{min-height:auto;padding:12px 16px}.logo{padding:0}.sidebar nav,.sidebar-foot{display:none}.top{height:54px;padding:0 20px}.content{padding:26px 17px}.heading{align-items:flex-start}h1{font-size:29px}.metrics{gap:9px}.metrics article{padding:16px 11px;min-height:120px}.metrics strong{font-size:28px}.metrics label{font-size:11px}.panel{padding:17px}}'''
+CSS = '''*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:#162333;background:#f5f7fb;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic",sans-serif}.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}.sidebar{background:#101d31;color:#e6ebf5;display:flex;flex-direction:column;padding:29px 17px}.logo{display:flex;align-items:center;gap:11px;padding:0 15px 42px;font-size:17px;letter-spacing:.05em;font-weight:850}.logo small{display:block;margin-top:5px;color:#8b9fb9;font-size:9px;letter-spacing:.18em}.glyph{width:34px;height:34px;background:#3678ff;display:grid;place-items:center;border-radius:10px;font-size:20px}.sidebar nav{display:grid;gap:5px}.sidebar nav span{font-size:10px;letter-spacing:.18em;color:#8090ac;margin:25px 15px 11px;font-weight:750}.sidebar nav a{display:block;text-decoration:none;padding:13px 14px;border-radius:10px;color:#b0bfd5;font-size:13px;font-weight:650}.sidebar nav a.active,.sidebar nav a:hover{background:#233753;color:#fff}.sidebar-foot{margin-top:auto;border-top:1px solid #2b405b;padding:23px 13px 5px;color:#89a0be;font-size:10px;letter-spacing:.1em;line-height:2}.sidebar-foot strong{color:#dce5f3;font-size:11px;font-weight:500;letter-spacing:0}main{min-width:0}.top{height:70px;background:#fff;border-bottom:1px solid #e7ebf1;display:flex;align-items:center;justify-content:space-between;padding:0 43px}.breadcrumb{font-size:12px;color:#6f7e93}.breadcrumb span{padding:0 12px;color:#c0ccda}.connection{font-size:11px;font-weight:750;color:#75849b;letter-spacing:.07em}.connection .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#a5b2c3;margin-right:8px}.connection.ready{color:#1f805e}.connection.ready .dot{background:#22a177}.connection.failed{color:#b53b4d}.connection.failed .dot{background:#d94f66}.content{max-width:1510px;margin:auto;padding:39px 43px 32px}.heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:30px}.eyebrow{color:#326cf1;font-size:10px;font-weight:850;letter-spacing:.22em;margin:0 0 10px}h1{font-size:35px;letter-spacing:-.055em;margin:0 0 9px;color:#122035}.sub{font-size:13px;color:#718098;margin:0}.chip{border:1px solid #d8e4fb;background:#eff5ff;color:#3166d9;font-size:11px;padding:9px 13px;border-radius:99px;white-space:nowrap}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:17px;margin-bottom:20px}.metrics.two{grid-template-columns:repeat(2,minmax(0,1fr))}.metrics.one{grid-template-columns:minmax(0,1fr)}.metrics article,.panel{background:#fff;border:1px solid #e7ecf3;border-radius:15px;box-shadow:0 8px 30px #24375108}.metrics article{padding:24px 27px;min-height:143px}.metrics label{display:block;color:#65748a;font-size:12px;font-weight:650}.metrics strong{display:block;font-size:36px;letter-spacing:-.06em;margin:12px 0 4px;font-weight:800}.metrics span{font-size:11px;color:#8b97a7}.grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(260px,1fr);gap:20px}.panel{padding:25px}.panel-title{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:22px}.panel-title h2{font-size:17px;letter-spacing:-.025em;margin:0 0 5px}.panel-title p{font-size:12px;color:#8693a5;margin:0}.tag{font-size:10px;color:#326ce9;padding:7px 10px;border-radius:6px;background:#eef3ff;white-space:nowrap}.search-label{display:block;font-size:11px;font-weight:700;color:#6d7d91}.search-label input{display:block;width:100%;margin:8px 0 17px;border:1px solid #dce4f0;border-radius:9px;padding:13px 15px;color:#1b2b40;font:inherit;font-size:12px}.search-label input:focus-visible,button:focus-visible{outline:3px solid #8bb6ff}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px}thead{background:#f8fafd;color:#7e8ba1;text-align:left}th,td{padding:15px 10px;border-bottom:1px solid #edf0f5;text-align:left}th{font-size:10px;letter-spacing:.04em}td:first-child{font-weight:700;color:#243753}.status{display:inline-block;border-radius:20px;padding:5px 8px;background:#fff4d7;color:#a36b13;font-size:10px;font-weight:700}.status.done{background:#dcf7e9;color:#138456}button.link{border:0;background:#ecf2ff;color:#285bd7;border-radius:7px;padding:7px 11px;cursor:pointer;font:inherit;font-size:11px;font-weight:700}.detail-content{font-size:13px;color:#6c7b91;line-height:1.9}.detail-row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #edf0f5;padding:10px 0}.detail-row b{color:#1d2f4a;font-size:12px;text-align:right;overflow-wrap:anywhere}.empty,.error{color:#9a4366;font-size:12px}.error{padding:15px;border:1px solid #efc6d1;background:#fff3f6;border-radius:8px;margin-top:18px}footer{margin-top:26px;font-size:11px;color:#99a5b5}@media(max-width:1100px){.grid{grid-template-columns:1fr}.sidebar{width:210px}.shell{grid-template-columns:210px 1fr}}@media(max-width:740px){.shell{display:block}.sidebar{min-height:auto;padding:12px 16px}.logo{padding:0}.sidebar nav,.sidebar-foot{display:none}.top{height:54px;padding:0 20px}.content{padding:26px 17px}.heading{align-items:flex-start}h1{font-size:29px}.metrics{gap:9px}.metrics article{padding:16px 11px;min-height:120px}.metrics strong{font-size:28px}.metrics label{font-size:11px}.panel{padding:17px}}'''
 
 JS = '''"use strict";
 const API = __API_JSON__;
@@ -230,7 +267,7 @@ const VIEW = API.presentation || {
 };
 const $ = id => document.getElementById(id);
 const safe = value => value == null ? '' : String(value);
-const field = (item, name) => Object.prototype.hasOwnProperty.call(item, name) ? item[name] : '';
+const field = (item, name) => name != null && Object.prototype.hasOwnProperty.call(item, name) ? item[name] : '';
 const node = (tag, value) => {const n=document.createElement(tag); n.textContent=safe(value); return n;};
 let cached=[];
 function invalidateProtectedView() {
@@ -284,6 +321,34 @@ async function fetchJson(path) {
     if (reader) {try {await reader.cancel();} catch (_) {}}
   }
 }
+async function fetchList() {
+  const pagination=API.list.pagination;
+  if (!pagination) {
+    const response=await fetchJson(API.list.path);
+    return API.list.field==='__root__' ? response : response[API.list.field];
+  }
+  const url=offset=>API.list.path+'?'+pagination.limit_param+'='+pagination.page_size+'&'+pagination.offset_param+'='+offset;
+  let offset=0,total=null;
+  const rows=[];
+  while (true) {
+    const response=await fetchJson(url(offset));
+    if (!response || typeof response!=='object' || Array.isArray(response)) throw new Error('페이지 응답 객체 불일치');
+    const advertised=field(response,pagination.total_field);
+    const part=field(response,API.list.field);
+    if (!Number.isSafeInteger(advertised) || advertised<0 || advertised>10000
+        || !Array.isArray(part) || part.length>pagination.page_size
+        || part.some(x=>!x || typeof x!=='object' || Array.isArray(x))) throw new Error('페이지 목록/총건수 스키마 불일치');
+    if (total===null) total=advertised;
+    if (total!==advertised || offset+part.length>total ||
+        (offset<total && part.length===0)) throw new Error('페이지 누락 또는 총건수 변동');
+    rows.push(...part); offset+=part.length;
+    if (offset===total) break;
+  }
+  if (new Set(rows.map(x=>safe(field(x,VIEW.item.id)))).size!==rows.length)
+    throw new Error('페이지 간 중복 작업 ID');
+  return rows;
+}
+
 function render(items) {
   const target=$('jobs'); target.replaceChildren();
   $('count').textContent=items.length+' entries'; $('empty').hidden=items.length!==0;
@@ -325,9 +390,8 @@ async function load(){
   // the previous list view, even when the old request finishes after refresh.
   ++detailGeneration;
   try {
-    const [jobs,metrics]=await Promise.all([fetchJson(API.list.path),fetchJson(API.metrics.path)]);
+    const [arr,metrics]=await Promise.all([fetchList(),fetchJson(API.metrics.path)]);
     if(generation!==loadGeneration) return;
-    const arr=API.list.field==='__root__'?jobs:jobs[API.list.field];
     const stat=API.metrics.field==='__root__'?metrics:metrics[API.metrics.field];
     if(!Array.isArray(arr) || arr.length>10000 || arr.some(x=>!x||typeof x!=='object'||Array.isArray(x))) throw new Error('목록 응답 스키마 불일치');
     if(!stat || typeof stat!=='object'||Array.isArray(stat)) throw new Error('지표 응답 스키마 불일치');
@@ -335,7 +399,20 @@ async function load(){
     // Never retain inspector data from the previous list/session.
     const detail=$('detail'); detail.replaceChildren(); detail.removeAttribute('role');
     detail.textContent='왼쪽에서 작업을 선택하면 실제 API 상세 응답을 표시합니다.';
-    for(const key of ['total','completed','pending']) $('kpi-'+key).textContent=safe(field(stat,VIEW.metrics[key]));
+    const visibleMetrics=['total','completed','pending'].filter(key=>VIEW.metrics[key]!=null);
+    for(const key of ['total','completed','pending']) {
+      const element=$('kpi-'+key);
+      if (VIEW.metric_labels) {
+        const label=$('kpi-label-'+key);
+        if (label && VIEW.metric_labels[key]!=null) label.textContent=VIEW.metric_labels[key];
+      }
+      if (VIEW.metrics[key]==null) {element.textContent='—';element.parentElement.hidden=true;}
+      else {element.parentElement.hidden=false;element.textContent=safe(field(stat,VIEW.metrics[key]));}
+    }
+    if ($('metrics')) {
+      $('metrics').classList.toggle('two',visibleMetrics.length===2);
+      $('metrics').classList.toggle('one',visibleMetrics.length===1);
+    }
     applySearch();
     $('error').hidden=true; $('error').textContent=''; $('retry').hidden=true;
     $('connection').classList.remove('failed'); $('connection').classList.add('ready'); $('connection-text').textContent='CONNECTED';
