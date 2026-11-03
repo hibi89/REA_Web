@@ -1,3 +1,13 @@
+## 2026-11-03 — 별도 안내형 CLI (수동 bindings.json 파일 없이 진행)
+
+기존 one-command CLI는 유지하며, 새 안내형 도구는 정적 GET 경로를 번호로 선택하고 정확한 JSON 필드 이름을 직접 입력하게 한다. ZIP 소유/사용 권한을 확인한 경우에만:
+
+    python -m rea.adapter.offline_wizard --backend-zip .\OWNED_BACKEND.zip --fable .\fable.json --out .\NEW_FRONTEND --owner-authorized-source
+
+목록/지표는 매개변수가 없는 GET 경로, 상세는 하나의 경로 매개변수가 있는 GET 후보만 제시한다. 필드는 JSON 키 또는 __root__을 직접 입력하고, 표시된 매핑·출력 폴더를 검토한 후 대소문자 정확한 APPROVE로 최종 승인한다. 비표준 화면 필드는 --presentation owner-authored-presentation.json을 명시적으로 선택할 수 있다. 잘못된 경로·필드, 승인 거절, 원본 ZIP SHA 변경, 존재하는 출력 폴더를 거부한다. ZIP 실행·외부 네트워크·소스 복사 없음.
+
+신규 기능 검증: SHA 9171d78f; Windows/Ubuntu Actions 41636103875 각각 148 PASS/2 SKIP (전체 브라우저 통합 포함), 41636104266 각각 167 PASS/2 SKIP. 2 Astra SKIP은 미검증. 실제 API/고객 데이터·권리·로그인/세션·Docker/물리 Windows·상용 배포는 미검증이며 RELEASE HOLD.
+
 > **2026-11-03 세션 전환 보호 검증:** 목록/지표를 새로 불러오면 이전 상세 요청의 늦은 200/401 응답은 무시하며, 새 목록 성공 시 상세 패널을 초기화합니다. Windows/Ubuntu Chromium 검증 기능 SHA `d477a9dc`, Actions `41631264392` 각 140 PASS/2 SKIP. 실제 고객 로그인·권한 검증은 별도로 필요하며 상용 RELEASE HOLD입니다.
 
 ## 2026-11-03 KST — 전체 브라우저 실행 검증 (자체 제작 백엔드)
