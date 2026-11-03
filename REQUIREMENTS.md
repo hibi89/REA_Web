@@ -1,3 +1,8 @@
+## 2026-11-03 KST — Real Chromium CSP enforcement and transparent Astra SKIP accounting
+- Trusted, self-authored synthetic ZIP must serve the original generated HTML/CSS/JS over 127.0.0.1 FastAPI and enforce CSP in real Chromium; verify blocked inline and remote scripts plus forbidden cross-origin fetch with securitypolicyviolation and absence of actual external network route calls. CSP meta-text alone is inadequate.
+- Code SHA 5a047372c30f0eb81c3de36f42ad28abe34a0b52 native Actions: run 41600253373 both OS 135 PASS/0 FAIL; frontend 41600253324 both 130 PASS/2 SKIP; backend 41600253427 both 52 PASS/2 SKIP. The two skips are tests/test_adapter.py optional astra_contracts.observation imports; actual Astra contract validation remains unverified.
+- No real customer ZIP/credentials, Docker/VM, Production or physical Windows release without owner approval. Preserve Pro/Lite originals and RELEASE HOLD.
+
 ## Deterministic cross-platform generated frontend bytes and exact push CI evidence — 2026-11-03 KST
 - Approved frontend generator must write all five source files with `Path.write_bytes(utf8)` rather than `write_text` to prevent Windows CRLF translation. Keep original HTML, CSS, JS, manifest and README contents, strict `_check_frontend` byte identity, original owner confirmation, existing CSP and immutable bundle digests; reject any unexpected CR in generated files.
 - A tampered neutral CSS file must raise an error identifying `neutral frontend CSS` while styled errors are identified as styled CSS. Docker sandbox tests must distinguish the exact Docker `run` subcommand from the legitimate runtime socket path `/var/run/docker.sock` without relaxing Docker execution gates.
