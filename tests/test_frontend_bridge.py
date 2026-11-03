@@ -61,6 +61,8 @@ def test_explicit_bindings_match_get_and_generate(tmp_path):
     assert 'SECRET' not in ''.join(p.read_text(encoding='utf8') for p in out.iterdir())
     assert 'CHECKING API' in (out/'index.html').read_text(encoding='utf8')
     assert 'API ERROR' in (out/'app.js').read_text(encoding='utf8')
+    assert all(b'\r' not in (out/name).read_bytes() for name in
+               ('index.html', 'app.js', 'style.css', 'manifest.json', 'README_KO.md'))
     before={p.name:p.read_bytes() for p in out.iterdir()}
     with pytest.raises(FileExistsError):generate_frontend(review,out,owner_confirmed=True)
     assert before=={p.name:p.read_bytes() for p in out.iterdir()}
