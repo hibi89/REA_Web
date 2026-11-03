@@ -321,6 +321,9 @@ async function showDetail(id) {
 let loadGeneration=0;
 async function load(){
   const generation=++loadGeneration;
+  // A refresh may cross a login/session boundary. Ignore details requested by
+  // the previous list view, even when the old request finishes after refresh.
+  ++detailGeneration;
   try {
     const [jobs,metrics]=await Promise.all([fetchJson(API.list.path),fetchJson(API.metrics.path)]);
     if(generation!==loadGeneration) return;
@@ -329,6 +332,9 @@ async function load(){
     if(!Array.isArray(arr) || arr.length>10000 || arr.some(x=>!x||typeof x!=='object'||Array.isArray(x))) throw new Error('목록 응답 스키마 불일치');
     if(!stat || typeof stat!=='object'||Array.isArray(stat)) throw new Error('지표 응답 스키마 불일치');
     cached=arr;
+    // Never retain inspector data from the previous list/session.
+    const detail=$('detail'); detail.replaceChildren(); detail.removeAttribute('role');
+    detail.textContent='왼쪽에서 작업을 선택하면 실제 API 상세 응답을 표시합니다.';
     for(const key of ['total','completed','pending']) $('kpi-'+key).textContent=safe(field(stat,VIEW.metrics[key]));
     applySearch();
     $('error').hidden=true; $('error').textContent=''; $('retry').hidden=true;
