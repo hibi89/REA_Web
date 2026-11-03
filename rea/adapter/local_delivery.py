@@ -76,8 +76,13 @@ def _check(members: dict[str, bytes]) -> dict:
         if _digest(payload) != expected:
             raise UnsafeLocalDelivery("file hash mismatch: " + name)
     original = (TEMPLATES / "app.py").read_bytes()
+    # Previous Windows packages used Path.write_text and could carry CRLF.
+    # New builds use write_bytes with canonical LF. Both known first-party
+    # encodings are accepted; arbitrary altered verifier source is refused.
+    trusted_checker = {SELF_CHECK.encode("utf-8"),
+                       SELF_CHECK.replace("\n", "\r\n").encode("utf-8")}
     if (members["app.py"] != original + MOUNT
-            or members["SELF_CHECK.py"] != SELF_CHECK.encode("utf-8")):
+            or members["SELF_CHECK.py"] not in trusted_checker):
         raise UnsafeLocalDelivery("not the exact first-party REA source/checker")
     receipt = _json(members["REA_INTEGRATION_RECEIPT.json"])
     frontend = _json(members["dashboard/manifest.json"])

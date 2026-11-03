@@ -172,7 +172,7 @@ def build(data: Path, fable: Path, bindings: Path, destination: Path, *,
         )
         # Bundle a dependency-free verifier and a strict hash inventory.
         # Do not hash the inventory itself; this is tamper detection, not a signature.
-        (folder / "SELF_CHECK.py").write_text(SELF_CHECK, encoding="utf-8")
+        (folder / "SELF_CHECK.py").write_bytes(SELF_CHECK.encode("utf-8"))
         members = {}
         for file in sorted(folder.rglob("*")):
             if file.is_file():
