@@ -1,3 +1,9 @@
+## Synthetic auth-boundary gate result — 2026-11-03 KST
+
+The generated read-only dashboard now clears prior rows, KPI, detail and cached results when list/metrics GET returns 401/403 or detail GET returns 401. An isolated detail 403 remains inspector-local. Actual Windows/Linux synthetic Chromium regression verified: source `d904ea3b411debcac353681db159647bd99ed32d`, test `5cb3ba4cc8ebf5d80e429b40a2636b9acd7b2088`, Actions frontend `41601634713` each 130 PASS/2 SKIP; combined ZIP run `41601566485` each 135 PASS at code SHA. This is not proof of real customer authentication, access control, tenant isolation, or response schemas.
+
+**Next static-only acceptance:** Use self-authored JSON fixtures to validate explicitly chosen GET response roles, item fields, numeric metrics and 401/403 policy before any authorized customer runtime review. Do not inspect/execute a real customer ZIP or run Docker/deploy/upload without separate approval. Pro/Lite originals preserved; commercial RELEASE HOLD.
+
 # REA_WEB — Customer backend integration readiness gate
 Status: STATIC-ONLY PREPARATION. REAL CUSTOMER ZIP / AUTH / DOCKER / PRODUCTION NOT APPROVED. COMMERCIAL RELEASE HOLD.
 Baseline: tested synthetic code SHA 5a047372c30f0eb81c3de36f42ad28abe34a0b52, Windows+Linux Chromium/FastAPI CSP suite each 135 PASS, not customer verification.
