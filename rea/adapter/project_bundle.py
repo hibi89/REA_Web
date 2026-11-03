@@ -353,7 +353,7 @@ def build_synthetic_project(backend_zip: Path, frontend_dir: Path,
     files["runtime_entry.py"] = (RUNNER.replace("__EXPECTED_APP_SHA__", _hash(backend["backend/app.py"]))
                                  .replace("__EXPECTED_FRONTEND_HASHES__",
                                           json.dumps(pinned_frontend_hashes, sort_keys=True, separators=(",", ":")))
-                                 .encode("utf-8")
+                                 .encode("utf-8"))
     files["START_WINDOWS.cmd"] = WINDOWS_CMD
     files["README_FIRST.md"] = README
     manifest = {
