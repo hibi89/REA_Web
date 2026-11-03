@@ -80,11 +80,15 @@ def test_full_local_runnable_app_with_native_backend_and_real_chromium(tmp_path)
     assert (out/"data.sqlite").is_file()
     assert (out/"README.md").is_file()
     assert (out/"RUN_LOCAL_WINDOWS.cmd").read_bytes().endswith(b"\r\n")
+    integrity = subprocess.run([sys.executable,str(out/"SELF_CHECK.py"),"--check"],
+                               cwd=out,capture_output=True,text=True,timeout=20)
+    assert integrity.returncode==0,integrity.stderr
+    assert "LOCAL_INTEGRITY_PASS" in integrity.stdout
     if sys.platform=="win32":
         check = subprocess.run(["cmd", "/d", "/c", str(out/"RUN_LOCAL_WINDOWS.cmd"), "--check"],
                                cwd=out, capture_output=True,text=True,timeout=20)
         assert check.returncode==0,check.stderr
-        assert "NOT checked" in check.stdout
+        assert "LOCAL_INTEGRITY_PASS" in check.stdout
     assert not (out/"owned_test.csv").exists()
     assert not (out/"fable.json").exists()
 
@@ -150,3 +154,26 @@ def test_full_local_runnable_app_with_native_backend_and_real_chromium(tmp_path)
         except subprocess.TimeoutExpired:
             process.kill()
             process.wait(timeout=5)
+
+
+def test_firstparty_selfcheck_refuses_changed_source_and_db(tmp_path):
+    data, fable, bindings = fixture(tmp_path)
+    output = tmp_path / 'firstparty'
+    build(data, fable, bindings, output, owner_authorized_data=True, owner_confirmed=True)
+    check = [sys.executable, str(output / 'SELF_CHECK.py'), '--check']
+    good = subprocess.run(check,capture_output=True,text=True,timeout=20)
+    assert good.returncode == 0, good.stderr
+    app_file = output / 'app.py'
+    original = app_file.read_bytes()
+    app_file.write_bytes(original + b'\n#changed')
+    bad = subprocess.run(check,capture_output=True,text=True,timeout=20)
+    assert bad.returncode == 12
+    assert 'SHA mismatch: app.py' in bad.stderr
+    app_file.write_bytes(original)
+    db_file=output/'data.sqlite'
+    with db_file.open('r+b') as stream:
+        stream.seek(0)
+        stream.write(b'BROKEN!!')
+    broken = subprocess.run(check,capture_output=True,text=True,timeout=20)
+    assert broken.returncode == 12
+    assert 'SHA mismatch: data.sqlite' in broken.stderr
