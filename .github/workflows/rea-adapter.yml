@@ -1,0 +1,49 @@
+name: REA Fable to Astra adapter
+on:
+  push:
+    branches: [feature/evidence-adapter]
+  pull_request:
+    branches: [integration/develop]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  adapter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout adapter branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Checkout immutable Astra contract snapshot
+        uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: f044b66e799289a5a353fdb9cbfdb324e683ffa3
+          path: .vendor/astra
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python -m pip install "pydantic>=2.6,<3" "pytest>=8,<10"
+      - name: Unit and pinned schema tests
+        env:
+          PYTHONPATH: ".vendor/astra/engines/astra_p4:."
+        run: python -m pytest -q tests/test_adapter.py
+      - name: Real Astra CLI validation and anti-approval
+        env:
+          PYTHONPATH: ".vendor/astra/engines/astra_p4:."
+        run: |
+          python -m rea.adapter.fable_to_astra samples/fable_record_redacted.json > /tmp/rea-adapter.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path("/tmp/rea-adapter.json").read_text())
+          assert r["status"] == "REVIEW_REQUIRED"
+          assert r["astra_contract_validation"] == "VALIDATED"
+          assert r["astra_functional_spec_draft"]["candidate_features"] == []
+          assert not r["generation_allowed"]
+          print("PASS: actual Astra validated; approval blocked")
+          PY
+      - run: python -m compileall -q rea
