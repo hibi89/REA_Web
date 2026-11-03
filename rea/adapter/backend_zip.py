@@ -191,8 +191,17 @@ def inspect_backend_zip(source: Path) -> dict:
         digest = hashlib.sha256()
         flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NOFOLLOW", 0)
         with os.fdopen(os.open(source, flags), "rb") as stream:
-            if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
+            opened = os.fstat(stream.fileno())
+            if not stat.S_ISREG(opened.st_mode):
                 raise UnsafeBackendZip("archive must be regular")
+            if (opened.st_dev, opened.st_ino, opened.st_size) != (st.st_dev, st.st_ino, st.st_size):
+                raise UnsafeBackendZip("archive changed before scan")
+            # Hash the exact open file before AST reads. Hash again afterward,
+            # so same-length in-place rewrites cannot pair old routes with a new SHA.
+            initial_digest = hashlib.sha256()
+            for block in iter(lambda: stream.read(65536), b""):
+                initial_digest.update(block)
+            stream.seek(0)
             with zipfile.ZipFile(stream) as archive:
                 infos = _zip_members(archive)
                 endpoints: list[dict] = []
@@ -227,9 +236,15 @@ def inspect_backend_zip(source: Path) -> dict:
             stream.seek(0)
             for block in iter(lambda: stream.read(65536), b""):
                 digest.update(block)
-            if os.fstat(stream.fileno()).st_size != st.st_size:
+            final = os.fstat(stream.fileno())
+            if (initial_digest.digest() != digest.digest()
+                    or (final.st_dev, final.st_ino, final.st_size, final.st_mtime_ns, final.st_ctime_ns)
+                    != (opened.st_dev, opened.st_ino, opened.st_size, opened.st_mtime_ns, opened.st_ctime_ns)):
                 raise UnsafeBackendZip("archive changed during scan")
-        if source.is_symlink() or source.stat().st_size != st.st_size:
+        after = source.stat()
+        if (source.is_symlink()
+                or (after.st_dev, after.st_ino, after.st_size)
+                != (opened.st_dev, opened.st_ino, opened.st_size)):
             raise UnsafeBackendZip("archive changed during scan")
     except (zipfile.BadZipFile, zipfile.LargeZipFile, EOFError,
             NotImplementedError, RuntimeError, zlib.error) as exc:
