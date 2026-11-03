@@ -356,6 +356,11 @@ def _js_config(bindings: dict) -> str:
     return result
 
 
+def _write_frontend_source(path: Path, text: str) -> None:
+    """Write canonical UTF-8/LF bytes on Windows and POSIX alike."""
+    path.write_bytes(text.encode('utf-8'))
+
+
 def generate_frontend(review: dict, destination: Path, *, owner_confirmed: bool = False) -> dict:
     """Publish source-only same-origin frontend; no backend ZIP extraction/execution."""
     if not isinstance(review, dict) or review.get('schema_version') != SCHEMA or review.get('status') != 'OWNER_REVIEW_REQUIRED':
@@ -397,16 +402,16 @@ def generate_frontend(review: dict, destination: Path, *, owner_confirmed: bool 
     with tempfile.TemporaryDirectory(prefix='.rea-bridge-', dir=destination.parent) as temp:
         stage = Path(temp) / 'dashboard'
         stage.mkdir()
-        (stage / 'index.html').write_text(HTML+'\n', encoding='utf-8')
-        (stage / 'style.css').write_text(CSS+'\n'+_reference_css(visual), encoding='utf-8')
-        (stage / 'app.js').write_text(JS.replace('__API_JSON__', _js_config(binding))+'\n', encoding='utf-8')
-        (stage / 'manifest.json').write_text(json.dumps(manifest, indent=2, ensure_ascii=False)+'\n', encoding='utf-8')
-        (stage / 'README_KO.md').write_text(
+        _write_frontend_source(stage / 'index.html', HTML+'\n')
+        _write_frontend_source(stage / 'style.css', CSS+'\n'+_reference_css(visual))
+        _write_frontend_source(stage / 'app.js', JS.replace('__API_JSON__', _js_config(binding))+'\n')
+        _write_frontend_source(stage / 'manifest.json', json.dumps(manifest, indent=2, ensure_ascii=False)+'\n')
+        _write_frontend_source(stage / 'README_KO.md',
             '# REA generated frontend (NOT a runnable backend)\n\n'
             '원본 백엔드 ZIP을 실행하거나 수정하지 않았습니다. 현재 결과는 프론트엔드 소스입니다.\n'
             '신뢰할 수 있는 FastAPI 앱에서 `app.mount("/dashboard", StaticFiles(directory=THIS_FOLDER, html=True))`로 제공하세요.\n'
             '반드시 동일 origin에서 /api/* 경로를 제공해야 합니다. 실제 API 응답 형식과 인증은 실행 검증 전까지 미확인입니다.\n'
-            '테스트용 임시 합성 백엔드 외 원본의 실행·배포·권한 변경에는 별도 승인이 필요합니다.\n', encoding='utf-8')
+            '테스트용 임시 합성 백엔드 외 원본의 실행·배포·권한 변경에는 별도 승인이 필요합니다.\n')
         publish_directory(stage, destination)
     return manifest
 
