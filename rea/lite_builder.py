@@ -113,7 +113,7 @@ def main(argv=None) -> int:
         result = build_lite(a.source, a.out, mapping=dict(id=a.id_field, title=a.title_field,
             category=a.category_field), expected_sha256=a.source_sha256, confirmation=a.confirm,
             theme=a.theme, name=a.name)
-        print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+        print(json.dumps(result, ensure_ascii=True, sort_keys=True))
         return 0
     except (OSError, DataError, FileExistsError, ValueError):
         print('REA_LITE_BUILD_BLOCKED')
