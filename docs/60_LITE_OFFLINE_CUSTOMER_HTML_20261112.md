@@ -1,3 +1,5 @@
+> **2026-11-12 KST 정확 기능 SHA `3ef4ab00f737644d4c1f4b2caa56bf17a3b6da3d` 검증 확정:** GitHub Actions [push #43107505596](https://github.com/hibi89/REA_Web/actions/runs/43107505596) 및 [Draft PR #33 #43107577374](https://github.com/hibi89/REA_Web/actions/runs/43107577374) **모두 SUCCESS**. Push run `ubuntu-24.04`와 `windows-2025` **2/2 Job SUCCESS**, 각각 실제 `rea.mvp`를 사용하는 Lite `unittest` **19/19 PASS** 및 Lite+기존 Pro `tests/test_mvp.py`를 묶은 `pytest` **31 PASS, 3 subtests PASS, 경고 1**. 컴파일·파일/owner mapping·새 HTML 생성 검증. 이는 전체 D1–D31 Pro workflows 재실행이나 실제 고객 Windows HTML `file://` 검수 결과가 아님. 로컬 Linux Chromium 합성 DOM 다운로드→재열기·145행 페이지·스크립트 삽입 무해화 외부 요청0/JS 오류0. **REA_Web Lite 85% 내부 엔지니어링 잠정 / 판매 승인 NOT_GRANTED / RELEASE HOLD.**
+
 # REA_Web Lite — owner-approved standalone offline HTML (2026-11-12 KST)
 
 ## Confirmed scope

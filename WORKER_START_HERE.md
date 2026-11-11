@@ -1,3 +1,6 @@
+## 2026-11-12 KST — REA Lite precise current verified QA
+- Exact feature source `3ef4ab00f737644d4c1f4b2caa56bf17a3b6da3d`: Actions #43107505596 Ubuntu24.04 and Windows2025 2/2 SUCCESS; each isolated source 19 unittest PASS plus actual original `rea.mvp` and `tests/test_mvp.py` 31 pytest PASS, 3 subtests PASS/1 warning. Draft PR33 run #43107577374 SUCCESS. Real customer native Win file://, privacy/rights/sale not authorized. Source-only local HTML no Pro modifications, engineering 85 provisional, all RELEASE HOLD.
+
 ## 2026-11-12 KST — Lite feature branch new source (read before historical 10/31 instructions)
 - Lite was **not committed** in original October 31 ZIP; new independent source is now `feature/lite-offline-html-20261112`: `rea/lite_builder.py` + offline `rea/lite_assets/template.html` and tests. Uses Pro parser; Pro source untouched. Weighted engineering 85% provisional, all actual sale gates RELEASE HOLD. Local test Python19 + Chromium UI synthetic successful; real Pro CI/Win browser still pending. See `docs/60_LITE_OFFLINE_CUSTOMER_HTML_20261112.md` + latest HANDOFF.md, not the historical request to reattach temporary ZIP. Do not claim earlier ZIP bytes were recovered or Lite sale approved.
 
