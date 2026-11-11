@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>__REA_APP_NAME__ — REA Lite</title>
+<style>
+:root{font:16px/1.5 system-ui,-apple-system,"Malgun Gothic",sans-serif;color:#17283d;background:#f4f7fa}*{box-sizing:border-box}body{margin:0}body[data-theme="cafe"]{--brand:#b45309;--shade:#fef4e6}body[data-theme="inventory"]{--brand:#2563eb;--shade:#eff6ff}body[data-theme="office"]{--brand:#0d9488;--shade:#effcf9}header{padding:25px max(20px,calc((100vw - 1080px)/2));background:#122338;color:white}header h1{margin:0;font-size:1.7rem}header p{margin:4px 0;color:#c7d5e7;font-size:.9rem}main{max-width:1100px;margin:auto;padding:24px 20px 70px}section{background:white;border:1px solid #dce5ed;border-radius:14px;padding:20px;margin:0 0 20px;box-shadow:0 4px 24px #17334f09}h2{font-size:1.15rem;margin:0 0 15px}.hint{font-size:.85rem;color:#58687c}label{font-size:.88rem;font-weight:600}input,select,button{font:inherit}input:not([type=file]),select{padding:10px;border:1px solid #9badbb;border-radius:8px;min-width:0;width:100%;background:white}button{border:0;border-radius:9px;padding:10px 15px;cursor:pointer;background:var(--brand);color:white}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}button:disabled{opacity:.5;cursor:default}.controls{display:grid;grid-template-columns:2fr 1fr 1fr;gap:15px}.controls>div{min-width:0}.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{background:var(--shade);padding:14px;border-radius:10px}.stat strong{font-size:1.5rem;display:block}table{border-collapse:collapse;width:100%;table-layout:fixed}th,td{text-align:left;padding:11px 10px;border-bottom:1px solid #e4edf3;overflow-wrap:anywhere}th{color:#42516a;font-size:.9rem}td button{font-size:.84rem;padding:6px 12px}.scroll{overflow-x:auto}#detail{white-space:pre-wrap;overflow-wrap:anywhere}.status{min-height:1.5rem;color:#334861}.error{color:#a11b1b}.foot{font-size:.82rem;color:#55677a}@media(max-width:700px){.controls,.stats{grid-template-columns:1fr}section{padding:15px}table{font-size:.85rem}th,td{padding:8px 5px}}
+</style></head>
+<body data-theme="__REA_THEME__"><header><h1 id="app-title">__REA_APP_NAME__</h1><p>REA Lite · 오프라인 단일 HTML · 외부 서버 없음</p></header><main>
+<section><h2>찾아보기</h2><div class="controls"><div><label for="search">검색어</label><input id="search" placeholder="이름 또는 항목 ID 검색" autocomplete="off"></div><div><label for="category">분류</label><select id="category"><option value="">전체 분류</option></select></div><div><label for="sort">정렬</label><select id="sort"><option value="title">이름 오름차순</option><option value="title-desc">이름 내림차순</option><option value="id">ID 오름차순</option></select></div></div></section>
+<section><h2>결과 요약</h2><div id="stats" class="stats" role="status"></div></section>
+<section><h2>목록</h2><div class="scroll"><table><thead><tr><th>이름</th><th>분류</th><th>상세</th></tr></thead><tbody id="items"></tbody></table></div><p id="empty" class="hint" hidden>해당하는 항목이 없습니다.</p><div class="row"><button type="button" id="prev">이전</button><span id="pagination" aria-live="polite"></span><button type="button" id="next">다음</button></div></section>
+<section><h2>항목 상세</h2><div id="detail" class="hint">목록에서 항목을 선택하세요.</div></section>
+<section><h2>로컬 CSV 교체 및 새 HTML 저장</h2><p class="hint">파일은 브라우저 안에서만 읽습니다. 올바른 CSV는 현재 HTML의 id/title/category 열 또는 소유자 지정 원본 CSV 헤더와 일치해야 합니다. 변경 사항은 저장 버튼을 눌러 새 HTML을 받기 전까지 이 파일에 기록되지 않습니다. 이 HTML에는 데이터 내용이 평문으로 들어 있습니다.</p><div class="row"><label for="csv-file">CSV 파일 선택</label><input type="file" id="csv-file" accept=".csv,text/csv"><button type="button" id="export">현재 데이터로 새 HTML 저장</button></div><p id="message" class="status" aria-live="polite"></p></section>
+<p class="foot">판매·고객 원본 데이터 권리 확인 전 테스트 전용. 브라우저 데이터 보관 및 자동 동기화 없음.</p>
+</main>
+<script type="application/json" id="rea-dataset">__REA_DATA_JSON__</script>
+<script>
+(()=>{'use strict';
+const LIMIT_BYTES=10*1024*1024,MAX_ROWS=10000,MAX_COLUMNS=20,PAGE=60;
+const $=id=>document.getElementById(id), data=$('rea-dataset');
+function safeJson(value){return JSON.stringify(value).replace(/&/g,'\\u0026').replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/[\u2028\u2029]/g,ch=>ch==='\u2028'?'\\u2028':'\\u2029');}
+function bad(){throw Error('INVALID_CSV_DATA');}
+function checkRows(fields,rows){
+ if(!Array.isArray(fields)||fields.length<3||fields.length>MAX_COLUMNS||new Set(fields).size!==fields.length||!['id','title','category'].every(x=>fields.includes(x))||fields.some(x=>typeof x!=='string'||!x||x.length>2000||['__proto__','prototype','constructor'].includes(x)))bad();
+ if(!Array.isArray(rows)||rows.length<1||rows.length>MAX_ROWS)bad();
+ const ids=new Set();return rows.map(raw=>{
+ if(!raw||Array.isArray(raw)||typeof raw!=='object'||Object.keys(raw).length!==fields.length||fields.some(x=>!Object.prototype.hasOwnProperty.call(raw,x)))bad();
+ const row=Object.create(null);for(const f of fields){if(typeof raw[f]!=='string'||raw[f].length>2000||raw[f].includes('\0'))bad();row[f]=raw[f].trim();}
+ if(!row.id||!row.title||!row.category||ids.has(row.id))bad();ids.add(row.id);return row;
+ });
+}
+let initial;try{initial=JSON.parse(data.textContent);if(initial.contract!=='REA_LITE_V1'||initial.source_approval!=='OWNER_APPROVED_LOCAL_BUILD_ONLY')bad();
+ const head=initial.source_headers,map=initial.owner_mapping;
+ if(!Array.isArray(head)||head.length!==initial.fields.length||new Set(head).size!==head.length||head.some(x=>typeof x!=='string'||!x||x.length>2000||['__proto__','prototype','constructor'].includes(x))||
+    !map||Array.isArray(map)||typeof map!=='object'||Object.keys(map).length!==3||!['id','title','category'].every(x=>typeof map[x]==='string'&&head.includes(map[x]))||new Set(Object.values(map)).size!==3)bad();
+ const extras=head.filter(x=>!Object.values(map).includes(x));if(extras.some(x=>['id','title','category'].includes(x)))bad();
+ if(JSON.stringify(initial.fields)!==JSON.stringify(['id','title','category',...extras]))bad();
+ initial.rows=checkRows(initial.fields,initial.rows)}catch{document.querySelector('main').replaceChildren(document.createTextNode('데이터 검증 실패. 원본 파일을 확인하세요.'));return;}
+let rows=initial.rows, fields=initial.fields, page=0;
+const node=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e;};
+function display(){
+ const query=$('search').value.trim().toLocaleLowerCase('ko'),category=$('category').value,sort=$('sort').value;
+ const visible=rows.filter(r=>(!category||r.category===category)&&(!query||fields.some(f=>r[f].toLocaleLowerCase('ko').includes(query))));
+ visible.sort((a,b)=>sort==='id'?a.id.localeCompare(b.id,'ko'):sort==='title-desc'?b.title.localeCompare(a.title,'ko'):a.title.localeCompare(b.title,'ko'));
+ const pages=Math.max(1,Math.ceil(visible.length/PAGE));page=Math.max(0,Math.min(page,pages-1));
+ $('stats').replaceChildren();for(const [label,value] of [['전체 항목',rows.length],['검색 결과',visible.length],['전체 분류',new Set(rows.map(r=>r.category)).size]]){
+ const div=node('div','');div.className='stat';div.append(node('span',label),node('strong',String(value)));$('stats').append(div);
+ }
+ $('items').replaceChildren();for(const row of visible.slice(page*PAGE,(page+1)*PAGE)){
+ const tr=document.createElement('tr');tr.append(node('td',row.title),node('td',row.category));const td=document.createElement('td');const button=node('button','보기');button.type='button';button.addEventListener('click',()=>{$('detail').replaceChildren();for(const f of fields){$('detail').append(node('div',f+' : '+row[f]));}});td.append(button);tr.append(td);$('items').append(tr);
+ }
+ $('empty').hidden=visible.length!==0;$('pagination').textContent=page+1+' / '+pages+' 페이지';$('prev').disabled=page===0;$('next').disabled=page>=pages-1;
+}
+function categories(){let current=$('category').value;const select=$('category');select.replaceChildren();const all=document.createElement('option');all.value='';all.textContent='전체 분류';select.append(all);for(const name of [...new Set(rows.map(r=>r.category))].sort((a,b)=>a.localeCompare(b,'ko'))){const item=document.createElement('option');item.value=name;item.textContent=name;select.append(item);}select.value=[...select.options].some(x=>x.value===current)?current:'';}
+function parseCSV(text,expected,sourceHeaders,ownerMapping){
+ if(typeof text!=='string'||text.length===0||text.length>LIMIT_BYTES)bad();text=text.replace(/^\uFEFF/,'');
+ let cells=[],records=[],cell='',quoted=false,closed=false,start=true;
+ const addCell=()=>{if(cell.length>2000)bad();cells.push(cell);cell='';closed=false;start=true;if(cells.length>MAX_COLUMNS)bad();};
+ const addRow=()=>{addCell();records.push(cells);cells=[];if(records.length>MAX_ROWS+1)bad();};
+ for(let i=0;i<text.length;i++){
+ const ch=text[i];
+ if(quoted){if(ch==='"'){if(text[i+1]==='"'){cell+='"';i++;}else{quoted=false;closed=true;}}else{cell+=ch;if(cell.length>2000)bad();}continue;}
+ if(ch==='"'){if(!start||closed)bad();quoted=true;start=false;continue;}
+ if(ch===','){addCell();continue;}
+ if(ch==='\r'||ch==='\n'){addRow();if(ch==='\r'&&text[i+1]==='\n')i++;continue;}
+ if(closed)bad();cell+=ch;start=false;if(cell.length>2000)bad();
+ }
+ if(quoted)bad();if(cell!==''||cells.length||closed||!start)addRow();
+ if(records.length<2)bad();const headers=records.shift().map(x=>x.trim());
+ if(headers.length!==expected.length||new Set(headers).size!==headers.length)bad();
+ const canonical=headers.every(x=>expected.includes(x)),fromSource=!canonical&&headers.every(x=>sourceHeaders.includes(x));if(!canonical&&!fromSource)bad();
+ const rows=records.map(values=>{if(values.length!==headers.length)bad();const r=Object.create(null);for(let i=0;i<headers.length;i++)r[headers[i]]=values[i];
+ if(!fromSource)return r;const converted=Object.create(null);for(const key of ['id','title','category'])converted[key]=r[ownerMapping[key]];for(const x of sourceHeaders){if(!Object.values(ownerMapping).includes(x))converted[x]=r[x];}return converted;});
+ return checkRows(expected,rows);
+}
+$('search').addEventListener('input',()=>{page=0;display()});$('category').addEventListener('change',()=>{page=0;display()});$('sort').addEventListener('change',()=>{page=0;display()});$('prev').addEventListener('click',()=>{page--;display()});$('next').addEventListener('click',()=>{page++;display()});
+$('csv-file').addEventListener('change',async()=>{const f=$('csv-file').files&&$('csv-file').files[0];if(!f)return;try{if(f.size<1||f.size>LIMIT_BYTES)bad();const source=new TextDecoder('utf-8',{fatal:true}).decode(await f.arrayBuffer());const proposal=parseCSV(source,fields,initial.source_headers,initial.owner_mapping);rows=proposal;page=0;$('detail').textContent='목록에서 항목을 선택하세요.';categories();display();$('message').textContent='CSV 데이터 '+rows.length+'건 검증 완료. 다운로드 전까지 원본 HTML은 변경되지 않습니다.';$('message').className='status';}catch{$('message').textContent='CSV 형식/헤더/행 검증 실패. 이전 데이터는 유지됩니다.';$('message').className='status error';}finally{$('csv-file').value='';}});
+$('export').addEventListener('click',()=>{try{const copy=document.documentElement.cloneNode(true);copy.querySelector('#rea-dataset').textContent=safeJson({...initial,rows});for(const sel of ['#items','#stats','#detail'])copy.querySelector(sel).replaceChildren();copy.querySelector('#message').textContent='';copy.querySelector('#search').value='';copy.querySelector('#search').setAttribute('value','');copy.querySelector('#category').value='';copy.querySelector('#sort').value='title';const html='<!doctype html>\n'+copy.outerHTML;const blob=new Blob([html],{type:'text/html;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='REA_Lite_Updated.html';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('message').textContent='새 HTML을 다운로드했습니다. 다운로드 폴더에서 파일을 확인하세요.';}catch{$('message').textContent='로컬 HTML 내보내기 실패';$('message').className='status error';}});
+categories();display();
+window.REA_LITE_TEST=Object.freeze({parseCSV,checkRows,snapshot:()=>({rows:rows.length,fields:[...fields]})});
+})();
+</script></body></html>
