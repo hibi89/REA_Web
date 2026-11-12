@@ -1,3 +1,10 @@
+## 2026-11-12 KST — REA Lite P92 verified native CSV to exported HTML customer flow
+- Feature branch feature/lite-owner-delivery-p95-20261112, exact tested functional SHA c83934efd374026e2e07b7bc5174d298bcc8a2cb; https://github.com/hibi89/REA_Web/actions/runs/43181217685 Windows+Ubuntu 2/2 SUCCESS.
+- Each OS: Lite19 + delivery16 unittest PASS, pytest Pro/Lite/delivery47 PASS/6 subtests/1 warning. Real browser file:// original 3 rows and follow-up bad CSV HOLD + owner column mapping + HTML injection inert + product Blob export + ZIP verify + reopened file:// PASS.
+- Tested synthetic only, no real customer download/rights/sale acceptance. Linux headless download-navigation hang was isolated by intercepting only test click, verifying exact HTML Blob. Earlier stale-message test race fixed.
+- Engineering 90+2=92% provisional, P95 NOT ACHIEVED, RELEASE HOLD. Full Pro D1-D31/new SHA and physical buyer Win10/11/3 pilot and legal+license+seller approval missing. No source customer data/other products/production changed.
+- Handoff details docs/61_LITE_P95_OWNER_DELIVERY_GATES_20261112.md.
+
 ## 2026-11-12 KST — Lite independent customer delivery P95 target: verified 90%, release HOLD
 - Product feature/lite-owner-delivery-p95-20261112, exact code/CI SHA 3eb56c3515d5b9ae3a6a0d2a8f58a85ffdf8ebdc. New unsigned create-only customer ZIP/manifest/offline verifier, 3 synthetic verticals and real hosted Windows/Linux Chrome file URL rendering. Original Lite feature @f842d288 and Pro/main untouched.
 - [Windows+Ubuntu CI #43178991549](https://github.com/hibi89/REA_Web/actions/runs/43178991549) **2/2 SUCCESS**: each Lite 19 + delivery 16 unit PASS; combined Pro/Lite/delivery pytest 47 PASS/6 subtests/1 WARN; packaged file:// real browser DOM 3 rows PASS. Full original D1–D31, physical buyer Windows and customer/legal approvals NOT_RUN.

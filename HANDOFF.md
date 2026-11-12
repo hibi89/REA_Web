@@ -1,3 +1,17 @@
+## 2026-11-12 KST — REA_Web Lite P92 follow-up (10 handoff items)
+1. Goal: owner-independent P95 development with no external customer data, payment or release.
+2. Work: synthetic real Chrome/Edge file:// CSV invalid-HOLD, owner headers, inert HTML injection, generated HTML Blob export, independent ZIP verify and re-open. Only new test code/CI changed, original Lite/Pro unchanged.
+3. Tests: exact source SHA c83934efd374026e2e07b7bc5174d298bcc8a2cb, Actions 43181217685 Ubuntu+Windows 2/2 SUCCESS: each Lite19+delivery16 unittest and 47 combined pytest/6 subtests/1 warning, original 3-row native file:// and new import/export/reopen PASS. Full Pro D1-D31 NOT_RUN.
+4. Status: provisional REA_Web 92%, P95 NOT ACHIEVED (3pp missing), all sales RELEASE HOLD.
+5. Error/pivot: stale CSV UI message made new test wrongly conclude before async input; fixed by clearing message; Linux headless download navigation timed out, replaced test-only anchor click with exact Blob capture and real new HTML file reopen. Real buyer download not proven, avoid repeating blind retries.
+6. Repo: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112, tested c83934e; original Lite feature/lite-offline-html-20261112 f842d288 untouched, main/Pro untouched.
+7. Env/production: GitHub hosted Windows2025+Ubuntu24.04 browsers PASS, real buyer Win10/11 NOT_RUN, Vercel N/A.
+8. Originals/backup/security: original/customer files, privacy, paid APIs, source permissions, production unchanged. SHA-only ZIP check is unsigned. Existing branch tips permit rollback.
+9. Next: exact-source whole Pro D1-D31 regression, independent physical Windows manual import/export/download/reopen, 3 customer acceptance runs, third-party rights/NOTICE/privacy/sale terms owner approval before P95/GO.
+10. Date 2026-11-12 KST; documentation tip differs from exact tested source SHA.
+
+---
+
 ## 2026-11-12 KST — REA_Web Lite P95-target continuation (10-point handoff)
 1. Goal: owner-independent progress from 85 to 95 without disturbing original Lite, Pro data, deployment or legal approval.
 2. Done: independent SHA-pinned no-overwrite Lite delivery ZIP, three synthetic verticals, byte/tamper/ZIP-slip defenses, native packed HTML file:// browser check. Chose optional external companion over risky Pro runtime edit; see docs/61_LITE_P95_OWNER_DELIVERY_GATES_20261112.md.

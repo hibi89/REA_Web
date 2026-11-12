@@ -1,3 +1,12 @@
+## 2026-11-12 KST P92 follow-up (95 target remains open)
+- Actual code/CI SHA c83934efd374026e2e07b7bc5174d298bcc8a2cb; Actions https://github.com/hibi89/REA_Web/actions/runs/43181217685: Windows2025 + Ubuntu24.04 2/2 SUCCESS. Each OS Lite19+delivery16 unittest PASS, combined original Pro/Lite/delivery pytest47 PASS/6 subtests/1 warning, packaged original file URL PASS.
+- New real browser end-to-end via tests/lite_file_customer_flow.py: search/category, reject malformed CSV and keep existing rows, import approved original headers, malicious markup remains inert, product-generated HTML Blob exported, new ZIP verified, saved HTML reopened through file:// with correct rows and CSP. No original customer data or server.
+- Test issue1: prior successful CSV message was incorrectly reused by the test harness; reset message before new file event. Test issue2: Linux Chrome headless full download navigation timed out; test harness suppresses its own anchor download click and independently captures the exact app-generated Blob for verification and file reopening. The buyer's physical click-to-download remains NOT_VERIFIED, not counted as a real customer test.
+- **Score P92 provisional** (P90 +2 for native end-to-end data import/export/reopen and invalid-data preservation), **P95 NOT ACHIEVED**, 3 percentage points left. Full original D1-D31 at new code SHA, physical buyer Windows10/11, 3 real customer pilots, privacy/NOTICE/third-party rights/pricing/refund/signing/seller GO still NOT_VERIFIED. RELEASE HOLD.
+- Tested SHA is code; later documentation commit does not gain a new test claim. No Production/Vercel, paid API, permission or original source change.
+
+---
+
 # REA_Web Lite — P95 Target / Owner Delivery Acceptance (2026-11-12 KST)
 
 ## 1. Goal and design
