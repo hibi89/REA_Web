@@ -1,3 +1,10 @@
+## [LATEST CI VERIFIED — 2026-11-13 KST]
+- 소스/워크플로 정확 테스트 SHA: **`04541195da42b702925cc62e7a39e16962cbfa31`**.
+- [GitHub Actions #43295475001](https://github.com/hibi89/REA_Web/actions/runs/43295475001): **Windows2025 94 PASS / 0 FAIL / 1 WARN**, **Ubuntu24.04 92 PASS / 2 SKIP (Windows Chrome/Edge 전용) / 0 FAIL / 1 WARN**. **2/2 SUCCESS**, 실제 Chromium 신규 컴포넌트 트리 검색→필터→상세·사용자 로컬 GUI Chrome/Edge 회귀 PASS.
+- 핵심 수정: 독립된 P85 합성 행동 oracle로 `Astra observation + subject`가 같이 바뀐 값의 위조를 차단; Windows CSV 원본 바이트 snapshot 비교로 CRLF/LF 차이를 정확 처리. P95 `decision_record.packet_sha256`를 실제 Astra/P85(+선택 Fable Record) 검토패킷에 바인딩. `rea/website_ui_cli.py` inspect/build 인수검사 및 compile 포함.
+- **정본 최종상품 85% 엔지니어링 잠정 유지, P95 사용자 목표 미달·[작업중] 유지, RELEASE HOLD.** 이유: 실제 허가된 고객 웹사이트의 관찰/복합 UI·업무 흐름 재구축과 사용권/Windows10·11 인수는 이 GitHub 합성 검증에 포함되지 않는다. 새 기능은 허가된 로컬 합성 구조 3종의 안전한 독립 UI 컴포넌트 재구성으로만 검증했다.
+- 개발자 신원: GitHub 연결된 Author·Committer 확인 대상. 문서 커밋 SHA는 위 실행 검증 SHA와 구별.
+
 # REA_Web — 증거 바인딩 기반 독립 UI 구조 생성 P95 보강 (2026-11-13 KST)
 
 ## 정체성 / 판정 기준
