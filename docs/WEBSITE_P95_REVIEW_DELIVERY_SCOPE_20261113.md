@@ -1,3 +1,12 @@
+## [LATEST 2026-11-13 KST] P95 보조 기능 GitHub 정확 실행 검증 / 정본 95% 아직 미충족
+- **실제 소스+CI 정확 SHA `467ec1cf875db75623c41860659a6faec64bb834`**, GitHub Author/Committer `hibi89`. [GitHub Actions #43278235317](https://github.com/hibi89/REA_Web/actions/runs/43278235317): **Windows2025 70 PASS/0 FAIL/1 WARN**, 실제 Google Chrome/Edge 검토 UI 각 1회 POST 및 파일 생성 성공, **Ubuntu24.04 68 PASS/2 SKIP(Windows전용)/0 FAIL/1 WARN**, **2/2 SUCCESS**.
+- 기존 P50/P70/P85(52PASS) + P95 Fable Record 스키마 합성 input/검토 화면/토큰·CSP/의견 기록/ZIP 원자적 create-only + 독립 SHA 검증 + Windows Chrome·Edge 신규 검사 **전체 회귀**. CLI `python -m rea.website_p95 review|package|verify|record-check`는 신규 추가했으나 실제 고객 단말·일반 사용자 설치 패키지/E2E는 별도 미검증.
+- 실패·교정: (1) 최초 SHA `a63fe781` GitHub #43276368490 Ubuntu 67PASS/1FAIL — review record의 `schema_version` 덮어씀; 필드 순서 정정. (2) SHA `24c925eb` #43276696031 Ubuntu 67PASS/1FAIL — 생성 앱 실행 `__pycache__/.pyc`를 ZIP 파일명 검증 대상으로 처리한 문제; 실행 캐시를 납품 대상에서 안전 제외. (3) SHA `2d69e73c` #43277696684 Ubuntu 68PASS/2SKIP, Windows 68PASS/2FAIL — Playwright 문자열 `wait_for_function`이 앱의 강력한 CSP(`unsafe-eval` 금지)에 차단됨; **CSP를 완화하지 않고** `expect(locator).to_contain_text`로 테스트 검증방법만 교체. 마지막 SHA `467ec1c`에서 Windows70+Ubuntu68/2SKIP 모두 PASS.
+- **최종설계 전체 완성률: 85% 잠정 유지, 사용자 목표 P95 미달 / [작업중] 유지.** P95 보조 GUI·상태·납품 검증은 통과했지만 실제 Fable 5.1 사람이 조작하는 headed Record 사용기록→Astra 실 사이트 구조/기능 명세→인간 승인→그 명세를 반영한 **독립 웹사이트 자체의 기능·디자인 구현**이 아직 미검증/일부 미구현. 고객이 제공·권리를 확인한 실제 참고 사이트, Windows10/11 실제 고객 환경, 상용 라이선스/재배포·견적 가격 승인도 없음. **RELEASE HOLD**.
+- 현 제품의 생성기는 여전히 **명시 승인된 고객 합성 CSV**를 기반으로 카탈로그형 FastAPI/SQLite 앱을 만드는 제한 경로다. 원본 사이트의 UI/업무 기능을 자동으로 동일하게 재구축하는 엔진이라고 홍보하지 않는다. 테스트용 `APPROVE_SYNTHETIC_ONLY`은 실제 사용자·권리 허가가 아니다.
+- 우선 다음 단계: **원본 Fable Record 조작 기록 및 실제 관찰 사이트 구조를 신규 웹앱 UI 명세/생성기로 반영**, 오프라인 owner 검토 화면에서 사용자 행위·UI 컴포넌트 매핑(사람 승인) → 명세 기반 사이트 UI 생성과 검증. 별도로 승인받기 전 공공 URL·고객 비밀 접근·유료 API·원본/상용 권한 변경 금지.
+- 원본 Pro/Fable/Astra/Lite/DATA2WEB 브랜치 변경 없음. 위 GitHub CI 성공은 상용·Production 가동 성공이 아니며 실사용 시연 링크 미존재. 정확 검증 SHA 이후 문서 HEAD는 별도.
+
 # REA_Web P95 목표 — Owner Review·Fable Record 반입·납품 검수 범위
 **2026-11-13 KST / 기존 P85 exact CI SHA: `1c3390fa3da933c5d0513196f0dcfc97b18b5e14` / P95 검증 진행**
 
