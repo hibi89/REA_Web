@@ -1,3 +1,8 @@
+## 2026-11-12 KST — REA_Web 사이트 분석/재구축 복원 전용 브랜치
+- 사용자 최신 결정: **REA_Web 원래 웹사이트 분석 엔진 복원**, 기존 Lite 데이터→HTML 별도 `data2web_studio`. 본 브랜치 `feature/website-analysis-rebuild`은 Pro source SHA `97b6e5cab7b8ffb4e1ee7f5e593021f4dac2598d`에서 시작하며 기존 Pro 기능 코드 변경 없음.
+- 요구사항/최종설계 `REQUIREMENTS.md`, `docs/ORIGINAL_FINAL_DESIGN.md`; 다음 작업 `docs/WEBSITE_ANALYSIS_BRANCH_START_20261112.md`.
+- **신규 사이트 분석 E2E·실서비스/실고객·Windows 테스트 NOT RUN**, 최종상품률 UNASSESSED / RELEASE HOLD. 과거 Lite95는 원래 REA_WEB 진척률이 아님.
+
 ## 2026-10-31 04:24 KST — REA_WEB Lite new technical candidate checkpoint
 
 - Confirmed Lite/Pro separation: existing Pro FastAPI/SQLite unchanged; Lite separate single offline HTML with three themes (cafe/inventory/office), user CSV choose/validate/update and explicit export of updated HTML; no LAN QR, remote API, automatic persistence, EXE, login or hosting.
