@@ -1,3 +1,5 @@
+> **2026-11-13 KST P70 최신 수용 상태(설계 본문은 원형 보존):** 원래 REA_Web 로컬 합성 HTML 사이트 3종의 실제 Chromium 검색/필터/상세 관찰→실 Astra P4 observed 증거/보류→별도 승인 합성 CSV 기반 기존 Pro 웹앱 생성→동작 결과 비교를 [정확 소스 SHA bfac1116 CI #43266467950](https://github.com/hibi89/REA_Web/actions/runs/43266467950)로 Windows/Linux 각 41 PASS, 2/2 SUCCESS 확인. 단계표 50→70 수용을 **엔지니어링 70% 잠정**으로 판정. Fable은 P50의 실제 정적 스캔, 브라우저 행동은 별도 Playwright observer, 자동 디자인 복제/실 외부 사이트·고객/저작권·상용 검증은 불가·미검증, RELEASE HOLD. 이전 아래 UNASSESSED/NOT RUN은 2026-11-12 기준 역사적 기록. [상세 검증](https://github.com/hibi89/REA_Web/blob/feature/website-analysis-rebuild/docs/WEBSITE_P70_BROWSER_ACCEPTANCE_20261113.md).
+
 # REA_Web — 원래 웹서비스 분석·재구축 엔진 최종설계 v1.0
 **2026-11-12 KST 사용자 재확정 정본 / 판매·배포 RELEASE HOLD**
 
