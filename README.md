@@ -1,3 +1,5 @@
+> **2026-11-12 KST — 사용자 재확정: REA_Web 원래 제품 복원.** 이 저장소의 최종 목표는 **권한이 있는 웹사이트 관찰/분석 → Fable 5.1 → Astra 증거·명세 → 소유자 승인 → 독립 웹앱 재구축·검증**이다. 기존 CSV/JSON → 오프라인 HTML Lite 상품은 신규 비공개 [DATA2WEB Studio](https://github.com/hibi89/data2web_studio)로 독립 개발한다. 이 저장소의 기존 Pro 원형 코드·Fable/Astra import 브랜치·PR는 보존. **Lite 95%는 본래 웹 분석 최종완성률 아님; 원래 REA_Web 최종상품률 미산정(UNASSESSED), 실사이트 종단 E2E 미검증, RELEASE HOLD.** [최종 설계](docs/ORIGINAL_FINAL_DESIGN.md) · [요구사항](REQUIREMENTS.md) · 신규 안전 개발 브랜치 `feature/website-analysis-rebuild`.
+
 # REA_Web — 웹서비스 분석·재구축 자동화 엔진
 
 > 2026-10-26 · **MVP 기능 브랜치 D17까지 CI 검증** (Linux·Windows 각 290 tests, 11 Chromium 합성 사례 + 1/2파일 실제 Tk GUI) · main 문서 기준점, PR 전부 미병합, 상용 검증 미완성
