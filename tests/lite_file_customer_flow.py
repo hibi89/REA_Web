@@ -72,6 +72,13 @@ HARNESS = r"""
     const originalCreate=URL.createObjectURL.bind(URL);
     let downloaded=null;
     URL.createObjectURL=blob=>{downloaded=blob;return originalCreate(blob)};
+    // Chrome Linux --dump-dom can hang when headless download navigation is pending.
+    // Intercept only the synthetic test download click; keep real product export Blob.
+    const anchorClick=HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click=function(){
+      if(this.download==='REA_Lite_Updated.html') return;
+      return anchorClick.call(this);
+    };
     document.getElementById('export').click();
     check(downloaded!==null,'BROWSER_EXPORT_NOT_CREATED');
     const bytes=new Uint8Array(await downloaded.arrayBuffer());
