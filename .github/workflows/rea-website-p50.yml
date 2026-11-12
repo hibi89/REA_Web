@@ -1,12 +1,14 @@
-name: REA website P50 P70 synthetic real Chromium and Astra acceptance
+name: REA website P50 P70 P85 frozen Fable Astra real Chromium acceptance
 on:
   push:
     branches: [feature/website-analysis-rebuild]
     paths:
       - "rea/website_rebuild.py"
       - "rea/website_p70.py"
+      - "rea/website_p85.py"
       - "tests/test_website_rebuild_p50.py"
       - "tests/test_website_p70.py"
+      - "tests/test_website_p85.py"
       - ".github/workflows/rea-website-p50.yml"
       - "rea/orchestrator.py"
       - "rea/adapter/**"
@@ -20,7 +22,7 @@ jobs:
       matrix:
         os: [ubuntu-24.04, windows-2025]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
@@ -43,13 +45,13 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install synthetic test runtime only, no OpenAI API
-        run: python -m pip install "fastapi>=0.110,<1" "httpx>=0.27,<1" "uvicorn>=0.27,<1" "pydantic>=2.6,<3" "pytest>=8,<10" "requests>=2.31,<3" "beautifulsoup4>=4.12,<5" "playwright>=1.50,<2"
+        run: python -m pip install "fastapi>=0.110,<1" "httpx>=0.27,<1" "uvicorn>=0.27,<1" "pydantic>=2.6,<3" "pytest>=8,<10" "requests>=2.31,<3" "beautifulsoup4>=4.12,<5" "playwright>=1.50,<2" "pillow>=10,<13"
       - name: Install real Chromium browser runtime
         run: python -m playwright install chromium
       - name: Compile original Pro and website integration
-        run: python -m compileall -q rea/website_rebuild.py rea/website_p70.py rea/orchestrator.py rea/adapter
+        run: python -m compileall -q rea/website_rebuild.py rea/website_p70.py rea/website_p85.py rea/orchestrator.py rea/adapter
       - name: Real loopback Fable scan, Astra models, generated Pro app E2E
         env:
           PYTHONPATH: ".vendor/astra/engines/astra_p4"
           PYTHONIOENCODING: utf-8
-        run: python -m pytest -q tests/test_website_rebuild_p50.py tests/test_website_p70.py tests/test_orchestrator.py
+        run: python -m pytest -q tests/test_website_rebuild_p50.py tests/test_website_p70.py tests/test_website_p85.py tests/test_orchestrator.py
