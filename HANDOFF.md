@@ -1,3 +1,15 @@
+## [LATEST 2026-11-13 KST] 원래 REA_Web P85 검증 인수인계 10항
+1. 목표·기술: 원래 사이트 분석→Fable5.1 관찰→Astra P4 evidence/functional spec→명시적 인간 검토→독립 Pro 웹앱 재구축; DATA2WEB CSV/XLSX 상품 분리. 사용자 현재 85% 단계 수용.
+2. 완료·결정: 기존 P70에 `rea/website_p85.py` 실 Chromium 합성 3업무 맥락 × 데스크톱/모바일 × 연속 검색/필터/상세 3 action 실측, 원본/생성앱 비교·RGB 화면차이 Pillow·Astra observed/pending 6 actions+8 screenshot evidence/사이트·소유자 digest 검증·외부 URL/소스변조/무덮어쓰기 보안 실패 닫힘. 원본 디자인 자동 복제 기능이라고 주장하지 않음.
+3. 테스트 명령·성공/실패: 정확 검증 SHA `1c3390fa3da933c5d0513196f0dcfc97b18b5e14`, `python -m pytest -q tests/test_website_rebuild_p50.py tests/test_website_p70.py tests/test_website_p85.py tests/test_orchestrator.py`. [GitHub Actions #43273324679](https://github.com/hibi89/REA_Web/actions/runs/43273324679) Win2025 52PASS/0FAIL/1WARN & Ubuntu24.04 52PASS/0FAIL/1WARN, **2/2 SUCCESS**. 브라우저는 Playwright 실제 Chromium, Fable static 원본 별도 호출.
+4. 완료/진행/차단: 정본 70→85 합성 다중상태·반응형·보안/시각차이 보고 게이트 충족, **엔지니어링 85% 잠정**. 원래 임의 외부 사이트의 디자인·업무 재구축·실 고객·권리·실 Win10/11·상용판매·Production 미완. **RELEASE HOLD**.
+5. 오류 근거/원인/시도/재시도 금지·대안: 첫 P85 CI #43273113196 Ubuntu 49PASS/3FAIL (Windows도 실패), `Path` 객체를 `json.dumps`에 넣는 잘못된 변수 `review`. 1줄만 `reviewed`로 변경, 정확 SHA 1c3390f에서 2/2 SUCCESS. 불필요한 재시도 금지. 참고 사이트 원본 코드/이미지 복제 요구는 권리·정합성 위험, 승인 spec 기반 신규 구현 원칙 유지.
+6. Repo/branch/SHA/paths: `hibi89/REA_Web@feature/website-analysis-rebuild` tested SHA `1c3390f`; `rea/website_p85.py`, `tests/test_website_p85.py`, `.github/workflows/rea-website-p50.yml`, `docs/WEBSITE_P85_RESPONSIVE_ACCEPTANCE_20261113.md`. P70 baseline `bfac1116`. 원본 Pro `97b6e5`, Fable `7e6f273b`, Astra P4 `f044b66e`.
+7. Production/환경: Python3.11 Playwright Chromium/Pillow/FastAPI/SQLite/uvicorn/pytest/httpx, GitHub Win2025/Ubuntu24.04. 실 서비스/배포·Vercel 미적용; 실제 PC Windows10/11 미검증.
+8. 원본·백업·인증 보존: Pro/Fable/Astra/Lite/DATA2WEB 원본 SHA 및 타 브랜치 보존. 실제 고객 파일·토큰·계정/권한·유료 API·Production 미수정; synthetic 승인 토큰은 현실 고객 허가 아님. Git 이력으로 rollback.
+9. 다음 우선/절차/완료 기준/승인: 사용자 차기 지시 시 원 Fable --record 실제 계약 연계·인가된 사용자 review GUI·공식 사용권·대상 사이트의 시각/상호작용/반응형 spec→신규 UI 구현, Win10/11 Chrome/Edge 검증. 외부 사이트/고객 자료 전송·계정·출고·판매는 별도 승인 필요. P85 달성 이후 [작업중] 해제, P95 자동 할당 금지.
+10. 갱신/검증시점: 2026-11-13 KST. CI 검증 SHA `1c3390fa3da933c5d0513196f0dcfc97b18b5e14`, 후속 docs HEAD는 별도 확인. [검증 범위/보류](docs/WEBSITE_P85_RESPONSIVE_ACCEPTANCE_20261113.md).
+
 ## [LATEST 2026-11-13 KST] REA_Web P70 원형 웹 분석·재구축 인수인계 10항
 1. 목표/기술: 원래 웹사이트 Fable5.1 정적 관찰→Astra P4 증거·명세→인간 검토→독립 Pro FastAPI/SQLite 웹앱. 합성 로컬 3사이트 실 Chromium 행동→데이터기반 독립 앱 결과 비교를 현재 P70 수용 조건으로 구현.
 2. 완료: 새 rea/website_p70.py 관찰·Astra 정식 Bundle/derive_spec·스크린샷/해시·review digest·소유자 합성 승인, 3사이트 UI search/filter/detail 관찰, 실제 Pro 앱 browser parity, create-only 출력·원본 SHA 보호. 구 REA_Web Lite는 DATA2WEB 담당.
