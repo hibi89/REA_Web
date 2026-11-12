@@ -1,3 +1,5 @@
+> **2026-11-12 KST scope clarification:** [actual Lite ZIP contents and redistribution precheck](63_LITE_SHIPPED_COMPONENTS_RIGHTS_PRECHECK_20261112.md) records ZIP exactly 3 members; Pro runtime wheel inventory is not a Lite customer bundle inventory. No automatic sale clearance; rights/privacy/human acceptance still HOLD.
+
 # REA_Web Lite — 95% 기술완성 마감 / 실제 판매 전 인수 체크리스트
 
 **기준:** 2026-11-12 KST · REA_Web `feature/lite-owner-delivery-p95-20261112` · 확인한 기능·CI SHA `cb7df1f4d1ce517c5940570af5bb1085410de268`

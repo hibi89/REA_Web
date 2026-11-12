@@ -1,3 +1,6 @@
+## [LATEST 2026-11-12 KST] REA Lite P95 external rights-gate scope now bounded
+- docs/63_LITE_SHIPPED_COMPONENTS_RIGHTS_PRECHECK_20261112.md: customer ZIP exactly 3 members, no Pro wheel/server vendor sources in Lite archive, inline client source/data plaintext. Historical 14-package dependency audit belongs to Pro, not Lite customer ZIP. **Legal/data rights NOT_GRANTED**, nondeveloper Win10/11 3 buyer pilots NOT_RUN. Technical 95% provisional unchanged, RELEASE HOLD, no more synthetic test scoring.
+
 ## [LATEST 2026-11-12 KST] REA Lite technical P95 closeout / next work requires external approval
 - Completed independently: docs/62_LITE_FINAL_SELLER_ACCEPTANCE_20261112.md seller runbook and owner acceptance/release gate; no new code modifications. Previously [CI #43186105405](https://github.com/hibi89/REA_Web/actions/runs/43186105405) exact source cb7df1f4 Windows 688 PASS/19 SKIP and Ubuntu 677 PASS/20 SKIP, three synthetic real browser downloads each. **95% provisional engineering DONE**, **sales/production RELEASE HOLD**. Next actual nondeveloper Windows10/11 3 pilots and 6 human/legal sign-offs; do not continue scoring via repeated synthetic-only tests.
 

@@ -1,3 +1,15 @@
+## 2026-11-12 KST — Lite P95 incremental rights-scope precheck (10 fields)
+1. Goal: reduce owner release-gate ambiguity without buyer data or legal self-approval.
+2. Done/decision: read exact Lite package allowlist, builder/template, existing Pro license audits; published Lite-specific shipped-component inventory in docs/63. No product code change.
+3. Tests: **no new tests run**; prior exact code SHA cb7df1f4d1ce517c5940570af5bb1085410de268; [Actions #43186105405](https://github.com/hibi89/REA_Web/actions/runs/43186105405) Windows688 PASS/19 SKIP, Ubuntu677 PASS/20 SKIP, both 0 FAIL. Static source review only this unit.
+4. Status: engineering 95% provisional unchanged, P100 not reached, seller/production RELEASE HOLD. Release rights and actual buyer acceptance remain human controlled.
+5. Issues: no technical blocker altered. Rights unverified; no LICENSE/NOTICE root found. Do not treat older Pro 14-package audit as bundled Lite wheels or a license grant.
+6. Repo: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112; head updated docs-only after SHA cb7df1f4; PR #34 Draft/OPEN unmerged.
+7. Runtime: Lite customer HTML browser local file://; Vercel/Production N/A, hosted CI only.
+8. Security/backups: customer values in HTML plaintext; ZIP only catalog.html/manifest.json/README_KO.txt, SHA unsigned. No customer data, original branches, deployments, tokens, permissions changed.
+9. Next: actual rights/NOTICE and owner privacy approval, nondeveloper Win10/11 3 real pilots, seller scope/terms, then separate sale GO; existing scripts.rea_sale_gate.py records human evidence.
+10. Updated 2026-11-12 KST; this doc commit not covered by new CI and did not modify code.
+
 ## 2026-11-12 KST — P95 final technical closeout handoff (10 items)
 1. Goal: finish owner-independent REA Lite 95% technical milestone without customer exposure or unapproved release.
 2. Done/rationale: no risky code changes after CI; prepared docs/62_LITE_FINAL_SELLER_ACCEPTANCE_20261112.md with concrete seller owner-kit run, independent ZIP verification, three-sector physical customer checklist and six human/legal signoffs.
