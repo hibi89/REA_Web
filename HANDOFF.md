@@ -1,3 +1,15 @@
+## [LATEST 2026-11-13 KST] REA_Web P70 원형 웹 분석·재구축 인수인계 10항
+1. 목표/기술: 원래 웹사이트 Fable5.1 정적 관찰→Astra P4 증거·명세→인간 검토→독립 Pro FastAPI/SQLite 웹앱. 합성 로컬 3사이트 실 Chromium 행동→데이터기반 독립 앱 결과 비교를 현재 P70 수용 조건으로 구현.
+2. 완료: 새 rea/website_p70.py 관찰·Astra 정식 Bundle/derive_spec·스크린샷/해시·review digest·소유자 합성 승인, 3사이트 UI search/filter/detail 관찰, 실제 Pro 앱 browser parity, create-only 출력·원본 SHA 보호. 구 REA_Web Lite는 DATA2WEB 담당.
+3. 테스트: exact GitHub SHA bfac1116ac7a20c7162f42a59e51277d402b24d9; python -m pytest -q tests/test_website_rebuild_p50.py tests/test_website_p70.py tests/test_orchestrator.py; GitHub Actions #43266467950 (https://github.com/hibi89/REA_Web/actions/runs/43266467950) Ubuntu24.04 41 PASS/0 FAIL/1 WARN, Windows2025 41 PASS/0 FAIL/1 WARN, 2/2 SUCCESS. P50 기존31 + P70 신규10.
+4. 상태: 사용자 현 P70 로컬 3사이트 합성 게이트 달성, 엔지니어링 70% 잠정. 실 외부 사이트·브랜드/디자인 복제·원 Fable --record·인간 실제 권한 승인·고객 Win10/11/라이선스/상용 미검증, RELEASE HOLD.
+5. 오류/원인: 신규 P70 정확 SHA CI 첫 실행 2/2 SUCCESS; 과거 P50 Windows PYTHONPATH 실패 후 수정 이력 보존. 브라우저 동작은 별도 Playwright observer이고 Fable은 기존 정적 GET, 두 실행을 동일시하지 않는다.
+6. 저장소/브랜치/SHA: hibi89/REA_Web@feature/website-analysis-rebuild, code rea/website_p70.py (db321928...), tests/test_website_p70.py (5a6c545...), workflow .github/workflows/rea-website-p50.yml, exact-tested bfac1116..., proof docs/WEBSITE_P70_BROWSER_ACCEPTANCE_20261113.md. Pro parent 97b6e5..., frozen Fable 7e6f273b..., Astra f044b66e..., prior P50 tested fb67616...
+7. Production/환경: Python3.11+, Playwright Chromium, pytest, FastAPI/SQLite/uvicorn, requests/bs4/pydantic/httpx. Hosted Ubuntu24.04/Windows2025. Public URL/Production/Vercel 미적용.
+8. 원본/복구/보안: original Pro/Fable/Astra/REA Lite/DATA2WEB 코드·본계정/고객 원본 불변. Git SHA로 복구, localhost/승인 HTML+CSV SHA·CSP·외부 요청 거부, 서비스/권한/토큰/결제 변경 없음.
+9. 다음: 사용자 P85 새 지시 시 Fable Record 실제 관찰/비주얼·반응형·고급 상호작용과 인가된 사람 승인/검증서/시각 차이 리포트, 실 브라우저·고객 OS·사업권 검토. 외부 사이트/자료 전송/과금·판매·배포는 별도 승인.
+10. 갱신 시점: 2026-11-13 KST. 테스트는 정확 bfac1116 SHA의 CI 2/2 SUCCESS 확인; 문서 HEAD는 테스트된 소스 SHA와 구별, 신규 CI는 자동 검증 수치 외 주장하지 않음.
+
 ## [LATEST 2026-11-12 KST] REA_Web 원래 웹사이트 분석 P50 합성 검증 완료 — 인수인계 10항
 1. **목표·요구·스택:** 원래 사이트분석→Fable5.1→Astra P4 증거/명세→인간 승인→독립 FastAPI/SQLite 웹앱. 새 DATA2WEB은 CSV/XLSX 상품이므로 분리. 현재 P50 로컬 합성 최소 통합.
 2. **완료 기능·결정:** 새 `rea/website_rebuild.py`가 원본 고정 Fable scanner를 단일 127.0.0.1 정적 GET 호출해 실제 결과 JSON을 Astra 입력으로 사용. HTML 정적 구조→inferred-only Astra 기능 명세, 소유자 SHA/매핑/승인된 별도 CSV만 기존 Pro `build`로 전달. 생성 앱 review는 HTTP 미서빙, 원본/사이트 HTML 미복제.
