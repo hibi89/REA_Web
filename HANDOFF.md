@@ -1,3 +1,83 @@
+## 2026-11-12 KST — Lite P95 incremental rights-scope precheck (10 fields)
+1. Goal: reduce owner release-gate ambiguity without buyer data or legal self-approval.
+2. Done/decision: read exact Lite package allowlist, builder/template, existing Pro license audits; published Lite-specific shipped-component inventory in docs/63. No product code change.
+3. Tests: **no new tests run**; prior exact code SHA cb7df1f4d1ce517c5940570af5bb1085410de268; [Actions #43186105405](https://github.com/hibi89/REA_Web/actions/runs/43186105405) Windows688 PASS/19 SKIP, Ubuntu677 PASS/20 SKIP, both 0 FAIL. Static source review only this unit.
+4. Status: engineering 95% provisional unchanged, P100 not reached, seller/production RELEASE HOLD. Release rights and actual buyer acceptance remain human controlled.
+5. Issues: no technical blocker altered. Rights unverified; no LICENSE/NOTICE root found. Do not treat older Pro 14-package audit as bundled Lite wheels or a license grant.
+6. Repo: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112; head updated docs-only after SHA cb7df1f4; PR #34 Draft/OPEN unmerged.
+7. Runtime: Lite customer HTML browser local file://; Vercel/Production N/A, hosted CI only.
+8. Security/backups: customer values in HTML plaintext; ZIP only catalog.html/manifest.json/README_KO.txt, SHA unsigned. No customer data, original branches, deployments, tokens, permissions changed.
+9. Next: actual rights/NOTICE and owner privacy approval, nondeveloper Win10/11 3 real pilots, seller scope/terms, then separate sale GO; existing scripts.rea_sale_gate.py records human evidence.
+10. Updated 2026-11-12 KST; this doc commit not covered by new CI and did not modify code.
+
+## 2026-11-12 KST — P95 final technical closeout handoff (10 items)
+1. Goal: finish owner-independent REA Lite 95% technical milestone without customer exposure or unapproved release.
+2. Done/rationale: no risky code changes after CI; prepared docs/62_LITE_FINAL_SELLER_ACCEPTANCE_20261112.md with concrete seller owner-kit run, independent ZIP verification, three-sector physical customer checklist and six human/legal signoffs.
+3. Tests: exact previously verified source SHA cb7df1f4d1ce517c5940570af5bb1085410de268; [CI #43186105405](https://github.com/hibi89/REA_Web/actions/runs/43186105405) 2/2 SUCCESS; Windows full 688 PASS/19 SKIP, Ubuntu 677 PASS/20 SKIP, no FAIL; native download three industries each OS, only synthetic hosted data. Current doc commit is not retested functional source.
+4. Status: **95% provisional engineering DONE**, commercial sale 0/6 external review gates verified, RELEASE HOLD; no P100 or actual Windows10/11 claim.
+5. Failure history: earlier unsafe-eval CSP Playwright check was test-only bug; fixed locator text without weakening product CSP. Do not regress or confuse hosted CI with independent buyer.
+6. Repo/paths: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112, base Lite feature/lite-offline-html-20261112 f842d288 unchanged. Exact source tested cb7df1f4. New doc docs/62... plus prior docs/61 and owner kit.
+7. Production: Vercel N/A, service public URL N/A, CI hosted Windows2025/Ubuntu24.04. Real buyer physical device untested.
+8. Original/backup/security: Pro/main and owner data untouched, repo private, no owner data/credentials uploaded; root LICENSE not found in examined branch, rights remain NOT_APPROVED; source SHA unsigned integrity only.
+9. Next: independent Windows10/11 buyer manual proof, three actual human pilots, owner customer privacy/licensing NOTICE, seller scope price/revisions/cancellations/refund/support; use existing scripts.rea_sale_gate with actual human evidence; retain HOLD before approval.
+10. Updated 2026-11-12 KST; exact tested functional SHA above and docs-only head distinct.
+
+## [LATEST 2026-11-12 KST] REA Lite P95 10-point handoff
+1. Goal/stack: owner-independent local CSV/flat JSON -> seller-reviewed single HTML+ZIP, preserve Pro and all originals.
+2. Done/decision: isolated owner kit instead of changing Pro, safe create-only rollback, 3 real synthetic browser downloads + buyer reopen with packed data.
+3. Tests: Verified feature SHA cb7df1f4d1ce517c5940570af5bb1085410de268; Actions https://github.com/hibi89/REA_Web/actions/runs/43186105405 2/2 SUCCESS. Win2025 full 688 PASS/19 SKIP/0 FAIL; Ubuntu24.04 full 677 PASS/20 SKIP/0 FAIL; each 19+16+12 unittest, focused59 pytest/11 subtests. Native real browser click-to-download and saved file:// reopen/independent ZIP verification PASS across three synthetic cafe/inventory/office cases on each hosted OS. Original Lite/Pro/main, buyer data, permissions, deployment unchanged. Owner-kit one-command source SHA/3-column mapping/APPROVE/plaintext ACK; create-only HTML+ZIP with source integrity and cleanup. Corrected QA CSP wait via locator instead of string unsafe-eval; original CSP not changed. Engineering 92->95% provisional only. Physical customer Win10/11, 3 human pilots, license/privacy/NOTICE, pricing/refund/support and sale release APPROVAL NOT_GRANTED. RELEASE HOLD, P100 not reached. No Vercel.
+4. State: provisional engineering 95%; physical human/customer/seller release NOT_DONE; RELEASE HOLD; P100 not reached.
+5. Error evidence: first native Windows test hit CSP unsafe-eval from Playwright string wait; changed test-only assertions to locator text; exact SHA Windows+Ubuntu PASS. Do not weaken CSP or repeat failed test path.
+6. Repo/ref/SHAs: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112, tested cb7df1f4d1ce517c5940570af5bb1085410de268; original feature/lite-offline-html-20261112 f842d288; code paths rea/lite_owner_kit.py, tests/test_lite_owner_kit.py, tests/lite_playwright_delivery.py.
+7. Env/deploy: hosted Windows2025 + Ubuntu24.04 PASS, GitHub run 43186105405, Vercel/Production N/A.
+8. Original/backup/secrets: baseline Pro/Lite unchanged; no customer data uploaded, no secrets/permissions/payments changed. Rollback by abandoning isolated feature branch. Data in buyer HTML is plaintext, hash is unsigned.
+9. Next: actual nondeveloper Windows10/11 manual file download/pilot ×3, rightsholder/license+privacy/NOTICE and seller terms GO; 95 technical progress is not sales approval.
+10. Updated 2026-11-12 KST from exact tested code SHA; docs-only commit later not equal to test SHA.
+
+---
+
+## 2026-11-12 KST — REA Lite original full-suite Linux/Windows follow-up (10 fields)
+1. Goal: verify existing entire source tree regression against P92 Lite customer delivery without user intervention.
+2. Change: only CI workflow step added extra test dependencies and python -m pytest -q tests for both OS, no product source/data changed.
+3. Tests: exact code+workflow SHA 397e0f2f04cb9c01fbcdabcf399239ce93b14cca, [Actions #43181986482](https://github.com/hibi89/REA_Web/actions/runs/43181986482) 2/2 SUCCESS. Ubuntu 665 PASS/20 SKIP, Windows 676 PASS/19 SKIP, 0 FAIL both, 1 WARN+6 subtests each; prior original HTML browser and export/reopen, Lite19+delivery16 PASS both OS.
+4. Status: P92 provisional unchanged, P95 NOT ACHIEVED; releases and customer sales HOLD. Full source pytest is not all distinct D1–D31 workflows or physical Windows acceptance.
+5. Errors: earlier new browser test stale-message race and Ubuntu download navigation solved by test-only click suppression; current full-suite had zero failures. Do not interpret skipped tests as passed.
+6. Repo: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112, current tested SHA 397e0f2f; original Lite @f842d288 and Pro/main unchanged.
+7. Runtime: hosted Windows2025 and Ubuntu24.04; Vercel/production N/A, real owner Windows10/11 unverified.
+8. Originals: no source/customer data, permissions, external paid API, secrets, licenses, Production changed; branch SHA permits rollback.
+9. Next: real Windows buyer manual download/CSV->save/reopen for three pilots; rights/privacy/NOTICE/license/support/seller terms approval; then reconsider P95. Tests alone do not gain points.
+10. Verified 2026-11-12 KST; this docs commit follows exact workflow SHA and is [skip ci] only.
+
+---
+
+## 2026-11-12 KST — REA_Web Lite P92 follow-up (10 handoff items)
+1. Goal: owner-independent P95 development with no external customer data, payment or release.
+2. Work: synthetic real Chrome/Edge file:// CSV invalid-HOLD, owner headers, inert HTML injection, generated HTML Blob export, independent ZIP verify and re-open. Only new test code/CI changed, original Lite/Pro unchanged.
+3. Tests: exact source SHA c83934efd374026e2e07b7bc5174d298bcc8a2cb, Actions 43181217685 Ubuntu+Windows 2/2 SUCCESS: each Lite19+delivery16 unittest and 47 combined pytest/6 subtests/1 warning, original 3-row native file:// and new import/export/reopen PASS. Full Pro D1-D31 NOT_RUN.
+4. Status: provisional REA_Web 92%, P95 NOT ACHIEVED (3pp missing), all sales RELEASE HOLD.
+5. Error/pivot: stale CSV UI message made new test wrongly conclude before async input; fixed by clearing message; Linux headless download navigation timed out, replaced test-only anchor click with exact Blob capture and real new HTML file reopen. Real buyer download not proven, avoid repeating blind retries.
+6. Repo: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112, tested c83934e; original Lite feature/lite-offline-html-20261112 f842d288 untouched, main/Pro untouched.
+7. Env/production: GitHub hosted Windows2025+Ubuntu24.04 browsers PASS, real buyer Win10/11 NOT_RUN, Vercel N/A.
+8. Originals/backup/security: original/customer files, privacy, paid APIs, source permissions, production unchanged. SHA-only ZIP check is unsigned. Existing branch tips permit rollback.
+9. Next: exact-source whole Pro D1-D31 regression, independent physical Windows manual import/export/download/reopen, 3 customer acceptance runs, third-party rights/NOTICE/privacy/sale terms owner approval before P95/GO.
+10. Date 2026-11-12 KST; documentation tip differs from exact tested source SHA.
+
+---
+
+## 2026-11-12 KST — REA_Web Lite P95-target continuation (10-point handoff)
+1. Goal: owner-independent progress from 85 to 95 without disturbing original Lite, Pro data, deployment or legal approval.
+2. Done: independent SHA-pinned no-overwrite Lite delivery ZIP, three synthetic verticals, byte/tamper/ZIP-slip defenses, native packed HTML file:// browser check. Chose optional external companion over risky Pro runtime edit; see docs/61_LITE_P95_OWNER_DELIVERY_GATES_20261112.md.
+3. Tests: exact code SHA 3eb56c3515d5b9ae3a6a0d2a8f58a85ffdf8ebdc; Actions #43178991549 Ubuntu+Windows 2/2 SUCCESS, each Lite19 + delivery16 unittest PASS; combined original Pro/Lite/delivery 47 pytest PASS/6 subtests/1 warn; 3-row genuine browser file URL each OS PASS. Full D1-D31 and physical buyer NOT_RUN.
+4. Completion: **90% provisional engineering**, P95 NOT ACHIEVED (5 percentage points outstanding); all releases and sales HOLD, no Production.
+5. Error evidence: initial browser CI 49ba2e0 failed from module path when running test by file; workflow PYTHONPATH corrected at 3eb56c3. No repeated hollow reruns; do not conflate host CI and physical buyer.
+6. Repos/branches/SHAs: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112; source tested 3eb56c3; original feature/lite-offline-html-20261112 f842d288; main unchanged. Rollback via original ref.
+7. OS/deploy: Ubuntu24.04+Windows2025 hosted real browser file URL CI successful, no Vercel/production, customer Win10/11 not tested.
+8. Originals/backup/credentials: original Pro, source/DB, prior branch, customer files and third-party imports unchanged; no paid API/data upload/secrets/public release/permissions changed. SHA is unsigned, not authenticity proof.
+9. Next: physical nondeveloper Win10/11 manual import/export/reopen and 3 customer deliveries, original complete regression, data/redistribution rights, NOTICE, Korean font and pricing/refund/support owner acceptance. Do not claim 95/sale without evidence.
+10. Updated 2026-11-12 KST. Current docs-only HEAD differs from tested functional SHA; check GitHub ref before next edits.
+
+---
+
 ## 2026-11-12 KST — verified source CI 2/2 and 85 engineering provisional (10-point addendum)
 1. Goal: REA_Web Lite+Pro product for offline owner-approved customer apps, baseline75 and target85, user excludes DBVORA. Stack seller Python3.11+ real rea.mvp, buyer HTML/vanilla JS no server.
 2. Completed: P1 Lite self-contained HTML, owner SHA/mapping/APPROVE, three themes, search/filter/sort/details/paging, canonical/approved original CSV re-import and explicit HTML download/reopen; Pro FastAPI/SQLite unchanged. Source code SHA `3ef4ab00f737644d4c1f4b2caa56bf17a3b6da3d`.
