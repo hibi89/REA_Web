@@ -9,6 +9,7 @@ on:
       - "rea/website_p95.py"
       - "rea/website_site_layout.py"
       - "rea/website_component_builder.py"
+      - "rea/website_ui_cli.py"
       - "tests/test_website_rebuild_p50.py"
       - "tests/test_website_p70.py"
       - "tests/test_website_p85.py"
@@ -56,7 +57,7 @@ jobs:
       - name: Install real Chromium browser runtime
         run: python -m playwright install chromium
       - name: Compile original Pro and website integration
-        run: python -m compileall -q rea/website_rebuild.py rea/website_p70.py rea/website_p85.py rea/website_p95.py rea/website_site_layout.py rea/website_component_builder.py rea/orchestrator.py rea/adapter
+        run: python -m compileall -q rea/website_rebuild.py rea/website_p70.py rea/website_p85.py rea/website_p95.py rea/website_site_layout.py rea/website_component_builder.py rea/website_ui_cli.py rea/orchestrator.py rea/adapter
       - name: Real loopback Fable scan, Astra models, generated Pro app E2E
         env:
           PYTHONPATH: ".vendor/astra/engines/astra_p4"
