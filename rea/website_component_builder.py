@@ -79,6 +79,19 @@ def observed_contract(fixture_html: Path, *, fixture_sha256: str,
     observations = bundle.get("observations", [])
     if not isinstance(observations, list) or len(observations) != 6:
         raise WebsiteReviewError("Astra observed state count mismatch")
+    # Narrowly validated P85 synthetic protocol, independently checked.
+    # Reject self-consistent but forged subject/observation pairs.
+    synthetic_oracle = [
+        ("search",
+         {"count": "3건", "detail": "", "search_value": "", "category_value": ""},
+         {"count": "1건", "detail": "", "search_value": "커피", "category_value": ""}),
+        ("filter",
+         {"count": "1건", "detail": "", "search_value": "커피", "category_value": ""},
+         {"count": "1건", "detail": "", "search_value": "커피", "category_value": "음료"}),
+        ("detail",
+         {"count": "1건", "detail": "", "search_value": "커피", "category_value": "음료"},
+         {"count": "1건", "detail": "커피", "search_value": "커피", "category_value": "음료"}),
+    ]
     for viewport, record in viewports.items():
         steps = record.get("steps")
         shas = record.get("screenshots_sha256")
@@ -86,6 +99,11 @@ def observed_contract(fixture_html: Path, *, fixture_sha256: str,
                 or not isinstance(shas, list) or len(shas) != 4):
             raise WebsiteReviewError("Broken recorded Chromium state sequence")
         for index, step in enumerate(steps):
+            oracle_feature, oracle_before, oracle_after = synthetic_oracle[index]
+            if (step["feature"] != oracle_feature or
+                    step.get("before") != oracle_before or
+                    step.get("after") != oracle_after):
+                raise WebsiteReviewError("P85 synthetic observed behavior oracle mismatch")
             observation_id = f"ob_{viewport}_{index}"
             match = next((o for o in observations if o.get("id") == observation_id), None)
             if (match is None or match.get("certainty") != "observed"
