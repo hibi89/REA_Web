@@ -1,3 +1,15 @@
+## [LATEST 2026-11-12 KST] 원래 REA_Web 엔지니어링 P50 달성 요약 인수인계 10항
+1. 제품: 사이트분석→Fable5.1→Astra P4 검토→독립 앱, 별도 DATA2WEB CSV/JSON/XLSX/TSV와 구분.
+2. 완료: `feature/website-analysis-rebuild`의 `rea/website_rebuild.py`, tests, CI; 로컬 HTML 실제 Fable 정적 루프백 1GET→Astra static inferred draft→owner 승인 CSV로 기존 Pro 앱 생성. 원본 범위 유지.
+3. 테스트: 기능/워크플로 exact SHA `fb67616df6a5e7eb7ea14c1315a58dd689d2534d`, [run #43242189801](https://github.com/hibi89/REA_Web/actions/runs/43242189801) Win2025 31PASS/0FAIL/1WARN + Ubuntu31PASS/0FAIL/1WARN, 2/2 SUCCESS. 실제 외부 사이트/브라우저와 실제 고객 Windows NOT RUN.
+4. 완성도: 원래 최종설계의 **0→50 로컬 합성 최소 E2E만 달성, 엔지니어링 50% 잠정**, 실사이트 UI 재구축·고객/상용 권리 미완, RELEASE HOLD.
+5. 오류: 초기 workflow-only run 실패, #43241893298 Windows CLI Astra import 1FAIL(Windows PYTHONPATH 구분자); 공통 PYTHONPATH로 수정해 최신 CI PASS. 무의미한 재시도 금지.
+6. Repo/branch SHA: `hibi89/REA_Web@feature/website-analysis-rebuild` tested `fb67616`, 초기 부모 Pro `97b6e5`, Fable pinned `7e6f273b`, Astra pinned `f044b66e`; 원래 main docs만 추가 기록.
+7. Production: 미적용 / Vercel URL 없음, 로컬 Python3.11+ FastAPI/httpx/requests/bs4/pydantic/pytest, test command `python -m pytest -q tests/test_website_rebuild_p50.py tests/test_orchestrator.py`.
+8. 원본·복구·보안: 이전 Pro/Fable/Astra/import/Lite/Data2web 브랜치 보존·원본 손대지 않음, Git SHA 복구; 사용자 고객 데이터·토큰·외부 사이트 전송 없음.
+9. 다음 우선: 실제 허가된 로컬 다중 fixture 브라우저 상호작용 증거+human workbench+새 앱 UI/기능 parity(P70 초안), 새 목표 사용자 지정 전 새 작업중 표식 부여하지 않음. 실사이트/권리/고객 인수/결제/배포 사전 승인.
+10. 갱신: 2026-11-12 KST, hosted Ubuntu/Windows exact source CI 검증, docs 이후 기능 코드 재검증 미적용. 원격 [P50 상세](https://github.com/hibi89/REA_Web/blob/feature/website-analysis-rebuild/docs/WEBSITE_P50_SYNTHETIC_ACCEPTANCE_20261112.md).
+
 ## [LATEST 2026-11-12 KST] REA_Web 원래 웹사이트 분석·재구축 엔진 재정렬 (10항)
 1. **제품 목표/용도/스택:** 원래 목적 웹서비스 분석 및 독립 재구축. 권한 승인된 사이트·Fable 5.1 관찰→Astra P4 증거/명세→인간 승인→FastAPI/SQLite/정적 UI 신규 앱 생성, E2E 검증. Lite 데이터→HTML은 DATA2WEB 전담.
 2. **변경/결정:** 사용자 명시 재확정으로 정본 `REQUIREMENTS.md`, `docs/ORIGINAL_FINAL_DESIGN.md` 신규 작성, README/AGENTS/STATUS 최신 안내. 기존 Pro/원형 브랜치 삭제·병합·재기록 없음. 원형 CSV 생성 기능은 내부 구현 부품으로만 보존.
