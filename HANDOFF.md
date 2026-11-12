@@ -1,3 +1,17 @@
+## 2026-11-12 KST — REA_Web Lite P95-target continuation (10-point handoff)
+1. Goal: owner-independent progress from 85 to 95 without disturbing original Lite, Pro data, deployment or legal approval.
+2. Done: independent SHA-pinned no-overwrite Lite delivery ZIP, three synthetic verticals, byte/tamper/ZIP-slip defenses, native packed HTML file:// browser check. Chose optional external companion over risky Pro runtime edit; see docs/61_LITE_P95_OWNER_DELIVERY_GATES_20261112.md.
+3. Tests: exact code SHA 3eb56c3515d5b9ae3a6a0d2a8f58a85ffdf8ebdc; Actions #43178991549 Ubuntu+Windows 2/2 SUCCESS, each Lite19 + delivery16 unittest PASS; combined original Pro/Lite/delivery 47 pytest PASS/6 subtests/1 warn; 3-row genuine browser file URL each OS PASS. Full D1-D31 and physical buyer NOT_RUN.
+4. Completion: **90% provisional engineering**, P95 NOT ACHIEVED (5 percentage points outstanding); all releases and sales HOLD, no Production.
+5. Error evidence: initial browser CI 49ba2e0 failed from module path when running test by file; workflow PYTHONPATH corrected at 3eb56c3. No repeated hollow reruns; do not conflate host CI and physical buyer.
+6. Repos/branches/SHAs: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112; source tested 3eb56c3; original feature/lite-offline-html-20261112 f842d288; main unchanged. Rollback via original ref.
+7. OS/deploy: Ubuntu24.04+Windows2025 hosted real browser file URL CI successful, no Vercel/production, customer Win10/11 not tested.
+8. Originals/backup/credentials: original Pro, source/DB, prior branch, customer files and third-party imports unchanged; no paid API/data upload/secrets/public release/permissions changed. SHA is unsigned, not authenticity proof.
+9. Next: physical nondeveloper Win10/11 manual import/export/reopen and 3 customer deliveries, original complete regression, data/redistribution rights, NOTICE, Korean font and pricing/refund/support owner acceptance. Do not claim 95/sale without evidence.
+10. Updated 2026-11-12 KST. Current docs-only HEAD differs from tested functional SHA; check GitHub ref before next edits.
+
+---
+
 ## 2026-11-12 KST — verified source CI 2/2 and 85 engineering provisional (10-point addendum)
 1. Goal: REA_Web Lite+Pro product for offline owner-approved customer apps, baseline75 and target85, user excludes DBVORA. Stack seller Python3.11+ real rea.mvp, buyer HTML/vanilla JS no server.
 2. Completed: P1 Lite self-contained HTML, owner SHA/mapping/APPROVE, three themes, search/filter/sort/details/paging, canonical/approved original CSV re-import and explicit HTML download/reopen; Pro FastAPI/SQLite unchanged. Source code SHA `3ef4ab00f737644d4c1f4b2caa56bf17a3b6da3d`.
