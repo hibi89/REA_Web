@@ -1,3 +1,15 @@
+## [LATEST 2026-11-12 KST] REA_Web 원래 웹사이트 분석 P50 합성 검증 완료 — 인수인계 10항
+1. **목표·요구·스택:** 원래 사이트분석→Fable5.1→Astra P4 증거/명세→인간 승인→독립 FastAPI/SQLite 웹앱. 새 DATA2WEB은 CSV/XLSX 상품이므로 분리. 현재 P50 로컬 합성 최소 통합.
+2. **완료 기능·결정:** 새 `rea/website_rebuild.py`가 원본 고정 Fable scanner를 단일 127.0.0.1 정적 GET 호출해 실제 결과 JSON을 Astra 입력으로 사용. HTML 정적 구조→inferred-only Astra 기능 명세, 소유자 SHA/매핑/승인된 별도 CSV만 기존 Pro `build`로 전달. 생성 앱 review는 HTTP 미서빙, 원본/사이트 HTML 미복제.
+3. **테스트/범위:** 정확 코드+workflow SHA `fb67616df6a5e7eb7ea14c1315a58dd689d2534d`, [Actions #43242189801](https://github.com/hibi89/REA_Web/actions/runs/43242189801) **Ubuntu 31 PASS/0FAIL/1WARN, Windows2025 31PASS/0FAIL/1WARN, 2/2 SUCCESS**. 실제 Fable scan HTTP 1건, Astra exact contracts, SQL/HTTP TestClient/검색/필터/상세, 거부/원본불변, 기존 Orchestrator regression. 실제 Chromium UI/new real user not run.
+4. **완료·진행·대기:** 원래 REA_Web 최종설계 첫 P50 합성 gate **엔지니어링 50% 잠정 달성**(현 사용자 목표 완료). 실제 외부 사이트/기능 인과 증거·동작/디자인 재구축·실고객 Windows10/11·권리·상용 승인 차단, RELEASE HOLD, Production N/A.
+5. **실패·원인·교정·재시도:** 최초 workflow-only run 테스트 파일 생성 전 실패; 두번째 #43241893298 Ubuntu31PASS/Windows30PASS+1FAIL(기존 subprocess Astra import). 정확 원인 PYTHONPATH Linux ':'를 Windows에 넣음; 공통 single path 수정 `fb67616`, 다음 run #43242189801 31/31 양OS PASS. 무의미한 반복 실행 금지.
+6. **저장소·브랜치·코드 SHA:** `hibi89/REA_Web@feature/website-analysis-rebuild`, source `rea/website_rebuild.py` created `a77b88030448`, QA `tests/test_website_rebuild_p50.py` `94467969c761`, exact tested `fb67616`; pinned Fable `7e6f273b`, Astra P4 `f044b66e`, parent Pro `feature/d27-windows-python-discovery@97b6e5`.
+7. **Production·환경·실행:** Python3.11+ FastAPI/httpx/pytest/requests/bs4/pydantic, offline/local fixture + pinned vendor import. `python -m pytest -q tests/test_website_rebuild_p50.py tests/test_orchestrator.py` with `PYTHONPATH=.vendor/astra/engines/astra_p4`; Vercel/Production URL 미적용.
+8. **원본·백업·보안/비밀:** source original Pro/Fable/Astra/Lite/import/main·DATA2WEB 불변. Git SHA rollback. 파일 SHA와 APPROVE, 출력 create-only, 내용/권리/원시 참조 HTML 외부 송신/저장 없음(로컬 synth). 공개 저장소에는 고객 데이터/토큰 없음, 외부 웹사이트 GET 없음.
+9. **다음 작업 우선·완료·승인:** 허가된 3개 로컬 사이트 실제 브라우저 클릭/폼 효과 관찰→Astra observed/unknown 증거 추적→Human workbench→독립 새 앱에 site UX 사용 여부 명시, 실제 브라우저 UI 비주얼/기능 비교, 다음 P70 수용. 실제 외부 사이트 접근·실고객 데이터·유료 API/배포/저작권/판매는 사전 승인 필수. 현 P50 완료 후 새로운 숫자 목표는 사용자 별도 승인.
+10. **갱신시점/검증 SHA:** 2026-11-12 KST, 실증은 `fb67616` GitHub hosted Win2025/Ubuntu24.04·합성 로컬 HTTP와 테스트 범위; docs commit 이후 코드는 변경하지 않았으며 **CI SHA ≠ docs HEAD**. 상세 `docs/WEBSITE_P50_SYNTHETIC_ACCEPTANCE_20261112.md`.
+
 ## 2026-11-12 KST — REA_Web 웹사이트 분석 브랜치 복구 이력
 1. 목표: 원래 사이트 관찰→Fable→Astra evidence→승인→Pro 독립 신규 웹앱 구현.
 2. 변경: 사용자 원래 목적 복구, 신규 브랜치와 최종 설계/요구사항 문서 등록. 실행 코드는 아직 변경 안 함.
