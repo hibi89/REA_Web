@@ -46,6 +46,6 @@ jobs:
         run: python -m compileall -q rea/website_rebuild.py rea/orchestrator.py rea/adapter
       - name: Real loopback Fable scan, Astra models, generated Pro app E2E
         env:
-          PYTHONPATH: ".vendor/astra/engines/astra_p4:."
+          PYTHONPATH: ".vendor/astra/engines/astra_p4"
           PYTHONIOENCODING: utf-8
         run: python -m pytest -q tests/test_website_rebuild_p50.py tests/test_orchestrator.py
