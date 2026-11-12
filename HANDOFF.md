@@ -1,3 +1,17 @@
+## [LATEST 2026-11-12 KST] REA Lite P95 10-point handoff
+1. Goal/stack: owner-independent local CSV/flat JSON -> seller-reviewed single HTML+ZIP, preserve Pro and all originals.
+2. Done/decision: isolated owner kit instead of changing Pro, safe create-only rollback, 3 real synthetic browser downloads + buyer reopen with packed data.
+3. Tests: Verified feature SHA cb7df1f4d1ce517c5940570af5bb1085410de268; Actions https://github.com/hibi89/REA_Web/actions/runs/43186105405 2/2 SUCCESS. Win2025 full 688 PASS/19 SKIP/0 FAIL; Ubuntu24.04 full 677 PASS/20 SKIP/0 FAIL; each 19+16+12 unittest, focused59 pytest/11 subtests. Native real browser click-to-download and saved file:// reopen/independent ZIP verification PASS across three synthetic cafe/inventory/office cases on each hosted OS. Original Lite/Pro/main, buyer data, permissions, deployment unchanged. Owner-kit one-command source SHA/3-column mapping/APPROVE/plaintext ACK; create-only HTML+ZIP with source integrity and cleanup. Corrected QA CSP wait via locator instead of string unsafe-eval; original CSP not changed. Engineering 92->95% provisional only. Physical customer Win10/11, 3 human pilots, license/privacy/NOTICE, pricing/refund/support and sale release APPROVAL NOT_GRANTED. RELEASE HOLD, P100 not reached. No Vercel.
+4. State: provisional engineering 95%; physical human/customer/seller release NOT_DONE; RELEASE HOLD; P100 not reached.
+5. Error evidence: first native Windows test hit CSP unsafe-eval from Playwright string wait; changed test-only assertions to locator text; exact SHA Windows+Ubuntu PASS. Do not weaken CSP or repeat failed test path.
+6. Repo/ref/SHAs: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112, tested cb7df1f4d1ce517c5940570af5bb1085410de268; original feature/lite-offline-html-20261112 f842d288; code paths rea/lite_owner_kit.py, tests/test_lite_owner_kit.py, tests/lite_playwright_delivery.py.
+7. Env/deploy: hosted Windows2025 + Ubuntu24.04 PASS, GitHub run 43186105405, Vercel/Production N/A.
+8. Original/backup/secrets: baseline Pro/Lite unchanged; no customer data uploaded, no secrets/permissions/payments changed. Rollback by abandoning isolated feature branch. Data in buyer HTML is plaintext, hash is unsigned.
+9. Next: actual nondeveloper Windows10/11 manual file download/pilot ×3, rightsholder/license+privacy/NOTICE and seller terms GO; 95 technical progress is not sales approval.
+10. Updated 2026-11-12 KST from exact tested code SHA; docs-only commit later not equal to test SHA.
+
+---
+
 ## 2026-11-12 KST — REA Lite original full-suite Linux/Windows follow-up (10 fields)
 1. Goal: verify existing entire source tree regression against P92 Lite customer delivery without user intervention.
 2. Change: only CI workflow step added extra test dependencies and python -m pytest -q tests for both OS, no product source/data changed.
