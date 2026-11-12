@@ -1,3 +1,5 @@
+> **2026-11-13 KST 최신 개발 기준:** 원래 웹 분석 REA_Web의 P70 **합성 로컬 3사이트 실제 Chromium/Astra/Pro 수용 게이트 70% 엔지니어링 잠정 달성**, 검증 SHA bfac1116ac7a20c7162f42a59e51277d402b24d9 및 [2/2 GitHub Actions SUCCESS](https://github.com/hibi89/REA_Web/actions/runs/43266467950). 원본 Fable5.1은 정적 스캔만, P70 동작 관찰은 별도 Chromium observer이며, 합성 owner approval은 실제 웹사이트/콘텐츠 권리 승인으로 간주하지 않는다. [상세 증빙](https://github.com/hibi89/REA_Web/blob/feature/website-analysis-rebuild/docs/WEBSITE_P70_BROWSER_ACCEPTANCE_20261113.md). 실제 고객/임의 외부 URL·원 사이트 디자인 재구축·판매/Production HOLD. 사용자 새 단계 목표 전 P85/100 임의 생성하지 않으며 DATA2WEB·원본 브랜치 보존. 과거 아래 UNASSESSED 문구는 P70 검증 이전 역사 상태다.
+
 > **2026-11-12 사용자 최신 재개 지시: REA_Web 전담 웹서비스 분석·재구축 브랜치** — `feature/website-analysis-rebuild`는 [최종설계](docs/ORIGINAL_FINAL_DESIGN.md)/[REQUIREMENTS](REQUIREMENTS.md)를 정본으로 사용. 과거 10/28 대기 지시는 본 제품에 대해 사용자 새 재개 지시로 대체. 기존 Pro/Fable/Astra 소스, 고객 데이터, Lite history 변경 금지. Lite → 독립 `hibi89/data2web_studio`. **원래 웹 분석 최종상품률 UNASSESSED**, 사용자 단계 승인·검증 전 임의 95/100 표시·판매 금지, RELEASE HOLD. `[작업중]`은 확정 목표 미달이면 종료해도 유지.
 
 # REA_Web — engineering agent policy (canonical)
