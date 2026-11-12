@@ -1,3 +1,9 @@
+## [LATEST 2026-11-12 KST] 원래 REA_Web P50 합성 실제 통합 검증
+- 본 제품 정체성: 웹사이트 분석·재구축(Fable5.1→Astra P4→검토→새 앱); DATA2WEB Studio 오프라인 CSV/JSON/XLSX/TSV와 분리.
+- 개발 `feature/website-analysis-rebuild`: 실제 신규 `rea/website_rebuild.py`로 오직 허가된 합성 로컬 HTML에 대해 pinned Fable 실제 정적 GET 1건→Astra P4 inferred-only spec/REVIEW_REQUIRED→승인 CSV를 원 Pro로 신규 웹앱 생성/HTTP TestClient 검색·필터·상세 검증. 정확 코드+CI SHA `fb67616df6a5e7eb7ea14c1315a58dd689d2534d`; [Actions #43242189801](https://github.com/hibi89/REA_Web/actions/runs/43242189801) Ubuntu31PASS/0FAIL/1WARN, Windows2025 31PASS/0FAIL/1WARN(2/2 SUCCESS).
+- 최종설계 첫 P50 **로컬 합성 범위 엔지니어링 50% 잠정**; 사이트 실 URL·실 브라우저 상호작용/사이트 구조 UI 재구축/법률/고객 Windows10·11 실인수는 NOT RUN, RELEASE HOLD, Production N/A. 구 Lite P95를 원제품으로 재적용하지 않음.
+- [P50 감사](https://github.com/hibi89/REA_Web/blob/feature/website-analysis-rebuild/docs/WEBSITE_P50_SYNTHETIC_ACCEPTANCE_20261112.md); 원본 Pro `feature/d27-windows-python-discovery@97b6e5`·Fable `7e6f273b`·Astra `f044b66e`, 기존 main/PR 및 DATA2WEB source 보존.
+
 ## [LATEST 2026-11-12 KST] REA_Web 원래 목적 복원·독립 DATA2WEB 분리
 - 사용자 확정 정체성: **권한 있는 참고 웹사이트 → Fable 5.1 관찰 → Astra 증거·명세 → 인간 검토·승인 → 고객 소유 데이터 기반 독립 웹앱 재구축 → 실제 브라우저/배포 수용 검증**. 단순 CSV·엑셀 분석/HTML Lite는 신규 `hibi89/data2web_studio` 책임.
 - GitHub 원형: `feature/d27-windows-python-discovery@97b6e5cab7b8ffb4e1ee7f5e593021f4dac2598d`, 구 `feature/orchestrator@46060b4665560922d0c9cf82b9e5c08971eb9427`, Fable `import/fable51-bbe72c0@7e6f273b359b207fad8f92016226e3058cbcb839`, Astra P4 partial `import/astra-p4-b3166b6@f044b66e799289a5a353fdb9cbfdb324e683ffa3`. 원본 변경 없음.
