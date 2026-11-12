@@ -166,6 +166,7 @@ def test_real_fable_astra_chromium_approval_to_new_independent_component_tree(tm
     fixture, csv, p85, contract, original, opinion, fixture_sha = real_pipeline(tmp_path)
     out = tmp_path / "new_reconstructed_ui"
     original_html = (original / "static/index.html").read_bytes()
+    owner_csv_original_bytes = csv.read_bytes()
     result = build_evidence_ui(
         original, out, reference_html=fixture, fixture_sha256=fixture_sha,
         p85_receipt=p85, decision_record=opinion,
@@ -194,7 +195,7 @@ def test_real_fable_astra_chromium_approval_to_new_independent_component_tree(tm
         assert len(browser_result[view]["steps"]) == 3
         assert browser_result[view]["steps"][-1]["after"]["detail"] == "커피"
         assert browser_result[view]["metrics"]["document_width"] <= browser_result[view]["metrics"]["width"] + 1
-    assert csv.read_bytes() == CSV.encode()
+    assert csv.read_bytes() == owner_csv_original_bytes
 
 
 @pytest.mark.parametrize("tamper", [
