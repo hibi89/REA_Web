@@ -45,6 +45,10 @@ HTML = """<!doctype html><html lang="ko"><head><meta charset="utf-8">
 <label>판정 <select id="decision"><option value="hold">보류</option>
 <option value="approve_synthetic_proposal">합성 기능 제안 검토 승인</option>
 <option value="reject">반려</option></select></label>
+<label>독립 레이아웃 제안 <select id="layout"><option value="">미지정</option>
+<option value="top_navigation">상단 탐색형</option>
+<option value="side_inventory">재고 사이드형</option>
+<option value="article_directory">디렉터리형</option></select></label>
 <label>판정 사유 <textarea id="reason" maxlength="1200"></textarea></label>
 <button id="save" type="button">검토 기록 저장</button></section>
 <pre id="out"></pre><footer>로컬 합성 검토 의견 저장 전용. 배포·외부 접근·권리 승인 불가.</footer>
@@ -80,7 +84,8 @@ el('save').addEventListener('click', async () => {
     review_digest:packet.review_digest,
     reviewer_claimed_label:reviewer,
     decision:el('decision').value,
-    rationale:reason
+    rationale:reason,
+    layout_preset:el("layout").value || null
   };
   try {
     const r = await fetch('/api/decisions',{
@@ -240,6 +245,7 @@ class Decision(BaseModel):
     reviewer_claimed_label: str = Field(min_length=2, max_length=80)
     decision: str
     rationale: str = Field(min_length=10, max_length=1200)
+    layout_preset: str | None = None
 
 
 def create_review_app(packet: dict, directory: Path) -> FastAPI:
@@ -300,7 +306,8 @@ def create_review_app(packet: dict, directory: Path) -> FastAPI:
             decision = Decision.model_validate_json(raw)
         except ValidationError as exc:
             raise HTTPException(422, "Invalid review input") from exc
-        if (decision.decision not in APP_DECISIONS or
+        if (decision.layout_preset not in {None, "top_navigation", "side_inventory", "article_directory"} or
+                decision.decision not in APP_DECISIONS or
                 decision.packet_sha256 != packet["packet_sha256"] or
                 decision.review_digest != packet["review_digest"]):
             raise HTTPException(422, "Stale packet or invalid decision")
