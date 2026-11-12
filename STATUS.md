@@ -1,3 +1,11 @@
+## [LATEST 2026-11-12 KST] REA_Web 원래 목적 복원·독립 DATA2WEB 분리
+- 사용자 확정 정체성: **권한 있는 참고 웹사이트 → Fable 5.1 관찰 → Astra 증거·명세 → 인간 검토·승인 → 고객 소유 데이터 기반 독립 웹앱 재구축 → 실제 브라우저/배포 수용 검증**. 단순 CSV·엑셀 분석/HTML Lite는 신규 `hibi89/data2web_studio` 책임.
+- GitHub 원형: `feature/d27-windows-python-discovery@97b6e5cab7b8ffb4e1ee7f5e593021f4dac2598d`, 구 `feature/orchestrator@46060b4665560922d0c9cf82b9e5c08971eb9427`, Fable `import/fable51-bbe72c0@7e6f273b359b207fad8f92016226e3058cbcb839`, Astra P4 partial `import/astra-p4-b3166b6@f044b66e799289a5a353fdb9cbfdb324e683ffa3`. 원본 변경 없음.
+- 신규 개발 브랜치: `feature/website-analysis-rebuild`, 기존 Pro 원본에서 안전 분기. **현재는 브랜치/설계 문서만**, 추가된 사이트 분석/재구축 소스·테스트/CI 실행은 NOT RUN.
+- [정본 최종 설계](docs/ORIGINAL_FINAL_DESIGN.md)와 [요구사항](REQUIREMENTS.md) 등록. 최종상품 완성률 **UNASSESSED(재산정 필요)**, 핵심 사이트→분석→재구축의 종단 기능은 미검증. 기존 Lite 95%와 무관.
+- 배포: Production/Vercel 미적용, 고객 권리·참고 사이트 인가/상업적 재배포·실 Windows QA 미승인, **RELEASE HOLD**.
+- 다음 단계: 실제 Pro/Fable/Astra 기술 계약 exact source 점검 → 허가된 local synthetic site fixture → observer/Fable→Astra→approval→Pro E2E 구현·테스트 → P50 첫 milestone 검토. 기존 main/코드/PR/원본·DATA2WEB 원본 보존.
+
 # REA_Web STATUS — 2026-10-26 KST
 
 **D17-01 VERIFIED in Draft PR #20; D18-01 NEXT READY (fresh Windows venv generated ZIP -> real localhost HTTP).** main holds documentation/dispatcher; all PR #1–#20 remain Draft/unmerged. No production hosting or commercial release.
