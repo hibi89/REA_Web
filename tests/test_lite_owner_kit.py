@@ -154,15 +154,14 @@ class OwnerKitTest(unittest.TestCase):
         import rea.lite_owner_kit as module
         current = self.root / "replacement"
         current.write_text("MUST_BE_PRESERVED", encoding="utf-8")
-        def swap_and_fail(_zip_path):
+        def swap_and_fail(*args, **kwargs):
             target = self.output / HTML_NAME
             target.unlink()
             current.replace(target)
             raise DeliveryError("SYNTHETIC_REPLACEMENT")
-        with patch.object(module, "_identity", side_effect=module._identity):
-            with patch("rea.lite_owner_kit.package_lite", side_effect=swap_and_fail):
-                with self.assertRaises(DeliveryError):
-                    self.build()
+        with patch("rea.lite_owner_kit.package_lite", side_effect=swap_and_fail):
+            with self.assertRaises(DeliveryError):
+                self.build()
         self.assertEqual((self.output / HTML_NAME).read_text(encoding="utf-8"), "MUST_BE_PRESERVED")
 
 
