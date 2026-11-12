@@ -1,3 +1,5 @@
+> **[2026-11-12 KST 사용자 최우선 제품 재정렬]** REA_Web은 원래 **웹사이트 분석·증거화·독립 웹서비스 재구축 엔진**으로 복원한다. 과거 10/28의 작업 대기 안내는 사용자 현재 재개 지시로 REA_Web에 한해 대체된다. [최종설계](docs/ORIGINAL_FINAL_DESIGN.md)와 [요구사항](REQUIREMENTS.md)을 정본으로, `feature/website-analysis-rebuild`에서 기존 Pro `feature/d27-windows-python-discovery`를 보존하며 Fable/Astra 실제 통합을 진행한다. DATA2WEB Studio(`hibi89/data2web_studio`)는 CSV/JSON/XLSX/TSV 오프라인 HTML의 **독립 상품**. 원래 REA_Web에 Lite 95%를 최종상품 완료율로 부여 금지; 실사이트 E2E 및 고객권리/상용승인 미검증, RELEASE HOLD. 다른 채팅 제품 상태/표식·원본 브랜치 무단 변경 금지. [작업중] 표식은 승인된 목표 달성까지 보존하고 종료만으로 삭제하지 않는다.
+
 > **[KMONG_WORK_TARGET_GATE_20261112 | 사용자 최신 확정 | 필수 작업 규칙]** 이 저장소에서 크몽 상품·육성 후보를 작업하는 모든 AI 담당자는 새 채팅·`ㄱ` 시작 시 이 문구를 읽고 적용한다.
 > - 실제 개발/수정/테스트 착수 즉시 [해총 크몽 최종완성률·후보 상태표](https://github.com/hibi89/hackathon-command-center-2026/blob/kmong-productization/docs/audits/KMONG_16_CURRENT_20261111.md)의 **해당 상품명 옆에 `**[작업중]**`을 표시하고 GitHub 커밋**한다. 확정 단계 목표(예: 95%)와 검증 기준을 제품 STATUS/HANDOFF에 남긴다.
 > - **목표 완성률 달성 전에는 [작업중]을 삭제하지 않는다.** 일시중단·종료·보류·다른 제품 전환·담당 채팅 변경도 삭제 사유가 아니다. 예전 '전환·중단 시 삭제' 지시는 폐기한다.
