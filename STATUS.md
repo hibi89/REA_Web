@@ -1,3 +1,10 @@
+## [LATEST 2026-11-13 KST] 원래 REA_Web P70 로컬 3사이트 Chromium/Astra/Pro E2E 달성
+- 새 개발: rea/website_p70.py 및 tests/test_website_p70.py, CI 확장. 합성 HTML 3종 catalog/search, inventory/filter, directory/detail: 실제 localhost Chromium UI before/after 캡처·PNG evidence와 Astra P4 observed evidence/derive_spec, 명시 합성 검토 digest/승인 이후 기존 P50 진짜 Fable5.1 정적 스캐너→Pro FastAPI/SQLite 앱 생성→실 Chromium 기능 비교.
+- 정확 실행 검증 SHA bfac1116ac7a20c7162f42a59e51277d402b24d9; Actions https://github.com/hibi89/REA_Web/actions/runs/43266467950 = Ubuntu24.04 41PASS/0FAIL/1WARN, Windows2025 41PASS/0FAIL/1WARN, 2/2 SUCCESS. 기존 P50+orchestrator 31, 신규 P70 10.
+- 최종설계 50→70 로컬 합성 브라우저 게이트 충족: 엔지니어링 최종상품률 **70% 잠정**; 현 사용자 P70 목표 합성 범위 검증 완료. 실제 임의 외부 사이트/Fable Record·원본 디자인 자동 재구축·사람 실제 승인·고객권리/Win10-11 인수/상업 출시·Production 미검증, RELEASE HOLD.
+- 소유자 허가 토큰 APPROVE_SYNTHETIC_ONLY는 합성 실험에 한한 시뮬레이션이며 실제 고객 데이터/참고 웹사이트 사용권 부여가 아니다. 사이트 HTML·스크립트를 생성 앱으로 복제하지 않음. 별도 DATA2WEB 및 기존 Pro/Fable/Astra 원본 미수정.
+- P70 증빙 docs/WEBSITE_P70_BROWSER_ACCEPTANCE_20261113.md; 다음 사용자 명시 목표 전 자동 P85 작업 표시 없음. 크몽 중앙 REA_Web 항목만 70%로 갱신하고 P70 verified 표식 해제.
+
 ## [LATEST 2026-11-12 KST] 원래 REA_Web P50 합성 실제 통합 검증
 - 본 제품 정체성: 웹사이트 분석·재구축(Fable5.1→Astra P4→검토→새 앱); DATA2WEB Studio 오프라인 CSV/JSON/XLSX/TSV와 분리.
 - 개발 `feature/website-analysis-rebuild`: 실제 신규 `rea/website_rebuild.py`로 오직 허가된 합성 로컬 HTML에 대해 pinned Fable 실제 정적 GET 1건→Astra P4 inferred-only spec/REVIEW_REQUIRED→승인 CSV를 원 Pro로 신규 웹앱 생성/HTTP TestClient 검색·필터·상세 검증. 정확 코드+CI SHA `fb67616df6a5e7eb7ea14c1315a58dd689d2534d`; [Actions #43242189801](https://github.com/hibi89/REA_Web/actions/runs/43242189801) Ubuntu31PASS/0FAIL/1WARN, Windows2025 31PASS/0FAIL/1WARN(2/2 SUCCESS).
