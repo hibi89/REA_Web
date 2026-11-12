@@ -49,7 +49,7 @@ STRUCTURES = [
 def owner_fixture(tmp_path, heading):
     html = tmp_path / "reference.html"
     csv = tmp_path / "owner.csv"
-    html.write_text(REFERENCE.format(heading=heading), encoding="utf-8")
+    html.write_text(REFERENCE.replace("{heading}", heading), encoding="utf-8")
     csv.write_text(CSV, encoding="utf-8")
     sha = hashlib.sha256(html.read_bytes()).hexdigest()
     data_sha = hashlib.sha256(csv.read_bytes()).hexdigest()
