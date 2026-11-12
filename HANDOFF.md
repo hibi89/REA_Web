@@ -1,3 +1,15 @@
+## 2026-11-12 KST — REA_Web 웹사이트 분석 브랜치 복구 이력
+1. 목표: 원래 사이트 관찰→Fable→Astra evidence→승인→Pro 독립 신규 웹앱 구현.
+2. 변경: 사용자 원래 목적 복구, 신규 브랜치와 최종 설계/요구사항 문서 등록. 실행 코드는 아직 변경 안 함.
+3. 테스트: 과거 Pro·Orchestrator 합성 CI는 역사 증거; 현재 신규 브랜치 관련 사이트 E2E/Windows/Production 0건 NOT RUN.
+4. 상태: 최종상품률 UNASSESSED / 첫 P50 목표 후보 / RELEASE HOLD.
+5. 원인/대안: Lite 개발95를 원래 분석 엔진 완료율로 혼동; DATA2WEB 분리와 Pro 원본 기반 안전 브랜치 재개.
+6. Repo: `hibi89/REA_Web@feature/website-analysis-rebuild` 분기 기준 `97b6e5cab7b8ffb4e1ee7f5e593021f4dac2598d`; import Fable `7e6f273b`, Astra `f044b66e`, old orchestrator `46060b46`.
+7. 환경: Python3.11+/FastAPI/SQLite/Chrome; Production/Vercel 미적용.
+8. 원본/보안: 기존 Pro/Fable/Astra/Lite/고객 데이터 원본 변경·비밀 업로드 없음, Git SHA 복구 가능.
+9. 다음: exact imports/contracts → 승인된 합성 website fixture → 검토/HOLD → 새 앱 실제 생성·검증, 외부 사이트/권리/배포 승인 필요.
+10. 2026-11-12 KST, 설계·브랜치 초기화만 검증, 구현/CI 미검증.
+
 ## 2026-10-31 04:24 KST — REA_WEB Lite NEW handoff (standalone candidate, not GitHub-integrated)
 
 1. GOAL/STACK: Approved Lite/Pro split for Kmong; preserve Pro FastAPI/SQLite. Lite seller tool Python 3.11+ imports the real Pro rea.mvp parser; customer app is a single offline HTML (CSS/vanilla JS/File API), themes cafe/inventory/office. No LAN QR, authentication, hosted SaaS, EXE or cloud.
