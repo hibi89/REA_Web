@@ -11,7 +11,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 
 from lite_file_browser_gate import browser_path
 from rea.lite_owner_kit import build_owner_kit, HTML_NAME, ZIP_NAME
@@ -84,7 +84,7 @@ def main() -> None:
                         page.locator("#csv-file").set_input_files({
                             "name": "invalid.csv", "mimeType": "text/csv",
                             "buffer": b"unexpected,columns\nX,not-valid\n"})
-                        page.wait_for_function("document.getElementById('message').textContent.includes('이전 데이터는 유지됩니다.')", timeout=10000)
+                        expect(page.locator('#message')).to_contain_text('이전 데이터는 유지됩니다.', timeout=10000)
                         if page.locator("#items tr").count() != 2:
                             raise AssertionError("INVALID_CSV_OLD_DATA_LOST")
                         update = ("식별자,이름,분류,비고\nB01," + updated + ",영역,합성\n" +
@@ -92,7 +92,7 @@ def main() -> None:
                         page.locator("#csv-file").set_input_files({
                             "name": "owner-reviewed.csv", "mimeType": "text/csv",
                             "buffer": update})
-                        page.wait_for_function("document.getElementById('message').textContent.includes('검증 완료')", timeout=10000)
+                        expect(page.locator('#message')).to_contain_text('검증 완료', timeout=10000)
                         if page.locator("#items tr").count() != 2:
                             raise AssertionError("APPROVED_MAPPING_FAILED")
                         if updated not in page.locator("#items").inner_text():
