@@ -307,8 +307,8 @@ def create_review_app(packet: dict, directory: Path) -> FastAPI:
         if folder.is_symlink() or not folder.is_dir():
             raise HTTPException(409, "Review folder changed")
         item = {
-            "schema_version": "rea.website.p95.record.v1",
             **decision.model_dump(),
+            "schema_version": "rea.website.p95.record.v1",
             "reviewer_identity_verified": False,
             "site_use_license_verified": False,
             "reference_behavior_verified_external": False,
@@ -375,8 +375,7 @@ def create_delivery_zip(app_path: Path, record_path: Path, output_zip: Path, *,
         raise WebsiteReviewError("P85 evidence review required")
     p85 = json.loads(reviewed)
     if (p85.get("review_digest") != record.get("review_digest") or
-            p85.get("production_release") != "HOLD" or
-            record.get("packet_sha256") != record.get("packet_sha256", "")):
+            p85.get("production_release") != "HOLD"):
         raise WebsiteReviewError("Review digest and evidence do not match")
     if p85.get("human_review") != "PENDING_EXPLICIT_SYNTHETIC_OWNER_APPROVAL":
         raise WebsiteReviewError("Original Astra review must remain unapproved")
@@ -461,3 +460,63 @@ def verify_delivery_zip(path: Path) -> dict:
         "price": "PENDING_OWNER_APPROVAL",
         "rights_verified": False,
     }
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Direct, local-first operator CLI; never invokes a remote URL or an LLM."""
+    import argparse
+    parser = argparse.ArgumentParser(description="REA_Web local synthetic review and delivery")
+    actions = parser.add_subparsers(dest="action", required=True)
+    review = actions.add_parser("review", help="Run human-opinion UI bound to loopback")
+    review.add_argument("--p85-receipt", type=Path, required=True)
+    review.add_argument("--decisions", type=Path, required=True)
+    review.add_argument("--fable-record", type=Path)
+    review.add_argument("--fable-record-sha256")
+    review.add_argument("--port", type=int, default=8019)
+    pack = actions.add_parser("package", help="New ZIP from existing synthetic Pro app")
+    pack.add_argument("--app", type=Path, required=True)
+    pack.add_argument("--decision", type=Path, required=True)
+    pack.add_argument("--out", type=Path, required=True)
+    pack.add_argument("--scope", required=True)
+    verify = actions.add_parser("verify", help="Verify existing ZIP without extraction")
+    verify.add_argument("--zip", type=Path, required=True)
+    check = actions.add_parser("record-check", help="Read-only Fable Record intake")
+    check.add_argument("--record", type=Path, required=True)
+    check.add_argument("--sha256", required=True)
+    args = parser.parse_args(argv)
+    try:
+        if args.action == "record-check":
+            value = inspect_fable_record(args.record, expected_sha256=args.sha256)
+        elif args.action == "verify":
+            value = verify_delivery_zip(args.zip)
+        elif args.action == "package":
+            value = create_delivery_zip(args.app, args.decision, args.out,
+                                        quote_label=args.scope)
+        else:
+            if not 1024 <= args.port <= 65535:
+                parser.error("--port must be 1024..65535")
+            if bool(args.fable_record) != bool(args.fable_record_sha256):
+                parser.error("--fable-record and --fable-record-sha256 must be supplied together")
+            record = (inspect_fable_record(args.fable_record,
+                        expected_sha256=args.fable_record_sha256)
+                      if args.fable_record else None)
+            packet = make_packet(_json_file(args.p85_receipt), record)
+            folder = args.decisions
+            if folder.is_symlink() or not folder.is_dir():
+                raise WebsiteReviewError("--decisions requires existing real folder")
+            app = create_review_app(packet, folder)
+            import uvicorn
+            print(f"Local synthetic opinion UI: http://127.0.0.1:{args.port}/",
+                  flush=True)
+            print("Review is NOT license/identity or deployment approval.",
+                  flush=True)
+            uvicorn.run(app, host="127.0.0.1", port=args.port, log_level="warning")
+            return 0
+        print(json.dumps(value, ensure_ascii=False, indent=2))
+        return 0
+    except (OSError, ValueError, RuntimeError, zipfile.BadZipFile) as exc:
+        parser.exit(2, f"REA_P95_HOLD: {type(exc).__name__}: {exc}\n")
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
