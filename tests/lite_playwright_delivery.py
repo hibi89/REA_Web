@@ -84,8 +84,7 @@ def main() -> None:
                         page.locator("#csv-file").set_input_files({
                             "name": "invalid.csv", "mimeType": "text/csv",
                             "buffer": b"unexpected,columns\nX,not-valid\n"})
-                        page.locator("#message").get_by_text(
-                            "이전 데이터는 유지됩니다.", exact=False).wait_for(timeout=10000)
+                        page.wait_for_function("document.getElementById('message').textContent.includes('이전 데이터는 유지됩니다.')", timeout=10000)
                         if page.locator("#items tr").count() != 2:
                             raise AssertionError("INVALID_CSV_OLD_DATA_LOST")
                         update = ("식별자,이름,분류,비고\nB01," + updated + ",영역,합성\n" +
@@ -93,7 +92,7 @@ def main() -> None:
                         page.locator("#csv-file").set_input_files({
                             "name": "owner-reviewed.csv", "mimeType": "text/csv",
                             "buffer": update})
-                        page.locator("#message").get_by_text("검증 완료", exact=False).wait_for(timeout=10000)
+                        page.wait_for_function("document.getElementById('message').textContent.includes('검증 완료')", timeout=10000)
                         if page.locator("#items tr").count() != 2:
                             raise AssertionError("APPROVED_MAPPING_FAILED")
                         if updated not in page.locator("#items").inner_text():
