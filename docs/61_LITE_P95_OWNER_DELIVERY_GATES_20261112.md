@@ -1,3 +1,10 @@
+## 2026-11-12 KST original Pro full suite verification (P92 unchanged)
+- Exact current code+workflow SHA **397e0f2f04cb9c01fbcdabcf399239ce93b14cca**, [GitHub Actions #43181986482](https://github.com/hibi89/REA_Web/actions/runs/43181986482), **Windows2025 and Ubuntu24.04 both completed SUCCESS**. CI first verified original Lite19 and delivery16 native unit tests, three-row packed browser file:// PASS, synthetic customer CSV import→Blob HTML export→ZIP→reopen PASS, scoped Pro/Lite/delivery pytest47 PASS/6 subtests/1 warning per OS.
+- Entire tests directory pytest with original Pro D1–D27 and new Lite code at the same SHA: **Ubuntu 665 PASSED/20 SKIPPED/1 WARNING/6 subtests**, **Windows 676 PASSED/19 SKIPPED/1 WARNING/6 subtests**, both 0 FAIL. This is the suite as selected by pytest in feature branch, not proof every independent D1–D31 external workflow ran or physical buyer acceptance.
+- No new feature/functional change in this unit: workflow step expanded to run existing full Pro tests. Therefore **engineering P92 maintained**, no score increase for test count alone. **P95 NOT ACHIEVED**, RELEASE HOLD. Missing nondeveloper physical Windows10/11 file download/browser/3 pilots, original raw data rights, customer privacy, vendor licensing NOTICE, pricing/refund/support/release GO. No customer data, paid models, Production or original file edits.
+
+---
+
 ## 2026-11-12 KST P92 follow-up (95 target remains open)
 - Actual code/CI SHA c83934efd374026e2e07b7bc5174d298bcc8a2cb; Actions https://github.com/hibi89/REA_Web/actions/runs/43181217685: Windows2025 + Ubuntu24.04 2/2 SUCCESS. Each OS Lite19+delivery16 unittest PASS, combined original Pro/Lite/delivery pytest47 PASS/6 subtests/1 warning, packaged original file URL PASS.
 - New real browser end-to-end via tests/lite_file_customer_flow.py: search/category, reject malformed CSV and keep existing rows, import approved original headers, malicious markup remains inert, product-generated HTML Blob exported, new ZIP verified, saved HTML reopened through file:// with correct rows and CSP. No original customer data or server.

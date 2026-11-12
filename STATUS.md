@@ -1,3 +1,7 @@
+## 2026-11-12 KST — REA Lite original full Pro suite cross-OS CI success; P92 unchanged
+- Feature exact workflow SHA 397e0f2f04cb9c01fbcdabcf399239ce93b14cca, [Actions #43181986482](https://github.com/hibi89/REA_Web/actions/runs/43181986482) 2/2 SUCCESS. Full pytest tests Ubuntu **665 PASS/20 SKIP/0 FAIL**, Windows **676 PASS/19 SKIP/0 FAIL**, each one warning, six subtests passed. Native file:// packaged+CSV import/export/reopen PASS each OS; Lite19/delivery16 and scoped47 pass.
+- Existing original Pro source preserved; workflow added one full regression step, no new product features. Score remains **92% provisional** by evidence rule, P95 NOT ACHIEVED, RELEASE HOLD. Real customer Windows/manual download/privacy/licensing/seller acceptance NOT_RUN. See docs/61_LITE_P95_OWNER_DELIVERY_GATES_20261112.md.
+
 ## 2026-11-12 KST — REA Lite P92 verified native CSV to exported HTML customer flow
 - Feature branch feature/lite-owner-delivery-p95-20261112, exact tested functional SHA c83934efd374026e2e07b7bc5174d298bcc8a2cb; https://github.com/hibi89/REA_Web/actions/runs/43181217685 Windows+Ubuntu 2/2 SUCCESS.
 - Each OS: Lite19 + delivery16 unittest PASS, pytest Pro/Lite/delivery47 PASS/6 subtests/1 warning. Real browser file:// original 3 rows and follow-up bad CSV HOLD + owner column mapping + HTML injection inert + product Blob export + ZIP verify + reopened file:// PASS.

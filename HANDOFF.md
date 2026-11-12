@@ -1,3 +1,17 @@
+## 2026-11-12 KST — REA Lite original full-suite Linux/Windows follow-up (10 fields)
+1. Goal: verify existing entire source tree regression against P92 Lite customer delivery without user intervention.
+2. Change: only CI workflow step added extra test dependencies and python -m pytest -q tests for both OS, no product source/data changed.
+3. Tests: exact code+workflow SHA 397e0f2f04cb9c01fbcdabcf399239ce93b14cca, [Actions #43181986482](https://github.com/hibi89/REA_Web/actions/runs/43181986482) 2/2 SUCCESS. Ubuntu 665 PASS/20 SKIP, Windows 676 PASS/19 SKIP, 0 FAIL both, 1 WARN+6 subtests each; prior original HTML browser and export/reopen, Lite19+delivery16 PASS both OS.
+4. Status: P92 provisional unchanged, P95 NOT ACHIEVED; releases and customer sales HOLD. Full source pytest is not all distinct D1–D31 workflows or physical Windows acceptance.
+5. Errors: earlier new browser test stale-message race and Ubuntu download navigation solved by test-only click suppression; current full-suite had zero failures. Do not interpret skipped tests as passed.
+6. Repo: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112, current tested SHA 397e0f2f; original Lite @f842d288 and Pro/main unchanged.
+7. Runtime: hosted Windows2025 and Ubuntu24.04; Vercel/production N/A, real owner Windows10/11 unverified.
+8. Originals: no source/customer data, permissions, external paid API, secrets, licenses, Production changed; branch SHA permits rollback.
+9. Next: real Windows buyer manual download/CSV->save/reopen for three pilots; rights/privacy/NOTICE/license/support/seller terms approval; then reconsider P95. Tests alone do not gain points.
+10. Verified 2026-11-12 KST; this docs commit follows exact workflow SHA and is [skip ci] only.
+
+---
+
 ## 2026-11-12 KST — REA_Web Lite P92 follow-up (10 handoff items)
 1. Goal: owner-independent P95 development with no external customer data, payment or release.
 2. Work: synthetic real Chrome/Edge file:// CSV invalid-HOLD, owner headers, inert HTML injection, generated HTML Blob export, independent ZIP verify and re-open. Only new test code/CI changed, original Lite/Pro unchanged.
