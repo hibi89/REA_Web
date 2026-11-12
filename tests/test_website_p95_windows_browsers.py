@@ -38,7 +38,7 @@ def synthetic_packet():
 @pytest.mark.skipif(sys.platform != "win32", reason="Windows Chrome/Edge channel verification")
 @pytest.mark.parametrize("channel", ["chrome", "msedge"])
 def test_real_windows_browser_local_owner_review_app(channel, tmp_path):
-    from playwright.sync_api import sync_playwright
+    from playwright.sync_api import sync_playwright, expect
     import uvicorn
 
     storage = tmp_path / ("opinions-" + channel)
@@ -71,18 +71,14 @@ def test_real_windows_browser_local_owner_review_app(channel, tmp_path):
                 response = page.goto(f"http://127.0.0.1:{port}/",
                                      wait_until="domcontentloaded", timeout=12000)
                 assert response.status == 200
-                page.wait_for_function(
-                    "document.getElementById('status').textContent.includes('근거 SHA:')",
-                    timeout=10000)
+                expect(page.locator("#status")).to_contain_text("근거 SHA:", timeout=10000)
                 assert page.locator("#features li").count() == 1
                 page.locator("#reviewer").fill("Windows Human Reviewer")
                 page.locator("#decision").select_option("approve_synthetic_proposal")
                 page.locator("#reason").fill(
                     "Synthetic local browser evidence is only a functional proposal.")
                 page.locator("#save").click()
-                page.wait_for_function(
-                    "document.getElementById('out').textContent.includes('검토 기록 ID:')",
-                    timeout=10000)
+                expect(page.locator("#out")).to_contain_text("검토 기록 ID:", timeout=10000)
                 assert "HOLD" in page.locator("#out").inner_text()
                 assert not browser_errors
                 saved = list(storage.glob("*.json"))
