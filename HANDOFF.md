@@ -1,3 +1,15 @@
+## [LATEST 2026-11-12 KST] REA_Web 원래 웹사이트 분석·재구축 엔진 재정렬 (10항)
+1. **제품 목표/용도/스택:** 원래 목적 웹서비스 분석 및 독립 재구축. 권한 승인된 사이트·Fable 5.1 관찰→Astra P4 증거/명세→인간 승인→FastAPI/SQLite/정적 UI 신규 앱 생성, E2E 검증. Lite 데이터→HTML은 DATA2WEB 전담.
+2. **변경/결정:** 사용자 명시 재확정으로 정본 `REQUIREMENTS.md`, `docs/ORIGINAL_FINAL_DESIGN.md` 신규 작성, README/AGENTS/STATUS 최신 안내. 기존 Pro/원형 브랜치 삭제·병합·재기록 없음. 원형 CSV 생성 기능은 내부 구현 부품으로만 보존.
+3. **테스트/증거:** 기존 `feature/orchestrator@46060b4665560922d0c9cf82b9e5c08971eb9427` 합성55 PASS [Actions #40200704855](https://github.com/hibi89/REA_Web/actions/runs/40200704855), 기존 Pro D27 역사 CI 기록은 main docs 참조. **이번 사이트 분석 구현/종단 URL E2E/새 CI는 NOT RUN(0 신규 테스트)**. 기존 Lite 기술95%는 원 제품 기준이 아님.
+4. **상태/차단:** 최종상품률 **UNASSESSED**, 목표 우선 P50 사이트관찰 합성 전체 연결; 고객 실제 참고 사이트·권리·재배포·공개 Production/물리 Windows 모두 미검증. RELEASE HOLD.
+5. **오류/원인/대안:** Lite/Pro 데이터 기반 웹앱 생성이 REA_Web 제품 전체로 오인·완성률 혼입. 해결: 신규 DATA2WEB 분리(독립 설계), 원래 REA_WEB 최종설계 보존, Pro부터 상위 Fable/Astra integration 브랜치 재개. 과거 95% 전용은 재사용/승계 금지.
+6. **저장소/브랜치/SHA:** `hibi89/REA_Web@main`(설계), `feature/website-analysis-rebuild` (Pro baseline `97b6e5cab7b8ffb4e1ee7f5e593021f4dac2598d`), 기능 `feature/orchestrator@46060b46`, `feature/evidence-adapter@fda96076`, import Fable `7e6f273b`/Astra `f044b66e`. 정확 최신 docs SHA는 별도 원격 확인.
+7. **Production/환경:** 미배포, Vercel URL 없음, 기존 Python3.11+/FastAPI/SQLite/Chromium 브랜치 코어; 신규 E2E 아직 미실행.
+8. **원본/백업/인증:** main+기존 Pro/Orchestrator/Fable/Astra/Lite 보존, GitHub SHA가 복구점. 유효한 고객 사이트 허가·고객 파일·비밀·PII 미제공, 서비스/권한/환경변수 변경 없음.
+9. **다음 개발/완료 기준:** 신규 브랜치에서 정확 source API·license 조사, 안전한 로컬 웹 fixture로 Fable/Astra evidence human HOLD→Pro E2E를 먼저 성공시킨 뒤 P50 검수. 실제 외부 사이트 접근·고객권리·유료 모델·공개배포·상용 승인 사전 확인.
+10. **갱신/검증 범위:** 2026-11-12 KST, 기존 저장소 브랜치 tree와 주요 source 경로·기존 CI 로그 및 신규 설계 파일 확인. 신규 소스 테스트·배포는 미적용, 문서 원격 SHA는 최종 readback 기준.
+
 # REA_Web HANDOFF — 2026-10-26 KST
 
 ## Product, scope and strategy
