@@ -361,7 +361,7 @@ def build_p85(fixture_html: Path, owner_csv: Path, out: Path, *,
         reviewed["source_visual_difference"] = differences
         reviewed["functional_parity"] = "PASS_ON_SYNTHETIC_SEQUENCES"
         (review / "p85_evidence_and_visual_diff.json").write_text(
-            json.dumps(review, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
+            json.dumps(reviewed, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
             encoding="utf-8")
         manifest = stage / "manifest.json"
         data = json.loads(manifest.read_text(encoding="utf-8"))
