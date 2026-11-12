@@ -1,3 +1,10 @@
+## [LATEST 2026-11-13 KST] 원래 REA_Web P85 로컬 멀티상태·반응형·시각 차이 QA 달성
+- 사용자 현재 P85 목표의 **합성 내부 단계 수용**: `feature/website-analysis-rebuild`에 `rea/website_p85.py`+ `tests/test_website_p85.py`+ 기존 CI 추가. 카탈로그·재고·디렉터리 합성 HTML 3종을 **실 Chromium desktop 1280x720/mobile 390x844**에서 검색→필터→상세 3개 연속 동작(각 4상태) 관찰, Astra P4 observed 증거·스크린샷 8개/사이트, 실제 owner review digest·합성 허가 검사→고정 Fable5.1 정적 스캔 및 기존 Pro FastAPI/SQLite 앱 생성→실 Chromium 동작 비교. RGB 시각 차이/DOM 구조 보고는 **VISUAL_DIFFERENCE_REQUIRES_HUMAN_REVIEW**이지 디자인 동등성 주장이 아님.
+- **검증 정확 SHA `1c3390fa3da933c5d0513196f0dcfc97b18b5e14`**, [GitHub Actions #43273324679](https://github.com/hibi89/REA_Web/actions/runs/43273324679) **Ubuntu24.04 52PASS/0FAIL/1WARN, Windows2025 52PASS/0FAIL/1WARN, 2/2 SUCCESS**. 명령 `python -m pytest -q tests/test_website_rebuild_p50.py tests/test_website_p70.py tests/test_website_p85.py tests/test_orchestrator.py`. 기존 P70 41+신규 P85 11.
+- 초기 SHA e0cddf5에서 49PASS/3FAIL(검수 JSON 직렬화가 dict 대신 Path 참조), 최소 1줄 수정 `reviewed` 사용 후 동일 CI 양OS 52PASS; 기능 코어·원본 브랜치 보존.
+- 현재 **최종상품 85% 엔지니어링 잠정** = 정본 설계 **70→85 로컬 합성 수용 게이트** 달성. 실제 외부 사이트·Fable --record 동작 원본/원 디자인·복잡한 업무 UI 재구축·실 고객권리·Win10/11 실기기·판매·Production 미검증. **RELEASE HOLD** 유지, DATA2WEB 별도 미산정 유지.
+- [검증/한계 보고](docs/WEBSITE_P85_RESPONSIVE_ACCEPTANCE_20261113.md). 사용자 현 P85 목표 달성으로 해총 중앙 REA_Web [작업중]만 제거; 새로운 P95/100은 사용자 별도 지시 전 임의 설정하지 않음.
+
 ## [LATEST 2026-11-13 KST] 원래 REA_Web P70 로컬 3사이트 Chromium/Astra/Pro E2E 달성
 - 새 개발: rea/website_p70.py 및 tests/test_website_p70.py, CI 확장. 합성 HTML 3종 catalog/search, inventory/filter, directory/detail: 실제 localhost Chromium UI before/after 캡처·PNG evidence와 Astra P4 observed evidence/derive_spec, 명시 합성 검토 digest/승인 이후 기존 P50 진짜 Fable5.1 정적 스캐너→Pro FastAPI/SQLite 앱 생성→실 Chromium 기능 비교.
 - 정확 실행 검증 SHA bfac1116ac7a20c7162f42a59e51277d402b24d9; Actions https://github.com/hibi89/REA_Web/actions/runs/43266467950 = Ubuntu24.04 41PASS/0FAIL/1WARN, Windows2025 41PASS/0FAIL/1WARN, 2/2 SUCCESS. 기존 P50+orchestrator 31, 신규 P70 10.
