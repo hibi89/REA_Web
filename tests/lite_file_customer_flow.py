@@ -42,7 +42,7 @@ HARNESS = r"""
     f.files=transfer.files;
     f.dispatchEvent(new Event('change', {bubbles:true}));
     await until(() => message.textContent.includes(statusText));
-    check(count()===expected, 'ROW_COUNT_AFTER_CSV');
+    check(count()===expected, 'ROW_COUNT_AFTER_CSV_'+expected+'_ACTUAL_'+count()+'_MESSAGE_'+message.textContent);
   }
   function report(value) {
     const e=document.createElement('pre');
