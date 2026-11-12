@@ -21,7 +21,7 @@ from rea.website_rebuild import WebsiteReviewError
 from rea.website_site_layout import (
     OWNER_LAYOUT_APPROVAL, observe_layout_contract, apply_owner_layout,
 )
-from rea.website_p95 import _hash, _json_file
+from rea.website_p95 import _hash, _json_file, make_packet
 from rea.safe_publish import publish_directory
 
 FEATURES = ("search", "filter", "detail")
@@ -52,7 +52,7 @@ gap:16px;align-items:start}
 
 
 def observed_contract(fixture_html: Path, *, fixture_sha256: str,
-                      p85_receipt: dict) -> dict:
+                      p85_receipt: dict, fable_record_summary: dict | None = None) -> dict:
     """Bind actual Astra observed search/filter/detail states to a UI proposal."""
     layout = observe_layout_contract(
         fixture_html, fixture_sha256=fixture_sha256, p85_receipt=p85_receipt)
@@ -129,9 +129,15 @@ def observed_contract(fixture_html: Path, *, fixture_sha256: str,
                 f.get("review_status") != "requires_review" or
                 not f.get("evidence")):
             raise WebsiteReviewError("Astra candidate has no review-bound evidence")
+    if fable_record_summary is not None:
+        if (fable_record_summary.get("schema_version") != "rea.fable.record_intake.v1"
+                or fable_record_summary.get("status") != "REVIEW_REQUIRED"
+                or fable_record_summary.get("evidence_grade") != "MANUAL_MARKERS_ONLY_NOT_CAUSAL"):
+            raise WebsiteReviewError("Fable Record provenance not review-safe")
     data = {
         "schema_version": "rea.website.ui.contract.v1",
         "source_fixture_sha256": fixture_sha256,
+        "fable_record_sha256": (fable_record_summary or {}).get("fable_record_sha256"),
         "p85_review_digest": p85_receipt["review_digest"],
         "semantic_layout_sha256": layout["contract_sha256"],
         "semantic_layout": layout["proposed_preset"],
@@ -224,7 +230,7 @@ def build_evidence_ui(existing_app: Path, output: Path, *,
                       reference_html: Path, fixture_sha256: str,
                       p85_receipt: dict, decision_record: Path,
                       approved_ui_contract_sha256: str,
-                      owner_approval: str) -> dict:
+                      owner_approval: str, fable_record_summary: dict | None = None) -> dict:
     """Generate a new, browser-testable component tree with review traceability.
 
     P95 reviewer opinion is explicitly synthetic; a generated proposal cannot
@@ -233,10 +239,14 @@ def build_evidence_ui(existing_app: Path, output: Path, *,
     if owner_approval != OWNER_LAYOUT_APPROVAL:
         raise WebsiteReviewError("Synthetic local owner approval required")
     ui_contract, layout = observed_contract(
-        reference_html, fixture_sha256=fixture_sha256, p85_receipt=p85_receipt)
+        reference_html, fixture_sha256=fixture_sha256, p85_receipt=p85_receipt,
+        fable_record_summary=fable_record_summary)
     if approved_ui_contract_sha256 != ui_contract["contract_sha256"]:
         raise WebsiteReviewError("Wrong/stale observed UI contract digest")
     decision = _json_file(decision_record)
+    expected_packet = make_packet(p85_receipt, fable_record_summary)
+    if decision.get("packet_sha256") != expected_packet["packet_sha256"]:
+        raise WebsiteReviewError("Review opinion not bound to exact Astra/Fable packet")
     if (decision.get("schema_version") != "rea.website.p95.record.v1"
             or decision.get("decision") != "approve_synthetic_proposal"
             or decision.get("layout_preset") != ui_contract["semantic_layout"]
