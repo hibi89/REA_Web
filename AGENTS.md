@@ -1,3 +1,5 @@
+> **2026-11-12 사용자 최신 재개 지시: REA_Web 전담 웹서비스 분석·재구축 브랜치** — `feature/website-analysis-rebuild`는 [최종설계](docs/ORIGINAL_FINAL_DESIGN.md)/[REQUIREMENTS](REQUIREMENTS.md)를 정본으로 사용. 과거 10/28 대기 지시는 본 제품에 대해 사용자 새 재개 지시로 대체. 기존 Pro/Fable/Astra 소스, 고객 데이터, Lite history 변경 금지. Lite → 독립 `hibi89/data2web_studio`. **원래 웹 분석 최종상품률 UNASSESSED**, 사용자 단계 승인·검증 전 임의 95/100 표시·판매 금지, RELEASE HOLD. `[작업중]`은 확정 목표 미달이면 종료해도 유지.
+
 # REA_Web — engineering agent policy (canonical)
 
 Read `WORKER_START_HERE.md` and `docs/SESSION_RESTART_PROTOCOL.md` first, followed by remote `STATUS.md`, `HANDOFF.md` and `docs/17_NEXT_TASK.md`. Use latest actual GitHub state, not previously written chat assumptions.
