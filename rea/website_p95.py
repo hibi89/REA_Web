@@ -336,6 +336,12 @@ def _package_members(root: Path):
     for source in sorted(root.rglob("*")):
         if source.is_symlink():
             raise WebsiteReviewError("Symlink in app output")
+        parts = source.relative_to(root).parts
+        # Running the generated FastAPI app creates interpreter caches.
+        # They are not source or customer deliverables and are deliberately
+        # excluded. Keep rejecting symlinks before this exclusion.
+        if "__pycache__" in parts or source.suffix.lower() in {".pyc", ".pyo"}:
+            continue
         relative = source.relative_to(root).as_posix()
         if source.is_dir():
             continue
