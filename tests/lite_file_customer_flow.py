@@ -40,6 +40,7 @@ HARNESS = r"""
     const transfer = new DataTransfer();
     transfer.items.add(new File([bytes], 'owner-reviewed.csv', {type:'text/csv'}));
     f.files=transfer.files;
+    message.textContent=''; // prevent stale success from satisfying the next async import
     f.dispatchEvent(new Event('change', {bubbles:true}));
     await until(() => message.textContent.includes(statusText));
     check(count()===expected, 'ROW_COUNT_AFTER_CSV_'+expected+'_ACTUAL_'+count()+'_MESSAGE_'+message.textContent);
