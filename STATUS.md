@@ -1,3 +1,10 @@
+## [LATEST 2026-11-12 KST] REA_Web 원제품 사이트 분석 P50 합성 E2E 검증 달성
+- 실제 신규 `rea/website_rebuild.py`, `tests/test_website_rebuild_p50.py`, `.github/workflows/rea-website-p50.yml` 구현. 실제 Fable 5.1 pinned scanner → 단일 로컬 HTML/loopback GET → Astra P4 `ObservationBundle/derive_spec` inferred-only REVIEW_REQUIRED → 별도 SHA/사용자 승인 CSV → 기존 `rea.orchestrator.build` → independent FastAPI/SQLite app.
+- 소스+워크플로 테스트 기준 SHA `fb67616df6a5e7eb7ea14c1315a58dd689d2534d`. [GitHub Actions #43242189801](https://github.com/hibi89/REA_Web/actions/runs/43242189801) **Ubuntu24.04 31PASS/0FAIL/1WARN, Windows2025 31PASS/0FAIL/1WARN**; 신규 합성 실제 스캐너·Astra·Pro·TestClient/SQLite 경로 및 원본 보호, 기존 Orchestrator 회귀.
+- 0→50 설계 게이트를 **로컬 정적 합성 제한 범위**에서 충족: **최종상품 엔지니어링 50% 잠정**. 실제 웹사이트 실브라우저 상호작용/자율 디자인 재구축/고객Win10/11/라이선스/판매/Production **NOT RUN, RELEASE HOLD**. 기술 50%는 상용 인수률 50% 아님.
+- 최초 실패 run #43241893298는 Windows CI의 Linux PYTHONPATH 구분자 사용(30PASS/1FAIL), 고친 run #43242189801은 양OS 정상. 사용자 현재 목표 **P50 충족**, 이에 따른 중앙 [작업중] 표시 해제 허용; 사용자 새 목표 전 P70 표시 임의 설정 금지.
+- [실행·실패·한계 근거](docs/WEBSITE_P50_SYNTHETIC_ACCEPTANCE_20261112.md). Pro 원본 `feature/d27-windows-python-discovery@97b6e5`, Fable/Astra pinned source, DATA2WEB 원본 불변. 다음 P70: 허가된 복수 site fixture/Chromium 관찰·인과 증거/화면 contract→생성/브라우저 비교.
+
 ## 2026-11-12 KST — REA_Web 사이트 분석/재구축 복원 전용 브랜치
 - 사용자 최신 결정: **REA_Web 원래 웹사이트 분석 엔진 복원**, 기존 Lite 데이터→HTML 별도 `data2web_studio`. 본 브랜치 `feature/website-analysis-rebuild`은 Pro source SHA `97b6e5cab7b8ffb4e1ee7f5e593021f4dac2598d`에서 시작하며 기존 Pro 기능 코드 변경 없음.
 - 요구사항/최종설계 `REQUIREMENTS.md`, `docs/ORIGINAL_FINAL_DESIGN.md`; 다음 작업 `docs/WEBSITE_ANALYSIS_BRANCH_START_20261112.md`.
