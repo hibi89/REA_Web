@@ -1,3 +1,15 @@
+## 2026-11-12 KST — P95 final technical closeout handoff (10 items)
+1. Goal: finish owner-independent REA Lite 95% technical milestone without customer exposure or unapproved release.
+2. Done/rationale: no risky code changes after CI; prepared docs/62_LITE_FINAL_SELLER_ACCEPTANCE_20261112.md with concrete seller owner-kit run, independent ZIP verification, three-sector physical customer checklist and six human/legal signoffs.
+3. Tests: exact previously verified source SHA cb7df1f4d1ce517c5940570af5bb1085410de268; [CI #43186105405](https://github.com/hibi89/REA_Web/actions/runs/43186105405) 2/2 SUCCESS; Windows full 688 PASS/19 SKIP, Ubuntu 677 PASS/20 SKIP, no FAIL; native download three industries each OS, only synthetic hosted data. Current doc commit is not retested functional source.
+4. Status: **95% provisional engineering DONE**, commercial sale 0/6 external review gates verified, RELEASE HOLD; no P100 or actual Windows10/11 claim.
+5. Failure history: earlier unsafe-eval CSP Playwright check was test-only bug; fixed locator text without weakening product CSP. Do not regress or confuse hosted CI with independent buyer.
+6. Repo/paths: hibi89/REA_Web feature/lite-owner-delivery-p95-20261112, base Lite feature/lite-offline-html-20261112 f842d288 unchanged. Exact source tested cb7df1f4. New doc docs/62... plus prior docs/61 and owner kit.
+7. Production: Vercel N/A, service public URL N/A, CI hosted Windows2025/Ubuntu24.04. Real buyer physical device untested.
+8. Original/backup/security: Pro/main and owner data untouched, repo private, no owner data/credentials uploaded; root LICENSE not found in examined branch, rights remain NOT_APPROVED; source SHA unsigned integrity only.
+9. Next: independent Windows10/11 buyer manual proof, three actual human pilots, owner customer privacy/licensing NOTICE, seller scope price/revisions/cancellations/refund/support; use existing scripts.rea_sale_gate with actual human evidence; retain HOLD before approval.
+10. Updated 2026-11-12 KST; exact tested functional SHA above and docs-only head distinct.
+
 ## [LATEST 2026-11-12 KST] REA Lite P95 10-point handoff
 1. Goal/stack: owner-independent local CSV/flat JSON -> seller-reviewed single HTML+ZIP, preserve Pro and all originals.
 2. Done/decision: isolated owner kit instead of changing Pro, safe create-only rollback, 3 real synthetic browser downloads + buyer reopen with packed data.
