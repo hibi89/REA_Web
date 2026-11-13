@@ -1,3 +1,14 @@
+## [2026-11-13 KST] SITECRAFT AX P50 feature branch handoff — 10 required fields
+1. Goal/tech: separate SITECRAFT product P50 from original REA_Web, real pinned Fable static + Astra P4 review + separately approved synthetic CSV → Pro app.
+2. Implemented/decision: isolated strict contract SHA/path/permission/approval gate, real Fable/Astra/Pro execution, security negatives, generated HTTP and SQLite. Existing core code, import branches and DATA2WEB untouched.
+3. Test evidence: code SHA a5c5a718dc33778fb1df59c601feee57944603db, https://github.com/hibi89/REA_Web/actions/runs/43375663779 two OS SUCCESS, each 50PASS/0FAIL/1WARN. Command python -m pytest -q tests/test_sitecraft_ax_p50.py tests/test_website_rebuild_p50.py tests/test_orchestrator.py.
+4. Status: P50 synthetic engineering VERIFIED; official final-blueprint 100pt completion UNASSESSED, central [작업중] kept; P70/85/95/100 not independently accepted; RELEASE HOLD.
+5. Failures/alternatives: no new CI failure; TestClient dependency deprecation warning. Do not conflate static hints with observed functionality or synthetic token with customer legal approval. No external/paid/production activity.
+6. Repository/branch/SHA: hibi89/REA_Web@feature/sitecraft-ax-p50-20261113; from feature/website-analysis-rebuild@82fb8da349de72f45eeaf15f7e997c2d449cf488. File paths rea/sitecraft_ax.py, tests/test_sitecraft_ax_p50.py, .github/workflows/sitecraft-ax-p50.yml, docs/SITECRAFT_AX_P50_VERTICAL_SLICE_20261113.md; design hibi89/Freelancer@product/rea-website-rebuild.
+7. Production/environment: GitHub Actions Python3.11 Ubuntu24.04+Windows2025, frozen Fable/Astra, FastAPI/SQLite. Vercel/Production N/A.
+8. Source/backup/security: original source branch remains unchanged; original Git commits/backout preserved. Synthetic in-test data only; no customer assets/secrets/websites/credentials.
+9. Next priority: authorized P70 3-fixture browser parity/adapters after user target; external/customer/paid/release requires separate approval. Formal 100pt final scoring requires approved requirements trace.
+10. Time and QA coverage: 2026-11-13 KST, remote SHA and both CI logs verified. Real external site, real Fable headed record, Win10/11 physical browser/customer acceptance/Production NOT RUN. Prior handoff history below preserved.
 ## [LATEST 2026-11-13 KST] REA_Web P95 사용자 목표 계속 [작업중] — 증거 기반 신규 컴포넌트 빌더 CI 검증 인수인계 10항
 1. **목표·요구·기술:** 원래 REA_Web은 허가된 웹서비스 관찰 Fable5.1→Astra P4 증거·기능/화면 명세→인간 검토→고객 소유 데이터·원본 복제 없는 독립 FastAPI/SQLite/JS 웹앱 **화면·업무 재구축**이다. DATA2WEB(CSV/XLSX 표 웹 생성)은 독립 제품. 사용자 이번 지시 P95 목표.
 2. **완료·변경·결정 근거:** 새 `rea/website_component_builder.py`는 P85 실 Chromium 2 viewport×3 action 6 상태의 screenshot SHA·Astra observed 후보를 결속, nav/aside/article semantic 구조 관찰과 P95 review opinion/digest·선택적 Fable Record SHA가 맞아야 기존 독립 Pro 앱의 실제 HTML 컴포넌트 구조를 3종 직접 재생성한다. 기존 Pro HTML/JS 소스만 조립하고 참고사이트 HTML/CSS/JS·문구·이미지 무복제. 새 `rea/website_ui_cli.py` 안전 inspect/build 분리. 원본 소스/데이터 보존·출력 create-only.
