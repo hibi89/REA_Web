@@ -49,14 +49,16 @@ def _read_json(path: Path) -> dict:
     return data
 
 
-def read_scope(scope_path: Path, *, require_approval: bool) -> tuple[dict, Path, list[tuple[dict, Path]]]:
+def read_scope(scope_path: Path, *, require_approval: bool,
+               expected_schema: str = SCHEMA,
+               expected_mode: str = "three_synthetic_local_browser_cases") -> tuple[dict, Path, list[tuple[dict, Path]]]:
     """Validate all three local sites and the owner data before any output."""
     path = Path(scope_path)
     data = _read_json(path)
     if not isinstance(data, dict) or set(data) != SCOPE_KEYS:
         raise WebsiteReviewError("Unsupported SITECRAFT scope keys")
-    if (data["schema"] != SCHEMA or data["product"] != "SITECRAFT AX"
-            or data["mode"] != "three_synthetic_local_browser_cases"
+    if (data["schema"] != expected_schema or data["product"] != "SITECRAFT AX"
+            or data["mode"] != expected_mode
             or data["permission"] != "YES_OWNER_AUTHORIZED_LOCAL_FIXTURE"
             or data["approval"] != "APPROVE_SYNTHETIC_ONLY"
             or data["external_network_allowed"] is not False
