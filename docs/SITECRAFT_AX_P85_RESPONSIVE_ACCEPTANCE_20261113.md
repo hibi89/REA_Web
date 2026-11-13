@@ -64,3 +64,8 @@ Design alternatives: (A) build another headless observer manually: more duplicat
 maintenance and uncertain screenshots; (B) reuse exact upstream reviewed P85
 observer and Pro builder with isolated multi-site SHA/digest and atomic publish:
 lower cost, repeatable QA and no original source changes. Implement B.
+
+## Verified exact source P85 Actions acceptance — 2026-11-13 KST
+- Implementation+tests/workflow exact SHA a3f31c4c676fb28c2ddded052f9cd0a0942370ad; [Ubuntu/Windows Actions P85](https://github.com/hibi89/REA_Web/actions/runs/43382914205) both SUCCESS. Ubuntu24.04 **116 PASS / 0 FAIL / 1 WARN**; Windows2025 **116 PASS / 0 FAIL / 1 WARN**; original regression included. GitHub final-blueprint evidence workflow on same SHA succeeded.
+- Executed three distinct SHA-pinned synthetic local sites × desktop/mobile × three actual Chromium interactions, 18 observed UI steps, 48 PNG reference/generated screenshots, 24 Pillow RGB diff reports. Actual frozen Astra P4 observed-review contracts and frozen Fable5.1 static GET; independent REA Pro FastAPI/SQLite generation+real generated-browser check. Fail-closed negatives for unauthorized URL/iframe, forged SHA/approval, no-overwrite/atomic multi-app batch; customer-provided synthetic XSS data remains text in generated UI source.
+- **P85 refers solely to internal engineering milestone and cannot become 85% official final blueprint without full 100-point owner-accepted requirements trace.** Official UNASSESSED, central SITECRAFT [작업중], RELEASE HOLD. Real customer/legal rights, external URL scan, original Fable --record, Win10/11 physical, true design pixel parity, app deployment remain unverified.
