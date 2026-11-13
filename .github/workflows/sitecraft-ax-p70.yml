@@ -1,0 +1,51 @@
+name: SITECRAFT AX P70 three-site Chromium Fable Astra Pro acceptance
+on:
+  push:
+    branches: [feature/sitecraft-ax-p70-20261113]
+    paths:
+      - "rea/sitecraft_ax.py"
+      - "rea/sitecraft_p70.py"
+      - "tests/test_sitecraft_ax_p50.py"
+      - "tests/test_sitecraft_ax_p70.py"
+      - ".github/workflows/sitecraft-ax-p70.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  synthetic-three-site-p70:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: 7e6f273b359b207fad8f92016226e3058cbcb839
+          path: .vendor/fable
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: hibi89/REA_Web
+          ref: f044b66e799289a5a353fdb9cbfdb324e683ffa3
+          path: .vendor/astra
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install local-only integration dependencies
+        run: python -m pip install "fastapi>=0.110,<1" "httpx>=0.27,<1" "uvicorn>=0.27,<1" "pydantic>=2.6,<3" "pytest>=8,<10" "requests>=2.31,<3" "beautifulsoup4>=4.12,<5" "playwright>=1.50,<2" "pillow>=10,<13"
+      - name: Install real Chromium browser
+        run: python -m playwright install chromium
+      - name: Compile product integration and original core
+        run: python -m compileall -q rea/sitecraft_ax.py rea/sitecraft_p70.py rea/website_p70.py rea/website_rebuild.py rea/orchestrator.py
+      - name: P50 P70 product and original actual browser regressions
+        env:
+          PYTHONPATH: ".vendor/astra/engines/astra_p4"
+          PYTHONIOENCODING: utf-8
+        run: python -m pytest -q tests/test_sitecraft_ax_p70.py tests/test_sitecraft_ax_p50.py tests/test_website_p70.py tests/test_website_rebuild_p50.py tests/test_orchestrator.py
