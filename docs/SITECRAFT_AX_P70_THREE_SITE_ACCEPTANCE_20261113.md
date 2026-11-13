@@ -54,3 +54,9 @@ P70 is only a bounded engineering milestone, not final-product 70% proof.
 No real customer/site, genuine Fable headed Record, physical Windows10/11,
 Chrome/Edge customer approval, third-party source rights, Production/Vercel,
 or paid API validation. Commercial RELEASE HOLD and central [작업중] remain.
+
+## Exact-source GitHub CI acceptance (2026-11-13 KST)
+- Function/test/workflow SHA: cf2c1171d92408af20bae1d4d037583f900e6e4f
+- https://github.com/hibi89/REA_Web/actions/runs/43377441817 : Ubuntu24.04 **82PASS 0FAIL 1WARN**, Windows2025 **82PASS 0FAIL 1WARN**, 2/2 SUCCESS. Existing P50 and original P70/orchestrator tests included.
+- Synthetic local 3 distinct Chromium reference → Astra observed review digest → independent Fable static GET/Pro new app/actual generated browser parity per site. Fail-closed and all-or-nothing batch test passed on both runners.
+- Official full blueprint completion **UNASSESSED** (milestone 70 is not official final 70%). Central SITECRAFT **[작업중]** and **RELEASE HOLD** retained. Customer/live site, real Fable record, real Windows10/11, actual commercial acceptance and Production NOT RUN.
